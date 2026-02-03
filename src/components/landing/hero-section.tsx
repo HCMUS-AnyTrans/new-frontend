@@ -5,7 +5,8 @@ import Link from "next/link"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { ArrowRight, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { TrustBadge, AvatarStack, StarRating, TranslationDemo } from "@/components/shared"
+import { TrustBadge, AvatarStack, StarRating } from "@/components/shared"
+import { TranslationDemo } from "./translation-demo"
 import { cn } from "@/lib/utils"
 
 export interface HeroSectionProps {

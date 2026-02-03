@@ -4,7 +4,6 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowRight, Coins } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Header, Footer } from "@/components/layout"
 import { SectionBadge } from "@/components/shared"
 import {
   PricingGrid,
@@ -48,9 +47,7 @@ function FadeInSection({
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Header />
-
+    <>
       {/* Hero Section */}
       <FadeInSection>
         <section className="pt-32 pb-16 px-4">
@@ -159,8 +156,6 @@ export default function PricingPage() {
           <PricingCTA />
         </div>
       </section>
-
-      <Footer />
-    </div>
+    </>
   )
 }
