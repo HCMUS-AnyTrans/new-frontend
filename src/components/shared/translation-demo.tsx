@@ -137,7 +137,7 @@ export function TranslationDemo({
           className={cn(
             "absolute",
             index === 0 && "-top-6 -left-6",
-            index === 1 && "-bottom-4 -left-10",
+            index === 1 && "-bottom-8 -left",
             index === 2 && "-right-6 top-1/4"
           )}
         >
