@@ -1,7 +1,4 @@
-"use client"
-
 import Link from "next/link"
-import { motion } from "framer-motion"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -24,11 +21,7 @@ export function PricingCTA({
   secondaryButtonHref = "/demo",
 }: PricingCTAProps) {
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5 }}
+    <section
       className={cn(
         "py-20 px-4 bg-gradient-to-r from-primary-800 to-primary-900 dark:from-primary-900 dark:to-background rounded-3xl",
         className
@@ -59,6 +52,6 @@ export function PricingCTA({
           </Button>
         </div>
       </div>
-    </motion.section>
+    </section>
   )
 }

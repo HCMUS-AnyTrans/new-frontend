@@ -1,26 +1,18 @@
-"use client"
-
-import { motion } from "framer-motion"
 import { SectionBadge } from "@/components/shared"
 import { History } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { milestones, type Milestone } from "@/data/about"
-import { useScrollReveal } from "@/hooks"
 
 interface TimelineItemProps {
   milestone: Milestone
   index: number
-  isVisible: boolean
 }
 
-function TimelineItem({ milestone, index, isVisible }: TimelineItemProps) {
+function TimelineItem({ milestone, index }: TimelineItemProps) {
   const isLeft = index % 2 === 0
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
-      animate={isVisible ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.15 }}
+    <div
       className={cn(
         "relative flex items-center gap-4 lg:gap-8",
         isLeft ? "lg:flex-row" : "lg:flex-row-reverse"
@@ -29,7 +21,7 @@ function TimelineItem({ milestone, index, isVisible }: TimelineItemProps) {
       {/* Content Card */}
       <div
         className={cn(
-          "flex-1 p-6 rounded-2xl border transition-all duration-300",
+          "flex-1 p-6 rounded-2xl border transition-colors duration-300",
           milestone.highlight
             ? "bg-primary/5 border-primary/30 hover:border-primary/50"
             : "bg-card border-border hover:border-primary/20 hover:shadow-md"
@@ -51,7 +43,7 @@ function TimelineItem({ milestone, index, isVisible }: TimelineItemProps) {
         <p className="text-muted-foreground">{milestone.description}</p>
       </div>
 
-      {/* Timeline dot - visible on mobile */}
+      {/* Timeline dot - visible on desktop */}
       <div className="hidden lg:block flex-shrink-0">
         <div
           className={cn(
@@ -65,7 +57,7 @@ function TimelineItem({ milestone, index, isVisible }: TimelineItemProps) {
 
       {/* Empty space for alternating layout */}
       <div className="hidden lg:block flex-1" />
-    </motion.div>
+    </div>
   )
 }
 
@@ -74,24 +66,11 @@ export interface TimelineSectionProps {
 }
 
 export function TimelineSection({ className }: TimelineSectionProps) {
-  const { ref, isVisible } = useScrollReveal<HTMLElement>({
-    threshold: 0.1,
-    triggerOnce: true,
-  })
-
   return (
-    <section
-      ref={ref}
-      className={cn("py-20 lg:py-28", className)}
-    >
+    <section className={cn("py-20 lg:py-28", className)}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12 lg:mb-16"
-        >
+        <div className="text-center mb-12 lg:mb-16">
           <SectionBadge
             text="Hành trình"
             icon={History}
@@ -104,7 +83,7 @@ export function TimelineSection({ className }: TimelineSectionProps) {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Những cột mốc quan trọng trên con đường xây dựng AnyTrans
           </p>
-        </motion.div>
+        </div>
 
         {/* Timeline */}
         <div className="relative">
@@ -118,7 +97,6 @@ export function TimelineSection({ className }: TimelineSectionProps) {
                 key={milestone.year}
                 milestone={milestone}
                 index={index}
-                isVisible={isVisible}
               />
             ))}
           </div>

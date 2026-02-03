@@ -1,7 +1,4 @@
-"use client"
-
 import Link from "next/link"
-import { motion } from "framer-motion"
 import { Building2, ArrowRight, Zap, Shield, Headphones, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -21,13 +18,7 @@ export function EnterpriseBlock({
   const isDark = variant === "dark"
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: 0.4 }}
-      className={className}
-    >
+    <div className={className}>
       <div
         className={cn(
           "relative rounded-3xl p-8 md:p-12 overflow-hidden",
@@ -115,6 +106,6 @@ export function EnterpriseBlock({
           </div>
         )}
       </div>
-    </motion.div>
+    </div>
   )
 }

@@ -1,34 +1,25 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { SectionBadge } from "@/components/shared"
-import { Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { aboutStats, type AboutStat } from "@/data/about"
 import { useScrollReveal, useCountUp } from "@/hooks"
 
 interface StatCardProps {
   stat: AboutStat
-  index: number
   isVisible: boolean
 }
 
-function StatCard({ stat, index, isVisible }: StatCardProps) {
+function StatCard({ stat, isVisible }: StatCardProps) {
   const count = useCountUp({
     end: stat.value,
     duration: 2000,
-    delay: index * 200,
+    delay: 0,
     enabled: isVisible,
     decimals: stat.value % 1 !== 0 ? 1 : 0,
   })
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={isVisible ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="text-center"
-    >
+    <div className="text-center">
       <div className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-primary mb-2">
         {count}
         <span className="text-primary">{stat.suffix}</span>
@@ -36,7 +27,7 @@ function StatCard({ stat, index, isVisible }: StatCardProps) {
       <div className="text-sm sm:text-base text-muted-foreground font-medium">
         {stat.label}
       </div>
-    </motion.div>
+    </div>
   )
 }
 
@@ -67,18 +58,7 @@ export function AboutHero({ className }: AboutHeroProps) {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <SectionBadge
-            text="Về chúng tôi"
-            icon={Users}
-            variant="primary"
-            className="mb-4"
-          />
+        <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight mb-6">
             Xoá bỏ rào cản ngôn ngữ
             <br />
@@ -88,15 +68,14 @@ export function AboutHero({ className }: AboutHeroProps) {
             AnyTrans là nền tảng dịch thuật AI tiên tiến, giúp bạn dịch tài liệu
             chuyên nghiệp với độ chính xác cao và giữ nguyên định dạng gốc.
           </p>
-        </motion.div>
+        </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-          {aboutStats.map((stat, index) => (
+          {aboutStats.map((stat) => (
             <StatCard
               key={stat.label}
               stat={stat}
-              index={index}
               isVisible={isVisible}
             />
           ))}

@@ -1,7 +1,4 @@
-"use client"
-
 import Link from "next/link"
-import { motion } from "framer-motion"
 import { Check, Star, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -10,22 +7,16 @@ import type { Plan } from "@/data/pricing"
 export interface PricingCardProps {
   plan: Plan
   features: string[]
-  index?: number
   className?: string
 }
 
 export function PricingCard({
   plan,
   features,
-  index = 0,
   className,
 }: PricingCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+    <div
       className={cn(
         "relative",
         plan.popular && "md:-mt-4 md:mb-[-16px]",
@@ -35,8 +26,8 @@ export function PricingCard({
       {/* Card with hover effect */}
       <div
         className={cn(
-          "relative h-full bg-card rounded-2xl border p-8 transition-all duration-300 cursor-pointer",
-          "hover:-translate-y-1 hover:shadow-xl",
+          "relative h-full bg-card rounded-2xl border p-8 transition-colors duration-300 cursor-pointer",
+          "hover:shadow-xl",
           plan.popular
             ? "border-primary shadow-xl shadow-primary/10 pt-12"
             : "border-border shadow-lg"
@@ -113,6 +104,6 @@ export function PricingCard({
           </Link>
         </Button>
       </div>
-    </motion.div>
+    </div>
   )
 }

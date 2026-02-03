@@ -1,7 +1,6 @@
 "use client"
 
 import { useRef, useState, useEffect } from "react"
-import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import type { UsageExample } from "@/data/pricing"
@@ -67,32 +66,23 @@ function useCountUp(
 
 export interface UsageExampleCardProps {
   example: UsageExample
-  index?: number
   className?: string
 }
 
 export function UsageExampleCard({
   example,
-  index = 0,
   className,
 }: UsageExampleCardProps) {
   const { count, ref } = useCountUp(example.credits, 1200)
   const Icon = example.icon
 
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={className}
-    >
+    <div ref={ref} className={className}>
       <Card
         className={cn(
           "bg-card/50 backdrop-blur-sm border-primary/20 text-center p-6",
           "hover:bg-card hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5",
-          "transition-all duration-300"
+          "transition-colors duration-300"
         )}
       >
         <CardContent className="p-0">
@@ -104,7 +94,7 @@ export function UsageExampleCard({
           <p className="text-muted-foreground text-xs mt-1">credits</p>
         </CardContent>
       </Card>
-    </motion.div>
+    </div>
   )
 }
 
@@ -120,8 +110,8 @@ export interface UsageExamplesProps {
 export function UsageExamples({ examples, className }: UsageExamplesProps) {
   return (
     <div className={cn("grid grid-cols-2 md:grid-cols-4 gap-6", className)}>
-      {examples.map((example, index) => (
-        <UsageExampleCard key={example.label} example={example} index={index} />
+      {examples.map((example) => (
+        <UsageExampleCard key={example.label} example={example} />
       ))}
     </div>
   )

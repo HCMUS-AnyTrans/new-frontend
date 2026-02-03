@@ -20,9 +20,9 @@ export interface NavConfig {
 // Main navigation links
 export const mainNavItems: NavItem[] = [
   { label: "Tính năng", href: "#features" },
-  { label: "Cách hoạt động", href: "#how-it-works" },
-  { label: "Bảng giá", href: "#pricing" },
-  { label: "Đánh giá", href: "#testimonials" },
+  { label: "Bảng giá", href: "/pricing" },
+  { label: "Về chúng tôi", href: "/about" },
+  { label: "Liên hệ", href: "/contact" },
 ]
 
 // Footer navigation sections

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -69,7 +69,7 @@ function TopicSelector({ value, onChange }: TopicSelectorProps) {
 }
 
 // ============================================================================
-// SUCCESS STATE
+// SUCCESS STATE (giữ animation vì đây là feedback UI)
 // ============================================================================
 
 interface SuccessStateProps {
@@ -79,13 +79,7 @@ interface SuccessStateProps {
 
 function SuccessState({ ticketId, onReset }: SuccessStateProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.35 }}
-      className="flex flex-col items-center justify-center min-h-[400px] text-center"
-    >
+    <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
       {/* Animated Checkmark */}
       <div className="relative">
         <svg
@@ -133,7 +127,7 @@ function SuccessState({ ticketId, onReset }: SuccessStateProps) {
       <Button variant="outline" className="mt-6" onClick={onReset}>
         Gửi tin nhắn khác
       </Button>
-    </motion.div>
+    </div>
   )
 }
 
@@ -184,146 +178,137 @@ export function ContactForm({ className }: ContactFormProps) {
       className={cn("bg-card/80 backdrop-blur-sm border-primary/20", className)}
     >
       <CardContent className="p-6 lg:p-8">
-        <AnimatePresence mode="wait">
-          {formState === "success" ? (
-            <SuccessState ticketId={ticketId} onReset={resetForm} />
-          ) : (
-            <motion.div
-              key="form"
-              initial={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
+        {formState === "success" ? (
+          <SuccessState ticketId={ticketId} onReset={resetForm} />
+        ) : (
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-5"
             >
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-5"
-                >
-                  {/* Topic Selector */}
-                  <FormField
-                    control={form.control}
-                    name="topic"
-                    render={({ field }) => (
-                      <TopicSelector
-                        value={field.value}
-                        onChange={field.onChange}
+              {/* Topic Selector */}
+              <FormField
+                control={form.control}
+                name="topic"
+                render={({ field }) => (
+                  <TopicSelector
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+
+              {/* Name Field */}
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tên</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Nhập tên của bạn" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Email Field */}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="you@example.com"
+                        {...field}
                       />
-                    )}
-                  />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                  {/* Name Field */}
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Tên</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Nhập tên của bạn" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+              {/* Phone Field */}
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Số điện thoại{" "}
+                      <span className="text-muted-foreground text-xs">
+                        (không bắt buộc)
+                      </span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="tel"
+                        placeholder="+84 xxx xxx xxx"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                  {/* Email Field */}
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            placeholder="you@example.com"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+              {/* Message Field */}
+              <FormField
+                control={form.control}
+                name="message"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex justify-between">
+                      <span>Tin nhắn</span>
+                      <span
+                        className={cn(
+                          "text-xs font-normal",
+                          messageValue.length >
+                            contactFormConfig.maxMessageLength
+                            ? "text-destructive"
+                            : messageValue.length >
+                                contactFormConfig.maxMessageLength * 0.8
+                              ? "text-primary"
+                              : "text-muted-foreground"
+                        )}
+                      >
+                        {messageValue.length} /{" "}
+                        {contactFormConfig.maxMessageLength}
+                      </span>
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Mô tả yêu cầu của bạn..."
+                        rows={4}
+                        className="resize-y"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                  {/* Phone Field */}
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          Số điện thoại{" "}
-                          <span className="text-muted-foreground text-xs">
-                            (không bắt buộc)
-                          </span>
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="tel"
-                            placeholder="+84 xxx xxx xxx"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Message Field */}
-                  <FormField
-                    control={form.control}
-                    name="message"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex justify-between">
-                          <span>Tin nhắn</span>
-                          <span
-                            className={cn(
-                              "text-xs font-normal",
-                              messageValue.length >
-                                contactFormConfig.maxMessageLength
-                                ? "text-destructive"
-                                : messageValue.length >
-                                    contactFormConfig.maxMessageLength * 0.8
-                                  ? "text-primary"
-                                  : "text-muted-foreground"
-                            )}
-                          >
-                            {messageValue.length} /{" "}
-                            {contactFormConfig.maxMessageLength}
-                          </span>
-                        </FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Mô tả yêu cầu của bạn..."
-                            rows={4}
-                            className="resize-y"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Submit Button */}
-                  <Button
-                    type="submit"
-                    disabled={formState === "loading"}
-                    className="w-full"
-                    size="lg"
-                  >
-                    {formState === "loading" ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      "Gửi tin nhắn"
-                    )}
-                  </Button>
-                </form>
-              </Form>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                disabled={formState === "loading"}
+                className="w-full"
+                size="lg"
+              >
+                {formState === "loading" ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  "Gửi tin nhắn"
+                )}
+              </Button>
+            </form>
+          </Form>
+        )}
       </CardContent>
     </Card>
   )

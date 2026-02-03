@@ -8,8 +8,6 @@ export type { PricingGridProps } from "./pricing-grid"
 export { UsageExampleCard, UsageExamples } from "./usage-example-card"
 export type { UsageExampleCardProps, UsageExamplesProps } from "./usage-example-card"
 
-export { FeatureComparison } from "./feature-comparison"
-export type { FeatureComparisonProps } from "./feature-comparison"
 
 export { EnterpriseBlock } from "./enterprise-block"
 export type { EnterpriseBlockProps } from "./enterprise-block"

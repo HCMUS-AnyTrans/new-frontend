@@ -1,33 +1,16 @@
-"use client"
-
-import { motion } from "framer-motion"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { useScrollReveal } from "@/hooks"
 
 export interface AboutCTAProps {
   className?: string
 }
 
 export function AboutCTA({ className }: AboutCTAProps) {
-  const { ref, isVisible } = useScrollReveal<HTMLElement>({
-    threshold: 0.2,
-    triggerOnce: true,
-  })
-
   return (
-    <section
-      ref={ref}
-      className={cn("py-20 lg:py-28", className)}
-    >
+    <section className={cn("py-20 lg:py-28", className)}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary-700 dark:from-primary-600 dark:to-primary-900 p-8 lg:p-16 text-center"
-        >
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary-700 dark:from-primary-600 dark:to-primary-900 p-8 lg:p-16 text-center">
           {/* Decorative elements */}
           <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/20 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
@@ -59,7 +42,7 @@ export function AboutCTA({ className }: AboutCTAProps) {
               </Button>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

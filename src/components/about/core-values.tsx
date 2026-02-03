@@ -1,29 +1,20 @@
-"use client"
-
-import { motion } from "framer-motion"
 import { SectionBadge } from "@/components/shared"
 import { Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { coreValues, type CoreValue } from "@/data/about"
-import { useScrollReveal } from "@/hooks"
 
 interface ValueCardProps {
   value: CoreValue
-  index: number
-  isVisible: boolean
 }
 
-function ValueCard({ value, index, isVisible }: ValueCardProps) {
+function ValueCard({ value }: ValueCardProps) {
   const Icon = value.icon
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={isVisible ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+    <div
       className={cn(
         "group relative p-6 lg:p-8 rounded-2xl border border-border bg-card",
-        "hover:shadow-lg hover:border-primary/30 transition-all duration-300",
+        "hover:shadow-lg hover:border-primary/30 transition-colors duration-300",
         value.gridClass
       )}
     >
@@ -35,7 +26,7 @@ function ValueCard({ value, index, isVisible }: ValueCardProps) {
       {/* Content */}
       <h3 className="text-xl font-bold text-foreground mb-2">{value.title}</h3>
       <p className="text-muted-foreground leading-relaxed">{value.description}</p>
-    </motion.div>
+    </div>
   )
 }
 
@@ -44,14 +35,8 @@ export interface CoreValuesProps {
 }
 
 export function CoreValues({ className }: CoreValuesProps) {
-  const { ref, isVisible } = useScrollReveal<HTMLElement>({
-    threshold: 0.1,
-    triggerOnce: true,
-  })
-
   return (
     <section
-      ref={ref}
       className={cn(
         "relative py-20 lg:py-28 overflow-hidden",
         className
@@ -62,12 +47,7 @@ export function CoreValues({ className }: CoreValuesProps) {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12 lg:mb-16"
-        >
+        <div className="text-center mb-12 lg:mb-16">
           <SectionBadge
             text="Giá trị cốt lõi"
             icon={Sparkles}
@@ -81,17 +61,12 @@ export function CoreValues({ className }: CoreValuesProps) {
             Mỗi quyết định và hành động của chúng tôi đều được dẫn dắt bởi những
             giá trị này
           </p>
-        </motion.div>
+        </div>
 
         {/* Bento Grid */}
         <div className="grid md:grid-cols-3 gap-4 lg:gap-6">
-          {coreValues.map((value, index) => (
-            <ValueCard
-              key={value.id}
-              value={value}
-              index={index}
-              isVisible={isVisible}
-            />
+          {coreValues.map((value) => (
+            <ValueCard key={value.id} value={value} />
           ))}
         </div>
       </div>
