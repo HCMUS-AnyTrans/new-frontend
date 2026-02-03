@@ -3,10 +3,7 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
 import {
   Form,
   FormControl,
@@ -15,64 +12,87 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { cn } from "@/lib/utils"
-import { FloatingLabelInput } from "./floating-label-input"
 import { PasswordInput } from "./password-input"
 import {
-  loginFormSchema,
-  type LoginFormValues,
+  resetPasswordFormSchema,
+  type ResetPasswordFormValues,
   authValidationMessages,
 } from "@/data/auth"
 
-export interface LoginFormProps {
-  onSubmit?: (data: LoginFormValues) => Promise<void> | void
+export interface ResetPasswordFormProps {
+  onSubmit?: (data: ResetPasswordFormValues) => Promise<void> | void
   isLoading?: boolean
   className?: string
+  token?: string
 }
 
-export function LoginForm({
+export function ResetPasswordForm({
   onSubmit: onSubmitProp,
   isLoading: isLoadingProp,
   className,
-}: LoginFormProps) {
+  token,
+}: ResetPasswordFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
+  const [isSuccess, setIsSuccess] = useState(false)
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginFormSchema) as any,
+  const form = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(resetPasswordFormSchema) as any,
     defaultValues: {
-      email: "",
       password: "",
-      rememberMe: false,
+      confirmPassword: "",
+      token: token || "",
     },
   })
 
   const isLoading = isLoadingProp ?? isSubmitting
 
-  async function handleSubmit(data: LoginFormValues) {
+  async function handleSubmit(data: ResetPasswordFormValues) {
     setServerError(null)
+    setIsSuccess(false)
+
+    // Include token in submission if provided
+    const submitData = { ...data, token: token || data.token }
 
     if (onSubmitProp) {
       try {
         setIsSubmitting(true)
-        await onSubmitProp(data)
+        await onSubmitProp(submitData)
+        setIsSuccess(true)
       } catch (error) {
         setServerError(
           error instanceof Error
             ? error.message
-            : authValidationMessages.loginFailed
+            : authValidationMessages.resetPasswordFailed
         )
       } finally {
         setIsSubmitting(false)
       }
     } else {
       // Default behavior for development/preview
-      console.log("Login form data:", data)
+      console.log("Reset password form data:", submitData)
       setIsSubmitting(true)
       setTimeout(() => {
         setIsSubmitting(false)
-        alert("Login functionality not yet connected to API")
-      }, 1000)
+        setIsSuccess(true)
+        alert("Mật khẩu đã được đặt lại thành công (Demo mode)")
+      }, 1500)
     }
+  }
+
+  if (isSuccess) {
+    return (
+      <div className={cn("w-full max-w-[512px]", className)}>
+        <div className="bg-success/10 border border-success text-success px-4 py-3 rounded-md text-sm space-y-2">
+          <p className="font-semibold">
+            {authValidationMessages.resetPasswordSuccess}
+          </p>
+          <p className="text-muted-foreground">
+            Bạn có thể đăng nhập bằng mật khẩu mới của mình.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -86,27 +106,7 @@ export function LoginForm({
             </div>
           )}
 
-          {/* Email Field */}
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormControl>
-                  <FloatingLabelInput
-                    {...field}
-                    type="email"
-                    label="Email"
-                    error={!!fieldState.error}
-                    disabled={isLoading}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Password Field */}
+          {/* Create Password Field */}
           <FormField
             control={form.control}
             name="password"
@@ -115,7 +115,7 @@ export function LoginForm({
                 <FormControl>
                   <PasswordInput
                     {...field}
-                    label="Password"
+                    label="Create Password"
                     error={!!fieldState.error}
                     disabled={isLoading}
                   />
@@ -125,57 +125,34 @@ export function LoginForm({
             )}
           />
 
-          {/* Remember Me & Forgot Password */}
-          <div className="flex items-center justify-between">
-            <FormField
-              control={form.control}
-              name="rememberMe"
-              render={({ field }) => (
-                <FormItem className="flex items-center gap-2 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <Label
-                    htmlFor={field.name}
-                    className="text-sm font-medium text-foreground cursor-pointer"
-                  >
-                    Remember me
-                  </Label>
-                </FormItem>
-              )}
-            />
-            <Link
-              href="/forgot-password"
-              className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-            >
-              Forgot Password
-            </Link>
-          </div>
+          {/* Re-enter Password Field */}
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormControl>
+                  <PasswordInput
+                    {...field}
+                    label="Re-enter Password"
+                    error={!!fieldState.error}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          {/* Login Button */}
+          {/* Submit Button */}
           <Button
             type="submit"
             size="lg"
             className="w-full h-12 text-base font-semibold"
             disabled={isLoading}
           >
-            {isLoading ? "Đang đăng nhập..." : "Login"}
+            {isLoading ? "Đang đặt lại..." : "Set password"}
           </Button>
-
-          {/* Sign Up Link */}
-          <p className="text-center text-sm text-foreground">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/register"
-              className="font-semibold text-primary hover:text-primary/80 transition-colors"
-            >
-              Sign up
-            </Link>
-          </p>
         </form>
       </Form>
     </div>

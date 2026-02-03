@@ -1,60 +1,58 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { LoginForm, SocialLoginButtons, AuthHero } from "@/components/auth"
-import type { LoginFormValues } from "@/data/auth"
+import { useRouter, useSearchParams } from "next/navigation"
+import { ResetPasswordForm, AuthHero } from "@/components/auth"
+import type { ResetPasswordFormValues } from "@/data/auth"
 
-export default function LoginPage() {
+export default function ResetPasswordPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
+  const [token, setToken] = useState<string | null>(null)
 
-  async function handleLogin(data: LoginFormValues) {
+  // Get token from URL query parameter
+  useEffect(() => {
+    const tokenParam = searchParams.get("token")
+    if (tokenParam) {
+      setToken(tokenParam)
+    }
+  }, [searchParams])
+
+  async function handleResetPassword(data: ResetPasswordFormValues) {
     setIsLoading(true)
 
     try {
       // TODO: Replace with actual API call
-      // const response = await fetch('/api/auth/login', {
+      // const response = await fetch('/api/auth/reset-password', {
       //   method: 'POST',
       //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data),
+      //   body: JSON.stringify({
+      //     token: token || data.token,
+      //     password: data.password,
+      //     confirmPassword: data.confirmPassword,
+      //   }),
       // })
 
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500))
 
-      console.log("Login data:", data)
+      console.log("Reset password data:", {
+        token: token || data.token,
+        password: data.password,
+      })
 
-      // TODO: Handle successful login
-      // - Store auth token
-      // - Redirect to dashboard/home
-      // router.push('/dashboard')
-
-      // For now, show success and redirect to home
-      alert("Đăng nhập thành công! (Demo mode)")
-      router.push("/")
+      // TODO: Handle successful password reset
+      // - Show success message (handled by form component)
+      // - Redirect to login page after delay
+      // setTimeout(() => {
+      //   router.push('/login')
+      // }, 3000)
     } catch (error) {
-      console.error("Login error:", error)
+      console.error("Reset password error:", error)
       throw error
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  async function handleSocialLogin(provider: string) {
-    setIsLoading(true)
-
-    try {
-      // TODO: Implement OAuth flow
-      console.log(`Social login with: ${provider}`)
-
-      // Simulate OAuth redirect
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      alert(`${provider} login sẽ được triển khai sau (Demo mode)`)
-    } catch (error) {
-      console.error("Social login error:", error)
     } finally {
       setIsLoading(false)
     }
@@ -82,26 +80,25 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
         <div className="w-full max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-            {/* Left Column - Login Form */}
+            {/* Left Column - Reset Password Form */}
             <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start">
               <div className="w-full max-w-[512px] space-y-8">
                 {/* Header */}
                 <div className="space-y-4">
                   <h1 className="text-4xl font-semibold text-foreground">
-                    Login
+                    Set a password
                   </h1>
                   <p className="text-base text-muted-foreground">
-                    Login to access your travelwise account
+                    Your previous password has been reseted. Please set a new
+                    password for your account.
                   </p>
                 </div>
 
-                {/* Login Form */}
-                <LoginForm onSubmit={handleLogin} isLoading={isLoading} />
-
-                {/* Social Login */}
-                <SocialLoginButtons
-                  onSocialLogin={handleSocialLogin}
+                {/* Reset Password Form */}
+                <ResetPasswordForm
+                  onSubmit={handleResetPassword}
                   isLoading={isLoading}
+                  token={token || undefined}
                 />
               </div>
             </div>
@@ -109,7 +106,7 @@ export default function LoginPage() {
             {/* Right Column - Hero Illustration */}
             <AuthHero
               imageSrc="/authen/banner-authen-01.png"
-              imageAlt="Login illustration"
+              imageAlt="Reset password illustration"
               className="w-full lg:w-1/2"
             />
           </div>

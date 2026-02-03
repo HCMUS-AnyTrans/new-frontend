@@ -3,11 +3,17 @@
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 
-export interface LoginHeroProps {
+export interface AuthHeroProps {
+  imageSrc: string
+  imageAlt?: string
   className?: string
 }
 
-export function LoginHero({ className }: LoginHeroProps) {
+export function AuthHero({
+  imageSrc,
+  imageAlt = "Authentication illustration",
+  className,
+}: AuthHeroProps) {
   return (
     <div
       className={cn(
@@ -25,17 +31,16 @@ export function LoginHero({ className }: LoginHeroProps) {
       {/* Main Illustration */}
       <div className="relative z-10 w-full max-w-md px-8">
         <div className="relative aspect-[4/5] w-full">
-          {/* Use the image from Figma or a placeholder */}
           <Image
-            src="/authen/banner-authen-01.png"
-            alt="Login illustration"
+            src={imageSrc}
+            alt={imageAlt}
             fill
             className="object-contain"
             priority
           />
         </div>
 
-        {/* Optional: Carousel Indicator Dots */}
+        {/* Carousel Indicator Dots */}
         <div className="flex justify-center gap-2 mt-8">
           <div className="w-2 h-2 rounded-full bg-primary" />
           <div className="w-2 h-2 rounded-full bg-muted-foreground/30" />
