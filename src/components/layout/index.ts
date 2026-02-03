@@ -12,3 +12,6 @@ export type { FeaturesSectionProps } from "./features-section"
 
 export { HowItWorks } from "./how-it-works"
 export type { HowItWorksProps } from "./how-it-works"
+
+export { PricingSection } from "./pricing-section"
+export type { PricingSectionProps } from "./pricing-section"
