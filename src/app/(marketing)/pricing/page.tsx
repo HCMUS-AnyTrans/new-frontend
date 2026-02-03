@@ -3,13 +3,12 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { HeroBackground } from "@/components/shared"
+import { HeroBackground, SectionBackground, BannerCTA } from "@/components/shared"
 import {
   PricingGrid,
   UsageExamples,
   EnterpriseBlock,
   PricingFAQ,
-  PricingCTA,
 } from "@/components/pricing"
 import { usageExamples } from "@/data/pricing"
 
@@ -51,11 +50,16 @@ export default function PricingPage() {
       </HeroBackground>
 
       {/* Pricing Cards */}
-      <section className="py-16 px-4">
+      <SectionBackground
+        background="transparent"
+        showGrid
+        gridSize="sm"
+        className="py-16 px-4"
+      >
         <div className="max-w-6xl mx-auto">
           <PricingGrid />
         </div>
-      </section>
+      </SectionBackground>
 
       {/* Usage Examples */}
       <section className="py-16 px-4">
@@ -91,11 +95,14 @@ export default function PricingPage() {
       </section>
 
       {/* Final CTA Banner */}
-      <section className="py-16 px-4">
-        <div className="max-w-5xl mx-auto">
-          <PricingCTA />
-        </div>
-      </section>
+      <BannerCTA
+        title="Sẵn sàng dịch nhanh hơn 10 lần?"
+        subtitle="1 Credit = 1 trang dịch. Không subscription. Không giới hạn thời gian."
+        primaryButtonText="Bắt đầu miễn phí"
+        primaryButtonHref="/register"
+        secondaryButtonText="Xem demo"
+        secondaryButtonHref="/demo"
+      />
     </>
   )
 }

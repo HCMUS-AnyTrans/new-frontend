@@ -163,27 +163,15 @@ export const milestones: Milestone[] = [
 
 export const teamMembers: TeamMember[] = [
   {
-    name: "Nguyễn Minh Tuấn",
-    role: "Founder & CEO",
-    image: "/images/team/ceo.jpg",
-    bio: "10+ năm kinh nghiệm trong lĩnh vực AI và xử lý ngôn ngữ tự nhiên.",
+    name: "Nguyễn Minh Nguyên",
+    role: "Software Engineer",
+    image: "/images/team/nguyen.jpg",
+    bio: "Full-stack developer với niềm đam mê xây dựng các ứng dụng web hiệu năng cao và trải nghiệm người dùng mượt mà.",
   },
   {
-    name: "Trần Thị Mai",
-    role: "CTO",
-    image: "/images/team/cto.jpg",
-    bio: "Chuyên gia về Machine Learning và hệ thống phân tán quy mô lớn.",
-  },
-  {
-    name: "Lê Hoàng Nam",
-    role: "Head of Product",
-    image: "/images/team/product.jpg",
-    bio: "Đam mê tạo ra sản phẩm công nghệ giải quyết vấn đề thực tế.",
-  },
-  {
-    name: "Phạm Thu Hà",
-    role: "Head of Customer Success",
-    image: "/images/team/cs.jpg",
-    bio: "Cam kết mang đến trải nghiệm tốt nhất cho mọi khách hàng.",
+    name: "Nguyễn Trọng Nhân",
+    role: "Software Engineer",
+    image: "/images/team/nhan.jpg",
+    bio: "Chuyên gia về kiến trúc frontend và tối ưu hóa hệ thống, luôn tìm kiếm giải pháp công nghệ sáng tạo.",
   },
 ]

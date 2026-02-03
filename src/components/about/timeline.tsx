@@ -1,4 +1,4 @@
-import { SectionBadge } from "@/components/shared"
+import { SectionBadge, SectionBackground } from "@/components/shared"
 import { History } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { milestones, type Milestone } from "@/data/about"
@@ -67,7 +67,14 @@ export interface TimelineSectionProps {
 
 export function TimelineSection({ className }: TimelineSectionProps) {
   return (
-    <section className={cn("py-20 lg:py-28", className)}>
+    <SectionBackground
+      background="transparent"
+      showGrid
+      gridSize="sm"
+      gridOpacity={0.03}
+      className={className}
+      padding="py-20 lg:py-28"
+    >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12 lg:mb-16">
@@ -102,6 +109,6 @@ export function TimelineSection({ className }: TimelineSectionProps) {
           </div>
         </div>
       </div>
-    </section>
+    </SectionBackground>
   )
 }

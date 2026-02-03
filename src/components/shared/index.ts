@@ -13,3 +13,5 @@ export type {
   BackgroundVariant,
   GridColor,
 } from "./section-background"
+export { BannerCTA } from "./banner-cta"
+export type { BannerCTAProps } from "./banner-cta"

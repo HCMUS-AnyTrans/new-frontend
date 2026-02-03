@@ -14,6 +14,3 @@ export type { EnterpriseBlockProps } from "./enterprise-block"
 
 export { PricingFAQ } from "./pricing-faq"
 export type { PricingFAQProps } from "./pricing-faq"
-
-export { PricingCTA } from "./pricing-cta"
-export type { PricingCTAProps } from "./pricing-cta"

@@ -1,11 +1,11 @@
 import { Metadata } from "next"
+import { BannerCTA } from "@/components/shared"
 import {
   AboutHero,
   OurStory,
   CoreValues,
   TimelineSection,
   TeamSection,
-  AboutCTA,
 } from "@/components/about"
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default function AboutPage() {
       <CoreValues />
       <TimelineSection />
       <TeamSection />
-      <AboutCTA />
+      <BannerCTA />
     </>
   )
 }

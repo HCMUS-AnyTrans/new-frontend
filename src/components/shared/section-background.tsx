@@ -76,7 +76,7 @@ export function SectionBackground({
   showGrid = false,
   gridSize = "md",
   gridColor = "primary",
-  gridOpacity = 1,
+  gridOpacity = 0.05,
   padding = "py-20 lg:py-32",
   id,
 }: SectionBackgroundProps) {
@@ -85,9 +85,9 @@ export function SectionBackground({
   const backgroundClass = backgroundVariantMap[background]
 
   // Build grid pattern style
-  const gridStyle = showGrid
-    ? `bg-[linear-gradient(to_right,${gridColorValue}_1px,transparent_1px),linear-gradient(to_bottom,${gridColorValue}_1px,transparent_1px)] bg-[size:${gridSizeValue}]`
-    : ""
+  const gridBackgroundImage = showGrid
+    ? `linear-gradient(to right, ${gridColorValue} 1px, transparent 1px), linear-gradient(to bottom, ${gridColorValue} 1px, transparent 1px)`
+    : undefined
 
   return (
     <section
@@ -106,8 +106,12 @@ export function SectionBackground({
       {/* Grid Pattern Layer */}
       {showGrid && (
         <div
-          className={cn("absolute inset-0", gridStyle)}
-          style={{ opacity: gridOpacity }}
+          className="absolute inset-0 pointer-events-none"
+          style={{ 
+            backgroundImage: gridBackgroundImage,
+            backgroundSize: gridSizeValue.replace("_", " "),
+            opacity: gridOpacity 
+          }}
         />
       )}
 

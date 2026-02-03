@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -60,14 +61,17 @@ export function Header({
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <Link href={logo.href || "/"} className="flex items-center gap-2 group">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-md"
+              <div
+                className="relative w-10 h-10"
               >
-                <span className="text-primary-foreground font-bold text-lg">
-                  {logo.icon || logo.text.charAt(0)}
-                </span>
-              </motion.div>
+                <Image
+                  src="/logo.svg"
+                  alt={logo.text}
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
               <span className="font-bold text-xl text-primary">
                 {logo.text}
               </span>

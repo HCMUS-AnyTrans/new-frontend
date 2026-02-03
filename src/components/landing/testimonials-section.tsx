@@ -243,27 +243,6 @@ export function TestimonialsSection({ className }: TestimonialsSectionProps) {
             <StatItem key={stat.label} stat={stat} index={index} isInView={isInView} />
           ))}
         </motion.div>
-
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="mt-16 text-center"
-        >
-          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-            <Button
-              size="lg"
-              className="shadow-lg shadow-primary/20 text-base px-10 h-14 group"
-              asChild
-            >
-              <Link href="/register" className="flex items-center gap-2">
-                Bắt đầu miễn phí
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
-          </motion.div>
-        </motion.div>
       </div>
     </SectionBackground>
   )

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
+import Image from "next/image"
 import { Mail, Phone, MapPin } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
@@ -120,11 +121,14 @@ export function Footer({
               >
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="w-10 h-10 rounded-xl bg-[hsl(221,83%,33%)] flex items-center justify-center shadow-lg"
+                  className="relative w-10 h-10"
                 >
-                  <span className="text-white font-bold text-lg">
-                    {logo.icon || logo.text.charAt(0)}
-                  </span>
+                  <Image
+                    src="/logo.svg"
+                    alt={logo.text}
+                    fill
+                    className="object-contain"
+                  />
                 </motion.div>
                 <span className="font-bold text-xl text-white">{logo.text}</span>
               </Link>

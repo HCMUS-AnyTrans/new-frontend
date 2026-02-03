@@ -333,10 +333,9 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
   return (
     <SectionBackground
       id="features"
-      background="solid"
+      background="gradient"
       showGrid
-      gridSize="lg"
-      gridOpacity={0.02}
+      gridSize="sm"
       className={className}
     >
       {/* Decorative blobs */}

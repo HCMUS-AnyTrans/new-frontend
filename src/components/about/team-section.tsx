@@ -61,9 +61,11 @@ export function TeamSection({ className }: TeamSectionProps) {
         </div>
 
         {/* Team Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div className="flex flex-wrap justify-center gap-8 lg:gap-12">
           {teamMembers.map((member) => (
-            <TeamMemberCard key={member.name} member={member} />
+            <div key={member.name} className="w-full max-w-[280px]">
+              <TeamMemberCard member={member} />
+            </div>
           ))}
         </div>
       </div>
