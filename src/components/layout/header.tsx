@@ -6,6 +6,7 @@ import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ModeToggle } from "@/components/mode-toggle"
 import { mainNavItems, type NavItem } from "@/data/navigation"
 import { siteConfig } from "@/data/site"
 
@@ -93,6 +94,7 @@ export function Header({
 
             {/* CTA Buttons */}
             <div className="hidden md:flex items-center gap-3">
+              <ModeToggle />
               <Button variant="ghost" asChild>
                 <Link href={loginButton.href}>{loginButton.label}</Link>
               </Button>
@@ -146,6 +148,9 @@ export function Header({
                   </motion.div>
                 ))}
                 <div className="border-t border-border mt-2 pt-4 flex flex-col gap-2">
+                  <div className="flex justify-center mb-2">
+                    <ModeToggle />
+                  </div>
                   <Button variant="ghost" className="justify-center" asChild>
                     <Link href={loginButton.href}>{loginButton.label}</Link>
                   </Button>
