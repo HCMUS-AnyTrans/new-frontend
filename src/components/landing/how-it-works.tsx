@@ -167,28 +167,6 @@ export function HowItWorks({ className }: HowItWorksProps) {
             ))}
           </div>
         </div>
-
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="mt-16 text-center"
-        >
-          <Button
-            size="lg"
-            className="shadow-lg shadow-primary/20 text-base px-10 h-14 group"
-            asChild
-          >
-            <Link href="/register" className="flex items-center gap-2">
-              Thử ngay miễn phí
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </Button>
-          <p className="mt-4 text-sm text-muted-foreground">
-            Không cần thẻ tín dụng • Bắt đầu trong 30 giây
-          </p>
-        </motion.div>
       </div>
     </section>
   )

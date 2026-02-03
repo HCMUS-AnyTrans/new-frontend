@@ -5,7 +5,7 @@ import Link from "next/link"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { ArrowRight, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { TrustBadge, AvatarStack, StarRating } from "@/components/shared"
+import { TrustBadge, AvatarStack, StarRating, HeroBackground } from "@/components/shared"
 import { TranslationDemo } from "./translation-demo"
 import { cn } from "@/lib/utils"
 
@@ -86,21 +86,12 @@ export function HeroSection({
   }
 
   return (
-    <section
+    <HeroBackground
       ref={containerRef}
-      className={cn(
-        "relative min-h-screen flex items-center overflow-hidden pt-20",
-        className
-      )}
+      padding="pt-20"
+      className={cn("min-h-screen flex items-center", className)}
     >
-      {/* Background */}
-      <div className="absolute inset-0 bg-primary-50 dark:bg-background" />
-      <div className="absolute top-0 right-0 w-1/2 h-full bg-primary-100 dark:bg-primary-900/20 rounded-bl-[100px] hidden lg:block" />
-
-      {/* Subtle Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--primary-500)_1px,transparent_1px),linear-gradient(to_bottom,var(--primary-500)_1px,transparent_1px)] bg-[size:40px_40px] opacity-[0.03]" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-24">
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-24">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left Content */}
           <motion.div style={{ opacity }} className="text-center lg:text-left">
@@ -208,6 +199,6 @@ export function HeroSection({
           )}
         </div>
       </div>
-    </section>
+    </HeroBackground>
   )
 }

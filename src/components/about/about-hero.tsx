@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { HeroBackground } from "@/components/shared"
 import { aboutStats, type AboutStat } from "@/data/about"
 import { useScrollReveal, useCountUp } from "@/hooks"
 
@@ -36,27 +37,17 @@ export interface AboutHeroProps {
 }
 
 export function AboutHero({ className }: AboutHeroProps) {
-  const { ref, isVisible } = useScrollReveal<HTMLElement>({
+  const { ref, isVisible } = useScrollReveal<HTMLDivElement>({
     threshold: 0.2,
     triggerOnce: true,
   })
 
   return (
-    <section
-      ref={ref}
-      className={cn(
-        "relative py-20 lg:py-32 overflow-hidden",
-        className
-      )}
+    <HeroBackground
+      padding="py-20 lg:py-32 pt-28"
+      className={className}
     >
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary-50/50 via-background to-background dark:from-primary-950/30 dark:via-background" />
-
-      {/* Decorative blobs */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-primary-200/30 rounded-full blur-3xl dark:bg-primary-800/20" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary-200/20 rounded-full blur-3xl dark:bg-secondary-800/10" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div ref={ref} className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight mb-6">
@@ -81,6 +72,6 @@ export function AboutHero({ className }: AboutHeroProps) {
           ))}
         </div>
       </div>
-    </section>
+    </HeroBackground>
   )
 }

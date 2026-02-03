@@ -11,7 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { SectionBadge } from "@/components/shared"
+import { SectionBadge, SectionBackground } from "@/components/shared"
 import { cn } from "@/lib/utils"
 import {
   testimonials,
@@ -111,7 +111,7 @@ export interface TestimonialsSectionProps {
 }
 
 export function TestimonialsSection({ className }: TestimonialsSectionProps) {
-  const ref = useRef<HTMLElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
@@ -143,18 +143,14 @@ export function TestimonialsSection({ className }: TestimonialsSectionProps) {
   )
 
   return (
-    <section
+    <SectionBackground
       id="testimonials"
-      ref={ref}
-      className={cn("relative py-20 lg:py-32 overflow-hidden", className)}
+      background="gradient"
+      showGrid
+      gridSize="sm"
+      className={className}
     >
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-primary-50/30 to-background dark:from-background dark:via-primary-900/10 dark:to-background" />
-
-      {/* Subtle Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--primary-500)_1px,transparent_1px),linear-gradient(to_bottom,var(--primary-500)_1px,transparent_1px)] bg-[size:32px_32px] opacity-[0.03]" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -269,6 +265,6 @@ export function TestimonialsSection({ className }: TestimonialsSectionProps) {
           </motion.div>
         </motion.div>
       </div>
-    </section>
+    </SectionBackground>
   )
 }

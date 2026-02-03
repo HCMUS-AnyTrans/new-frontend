@@ -1,9 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { motion } from "framer-motion"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { HeroBackground } from "@/components/shared"
 import {
   PricingGrid,
   UsageExamples,
@@ -17,8 +17,8 @@ export default function PricingPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="pt-32 pb-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+      <HeroBackground>
+        <div className="relative max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-6 text-balance">
             Giá đơn giản,
             <br />
@@ -48,7 +48,7 @@ export default function PricingPage() {
             </Button>
           </div>
         </div>
-      </section>
+      </HeroBackground>
 
       {/* Pricing Cards */}
       <section className="py-16 px-4">

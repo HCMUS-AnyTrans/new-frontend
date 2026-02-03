@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { HeroBackground } from "@/components/shared"
 
 export interface ContactHeroProps {
   className?: string
@@ -6,19 +6,10 @@ export interface ContactHeroProps {
 
 export function ContactHero({ className }: ContactHeroProps) {
   return (
-    <section
-      className={cn(
-        "relative pt-20 pb-12 lg:pt-28 lg:pb-16 overflow-hidden",
-        className
-      )}
+    <HeroBackground
+      padding="pt-28 pb-12 lg:pt-32 lg:pb-16"
+      className={className}
     >
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary-50/50 via-background to-background dark:from-primary-950/30 dark:via-background" />
-
-      {/* Decorative blobs */}
-      <div className="absolute top-10 right-10 w-72 h-72 bg-primary-200/30 rounded-full blur-3xl dark:bg-primary-800/20" />
-      <div className="absolute bottom-0 left-10 w-64 h-64 bg-secondary-200/20 rounded-full blur-3xl dark:bg-secondary-800/10" />
-
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground mb-4">
           Bắt đầu một{" "}
@@ -30,6 +21,6 @@ export function ContactHero({ className }: ContactHeroProps) {
           trong vòng 24 giờ.
         </p>
       </div>
-    </section>
+    </HeroBackground>
   )
 }

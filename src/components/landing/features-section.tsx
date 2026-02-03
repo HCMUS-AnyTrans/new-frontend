@@ -3,14 +3,14 @@
 import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
 import { Check, ArrowRight, Zap } from "lucide-react"
-import { SectionBadge } from "@/components/shared"
+import { SectionBadge, SectionBackground } from "@/components/shared"
 import { cn } from "@/lib/utils"
 import { features, type Feature } from "@/data/features"
 
 // Static mockup components - no loop animations for fast loading
 function FormatMockup() {
   return (
-    <div className="relative w-full h-48 bg-primary-50 dark:bg-primary-950/30 rounded-xl overflow-hidden p-4">
+    <div className="relative w-full h-full min-h-48 bg-primary-50 dark:bg-primary-950/30 rounded-xl overflow-hidden p-4">
       <div className="flex gap-3 h-full">
         {/* Before */}
         <div className="flex-1 bg-card rounded-lg shadow-sm border border-border p-3 relative">
@@ -62,10 +62,11 @@ function GlossaryMockup() {
     { en: "Machine Learning", vi: "Học máy" },
     { en: "Neural Network", vi: "Mạng nơ-ron" },
     { en: "Deep Learning", vi: "Học sâu" },
+    { en: "Artificial Intelligence", vi: "Trí tuệ nhân tạo" },
   ]
   
   return (
-    <div className="relative w-full h-48 bg-secondary-100 dark:bg-secondary-900/20 rounded-xl overflow-hidden p-4">
+    <div className="relative w-full h-full min-h-48 bg-secondary-100 dark:bg-secondary-900/20 rounded-xl overflow-hidden p-4">
       <div className="space-y-2">
         {terms.map((term) => (
           <div
@@ -89,7 +90,7 @@ function GlossaryMockup() {
 
 function SpeedMockup() {
   return (
-    <div className="relative w-full h-48 bg-destructive/10 dark:bg-destructive/5 rounded-xl overflow-hidden p-4 flex flex-col justify-center">
+    <div className="relative w-full h-full min-h-48 bg-destructive/10 dark:bg-destructive/5 rounded-xl overflow-hidden p-4 flex flex-col justify-center">
       <div className="text-center mb-4">
         <div className="text-4xl font-extrabold text-destructive">10x</div>
         <div className="text-sm text-muted-foreground mt-1">Nhanh hơn</div>
@@ -111,26 +112,65 @@ function SpeedMockup() {
 
 function ReviewMockup() {
   return (
-    <div className="relative w-full h-48 bg-info/10 dark:bg-info/5 rounded-xl overflow-hidden">
-      <div className="flex h-full">
-        <div className="flex-1 border-r border-info/20 p-3">
-          <div className="text-[10px] font-semibold text-muted-foreground mb-2 flex items-center gap-1">
-            <span className="w-3 h-3 rounded bg-muted" />
-            Original
+    <div className="relative w-full h-full min-h-48 bg-info/10 dark:bg-info/5 rounded-xl overflow-hidden p-4">
+      <div className="flex gap-3 h-full items-stretch">
+        {/* Original Document */}
+        <div className="flex-1 bg-card rounded-lg shadow-sm border border-border overflow-hidden flex flex-col">
+          {/* Word-like toolbar */}
+          <div className="bg-muted/50 border-b border-border px-2 py-1 flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full bg-destructive/60" />
+            <div className="w-2 h-2 rounded-full bg-secondary/60" />
+            <div className="w-2 h-2 rounded-full bg-success/60" />
+            <span className="text-[8px] text-muted-foreground ml-2 truncate">original.docx</span>
           </div>
-          <div className="space-y-1.5 text-[10px] text-muted-foreground">
-            <p>The quick brown fox...</p>
-            <p>jumps over the lazy dog.</p>
+          {/* Document content */}
+          <div className="flex-1 p-3 space-y-2">
+            <div className="text-[10px] font-semibold text-foreground">Annual Report 2024</div>
+            <div className="space-y-1.5">
+              <div className="h-1.5 bg-muted rounded w-full" />
+              <div className="h-1.5 bg-muted rounded w-11/12" />
+              <div className="h-1.5 bg-muted rounded w-4/5" />
+            </div>
+            <div className="pt-2 space-y-1.5">
+              <div className="h-1.5 bg-muted rounded w-full" />
+              <div className="h-1.5 bg-muted rounded w-3/4" />
+            </div>
+          </div>
+          <div className="bg-muted/30 border-t border-border px-2 py-1">
+            <span className="text-[8px] text-muted-foreground">EN • 12 pages</span>
           </div>
         </div>
-        <div className="flex-1 p-3 bg-info/5">
-          <div className="text-[10px] font-semibold text-info mb-2 flex items-center gap-1">
-            <span className="w-3 h-3 rounded bg-info/30" />
-            Translated
+
+        {/* Arrow */}
+        <div className="flex items-center">
+          <ArrowRight className="w-4 h-4 text-info" />
+        </div>
+
+        {/* Translated Document */}
+        <div className="flex-1 bg-card rounded-lg shadow-sm border border-info/30 overflow-hidden flex flex-col">
+          {/* Word-like toolbar */}
+          <div className="bg-info/10 border-b border-info/20 px-2 py-1 flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full bg-destructive/60" />
+            <div className="w-2 h-2 rounded-full bg-secondary/60" />
+            <div className="w-2 h-2 rounded-full bg-success/60" />
+            <span className="text-[8px] text-info ml-2 truncate">translated.docx</span>
           </div>
-          <div className="space-y-1.5 text-[10px] text-info/80">
-            <p>Con cáo nâu nhanh nhẹn...</p>
-            <p className="bg-info/10 rounded px-1">nhảy qua con chó lười.</p>
+          {/* Document content */}
+          <div className="flex-1 p-3 space-y-2">
+            <div className="text-[10px] font-semibold text-info">Báo cáo thường niên 2024</div>
+            <div className="space-y-1.5">
+              <div className="h-1.5 bg-info/20 rounded w-full" />
+              <div className="h-1.5 bg-info/20 rounded w-11/12" />
+              <div className="h-1.5 bg-info/20 rounded w-4/5" />
+            </div>
+            <div className="pt-2 space-y-1.5">
+              <div className="h-1.5 bg-info/20 rounded w-full" />
+              <div className="h-1.5 bg-info/20 rounded w-3/4" />
+            </div>
+          </div>
+          <div className="bg-info/10 border-t border-info/20 px-2 py-1 flex items-center justify-between">
+            <span className="text-[8px] text-info">VI • 12 pages</span>
+            <Check className="w-3 h-3 text-success" />
           </div>
         </div>
       </div>
@@ -140,19 +180,64 @@ function ReviewMockup() {
 
 function OcrMockup() {
   return (
-    <div className="relative w-full h-48 bg-accent/10 dark:bg-accent/5 rounded-xl overflow-hidden p-4">
-      <div className="relative h-full bg-card rounded-lg border border-accent/20 overflow-hidden">
-        <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-accent/50" />
-        <div className="p-3 space-y-2">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-muted rounded" />
-            <div className="flex-1 space-y-1">
-              <div className="h-2 bg-accent/20 rounded w-3/4" />
-              <div className="h-2 bg-accent/20 rounded w-1/2" />
+    <div className="relative w-full h-full min-h-48 bg-primary-50 dark:bg-primary-950/30 rounded-xl overflow-hidden p-4">
+      <div className="flex gap-3 h-full items-stretch">
+        {/* Scanned Image */}
+        <div className="flex-1 bg-card rounded-lg shadow-sm border border-border overflow-hidden flex flex-col">
+          {/* Header */}
+          <div className="bg-muted/50 border-b border-border px-2 py-1 flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full bg-destructive/60" />
+            <div className="w-2 h-2 rounded-full bg-secondary/60" />
+            <div className="w-2 h-2 rounded-full bg-success/60" />
+            <span className="text-[8px] text-muted-foreground ml-2">scan.pdf</span>
+          </div>
+          {/* Scanned content with scan line effect */}
+          <div className="flex-1 p-3 relative bg-muted/20">
+            {/* Scan line animation placeholder */}
+            <div className="absolute left-0 right-0 top-1/3 h-0.5 bg-primary/60" />
+            {/* Simulated scanned text blocks */}
+            <div className="space-y-2 opacity-60">
+              <div className="h-2 bg-foreground/20 rounded w-4/5" />
+              <div className="h-2 bg-foreground/20 rounded w-full" />
+              <div className="h-2 bg-foreground/20 rounded w-3/4" />
+              <div className="h-2 bg-foreground/20 rounded w-5/6" />
             </div>
           </div>
-          <div className="text-[10px] text-accent font-medium">
-            Scanning... 99% accuracy
+          <div className="bg-muted/30 border-t border-border px-2 py-1">
+            <span className="text-[8px] text-muted-foreground">Image • PDF</span>
+          </div>
+        </div>
+
+        {/* Arrow */}
+        <div className="flex items-center">
+          <ArrowRight className="w-4 h-4 text-primary" />
+        </div>
+
+        {/* Extracted Text */}
+        <div className="flex-1 bg-card rounded-lg shadow-sm border border-primary/30 overflow-hidden flex flex-col">
+          {/* Header */}
+          <div className="bg-primary/10 border-b border-primary/20 px-2 py-1 flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full bg-destructive/60" />
+            <div className="w-2 h-2 rounded-full bg-secondary/60" />
+            <div className="w-2 h-2 rounded-full bg-success/60" />
+            <span className="text-[8px] text-primary ml-2">extracted.docx</span>
+          </div>
+          {/* Extracted content */}
+          <div className="flex-1 p-3 space-y-2">
+            <div className="text-[10px] font-semibold text-primary">Hợp đồng kinh tế</div>
+            <div className="space-y-1.5">
+              <div className="h-1.5 bg-primary/20 rounded w-full" />
+              <div className="h-1.5 bg-primary/20 rounded w-11/12" />
+              <div className="h-1.5 bg-primary/20 rounded w-4/5" />
+            </div>
+            <div className="pt-1 space-y-1.5">
+              <div className="h-1.5 bg-primary/20 rounded w-full" />
+              <div className="h-1.5 bg-primary/20 rounded w-3/4" />
+            </div>
+          </div>
+          <div className="bg-primary/10 border-t border-primary/20 px-2 py-1 flex items-center justify-between">
+            <span className="text-[8px] text-primary">99.2% accuracy</span>
+            <Check className="w-3 h-3 text-success" />
           </div>
         </div>
       </div>
@@ -162,7 +247,7 @@ function OcrMockup() {
 
 function SavingsMockup() {
   return (
-    <div className="relative w-full h-48 bg-success/10 dark:bg-success/5 rounded-xl overflow-hidden p-4 flex flex-col justify-center items-center">
+    <div className="relative w-full h-full min-h-48 bg-success/10 dark:bg-success/5 rounded-xl overflow-hidden p-4 flex flex-col justify-center items-center">
       <div className="relative">
         <div className="text-5xl font-bold text-success">$</div>
         <div className="absolute -top-2 -right-4 w-8 h-8 bg-success rounded-full flex items-center justify-center text-white text-xs font-bold">
@@ -242,30 +327,24 @@ export interface FeaturesSectionProps {
 }
 
 export function FeaturesSection({ className }: FeaturesSectionProps) {
-  const ref = useRef<HTMLElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
   return (
-    <section
+    <SectionBackground
       id="features"
-      ref={ref}
-      className={cn(
-        "relative py-20 lg:py-32 overflow-hidden",
-        className
-      )}
+      background="solid"
+      showGrid
+      gridSize="lg"
+      gridOpacity={0.02}
+      className={className}
     >
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary-50/50 via-background to-background dark:from-primary-900/10 dark:via-background" />
-      
       {/* Decorative blobs */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary-200/30 rounded-full blur-3xl dark:bg-primary-800/20" />
       <div className="absolute bottom-40 right-10 w-96 h-96 bg-secondary-200/20 rounded-full blur-3xl dark:bg-secondary-800/10" />
       <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-accent-200/20 rounded-full blur-3xl dark:bg-accent-800/10" />
 
-      {/* Subtle grid pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--primary-500)_1px,transparent_1px),linear-gradient(to_bottom,var(--primary-500)_1px,transparent_1px)] bg-[size:64px_64px] opacity-[0.02]" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -295,13 +374,13 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={cn(
-                "flex flex-col gap-8 lg:gap-16 items-center",
+                "flex flex-col gap-8 lg:gap-16 items-stretch",
                 index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
               )}
             >
               {/* Visual */}
-              <div className="w-full lg:w-2/5">
-                <div className="relative bg-card rounded-2xl border border-border shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+              <div className="w-full lg:w-2/5 flex">
+                <div className="relative bg-card rounded-2xl border border-border shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer w-full flex">
                   <FeatureVisual type={feature.visual} />
                 </div>
               </div>
@@ -314,6 +393,6 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
           ))}
         </div>
       </div>
-    </section>
+    </SectionBackground>
   )
 }
