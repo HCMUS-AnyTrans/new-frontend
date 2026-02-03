@@ -43,7 +43,7 @@ export function TranslationDemo({
       className={cn("relative", className)}
     >
       {/* Main Document Card */}
-      <div className="relative bg-card rounded-2xl shadow-2xl shadow-primary/10 border border-border p-6 overflow-hidden">
+      <div className=" relative bg-card rounded-2xl shadow-2xl shadow-primary/10 border border-border p-6 overflow-hidden">
         {/* Header - Window Controls */}
         <div className="flex items-center gap-3 mb-4">
           <div className="flex gap-1.5">

@@ -159,9 +159,9 @@ function GlossaryMockup() {
         {terms.map((term) => (
           <div
             key={term.en}
-            className="flex items-center gap-3 bg-card rounded-lg p-3 shadow-sm border border-secondary-300/30"
+            className="flex items-center gap-2 bg-card rounded-lg p-3 shadow-sm border border-secondary-300/30"
           >
-            <div className="w-20 text-xs font-medium text-muted-foreground truncate">
+            <div className="w-30 text-xs font-medium text-muted-foreground truncate">
               {term.en}
             </div>
             <ArrowRight className="w-4 h-4 text-secondary-600 shrink-0" />

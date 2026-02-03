@@ -1,4 +1,4 @@
-import { Header, HeroSection, PainPoints, FeaturesSection, HowItWorks, PricingSection } from "@/components/layout";
+import { Header, HeroSection, PainPoints, FeaturesSection, HowItWorks, PricingSection, TestimonialsSection, Footer } from "@/components/layout";
 import { SocialProof } from "@/components/shared";
 
 export default function Home() {
@@ -11,6 +11,8 @@ export default function Home() {
       <FeaturesSection />
       <HowItWorks />
       <PricingSection />
+      <TestimonialsSection />
+      <Footer />
     </div>
   );
 }
