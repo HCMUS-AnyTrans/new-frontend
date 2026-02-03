@@ -15,3 +15,15 @@ export type { HowItWorksProps } from "./how-it-works"
 
 export { PricingSection } from "./pricing-section"
 export type { PricingSectionProps } from "./pricing-section"
+
+export { TestimonialsSection } from "./testimonials-section"
+export type { TestimonialsSectionProps } from "./testimonials-section"
+
+export { Footer } from "./footer"
+export type {
+  FooterProps,
+  FooterLink,
+  FooterSection,
+  SocialLink,
+  ContactInfo,
+} from "./footer"
