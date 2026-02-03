@@ -6,11 +6,10 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
+import { mainNavItems, type NavItem } from "@/data/navigation"
+import { siteConfig } from "@/data/site"
 
-export interface NavItem {
-  label: string
-  href: string
-}
+export type { NavItem }
 
 export interface HeaderProps {
   logo?: {
@@ -30,16 +29,9 @@ export interface HeaderProps {
   }
 }
 
-const defaultNavItems: NavItem[] = [
-  { label: "Tính năng", href: "#features" },
-  { label: "Cách hoạt động", href: "#how-it-works" },
-  { label: "Bảng giá", href: "#pricing" },
-  { label: "Đánh giá", href: "#testimonials" },
-]
-
 export function Header({
-  logo = { text: "AnyTrans", icon: "A", href: "/" },
-  navItems = defaultNavItems,
+  logo = { text: siteConfig.name, icon: "A", href: "/" },
+  navItems = mainNavItems,
   ctaButton = { label: "Bắt đầu miễn phí", href: "/register", showIcon: true },
   loginButton = { label: "Đăng nhập", href: "/login" },
 }: HeaderProps) {

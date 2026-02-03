@@ -2,41 +2,25 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
-import {
-  Facebook,
-  Twitter,
-  Linkedin,
-  Youtube,
-  Mail,
-  Phone,
-  MapPin,
-  LucideIcon,
-} from "lucide-react"
+import { Mail, Phone, MapPin } from "lucide-react"
 import { cn } from "@/lib/utils"
+import {
+  footerNavSections,
+  bottomLinks as defaultBottomLinks,
+  type FooterSection,
+  type NavItem,
+} from "@/data/navigation"
+import {
+  siteConfig,
+  contactInfo as defaultContactInfo,
+  socialLinks as defaultSocialLinks,
+  type SocialLink,
+  type ContactInfo,
+} from "@/data/site"
 
-// --- Types ---
-
-export interface FooterLink {
-  label: string
-  href: string
-}
-
-export interface FooterSection {
-  title: string
-  links: FooterLink[]
-}
-
-export interface SocialLink {
-  icon: LucideIcon
-  href: string
-  label: string
-}
-
-export interface ContactInfo {
-  email?: string
-  phone?: string
-  address?: string
-}
+// Re-export types for external use
+export type FooterLink = NavItem
+export type { FooterSection, SocialLink, ContactInfo }
 
 export interface FooterProps {
   className?: string
@@ -50,71 +34,8 @@ export interface FooterProps {
   socialLinks?: SocialLink[]
   contactInfo?: ContactInfo
   copyright?: string
-  bottomLinks?: FooterLink[]
+  bottomLinks?: NavItem[]
 }
-
-// --- Default Data ---
-
-const defaultSections: Record<string, FooterSection> = {
-  product: {
-    title: "Sản phẩm",
-    links: [
-      { label: "Tính năng", href: "#features" },
-      { label: "Bảng giá", href: "#pricing" },
-      { label: "API", href: "/api" },
-      { label: "Integrations", href: "/integrations" },
-      { label: "Changelog", href: "/changelog" },
-    ],
-  },
-  company: {
-    title: "Công ty",
-    links: [
-      { label: "Về chúng tôi", href: "/about" },
-      { label: "Blog", href: "/blog" },
-      { label: "Tuyển dụng", href: "/careers" },
-      { label: "Liên hệ", href: "/contact" },
-      { label: "Đối tác", href: "/partners" },
-    ],
-  },
-  resources: {
-    title: "Tài nguyên",
-    links: [
-      { label: "Documentation", href: "/docs" },
-      { label: "Hướng dẫn", href: "/guides" },
-      { label: "Video tutorials", href: "/tutorials" },
-      { label: "Case studies", href: "/case-studies" },
-      { label: "Hỗ trợ", href: "/support" },
-    ],
-  },
-  legal: {
-    title: "Pháp lý",
-    links: [
-      { label: "Điều khoản", href: "/terms" },
-      { label: "Bảo mật", href: "/privacy" },
-      { label: "Cookie", href: "/cookies" },
-      { label: "DMCA", href: "/dmca" },
-    ],
-  },
-}
-
-const defaultSocialLinks: SocialLink[] = [
-  { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { icon: Youtube, href: "https://youtube.com", label: "YouTube" },
-]
-
-const defaultContactInfo: ContactInfo = {
-  email: "hello@anytrans.ai",
-  phone: "+84 123 456 789",
-  address: "123 Nguyen Hue, District 1, HCMC",
-}
-
-const defaultBottomLinks: FooterLink[] = [
-  { label: "Terms", href: "/terms" },
-  { label: "Privacy", href: "/privacy" },
-  { label: "Cookies", href: "/cookies" },
-]
 
 // --- Sub-components ---
 
@@ -165,9 +86,9 @@ function SocialButton({ social }: SocialButtonProps) {
 
 export function Footer({
   className,
-  logo = { text: "AnyTrans", icon: "A", href: "/" },
-  description = "Dịch tài liệu chuyên nghiệp giữ nguyên format với sức mạnh AI. Nhanh, chính xác, tiết kiệm.",
-  sections = defaultSections,
+  logo = { text: siteConfig.name, icon: "A", href: "/" },
+  description = siteConfig.description,
+  sections = footerNavSections,
   socialLinks = defaultSocialLinks,
   contactInfo = defaultContactInfo,
   copyright,

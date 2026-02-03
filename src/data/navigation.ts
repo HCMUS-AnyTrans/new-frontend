@@ -7,9 +7,14 @@ export interface NavItem {
   href: string
 }
 
+export interface FooterSection {
+  title: string
+  links: NavItem[]
+}
+
 export interface NavConfig {
   mainNav: NavItem[]
-  footerNav: Record<string, { title: string; links: NavItem[] }>
+  footerNav: Record<string, FooterSection>
 }
 
 // Main navigation links
@@ -21,7 +26,7 @@ export const mainNavItems: NavItem[] = [
 ]
 
 // Footer navigation sections
-export const footerNavSections: Record<string, { title: string; links: NavItem[] }> = {
+export const footerNavSections: Record<string, FooterSection> = {
   product: {
     title: "Sản phẩm",
     links: [
@@ -62,3 +67,10 @@ export const footerNavSections: Record<string, { title: string; links: NavItem[]
     ],
   },
 }
+
+// Bottom footer links
+export const bottomLinks: NavItem[] = [
+  { label: "Terms", href: "/terms" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Cookies", href: "/cookies" },
+]
