@@ -1,8 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { FileX2, Clock, Wallet } from "lucide-react"
+import { FileX2, Clock, Wallet, AlertTriangle } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import { SectionBadge } from "@/components/shared"
 import { cn } from "@/lib/utils"
 
 interface PainPoint {
@@ -94,9 +95,12 @@ export function PainPoints({
           className="text-center max-w-3xl mx-auto mb-14 lg:mb-20"
         >
           {headline.badge && (
-            <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium text-destructive bg-destructive/10 rounded-full">
-              {headline.badge}
-            </span>
+            <SectionBadge
+              text={headline.badge}
+              icon={AlertTriangle}
+              variant="destructive"
+              className="mb-4"
+            />
           )}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
             {headline.title}

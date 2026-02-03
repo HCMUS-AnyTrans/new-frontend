@@ -201,7 +201,7 @@ export function HeroSection({
 
           {/* Right Visual */}
           {showDemo && (
-            <motion.div style={{ y }} className="relative hidden lg:block">
+            <motion.div style={{ y, opacity }} className="relative hidden lg:block">
               <TranslationDemo />
             </motion.div>
           )}

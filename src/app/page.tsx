@@ -1,4 +1,4 @@
-import { Header, HeroSection, PainPoints } from "@/components/layout";
+import { Header, HeroSection, PainPoints, FeaturesSection } from "@/components/layout";
 import { SocialProof } from "@/components/shared";
 
 export default function Home() {
@@ -8,6 +8,7 @@ export default function Home() {
       <HeroSection />
       <SocialProof />
       <PainPoints />
+      <FeaturesSection />
     </div>
   );
 }

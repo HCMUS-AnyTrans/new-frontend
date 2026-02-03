@@ -6,3 +6,6 @@ export type { HeroSectionProps } from "./hero-section"
 
 export { PainPoints } from "./pain-points"
 export type { PainPointsProps } from "./pain-points"
+
+export { FeaturesSection } from "./features-section"
+export type { FeaturesSectionProps } from "./features-section"
