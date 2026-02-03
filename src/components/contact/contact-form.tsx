@@ -3,10 +3,8 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { motion } from "framer-motion"
-import { Loader2 } from "lucide-react"
+import { Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import {
@@ -18,135 +16,22 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { cn } from "@/lib/utils"
-import {
-  contactTopics,
-  contactFormConfig,
-  contactValidationMessages,
-  contactFormSchema,
-  type ContactFormValues,
-} from "@/data/contact"
+import { contactFormSchema, type ContactFormValues } from "@/data/contact"
 
-// ============================================================================
-// TYPES
-// ============================================================================
+const subjects = [
+  { id: "general", label: "General Inquiry" },
+  { id: "support", label: "Support" },
+  { id: "feedback", label: "Feedback" },
+  { id: "other", label: "Other" },
+]
 
-type FormState = "idle" | "loading" | "success"
-
-// ============================================================================
-// TOPIC SELECTOR
-// ============================================================================
-
-interface TopicSelectorProps {
-  value: string
-  onChange: (topicId: string) => void
-}
-
-function TopicSelector({ value, onChange }: TopicSelectorProps) {
-  return (
-    <div className="mb-5">
-      <label className="block text-foreground text-sm font-medium mb-2">
-        Chủ đề
-      </label>
-      <div className="flex flex-wrap gap-2">
-        {contactTopics.map((topic) => (
-          <button
-            key={topic.id}
-            type="button"
-            onClick={() => onChange(topic.id)}
-            className={cn(
-              "px-4 py-1.5 rounded-full text-sm transition-colors duration-200 cursor-pointer border",
-              value === topic.id
-                ? "bg-primary/10 border-primary/50 text-foreground"
-                : "bg-muted/50 border-border text-muted-foreground hover:border-primary/30"
-            )}
-          >
-            {topic.icon} {topic.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ============================================================================
-// SUCCESS STATE (giữ animation vì đây là feedback UI)
-// ============================================================================
-
-interface SuccessStateProps {
-  ticketId: string
-  onReset: () => void
-}
-
-function SuccessState({ ticketId, onReset }: SuccessStateProps) {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
-      {/* Animated Checkmark */}
-      <div className="relative">
-        <svg
-          width="80"
-          height="80"
-          viewBox="0 0 80 80"
-          className="overflow-visible"
-        >
-          <motion.circle
-            cx="40"
-            cy="40"
-            r="36"
-            fill="transparent"
-            className="stroke-primary"
-            strokeWidth="3"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-          />
-          <motion.polyline
-            points="25,42 35,52 55,32"
-            fill="transparent"
-            className="stroke-primary"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 0.4, delay: 0.4, ease: "easeOut" }}
-          />
-        </svg>
-      </div>
-
-      <h2 className="text-2xl font-bold text-foreground mt-6">
-        {contactValidationMessages.successTitle}
-      </h2>
-      <p className="text-muted-foreground text-sm mt-2 max-w-xs">
-        {contactValidationMessages.successMessage}
-      </p>
-
-      <div className="mt-4 px-3 py-1.5 rounded-full text-sm font-mono bg-primary/10 border border-primary/25 text-primary">
-        Mã phiếu: #{ticketId}
-      </div>
-
-      <Button variant="outline" className="mt-6" onClick={onReset}>
-        Gửi tin nhắn khác
-      </Button>
-    </div>
-  )
-}
-
-// ============================================================================
-// MAIN CONTACT FORM
-// ============================================================================
-
-export interface ContactFormProps {
-  className?: string
-}
-
-export function ContactForm({ className }: ContactFormProps) {
-  const [formState, setFormState] = useState<FormState>("idle")
-  const [ticketId, setTicketId] = useState("")
+export function ContactForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
-      topic: "support",
+      topic: "general",
       name: "",
       email: "",
       phone: "",
@@ -154,162 +39,141 @@ export function ContactForm({ className }: ContactFormProps) {
     },
   })
 
-  const messageValue = form.watch("message")
-
   function onSubmit(data: ContactFormValues) {
-    setFormState("loading")
-
-    // Mock submit - simulate API call
+    setIsSubmitting(true)
+    console.log(data)
     setTimeout(() => {
-      const newTicketId = `${contactFormConfig.ticketPrefix}-${Math.floor(10000 + Math.random() * 90000)}`
-      setTicketId(newTicketId)
-      setFormState("success")
-      console.log("Form submitted:", data)
-    }, 1800)
+      setIsSubmitting(false)
+      form.reset()
+    }, 1500)
   }
 
-  function resetForm() {
-    form.reset()
-    setFormState("idle")
-  }
+  // Custom Input style to match design (border-bottom only)
+  const inputClass = "border-0 border-b border-border rounded-none px-0 py-2 focus-visible:ring-0 focus-visible:border-primary placeholder:text-muted-foreground bg-transparent text-foreground transition-colors"
+  const labelClass = "text-muted-foreground font-medium text-xs uppercase tracking-wide"
 
   return (
-    <Card
-      className={cn("bg-card/80 backdrop-blur-sm border-primary/20", className)}
-    >
-      <CardContent className="p-6 lg:p-8">
-        {formState === "success" ? (
-          <SuccessState ticketId={ticketId} onReset={resetForm} />
-        ) : (
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-5"
-            >
-              {/* Topic Selector */}
-              <FormField
-                control={form.control}
-                name="topic"
-                render={({ field }) => (
-                  <TopicSelector
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
+    <div className="p-10 bg-background h-full flex flex-col justify-center">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {/* First Name (mapped to name for simplicity or split if needed) */}
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={labelClass}>Tên đầy đủ</FormLabel>
+                  <FormControl>
+                    <Input {...field} className={inputClass} placeholder="Nguyễn Văn A" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              {/* Name Field */}
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tên</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Nhập tên của bạn" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {/* Phone */}
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={labelClass}>Số điện thoại</FormLabel>
+                  <FormControl>
+                    <Input {...field} className={inputClass} placeholder="+84 123 456 789" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-              {/* Email Field */}
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="you@example.com"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Phone Field */}
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Số điện thoại{" "}
-                      <span className="text-muted-foreground text-xs">
-                        (không bắt buộc)
-                      </span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="tel"
-                        placeholder="+84 xxx xxx xxx"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Message Field */}
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex justify-between">
-                      <span>Tin nhắn</span>
-                      <span
-                        className={cn(
-                          "text-xs font-normal",
-                          messageValue.length >
-                            contactFormConfig.maxMessageLength
-                            ? "text-destructive"
-                            : messageValue.length >
-                                contactFormConfig.maxMessageLength * 0.8
-                              ? "text-primary"
-                              : "text-muted-foreground"
-                        )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {/* Email */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={labelClass}>Email</FormLabel>
+                  <FormControl>
+                    <Input {...field} className={inputClass} placeholder="demo@gmail.com" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* Subject (Topic) as Radio Group */}
+            <FormField
+              control={form.control}
+              name="topic"
+              render={({ field }) => (
+                <FormItem className="col-span-1 md:col-span-2 space-y-4">
+                  <FormLabel className="text-foreground font-semibold text-sm capitalize">Select Subject?</FormLabel>
+                  <div className="flex flex-wrap gap-6">
+                    {subjects.map((subject) => (
+                      <label
+                        key={subject.id}
+                        className="flex items-center gap-2 cursor-pointer group"
                       >
-                        {messageValue.length} /{" "}
-                        {contactFormConfig.maxMessageLength}
-                      </span>
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Mô tả yêu cầu của bạn..."
-                        rows={4}
-                        className="resize-y"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                        <div className="relative">
+                          <input
+                            type="radio"
+                            className="peer sr-only"
+                            {...field}
+                            value={subject.id}
+                            checked={field.value === subject.id}
+                            onChange={() => field.onChange(subject.id)}
+                          />
+                          <div className="w-4 h-4 rounded-full border border-border peer-checked:bg-primary peer-checked:border-none flex items-center justify-center transition-colors">
+                            {field.value === subject.id && (
+                              <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-sm text-foreground">{subject.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                disabled={formState === "loading"}
-                className="w-full"
-                size="lg"
-              >
-                {formState === "loading" ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  "Gửi tin nhắn"
-                )}
-              </Button>
-            </form>
-          </Form>
-        )}
-      </CardContent>
-    </Card>
+          {/* Message */}
+          <FormField
+            control={form.control}
+            name="message"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={labelClass}>Tin nhắn</FormLabel>
+                <FormControl>
+                  <Textarea 
+                    {...field} 
+                    className={cn(inputClass, "resize-none min-h-[40px]")} 
+                    placeholder="Viết tin nhắn của bạn..." 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Submit Button */}
+          <div className="flex justify-end">
+            <Button 
+              type="submit" 
+              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-[5px] px-10 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Đang gửi..." : "Gửi tin nhắn"}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   )
 }
