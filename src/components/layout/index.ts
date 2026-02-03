@@ -9,3 +9,6 @@ export type { PainPointsProps } from "./pain-points"
 
 export { FeaturesSection } from "./features-section"
 export type { FeaturesSectionProps } from "./features-section"
+
+export { HowItWorks } from "./how-it-works"
+export type { HowItWorksProps } from "./how-it-works"
