@@ -1,0 +1,99 @@
+"use client"
+
+import { motion } from "framer-motion"
+import { SectionBadge } from "@/components/shared"
+import { Users, User } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { teamMembers, type TeamMember } from "@/data/about"
+import { useScrollReveal } from "@/hooks"
+
+interface TeamMemberCardProps {
+  member: TeamMember
+  index: number
+  isVisible: boolean
+}
+
+function TeamMemberCard({ member, index, isVisible }: TeamMemberCardProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={isVisible ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="group text-center"
+    >
+      {/* Avatar */}
+      <div className="relative w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden bg-muted border-4 border-background shadow-lg group-hover:shadow-xl transition-shadow">
+        {/* Placeholder avatar - can be replaced with actual images */}
+        <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+          <User className="w-16 h-16 text-muted-foreground/50" />
+        </div>
+      </div>
+
+      {/* Info */}
+      <h3 className="text-lg font-bold text-foreground mb-1">{member.name}</h3>
+      <p className="text-sm font-medium text-primary mb-2">{member.role}</p>
+      <p className="text-sm text-muted-foreground leading-relaxed px-4">
+        {member.bio}
+      </p>
+    </motion.div>
+  )
+}
+
+export interface TeamSectionProps {
+  className?: string
+}
+
+export function TeamSection({ className }: TeamSectionProps) {
+  const { ref, isVisible } = useScrollReveal<HTMLElement>({
+    threshold: 0.1,
+    triggerOnce: true,
+  })
+
+  return (
+    <section
+      ref={ref}
+      className={cn(
+        "relative py-20 lg:py-28 overflow-hidden",
+        className
+      )}
+    >
+      {/* Background */}
+      <div className="absolute inset-0 bg-muted/30 dark:bg-muted/10" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12 lg:mb-16"
+        >
+          <SectionBadge
+            text="Đội ngũ"
+            icon={Users}
+            variant="primary"
+            className="mb-4"
+          />
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+            Những người đứng sau AnyTrans
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Đội ngũ đam mê công nghệ và luôn nỗ lực mang đến giải pháp tốt nhất
+          </p>
+        </motion.div>
+
+        {/* Team Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+          {teamMembers.map((member, index) => (
+            <TeamMemberCard
+              key={member.name}
+              member={member}
+              index={index}
+              isVisible={isVisible}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

@@ -16,14 +16,8 @@ function useCountUp(
   startOnView: boolean = true
 ) {
   const [count, setCount] = useState(0)
-  const [hasStarted, setHasStarted] = useState(false)
+  const [hasStarted, setHasStarted] = useState(!startOnView)
   const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!startOnView) {
-      setHasStarted(true)
-    }
-  }, [startOnView])
 
   useEffect(() => {
     if (!startOnView) return
