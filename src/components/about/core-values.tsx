@@ -1,4 +1,3 @@
-import { SectionBadge } from "@/components/shared"
 import { Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { coreValues, type CoreValue } from "@/data/about"
@@ -48,12 +47,7 @@ export function CoreValues({ className }: CoreValuesProps) {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12 lg:mb-16">
-          <SectionBadge
-            text="Giá trị cốt lõi"
-            icon={Sparkles}
-            variant="secondary"
-            className="mb-4"
-          />
+
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             Những giá trị định hình chúng tôi
           </h2>

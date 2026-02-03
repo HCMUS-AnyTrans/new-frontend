@@ -5,7 +5,7 @@ import Link from "next/link"
 import { motion, useInView } from "framer-motion"
 import { Upload, Settings, Download, ArrowRight, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { SectionBadge, SectionBackground } from "@/components/shared"
+import { SectionBackground } from "@/components/shared"
 import { cn } from "@/lib/utils"
 
 interface Step {
@@ -133,12 +133,7 @@ export function HowItWorks({ className }: HowItWorksProps) {
           transition={{ duration: 0.5 }}
           className="text-center mb-16 lg:mb-20"
         >
-          <SectionBadge
-            text="Đơn giản và nhanh chóng"
-            icon={Sparkles}
-            variant="primary"
-            className="mb-4"
-          />
+
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
             Chỉ 3 bước để có
             <br />

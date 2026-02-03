@@ -3,7 +3,6 @@
 import { motion } from "framer-motion"
 import { FileX2, Clock, Wallet, AlertTriangle } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import { SectionBadge } from "@/components/shared"
 import { cn } from "@/lib/utils"
 
 interface PainPoint {
@@ -14,7 +13,6 @@ interface PainPoint {
 
 export interface PainPointsProps {
   headline?: {
-    badge?: string
     title: string
     subtitle?: string
   }
@@ -65,7 +63,6 @@ const itemVariants = {
 
 export function PainPoints({
   headline = {
-    badge: "Vấn đề thường gặp",
     title: "Bạn có đang gặp những rắc rối này?",
     subtitle: "Đây là những vấn đề mà hàng nghìn người dùng đã từng trải qua trước khi tìm đến AnyTrans",
   },
@@ -94,14 +91,7 @@ export function PainPoints({
           transition={{ duration: 0.5 }}
           className="text-center max-w-3xl mx-auto mb-14 lg:mb-20"
         >
-          {headline.badge && (
-            <SectionBadge
-              text={headline.badge}
-              icon={AlertTriangle}
-              variant="destructive"
-              className="mb-4"
-            />
-          )}
+
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
             {headline.title}
           </h2>

@@ -1,4 +1,3 @@
-import { SectionBadge } from "@/components/shared"
 import { Users, User } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { teamMembers, type TeamMember } from "@/data/about"
@@ -46,12 +45,7 @@ export function TeamSection({ className }: TeamSectionProps) {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12 lg:mb-16">
-          <SectionBadge
-            text="Đội ngũ"
-            icon={Users}
-            variant="primary"
-            className="mb-4"
-          />
+
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             Những người đứng sau AnyTrans
           </h2>

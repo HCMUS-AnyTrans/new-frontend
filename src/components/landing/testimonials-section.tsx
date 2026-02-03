@@ -11,7 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { SectionBadge, SectionBackground } from "@/components/shared"
+import { SectionBackground } from "@/components/shared"
 import { cn } from "@/lib/utils"
 import {
   testimonials,
@@ -158,12 +158,7 @@ export function TestimonialsSection({ className }: TestimonialsSectionProps) {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <SectionBadge
-            text="Đánh giá từ khách hàng"
-            icon={Star}
-            variant="primary"
-            className="mb-4"
-          />
+
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground text-balance">
             Được tin tưởng bởi
             <br />

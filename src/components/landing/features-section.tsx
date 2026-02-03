@@ -3,7 +3,7 @@
 import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
 import { Check, ArrowRight, Zap } from "lucide-react"
-import { SectionBadge, SectionBackground } from "@/components/shared"
+import { SectionBackground } from "@/components/shared"
 import { cn } from "@/lib/utils"
 import { features, type Feature } from "@/data/features"
 
@@ -351,12 +351,7 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
           transition={{ duration: 0.5 }}
           className="text-center mb-16 lg:mb-24"
         >
-          <SectionBadge
-            text="Tính năng vượt trội"
-            icon={Zap}
-            variant="primary"
-            className="mb-4"
-          />
+
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
             Mọi thứ bạn cần để dịch
             <br />

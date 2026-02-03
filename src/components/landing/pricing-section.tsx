@@ -3,7 +3,6 @@
 import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
 import { Coins } from "lucide-react"
-import { SectionBadge } from "@/components/shared"
 import { cn } from "@/lib/utils"
 
 // Import shared components and data
@@ -41,12 +40,7 @@ export function PricingSection({ className }: PricingSectionProps) {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <SectionBadge
-            text="Mua credits"
-            icon={Coins}
-            variant="secondary"
-            className="mb-4"
-          />
+
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
             Giá đơn giản,
             <br />

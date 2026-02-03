@@ -1,4 +1,4 @@
-import { SectionBadge, SectionBackground } from "@/components/shared"
+import { SectionBackground } from "@/components/shared"
 import { History } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { milestones, type Milestone } from "@/data/about"
@@ -78,12 +78,7 @@ export function TimelineSection({ className }: TimelineSectionProps) {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12 lg:mb-16">
-          <SectionBadge
-            text="Hành trình"
-            icon={History}
-            variant="info"
-            className="mb-4"
-          />
+
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             Hành trình phát triển
           </h2>
