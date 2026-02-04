@@ -105,7 +105,7 @@ export default function ResetPasswordPage() {
 
             {/* Right Column - Hero Illustration */}
             <AuthHero
-              imageSrc="/authen/banner-authen-01.png"
+              imageSrc="/authen/reset-password-hero.svg"
               imageAlt="Reset password illustration"
               className="w-full lg:w-1/2"
             />

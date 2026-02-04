@@ -122,7 +122,7 @@ export default function ForgotPasswordPage() {
 
             {/* Right Column - Hero Illustration */}
             <AuthHero
-              imageSrc="/authen/banner-authen-01.png"
+              imageSrc="/authen/forgot-password-hero.svg"
               imageAlt="Forgot password illustration"
               className="w-full lg:w-1/2"
             />

@@ -108,7 +108,7 @@ export default function LoginPage() {
 
             {/* Right Column - Hero Illustration */}
             <AuthHero
-              imageSrc="/authen/banner-authen-01.png"
+              imageSrc="/authen/login-hero.svg"
               imageAlt="Login illustration"
               className="w-full lg:w-1/2"
             />

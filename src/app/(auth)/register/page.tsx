@@ -84,7 +84,7 @@ export default function RegisterPage() {
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
             {/* Left Column - Hero Illustration */}
             <AuthHero
-              imageSrc="/authen/register-banner.png"
+              imageSrc="/authen/register-hero.svg"
               imageAlt="Register illustration"
               className="w-full lg:w-[45%] order-2 lg:order-1"
             />
@@ -106,11 +106,7 @@ export default function RegisterPage() {
                 {/* Register Form */}
                 <RegisterForm onSubmit={handleRegister} isLoading={isLoading} />
 
-                {/* Social Login */}
-                <SocialLoginButtons
-                  onSocialLogin={handleSocialLogin}
-                  isLoading={isLoading}
-                />
+             
               </div>
             </div>
           </div>
