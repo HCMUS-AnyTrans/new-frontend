@@ -127,8 +127,21 @@ apiClient.interceptors.response.use(
         originalRequest.url?.includes('/auth/login');
 
       if (isAuthEndpoint) {
-        clearAuthState();
-        return Promise.reject(error);
+        // Don't clear auth state for login failures (user might just have wrong credentials)
+        if (!originalRequest.url?.includes('/auth/login')) {
+          clearAuthState();
+        }
+        // Transform to ApiError format before rejecting
+        const apiError: ApiError = {
+          message:
+            error.response?.data?.message ||
+            error.message ||
+            'An unexpected error occurred',
+          statusCode: error.response?.status || 500,
+          error: error.response?.data?.error,
+          errors: error.response?.data?.errors,
+        };
+        return Promise.reject(apiError);
       }
 
       // If already refreshing, queue this request

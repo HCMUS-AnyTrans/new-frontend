@@ -108,12 +108,14 @@ export function ForgotPasswordForm({
     <div className={cn("w-full max-w-[512px]", className)}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-          {/* Server Error Display */}
-          {serverError && (
-            <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md text-sm">
-              {serverError}
-            </div>
-          )}
+          {/* Server Error Display - Reserved space to prevent layout shift */}
+          <div className="min-h-[52px]">
+            {serverError && (
+              <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md text-sm">
+                {serverError}
+              </div>
+            )}
+          </div>
 
           {/* Email Field */}
           <FormField

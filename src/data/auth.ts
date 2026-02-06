@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { isValidPhoneNumber } from "react-phone-number-input"
 
 // ============================================================================
 // TYPES
@@ -45,7 +46,11 @@ export const authValidationMessages = {
   emailRequired: "Vui lòng nhập email",
   emailInvalid: "Email không hợp lệ",
   passwordRequired: "Vui lòng nhập mật khẩu",
-  passwordMinLength: "Mật khẩu phải có ít nhất 6 ký tự",
+  passwordMinLength: "Mật khẩu phải có ít nhất 8 ký tự",
+  passwordRequiresLowercase: "Mật khẩu phải có ít nhất 1 chữ thường",
+  passwordRequiresUppercase: "Mật khẩu phải có ít nhất 1 chữ hoa",
+  passwordRequiresNumber: "Mật khẩu phải có ít nhất 1 số",
+  passwordRequiresSymbol: "Mật khẩu phải có ít nhất 1 ký tự đặc biệt",
   networkError: "Lỗi kết nối. Vui lòng thử lại",
 
   // Login specific
@@ -58,7 +63,7 @@ export const authValidationMessages = {
   firstNameMinLength: "Họ phải có ít nhất 2 ký tự",
   lastNameRequired: "Vui lòng nhập tên",
   lastNameMinLength: "Tên phải có ít nhất 2 ký tự",
-  phoneInvalid: "Số điện thoại không hợp lệ",
+  phoneInvalid: "Số điện thoại phải có mã quốc gia (ví dụ: +84901234567)",
   confirmPasswordRequired: "Vui lòng xác nhận mật khẩu",
   passwordMismatch: "Mật khẩu không khớp",
   agreeToTermsRequired: "Bạn phải đồng ý với điều khoản sử dụng",
@@ -87,11 +92,44 @@ export const loginFormSchema = z.object({
   password: z
     .string()
     .min(1, authValidationMessages.passwordRequired)
-    .min(6, authValidationMessages.passwordMinLength),
+    .min(8, authValidationMessages.passwordMinLength),
   rememberMe: z.boolean().default(false),
 })
 
 export type LoginFormValues = z.infer<typeof loginFormSchema>
+
+// ============================================================================
+// PASSWORD VALIDATION HELPER
+// ============================================================================
+
+/**
+ * Strong password schema matching backend @IsStrongPassword() requirements:
+ * - Minimum 8 characters
+ * - At least 1 lowercase letter
+ * - At least 1 uppercase letter
+ * - At least 1 number
+ * - At least 1 special character
+ */
+export const strongPasswordSchema = z
+  .string()
+  .min(1, authValidationMessages.passwordRequired)
+  .min(8, authValidationMessages.passwordMinLength)
+  .regex(/[a-z]/, authValidationMessages.passwordRequiresLowercase)
+  .regex(/[A-Z]/, authValidationMessages.passwordRequiresUppercase)
+  .regex(/[0-9]/, authValidationMessages.passwordRequiresNumber)
+  .regex(/[^a-zA-Z0-9]/, authValidationMessages.passwordRequiresSymbol)
+
+/**
+ * E.164 phone number format validation using react-phone-number-input
+ * Uses the library's built-in validation for proper international phone numbers
+ */
+export const phoneSchema = z
+  .string()
+  .optional()
+  .refine(
+    (val) => !val || isValidPhoneNumber(val),
+    authValidationMessages.phoneInvalid
+  )
 
 // ============================================================================
 // ZOD SCHEMA - Register
@@ -111,17 +149,8 @@ export const registerFormSchema = z
       .string()
       .min(1, authValidationMessages.emailRequired)
       .email(authValidationMessages.emailInvalid),
-    phone: z
-      .string()
-      .optional()
-      .refine(
-        (val) => !val || /^[+]?[\d\s-]{10,}$/.test(val),
-        authValidationMessages.phoneInvalid
-      ),
-    password: z
-      .string()
-      .min(1, authValidationMessages.passwordRequired)
-      .min(6, authValidationMessages.passwordMinLength),
+    phone: phoneSchema,
+    password: strongPasswordSchema,
     confirmPassword: z
       .string()
       .min(1, authValidationMessages.confirmPasswordRequired),
@@ -155,10 +184,7 @@ export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordFormSchema>
 
 export const resetPasswordFormSchema = z
   .object({
-    password: z
-      .string()
-      .min(1, authValidationMessages.passwordRequired)
-      .min(6, authValidationMessages.passwordMinLength),
+    password: strongPasswordSchema,
     confirmPassword: z
       .string()
       .min(1, authValidationMessages.confirmPasswordRequired),

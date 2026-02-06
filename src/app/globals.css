@@ -289,3 +289,89 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ============================================================================
+   Phone Input with Country Selector - Custom Styles
+   Matches FloatingLabelInput design system
+   ============================================================================ */
+
+/* Container */
+.phone-input-container {
+  @apply relative w-full;
+}
+
+/* Main wrapper - match FloatingLabelInput h-14 */
+.phone-input-container .PhoneInput {
+  @apply relative flex items-center w-full h-14 rounded-md border border-input bg-transparent;
+  @apply transition-all duration-200;
+}
+
+/* Focus state */
+.phone-input-container .PhoneInput:focus-within {
+  @apply border-primary ring-[3px] ring-ring/50;
+}
+
+/* Error state */
+.phone-input-error .PhoneInput {
+  @apply border-destructive;
+}
+
+.phone-input-error .PhoneInput:focus-within {
+  @apply border-destructive ring-destructive/20;
+}
+
+/* Disabled state */
+.phone-input-disabled .PhoneInput {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Country selector button */
+.phone-input-container .PhoneInputCountry {
+  @apply relative flex items-center justify-center h-full pl-4 pr-3;
+  @apply border-r border-input;
+}
+
+/* Country flag */
+.phone-input-container .PhoneInputCountryIcon {
+  @apply w-6 h-4 rounded-sm overflow-hidden;
+}
+
+/* Country select dropdown arrow */
+.phone-input-container .PhoneInputCountrySelectArrow {
+  @apply ml-1 w-0 h-0 opacity-60;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+}
+
+/* Hidden native select for accessibility */
+.phone-input-container .PhoneInputCountrySelect {
+  @apply absolute inset-0 w-full h-full opacity-0 cursor-pointer;
+}
+
+/* Phone number input field */
+.phone-input-container .PhoneInputInput {
+  @apply flex-1 h-full bg-transparent outline-none;
+  @apply text-base md:text-sm text-foreground;
+  @apply pl-4 pr-4 pt-5 pb-2;
+}
+
+.phone-input-container .PhoneInputInput::placeholder {
+  @apply text-transparent;
+}
+
+/* Country flag emoji fallback (when no flag images) */
+.phone-input-container .PhoneInputCountryIconImg {
+  @apply w-full h-full object-cover;
+}
+
+/* Remove default focus outline from input */
+.phone-input-container .PhoneInputInput:focus {
+  outline: none;
+}
+
+/* Ensure country code text has proper spacing */
+.phone-input-container .PhoneInputCountryCallingCode {
+  @apply ml-1 text-foreground;
+}
+

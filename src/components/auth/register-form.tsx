@@ -17,6 +17,8 @@ import {
 import { cn } from "@/lib/utils"
 import { FloatingLabelInput } from "./floating-label-input"
 import { PasswordInput } from "./password-input"
+import { PasswordStrengthIndicator } from "./password-strength-indicator"
+import { PhoneInput } from "./phone-input"
 import {
   registerFormSchema,
   type RegisterFormValues,
@@ -127,12 +129,14 @@ export function RegisterForm({
     <div className={cn("w-full max-w-[640px]", className)}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          {/* Server Error Display */}
-          {serverError && (
-            <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md text-sm">
-              {serverError}
-            </div>
-          )}
+          {/* Server Error Display - Reserved space to prevent layout shift */}
+          <div className="min-h-[52px]">
+            {serverError && (
+              <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md text-sm">
+                {serverError}
+              </div>
+            )}
+          </div>
 
           {/* First Name & Last Name */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -200,12 +204,13 @@ export function RegisterForm({
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormControl>
-                    <FloatingLabelInput
-                      {...field}
-                      type="tel"
+                    <PhoneInput
+                      value={field.value || ""}
+                      onChange={field.onChange}
                       label="Phone Number"
                       error={!!fieldState.error}
                       disabled={isLoading}
+                      defaultCountry="VN"
                     />
                   </FormControl>
                   <FormMessage />
@@ -228,6 +233,7 @@ export function RegisterForm({
                     disabled={isLoading}
                   />
                 </FormControl>
+                <PasswordStrengthIndicator password={field.value} />
                 <FormMessage />
               </FormItem>
             )}
