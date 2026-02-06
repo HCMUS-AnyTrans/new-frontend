@@ -129,14 +129,12 @@ export function RegisterForm({
     <div className={cn("w-full max-w-[640px]", className)}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          {/* Server Error Display - Reserved space to prevent layout shift */}
-          <div className="min-h-[52px]">
-            {serverError && (
-              <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md text-sm">
-                {serverError}
-              </div>
-            )}
-          </div>
+          {/* Server Error Display */}
+          {serverError && (
+            <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md text-sm">
+              {serverError}
+            </div>
+          )}
 
           {/* First Name & Last Name */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
