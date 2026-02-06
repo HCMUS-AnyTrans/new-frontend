@@ -3,6 +3,7 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { initiateGoogleAuth } from "@/features/authentication"
 
 export interface SocialLoginProvider {
   id: "facebook" | "google"
@@ -25,8 +26,11 @@ export function SocialLoginButtons({
   const handleSocialLogin = async (provider: string) => {
     if (onSocialLogin) {
       await onSocialLogin(provider)
+    } else if (provider === "google") {
+      // Use the Google OAuth from auth feature
+      initiateGoogleAuth()
     } else {
-      // Default behavior for development/preview
+      // Facebook login not yet implemented
       console.log(`Social login with: ${provider}`)
       alert(`${provider} login not yet implemented`)
     }

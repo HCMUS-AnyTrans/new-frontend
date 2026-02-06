@@ -1,66 +1,15 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import { ChevronLeft } from "lucide-react"
 import {
   ForgotPasswordForm,
   SocialLoginButtons,
   AuthHero,
 } from "@/components/auth"
-import type { ForgotPasswordFormValues } from "@/data/auth"
 
 export default function ForgotPasswordPage() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-
-  async function handleForgotPassword(data: ForgotPasswordFormValues) {
-    setIsLoading(true)
-
-    try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/auth/forgot-password', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data),
-      // })
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      console.log("Forgot password data:", data)
-
-      // TODO: Handle successful submission
-      // - Show success message
-      // - Optionally redirect to login or show success state
-      // The form component will handle success state display
-    } catch (error) {
-      console.error("Forgot password error:", error)
-      throw error
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  async function handleSocialLogin(provider: string) {
-    setIsLoading(true)
-
-    try {
-      // TODO: Implement OAuth flow
-      console.log(`Social login with: ${provider}`)
-
-      // Simulate OAuth redirect
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      alert(`${provider} login sẽ được triển khai sau (Demo mode)`)
-    } catch (error) {
-      console.error("Social login error:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Logo */}
@@ -106,17 +55,11 @@ export default function ForgotPasswordPage() {
                   </p>
                 </div>
 
-                {/* Forgot Password Form */}
-                <ForgotPasswordForm
-                  onSubmit={handleForgotPassword}
-                  isLoading={isLoading}
-                />
+                {/* Forgot Password Form - uses hooks internally */}
+                <ForgotPasswordForm />
 
-                {/* Social Login */}
-                <SocialLoginButtons
-                  onSocialLogin={handleSocialLogin}
-                  isLoading={isLoading}
-                />
+                {/* Social Login - uses hooks internally */}
+                <SocialLoginButtons />
               </div>
             </div>
 

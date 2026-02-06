@@ -1,65 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { Suspense } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import { LoginForm, SocialLoginButtons, AuthHero } from "@/components/auth"
-import type { LoginFormValues } from "@/data/auth"
 
-export default function LoginPage() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-
-  async function handleLogin(data: LoginFormValues) {
-    setIsLoading(true)
-
-    try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/auth/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data),
-      // })
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      console.log("Login data:", data)
-
-      // TODO: Handle successful login
-      // - Store auth token
-      // - Redirect to dashboard/home
-      // router.push('/dashboard')
-
-      // For now, show success and redirect to home
-      alert("Đăng nhập thành công! (Demo mode)")
-      router.push("/")
-    } catch (error) {
-      console.error("Login error:", error)
-      throw error
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  async function handleSocialLogin(provider: string) {
-    setIsLoading(true)
-
-    try {
-      // TODO: Implement OAuth flow
-      console.log(`Social login with: ${provider}`)
-
-      // Simulate OAuth redirect
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      alert(`${provider} login sẽ được triển khai sau (Demo mode)`)
-    } catch (error) {
-      console.error("Social login error:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
+function LoginContent() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Logo */}
@@ -95,14 +41,11 @@ export default function LoginPage() {
                   </p>
                 </div>
 
-                {/* Login Form */}
-                <LoginForm onSubmit={handleLogin} isLoading={isLoading} />
+                {/* Login Form - uses hooks internally */}
+                <LoginForm />
 
-                {/* Social Login */}
-                <SocialLoginButtons
-                  onSocialLogin={handleSocialLogin}
-                  isLoading={isLoading}
-                />
+                {/* Social Login - uses hooks internally */}
+                <SocialLoginButtons />
               </div>
             </div>
 
@@ -116,5 +59,24 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <LoginContent />
+    </Suspense>
   )
 }

@@ -1,65 +1,10 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { RegisterForm, SocialLoginButtons, AuthHero } from "@/components/auth"
-import type { RegisterFormValues } from "@/data/auth"
+import { RegisterForm, AuthHero } from "@/components/auth"
 
 export default function RegisterPage() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-
-  async function handleRegister(data: RegisterFormValues) {
-    setIsLoading(true)
-
-    try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/auth/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data),
-      // })
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      console.log("Register data:", data)
-
-      // TODO: Handle successful registration
-      // - Auto-login user
-      // - Redirect to dashboard/verification page
-      // router.push('/verify-email')
-
-      // For now, show success and redirect to login
-      alert("Đăng ký thành công! (Demo mode)")
-      router.push("/login")
-    } catch (error) {
-      console.error("Register error:", error)
-      throw error
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  async function handleSocialLogin(provider: string) {
-    setIsLoading(true)
-
-    try {
-      // TODO: Implement OAuth flow
-      console.log(`Social register with: ${provider}`)
-
-      // Simulate OAuth redirect
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      alert(`${provider} đăng ký sẽ được triển khai sau (Demo mode)`)
-    } catch (error) {
-      console.error("Social login error:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Logo - positioned top right for register */}
@@ -103,10 +48,8 @@ export default function RegisterPage() {
                   </p>
                 </div>
 
-                {/* Register Form */}
-                <RegisterForm onSubmit={handleRegister} isLoading={isLoading} />
-
-             
+                {/* Register Form - uses hooks internally */}
+                <RegisterForm />
               </div>
             </div>
           </div>

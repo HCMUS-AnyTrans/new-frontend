@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -22,20 +23,33 @@ import {
   type LoginFormValues,
   authValidationMessages,
 } from "@/data/auth"
+import { useLogin } from "@/features/authentication"
 
 export interface LoginFormProps {
   onSubmit?: (data: LoginFormValues) => Promise<void> | void
   isLoading?: boolean
   className?: string
+  /** Custom redirect path after login */
+  redirectTo?: string
 }
 
 export function LoginForm({
   onSubmit: onSubmitProp,
   isLoading: isLoadingProp,
   className,
+  redirectTo,
 }: LoginFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const searchParams = useSearchParams()
   const [serverError, setServerError] = useState<string | null>(null)
+
+  // Get redirect URL from query params or prop
+  const redirectUrl = redirectTo || searchParams.get("redirect") || "/"
+
+  // Use the login hook
+  const { login, isLoading: isLoginLoading, error: loginError } = useLogin({
+    redirectTo: redirectUrl,
+    onError: (error) => setServerError(error),
+  })
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema) as any,
@@ -46,14 +60,21 @@ export function LoginForm({
     },
   })
 
-  const isLoading = isLoadingProp ?? isSubmitting
+  // Sync hook error with local state
+  useEffect(() => {
+    if (loginError) {
+      setServerError(loginError)
+    }
+  }, [loginError])
+
+  const isLoading = isLoadingProp ?? isLoginLoading
 
   async function handleSubmit(data: LoginFormValues) {
     setServerError(null)
 
+    // If custom onSubmit is provided, use it (for testing/custom handling)
     if (onSubmitProp) {
       try {
-        setIsSubmitting(true)
         await onSubmitProp(data)
       } catch (error) {
         setServerError(
@@ -61,17 +82,14 @@ export function LoginForm({
             ? error.message
             : authValidationMessages.loginFailed
         )
-      } finally {
-        setIsSubmitting(false)
       }
     } else {
-      // Default behavior for development/preview
-      console.log("Login form data:", data)
-      setIsSubmitting(true)
-      setTimeout(() => {
-        setIsSubmitting(false)
-        alert("Login functionality not yet connected to API")
-      }, 1000)
+      // Use the login hook
+      login({
+        email: data.email,
+        password: data.password,
+        rememberMe: data.rememberMe,
+      })
     }
   }
 

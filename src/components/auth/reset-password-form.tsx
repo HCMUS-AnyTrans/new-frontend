@@ -1,8 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useSearchParams } from "next/navigation"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -18,45 +20,78 @@ import {
   type ResetPasswordFormValues,
   authValidationMessages,
 } from "@/data/auth"
+import { useResetPassword } from "@/features/authentication"
 
 export interface ResetPasswordFormProps {
   onSubmit?: (data: ResetPasswordFormValues) => Promise<void> | void
   isLoading?: boolean
   className?: string
   token?: string
+  email?: string
 }
 
 export function ResetPasswordForm({
   onSubmit: onSubmitProp,
   isLoading: isLoadingProp,
   className,
-  token,
+  token: tokenProp,
+  email: emailProp,
 }: ResetPasswordFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const searchParams = useSearchParams()
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
+
+  // Get token and email from props or URL params
+  const token = tokenProp || searchParams.get("token") || ""
+  const email = emailProp || searchParams.get("email") || ""
+
+  // Use the reset password hook
+  const {
+    resetPassword,
+    isLoading: isResetPasswordLoading,
+    error: resetPasswordError,
+    isSuccess: hookSuccess,
+  } = useResetPassword({
+    onSuccess: () => {
+      setIsSuccess(true)
+    },
+    onError: (error) => setServerError(error),
+  })
 
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordFormSchema) as any,
     defaultValues: {
       password: "",
       confirmPassword: "",
-      token: token || "",
+      token: token,
     },
   })
 
-  const isLoading = isLoadingProp ?? isSubmitting
+  // Sync hook error with local state
+  useEffect(() => {
+    if (resetPasswordError) {
+      setServerError(resetPasswordError)
+    }
+  }, [resetPasswordError])
+
+  // Sync hook success with local state
+  useEffect(() => {
+    if (hookSuccess) {
+      setIsSuccess(true)
+    }
+  }, [hookSuccess])
+
+  const isLoading = isLoadingProp ?? isResetPasswordLoading
 
   async function handleSubmit(data: ResetPasswordFormValues) {
     setServerError(null)
     setIsSuccess(false)
 
-    // Include token in submission if provided
+    // Include token in submission
     const submitData = { ...data, token: token || data.token }
 
     if (onSubmitProp) {
       try {
-        setIsSubmitting(true)
         await onSubmitProp(submitData)
         setIsSuccess(true)
       } catch (error) {
@@ -65,18 +100,20 @@ export function ResetPasswordForm({
             ? error.message
             : authValidationMessages.resetPasswordFailed
         )
-      } finally {
-        setIsSubmitting(false)
       }
     } else {
-      // Default behavior for development/preview
-      console.log("Reset password form data:", submitData)
-      setIsSubmitting(true)
-      setTimeout(() => {
-        setIsSubmitting(false)
-        setIsSuccess(true)
-        alert("Mật khẩu đã được đặt lại thành công (Demo mode)")
-      }, 1500)
+      // Validate token and email
+      if (!token || !email) {
+        setServerError("Invalid reset link. Please request a new password reset.")
+        return
+      }
+
+      // Use the reset password hook
+      resetPassword({
+        email,
+        token,
+        newPassword: data.password,
+      })
     }
   }
 
@@ -90,6 +127,32 @@ export function ResetPasswordForm({
           <p className="text-muted-foreground">
             Bạn có thể đăng nhập bằng mật khẩu mới của mình.
           </p>
+          <Link
+            href="/login"
+            className="inline-block mt-2 text-primary hover:text-primary/80 transition-colors font-semibold"
+          >
+            Đi đến trang đăng nhập →
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error if no token provided
+  if (!token && !tokenProp) {
+    return (
+      <div className={cn("w-full max-w-[512px]", className)}>
+        <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md text-sm space-y-2">
+          <p className="font-semibold">Invalid Reset Link</p>
+          <p className="text-muted-foreground">
+            The password reset link is invalid or has expired. Please request a new one.
+          </p>
+          <Link
+            href="/forgot-password"
+            className="inline-block mt-2 text-primary hover:text-primary/80 transition-colors font-semibold"
+          >
+            Request new reset link →
+          </Link>
         </div>
       </div>
     )

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
@@ -18,6 +18,7 @@ import {
   type ForgotPasswordFormValues,
   authValidationMessages,
 } from "@/data/auth"
+import { useForgotPassword } from "@/features/authentication"
 
 export interface ForgotPasswordFormProps {
   onSubmit?: (data: ForgotPasswordFormValues) => Promise<void> | void
@@ -30,9 +31,21 @@ export function ForgotPasswordForm({
   isLoading: isLoadingProp,
   className,
 }: ForgotPasswordFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
+
+  // Use the forgot password hook
+  const {
+    forgotPassword,
+    isLoading: isForgotPasswordLoading,
+    error: forgotPasswordError,
+    isSuccess: hookSuccess,
+  } = useForgotPassword({
+    onSuccess: () => {
+      setIsSuccess(true)
+    },
+    onError: (error) => setServerError(error),
+  })
 
   const form = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(forgotPasswordFormSchema) as any,
@@ -41,7 +54,21 @@ export function ForgotPasswordForm({
     },
   })
 
-  const isLoading = isLoadingProp ?? isSubmitting
+  // Sync hook error with local state
+  useEffect(() => {
+    if (forgotPasswordError) {
+      setServerError(forgotPasswordError)
+    }
+  }, [forgotPasswordError])
+
+  // Sync hook success with local state
+  useEffect(() => {
+    if (hookSuccess) {
+      setIsSuccess(true)
+    }
+  }, [hookSuccess])
+
+  const isLoading = isLoadingProp ?? isForgotPasswordLoading
 
   async function handleSubmit(data: ForgotPasswordFormValues) {
     setServerError(null)
@@ -49,7 +76,6 @@ export function ForgotPasswordForm({
 
     if (onSubmitProp) {
       try {
-        setIsSubmitting(true)
         await onSubmitProp(data)
         setIsSuccess(true)
       } catch (error) {
@@ -58,18 +84,10 @@ export function ForgotPasswordForm({
             ? error.message
             : authValidationMessages.forgotPasswordFailed
         )
-      } finally {
-        setIsSubmitting(false)
       }
     } else {
-      // Default behavior for development/preview
-      console.log("Forgot password form data:", data)
-      setIsSubmitting(true)
-      setTimeout(() => {
-        setIsSubmitting(false)
-        setIsSuccess(true)
-        alert("Email khôi phục mật khẩu đã được gửi (Demo mode)")
-      }, 1500)
+      // Use the forgot password hook
+      forgotPassword({ email: data.email })
     }
   }
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
@@ -22,20 +22,38 @@ import {
   type RegisterFormValues,
   authValidationMessages,
 } from "@/data/auth"
+import { useRegister } from "@/features/authentication"
 
 export interface RegisterFormProps {
   onSubmit?: (data: RegisterFormValues) => Promise<void> | void
   isLoading?: boolean
   className?: string
+  /** Custom redirect path after registration */
+  redirectTo?: string
 }
 
 export function RegisterForm({
   onSubmit: onSubmitProp,
   isLoading: isLoadingProp,
   className,
+  redirectTo = "/login",
 }: RegisterFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+
+  // Use the register hook
+  const {
+    register: registerUser,
+    isLoading: isRegisterLoading,
+    error: registerError,
+    isSuccess,
+  } = useRegister({
+    redirectTo,
+    onSuccess: () => {
+      setSuccessMessage(authValidationMessages.registerSuccess)
+    },
+    onError: (error) => setServerError(error),
+  })
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerFormSchema) as any,
@@ -50,14 +68,22 @@ export function RegisterForm({
     },
   })
 
-  const isLoading = isLoadingProp ?? isSubmitting
+  // Sync hook error with local state
+  useEffect(() => {
+    if (registerError) {
+      setServerError(registerError)
+    }
+  }, [registerError])
+
+  const isLoading = isLoadingProp ?? isRegisterLoading
 
   async function handleSubmit(data: RegisterFormValues) {
     setServerError(null)
+    setSuccessMessage(null)
 
+    // If custom onSubmit is provided, use it
     if (onSubmitProp) {
       try {
-        setIsSubmitting(true)
         await onSubmitProp(data)
       } catch (error) {
         setServerError(
@@ -65,18 +91,36 @@ export function RegisterForm({
             ? error.message
             : authValidationMessages.registerFailed
         )
-      } finally {
-        setIsSubmitting(false)
       }
     } else {
-      // Default behavior for development/preview
-      console.log("Register form data:", data)
-      setIsSubmitting(true)
-      setTimeout(() => {
-        setIsSubmitting(false)
-        alert("Register functionality not yet connected to API")
-      }, 1000)
+      // Transform form data to API format and use the register hook
+      registerUser({
+        email: data.email,
+        password: data.password,
+        fullName: `${data.firstName} ${data.lastName}`.trim(),
+        phone: data.phone || undefined,
+      })
     }
+  }
+
+  // Show success message after registration
+  if (isSuccess && successMessage) {
+    return (
+      <div className={cn("w-full max-w-[640px]", className)}>
+        <div className="bg-success/10 border border-success text-success px-4 py-3 rounded-md text-sm space-y-2">
+          <p className="font-semibold">{successMessage}</p>
+          <p className="text-muted-foreground">
+            Vui lòng kiểm tra email để xác thực tài khoản của bạn.
+          </p>
+          <Link
+            href="/login"
+            className="inline-block mt-2 text-primary hover:text-primary/80 transition-colors font-semibold"
+          >
+            Đi đến trang đăng nhập →
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   return (
