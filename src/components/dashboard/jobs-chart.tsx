@@ -23,7 +23,7 @@ const chartConfig = {
 
 export function JobsChart() {
   return (
-    <Card className="border border-border shadow-sm">
+    <Card className="h-full border border-border shadow-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base font-semibold text-foreground">
           Jobs theo ngày (7 ngày gần nhất)

@@ -21,7 +21,7 @@ const total = mockCreditUsageData.reduce((acc, d) => acc + d.value, 0)
 
 export function CreditUsageChart() {
   return (
-    <Card className="border border-border shadow-sm">
+    <Card className="h-full border border-border shadow-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base font-semibold text-foreground">
           Phân bổ credits

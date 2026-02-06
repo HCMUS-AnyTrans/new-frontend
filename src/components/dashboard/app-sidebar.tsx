@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { Coins, ChevronDown, LogOut, User, Settings } from "lucide-react"
+import { ChevronUp, LogOut, User, Settings } from "lucide-react"
 import {
   Sidebar,
   SidebarHeader,
@@ -25,17 +25,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  navGroups,
-  mockUser,
-  mockWallet,
-} from "@/data/dashboard"
+import { navGroups, mockUser } from "@/data/dashboard"
 
 export function AppSidebar() {
   const pathname = usePathname()
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
       {/* Header - Logo */}
       <SidebarHeader className="p-4">
         <Link href="/dashboard" className="flex items-center gap-2">
@@ -48,19 +44,19 @@ export function AppSidebar() {
               priority
             />
           </div>
-          <span className="text-lg font-bold text-primary group-data-[collapsible=icon]:hidden">
+          <span className="text-lg font-bold text-foreground group-data-[collapsible=icon]:hidden">
             AnyTrans
           </span>
         </Link>
       </SidebarHeader>
 
-      <SidebarSeparator />
-
       {/* Main Navigation */}
       <SidebarContent>
         {navGroups.map((group) => (
           <SidebarGroup key={group.label}>
-            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+            <SidebarGroupLabel className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
+              {group.label}
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => {
@@ -87,48 +83,37 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
 
-      {/* Footer - Credits & User */}
-      <SidebarFooter>
+      {/* Footer - User */}
+      <SidebarFooter className="gap-3">
         <SidebarSeparator />
-
-        {/* Credit Balance */}
-        <div className="flex items-center gap-2 rounded-lg bg-secondary/20 px-3 py-2 mx-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:mx-0 group-data-[collapsible=icon]:px-2">
-          <Coins className="size-4 shrink-0 text-secondary" />
-          <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-            <span className="text-xs text-muted-foreground">Credits</span>
-            <span className="text-sm font-semibold text-foreground tabular-nums">
-              {mockWallet.balance.toLocaleString("vi-VN")}
-            </span>
-          </div>
-        </div>
 
         {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="flex w-full items-center gap-2 rounded-lg p-2 mx-2 text-left hover:bg-sidebar-accent transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:mx-0"
+              className="flex w-full items-center gap-3 rounded-lg p-2 mx-2 text-left hover:bg-muted transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:mx-0"
             >
-              <Avatar className="h-8 w-8 shrink-0">
+              <Avatar className="h-9 w-9 shrink-0">
                 {mockUser.avatarUrl && (
                   <AvatarImage src={mockUser.avatarUrl} alt={mockUser.fullName} />
                 )}
-                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs font-medium">
                   {mockUser.initials}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-1 flex-col min-w-0 group-data-[collapsible=icon]:hidden">
-                <span className="text-sm font-medium text-sidebar-foreground truncate">
+                <span className="text-sm font-medium text-foreground truncate">
                   {mockUser.fullName}
                 </span>
                 <span className="text-xs text-muted-foreground truncate">
                   {mockUser.email}
                 </span>
               </div>
-              <ChevronDown className="size-4 text-muted-foreground group-data-[collapsible=icon]:hidden" />
+              <ChevronUp className="size-4 text-muted-foreground group-data-[collapsible=icon]:hidden" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" side="top" className="w-56">
+          <DropdownMenuContent align="start" side="top" className="w-56 mb-2">
             <DropdownMenuItem asChild>
               <Link href="/settings" className="flex items-center">
                 <User className="mr-2 size-4" />
@@ -142,7 +127,7 @@ export function AppSidebar() {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive focus:text-destructive">
+            <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10">
               <LogOut className="mr-2 size-4" />
               Đăng xuất
             </DropdownMenuItem>

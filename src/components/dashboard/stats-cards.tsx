@@ -53,7 +53,7 @@ export function StatsCards() {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => (
-        <Card key={stat.title} className="border border-border shadow-sm">
+        <Card key={stat.title} className="border border-border shadow-sm py-2">
           <CardContent className="p-4">
             <div className="flex items-start gap-4">
               {/* Icon */}
