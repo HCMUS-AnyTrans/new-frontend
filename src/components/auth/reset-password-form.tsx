@@ -28,7 +28,6 @@ export interface ResetPasswordFormProps {
   isLoading?: boolean
   className?: string
   token?: string
-  email?: string
 }
 
 export function ResetPasswordForm({
@@ -36,15 +35,13 @@ export function ResetPasswordForm({
   isLoading: isLoadingProp,
   className,
   token: tokenProp,
-  email: emailProp,
 }: ResetPasswordFormProps) {
   const searchParams = useSearchParams()
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
 
-  // Get token and email from props or URL params
+  // Get token from props or URL params
   const token = tokenProp || searchParams.get("token") || ""
-  const email = emailProp || searchParams.get("email") || ""
 
   // Use the reset password hook
   const {
@@ -103,15 +100,14 @@ export function ResetPasswordForm({
         )
       }
     } else {
-      // Validate token and email
-      if (!token || !email) {
+      // Validate token
+      if (!token) {
         setServerError("Invalid reset link. Please request a new password reset.")
         return
       }
 
       // Use the reset password hook
       resetPassword({
-        email,
         token,
         newPassword: data.password,
       })

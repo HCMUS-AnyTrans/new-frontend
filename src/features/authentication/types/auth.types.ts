@@ -46,9 +46,9 @@ export interface ForgotPasswordDto {
 
 /**
  * Reset password DTO
+ * Note: Backend only requires token and newPassword, not email
  */
 export interface ResetPasswordDto {
-  email: string;
   token: string;
   newPassword: string;
 }

@@ -21,6 +21,9 @@ export type { ForgotPasswordFormProps } from "./forgot-password-form"
 export { ResetPasswordForm } from "./reset-password-form"
 export type { ResetPasswordFormProps } from "./reset-password-form"
 
+export { VerifyEmailHandler } from "./verify-email-handler"
+export type { VerifyEmailHandlerProps } from "./verify-email-handler"
+
 export { SocialLoginButtons } from "./social-login-buttons"
 export type {
   SocialLoginButtonsProps,

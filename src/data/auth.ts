@@ -78,6 +78,17 @@ export const authValidationMessages = {
   // Reset password specific
   resetPasswordSuccess: "Mật khẩu đã được đặt lại thành công",
   resetPasswordFailed: "Không thể đặt lại mật khẩu. Vui lòng thử lại",
+
+  // Verify email specific
+  verifyEmailLoading: "Đang xác thực email của bạn...",
+  verifyEmailSuccess: "Email đã được xác thực thành công!",
+  verifyEmailSuccessDescription: "Bạn sẽ được chuyển đến trang đăng nhập trong",
+  verifyEmailFailed: "Không thể xác thực email. Vui lòng thử lại",
+  verifyEmailInvalidLink: "Liên kết xác thực không hợp lệ",
+  verifyEmailInvalidLinkDescription: "Liên kết xác thực email không hợp lệ hoặc đã hết hạn. Vui lòng yêu cầu gửi lại email xác thực.",
+  verifyEmailResendButton: "Gửi lại email xác thực",
+  verifyEmailResendSuccess: "Email xác thực đã được gửi lại",
+  verifyEmailResendFailed: "Không thể gửi lại email. Vui lòng thử lại",
 }
 
 // ============================================================================
