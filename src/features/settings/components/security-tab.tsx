@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { SettingsSection, SettingsRow, SettingsDivider } from "./settings-section"
+import { SettingsSection, SettingsDivider } from "./settings-section"
 import { mockAuthIdentities, mockSessions, authProviderOptions } from "../data"
 import type { AuthIdentity, Session, AuthProvider } from "../types"
 

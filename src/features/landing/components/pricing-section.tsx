@@ -3,7 +3,6 @@
 import { useRef } from "react"
 import { useTranslations } from "next-intl"
 import { motion, useInView } from "framer-motion"
-import { Coins } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 // Import shared components and data

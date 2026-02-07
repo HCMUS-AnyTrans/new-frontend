@@ -2,7 +2,6 @@
 
 import { useTranslations } from "next-intl"
 import { SectionBackground } from "@/components/shared"
-import { History } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { milestones, type Milestone } from "../data"
 

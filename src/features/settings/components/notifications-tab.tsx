@@ -2,11 +2,10 @@
 
 import { useState } from "react"
 import { useTranslations, useLocale } from "next-intl"
-import { Bell, Mail, Smartphone, Check, CheckCheck } from "lucide-react"
+import { Bell, Mail, Smartphone, CheckCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
-import { Badge } from "@/components/ui/badge"
-import { SettingsSection, SettingsRow, SettingsDivider } from "./settings-section"
+import { SettingsSection, SettingsDivider } from "./settings-section"
 import { mockNotifications, mockNotificationPreferences } from "../data"
 import type { Notification, NotificationPreference, NotificationType } from "../types"
 import { cn } from "@/lib/utils"

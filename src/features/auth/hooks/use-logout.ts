@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { logoutApi } from '../api/auth.api';
 import { useAuthStore } from '../store/auth.store';
 import { getErrorMessage } from '@/lib/api-error';
-import { authKeys } from '@/lib/query-client';
 import type { MessageResponse } from '../types';
 
 interface UseLogoutOptions {

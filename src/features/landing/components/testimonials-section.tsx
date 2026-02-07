@@ -2,19 +2,16 @@
 
 import { useRef, useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
-import { Link } from "@/i18n/navigation"
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import {
   Star,
   Quote,
-  ArrowRight,
   ChevronLeft,
   ChevronRight,
   Users,
   FileText,
   Clock,
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { SectionBackground } from "@/components/shared"
 import { cn } from "@/lib/utils"
 import { avatarColors } from "../data"

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslations } from "next-intl"
@@ -60,6 +60,7 @@ export function RegisterForm({
   })
 
   const form = useForm<RegisterFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(registerFormSchema) as any,
     defaultValues: {
       firstName: "",
@@ -72,12 +73,8 @@ export function RegisterForm({
     },
   })
 
-  // Sync hook error with local state
-  useEffect(() => {
-    if (registerError) {
-      setServerError(registerError)
-    }
-  }, [registerError])
+  // Derive error state from hook or local state
+  const displayError = serverError || registerError
 
   const isLoading = isLoadingProp ?? isRegisterLoading
 
@@ -132,9 +129,9 @@ export function RegisterForm({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           {/* Server Error Display */}
-          {serverError && (
+          {displayError && (
             <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md text-sm">
-              {serverError}
+              {displayError}
             </div>
           )}
 

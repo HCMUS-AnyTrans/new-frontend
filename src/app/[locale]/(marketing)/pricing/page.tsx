@@ -1,6 +1,5 @@
 "use client";
 
-import { use } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "lucide-react";
@@ -18,14 +17,9 @@ import {
 } from "@/features/pricing";
 import { usageExamples } from "@/features/pricing/data";
 
-type Props = {
-  params: Promise<{ locale: string }>;
-};
-
-export default function PricingPage({ params }: Props) {
+export default function PricingPage() {
   // Note: setRequestLocale cannot be used in client components
   // The locale is already set in the parent layout
-  const { locale } = use(params);
   const t = useTranslations("marketing.pricingPage");
 
   return (

@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl"
 import { motion } from "framer-motion"
-import { FileX2, Clock, Wallet, AlertTriangle } from "lucide-react"
+import { FileX2, Clock, Wallet } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 

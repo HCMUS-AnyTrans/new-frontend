@@ -3,7 +3,7 @@
 import { useRef } from "react"
 import { useTranslations } from "next-intl"
 import { motion, useInView } from "framer-motion"
-import { Check, ArrowRight, Zap } from "lucide-react"
+import { Check, ArrowRight } from "lucide-react"
 import { SectionBackground } from "@/components/shared"
 import { cn } from "@/lib/utils"
 

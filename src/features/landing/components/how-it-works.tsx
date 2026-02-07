@@ -2,10 +2,8 @@
 
 import { useRef } from "react"
 import { useTranslations } from "next-intl"
-import { Link } from "@/i18n/navigation"
 import { motion, useInView } from "framer-motion"
-import { Upload, Settings, Download, ArrowRight, Sparkles } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Upload, Settings, Download, ArrowRight } from "lucide-react"
 import { SectionBackground } from "@/components/shared"
 import { cn } from "@/lib/utils"
 

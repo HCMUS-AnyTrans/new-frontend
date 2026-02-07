@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import { getCurrentUserApi } from '../api/auth.api';
 import { useAuthStore } from '../store/auth.store';
 import { authKeys } from '@/lib/query-client';
-import type { User } from '../types';
 import { useEffect } from 'react';
 
 /**

@@ -5,7 +5,7 @@ import { Upload, FileText, File, X, Check, AlertCircle, Presentation } from "luc
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { ALLOWED_FILE_TYPES, ALLOWED_EXTENSIONS, MAX_FILE_SIZE, type UploadedFile } from "../types"
+import { ALLOWED_EXTENSIONS, type UploadedFile } from "../types"
 
 interface StepUploadProps {
   file: UploadedFile | null

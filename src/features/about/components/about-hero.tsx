@@ -1,7 +1,6 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { cn } from "@/lib/utils"
 import { HeroBackground } from "@/components/shared"
 import { aboutStats, type AboutStat } from "../data"
 import { useScrollReveal, useCountUp } from "@/hooks"

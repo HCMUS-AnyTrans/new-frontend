@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -14,7 +14,7 @@ export interface VerifyEmailHandlerProps {
   redirectDelay?: number // seconds before redirect
 }
 
-type VerifyState = "loading" | "success" | "error" | "invalid"
+type VerifyState = "loading" | "success" | "error"
 
 export function VerifyEmailHandler({
   className,
@@ -26,15 +26,18 @@ export function VerifyEmailHandler({
   const email = searchParams.get("email") || ""
   const token = searchParams.get("token") || ""
 
+  // Derive invalid params - no need for useState
+  const hasValidParams = Boolean(email && token)
+
   const [state, setState] = useState<VerifyState>("loading")
   const [countdown, setCountdown] = useState(redirectDelay)
   const [resendSuccess, setResendSuccess] = useState(false)
+  const verificationTriggered = useRef(false)
 
   // Verify email hook
   const {
     verifyEmail,
     isLoading: isVerifying,
-    isSuccess: verifySuccess,
     error: verifyError,
   } = useVerifyEmail({
     onSuccess: () => setState("success"),
@@ -46,25 +49,18 @@ export function VerifyEmailHandler({
   const {
     resendEmail,
     isLoading: isResending,
-    isSuccess: resendEmailSuccess,
     error: resendError,
   } = useResendEmail({
     onSuccess: () => setResendSuccess(true),
   })
 
-  // Check for valid params on mount
-  const hasValidParams = Boolean(email && token)
-
-  // Auto verify on mount
+  // Auto verify on mount - only trigger API call, don't set state
   useEffect(() => {
-    if (!hasValidParams) {
-      setState("invalid")
-      return
-    }
-
+    if (!hasValidParams || verificationTriggered.current) return
+    verificationTriggered.current = true
     // Trigger verification
     verifyEmail({ email, token })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [hasValidParams, email, token, verifyEmail])
 
   // Countdown and redirect after success
   useEffect(() => {
@@ -89,8 +85,8 @@ export function VerifyEmailHandler({
     resendEmail({ email, type: "email_verification" })
   }, [email, resendEmail])
 
-  // Invalid params state
-  if (state === "invalid") {
+  // Invalid params state - derived, not from useState
+  if (!hasValidParams) {
     return (
       <div className={cn("w-full max-w-[512px]", className)}>
         <div className="bg-destructive/10 border border-destructive text-destructive px-6 py-5 rounded-lg text-sm space-y-3">

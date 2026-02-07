@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslations } from "next-intl"
@@ -50,25 +50,18 @@ export function ForgotPasswordForm({
   })
 
   const form = useForm<ForgotPasswordFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(forgotPasswordFormSchema) as any,
     defaultValues: {
       email: "",
     },
   })
 
-  // Sync hook error with local state
-  useEffect(() => {
-    if (forgotPasswordError) {
-      setServerError(forgotPasswordError)
-    }
-  }, [forgotPasswordError])
+  // Derive error state from hook or local state
+  const displayError = serverError || forgotPasswordError
 
-  // Sync hook success with local state
-  useEffect(() => {
-    if (hookSuccess) {
-      setIsSuccess(true)
-    }
-  }, [hookSuccess])
+  // Derive success state from hook or local state
+  const displaySuccess = isSuccess || hookSuccess
 
   const isLoading = isLoadingProp ?? isForgotPasswordLoading
 
@@ -93,7 +86,7 @@ export function ForgotPasswordForm({
     }
   }
 
-  if (isSuccess) {
+  if (displaySuccess) {
     return (
       <div className={cn("w-full max-w-[512px]", className)}>
         <div className="bg-success/10 border border-success text-success px-4 py-3 rounded-md text-sm space-y-2">
@@ -111,9 +104,9 @@ export function ForgotPasswordForm({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           {/* Server Error Display */}
-          {serverError && (
+          {displayError && (
             <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md text-sm">
-              {serverError}
+              {displayError}
             </div>
           )}
 

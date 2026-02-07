@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useSearchParams } from "next/navigation"
@@ -59,6 +59,7 @@ export function ResetPasswordForm({
   })
 
   const form = useForm<ResetPasswordFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(resetPasswordFormSchema) as any,
     defaultValues: {
       password: "",
@@ -67,19 +68,11 @@ export function ResetPasswordForm({
     },
   })
 
-  // Sync hook error with local state
-  useEffect(() => {
-    if (resetPasswordError) {
-      setServerError(resetPasswordError)
-    }
-  }, [resetPasswordError])
+  // Derive error state from hook or local state
+  const displayError = serverError || resetPasswordError
 
-  // Sync hook success with local state
-  useEffect(() => {
-    if (hookSuccess) {
-      setIsSuccess(true)
-    }
-  }, [hookSuccess])
+  // Derive success state from hook or local state
+  const displaySuccess = isSuccess || hookSuccess
 
   const isLoading = isLoadingProp ?? isResetPasswordLoading
 
@@ -116,7 +109,7 @@ export function ResetPasswordForm({
     }
   }
 
-  if (isSuccess) {
+  if (displaySuccess) {
     return (
       <div className={cn("w-full max-w-[512px]", className)}>
         <div className="bg-success/10 border border-success text-success px-4 py-3 rounded-md text-sm space-y-2">
@@ -162,9 +155,9 @@ export function ResetPasswordForm({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           {/* Server Error Display */}
-          {serverError && (
+          {displayError && (
             <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md text-sm">
-              {serverError}
+              {displayError}
             </div>
           )}
 

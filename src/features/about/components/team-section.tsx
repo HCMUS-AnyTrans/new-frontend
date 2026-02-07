@@ -1,7 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { Users, User } from "lucide-react"
+import { User } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { teamMembers, type TeamMember } from "../data"
 

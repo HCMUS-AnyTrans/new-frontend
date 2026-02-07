@@ -1,7 +1,6 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { coreValues, type CoreValue } from "../data"
 

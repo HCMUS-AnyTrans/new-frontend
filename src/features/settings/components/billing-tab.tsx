@@ -1,11 +1,9 @@
 "use client"
 
-import { useState } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import { Wallet, Plus, Star, TrendingUp, ArrowUpRight, ArrowDownLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
 import { SettingsSection, SettingsDivider } from "./settings-section"
 import {
   mockWallet,
