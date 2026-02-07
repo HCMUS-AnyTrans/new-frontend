@@ -7,7 +7,7 @@ import {
   getAccessToken,
   setAccessToken,
   clearAuthState,
-} from '@/features/authentication/store';
+} from '@/features/auth/store';
 import type { ApiError } from '@/types';
 
 // Environment configuration

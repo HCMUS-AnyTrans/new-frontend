@@ -14,3 +14,7 @@ export type {
 } from "./section-background"
 export { BannerCTA } from "./banner-cta"
 export type { BannerCTAProps } from "./banner-cta"
+
+// UI Controls
+export { LanguageSwitcher } from "./language-switcher"
+export { ModeToggle } from "./mode-toggle"

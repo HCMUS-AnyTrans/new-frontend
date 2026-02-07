@@ -1,0 +1,442 @@
+{
+  "marketing": {
+    "hero": {
+      "title": "Dịch tài liệu",
+      "subtitle": "chuyên nghiệp với AI",
+      "description": "Giữ nguyên format, hỗ trợ glossary chuyên ngành. Dịch Word, PDF, Subtitle nhanh gấp 10 lần thủ công.",
+      "badge": "Được tin tưởng bởi 10,000+ chuyên gia",
+      "cta": "Bắt đầu miễn phí",
+      "ctaSecondary": "Xem Demo",
+      "users": "{count}+ người dùng hài lòng"
+    },
+    "features": {
+      "sectionTitle": "Mọi thứ bạn cần để dịch",
+      "sectionSubtitle": "tài liệu chuyên nghiệp",
+      "mockup": {
+        "before": "TRƯỚC",
+        "after": "SAU",
+        "faster": "Nhanh hơn",
+        "manual": "Thủ công",
+        "accuracy": "Độ chính xác"
+      },
+      "items": {
+        "format": {
+          "title": "Giữ nguyên format gốc",
+          "description": "Bảng biểu, hình ảnh, header/footer được bảo toàn hoàn hảo. Xuất file đúng định dạng ban đầu.",
+          "highlights": ["Giữ nguyên bảng biểu", "Bảo toàn hình ảnh", "Định dạng PDF/Word"]
+        },
+        "glossary": {
+          "title": "Glossary thông minh",
+          "description": "Tạo và quản lý bộ từ điển chuyên ngành. Đảm bảo thuật ngữ nhất quán trong toàn bộ tài liệu.",
+          "highlights": ["Từ điển chuyên ngành", "Thuật ngữ nhất quán", "Tự động áp dụng"]
+        },
+        "speed": {
+          "title": "Nhanh gấp 10 lần",
+          "description": "Xử lý tài liệu 50 trang chỉ trong vài phút. Tiết kiệm hàng giờ làm việc mỗi ngày.",
+          "highlights": ["50 trang/2 phút", "Xử lý batch", "Real-time progress"]
+        },
+        "review": {
+          "title": "Review song ngữ",
+          "description": "Giao diện 2 cột cho phép so sánh bản gốc và bản dịch. Chỉnh sửa trực tiếp dễ dàng.",
+          "highlights": ["So sánh song ngữ", "Edit inline", "Track changes"]
+        },
+        "ocr": {
+          "title": "OCR hình ảnh",
+          "description": "Nhận diện và dịch văn bản trong hình ảnh. Hỗ trợ scan tài liệu chất lượng cao.",
+          "highlights": ["Nhận diện chữ in", "Scan tài liệu", "Độ chính xác 99%"]
+        },
+        "savings": {
+          "title": "Tiết kiệm 80% chi phí",
+          "description": "Chi phí chỉ bằng 1/5 so với thuê dịch giả. ROI rõ ràng ngay từ tháng đầu tiên.",
+          "highlights": ["Giá từ 0.001$/từ", "Không phí ẩn", "Hoàn tiền 30 ngày"]
+        }
+      },
+      "glossaryTerms": {
+        "machineLearning": { "en": "Machine Learning", "translated": "Học máy" },
+        "neuralNetwork": { "en": "Neural Network", "translated": "Mạng nơ-ron" },
+        "deepLearning": { "en": "Deep Learning", "translated": "Học sâu" },
+        "ai": { "en": "Artificial Intelligence", "translated": "Trí tuệ nhân tạo" }
+      },
+      "reviewMockup": {
+        "originalTitle": "Annual Report 2024",
+        "translatedTitle": "Báo cáo thường niên 2024",
+        "originalFile": "original.docx",
+        "translatedFile": "translated.docx",
+        "pages": "12 pages"
+      },
+      "ocrMockup": {
+        "scanFile": "scan.pdf",
+        "extractedFile": "extracted.docx",
+        "title": "Hợp đồng kinh tế",
+        "imageLabel": "Image • PDF"
+      },
+      "savingsMockup": {
+        "translator": "Translator",
+        "perWord": "/word"
+      }
+    },
+    "painPoints": {
+      "title": "Bạn có đang gặp những rắc rối này?",
+      "subtitle": "Đây là những vấn đề mà hàng nghìn người dùng đã từng trải qua trước khi tìm đến AnyTrans",
+      "items": {
+        "format": {
+          "title": "Mất format khi dịch PDF",
+          "description": "Bảng biểu, hình ảnh, layout bị phá vỡ hoàn toàn sau khi dịch"
+        },
+        "time": {
+          "title": "Tốn quá nhiều thời gian",
+          "description": "Dịch thủ công mất hàng giờ, thậm chí hàng ngày cho tài liệu dài"
+        },
+        "cost": {
+          "title": "Chi phí dịch thuật cao",
+          "description": "Thuê dịch giả chuyên nghiệp tốn kém, không phù hợp ngân sách"
+        }
+      }
+    },
+    "howItWorks": {
+      "sectionTitle": "Chỉ 3 bước để có",
+      "sectionSubtitle": "bản dịch hoàn hảo",
+      "steps": {
+        "upload": {
+          "title": "Tải lên tài liệu",
+          "description": "Kéo thả hoặc chọn file PDF, Word, hoặc Subtitle. Hỗ trợ file lên đến 100MB."
+        },
+        "configure": {
+          "title": "Cấu hình dịch",
+          "description": "Chọn ngôn ngữ đích, glossary chuyên ngành và các tùy chọn format."
+        },
+        "download": {
+          "title": "Tải về kết quả",
+          "description": "Nhận file đã dịch với format giữ nguyên. Review và chỉnh sửa nếu cần."
+        }
+      }
+    },
+    "pricingSection": {
+      "title": "Giá đơn giản,",
+      "subtitle": "trả theo nhu cầu",
+      "description": "Mua credits một lần, sử dụng không giới hạn thời gian. Mua càng nhiều, giá càng rẻ."
+    },
+    "testimonialsSection": {
+      "title": "Được tin tưởng bởi",
+      "subtitle": "hàng ngàn doanh nghiệp",
+      "stats": {
+        "rating": "Đánh giá trung bình",
+        "users": "Người dùng hài lòng",
+        "documents": "Tài liệu đã dịch",
+        "uptime": "Uptime"
+      },
+      "items": [
+        {
+          "name": "Nguyễn Văn Minh",
+          "role": "CEO",
+          "company": "TechViet Solutions",
+          "industry": "Công nghệ",
+          "content": "AnyTrans đã giúp team chúng tôi tiết kiệm hàng chục giờ mỗi tuần. Chất lượng dịch thuật vượt xa mong đợi, đặc biệt với tài liệu kỹ thuật."
+        },
+        {
+          "name": "Trần Thị Hương",
+          "role": "Giám đốc dịch vụ",
+          "company": "Legal Partners",
+          "industry": "Pháp lý",
+          "content": "Tính năng glossary chuyên ngành là game-changer. Các thuật ngữ pháp lý được dịch chính xác và nhất quán trong toàn bộ hợp đồng 200 trang."
+        },
+        {
+          "name": "Lê Quang Huy",
+          "role": "Founder",
+          "company": "SubViet Studio",
+          "industry": "Truyền thông",
+          "content": "Dịch subtitle nhanh không tưởng! Trước đây mất cả ngày, giờ chỉ cần 10 phút. ROI rõ ràng ngay từ tháng đầu tiên."
+        },
+        {
+          "name": "Phạm Thị Mai",
+          "role": "Content Manager",
+          "company": "EduGlobal",
+          "industry": "Giáo dục",
+          "content": "Dịch tài liệu học thuật cần độ chính xác cao. AnyTrans không chỉ nhanh mà còn giữ nguyên các công thức và biểu đồ phức tạp."
+        },
+        {
+          "name": "Đặng Minh Tuấn",
+          "role": "Product Owner",
+          "company": "FinTech Corp",
+          "industry": "Tài chính",
+          "content": "API integration mượt mà, documentation rõ ràng. Đã tích hợp vào hệ thống nội bộ trong vòng 2 ngày. Highly recommended!"
+        },
+        {
+          "name": "Vũ Hoàng Anh",
+          "role": "Operations Director",
+          "company": "Manufacturing Plus",
+          "industry": "Sản xuất",
+          "content": "Dịch technical manual 500 trang chỉ trong 30 phút với format hoàn hảo. Đội ngũ hỗ trợ cực kỳ chuyên nghiệp."
+        }
+      ]
+    },
+    "socialProof": {
+      "title": "Được tin dùng bởi các tổ chức hàng đầu",
+      "disclaimer": "* Logo mẫu - Sẽ được cập nhật khi có đối tác chính thức"
+    },
+    "demo": {
+      "completed": "Hoàn tất!"
+    },
+    "pricing": {
+      "title": "Bảng giá",
+      "subtitle": "Chọn gói phù hợp với nhu cầu của bạn",
+      "monthly": "Hàng tháng",
+      "yearly": "Hàng năm",
+      "savePercent": "Tiết kiệm {percent}%",
+      "perMonth": "/tháng",
+      "popular": "Phổ biến nhất",
+      "features": "Tính năng",
+      "cta": "Bắt đầu ngay",
+      "plans": {
+        "free": {
+          "name": "Miễn phí",
+          "description": "Dành cho cá nhân",
+          "price": "0"
+        },
+        "pro": {
+          "name": "Pro",
+          "description": "Cho chuyên gia",
+          "price": "199.000"
+        },
+        "business": {
+          "name": "Business",
+          "description": "Cho doanh nghiệp",
+          "price": "499.000"
+        }
+      }
+    },
+    "pricingPage": {
+      "hero": {
+        "title": "Giá đơn giản,",
+        "subtitle": "chỉ trả cho những gì bạn dùng",
+        "description": "1 Credit = 1 trang dịch. Không subscription. Không giới hạn thời gian."
+      },
+      "cta": "Bắt đầu miễn phí",
+      "ctaSecondary": "Xem demo",
+      "popular": "Phổ biến nhất",
+      "credits": "credits",
+      "buyNow": "Mua ngay",
+      "usageSection": {
+        "title": "Credits trong thực tế"
+      },
+      "enterpriseSection": {
+        "title": "Enterprise & Volume Pricing",
+        "description": "Cần hơn 10.000.000 credits? Chúng tôi cung cấp giá tùy chỉnh cho doanh nghiệp.",
+        "enterpriseTitle": "Enterprise",
+        "enterpriseDesc": "Giải pháp tùy chỉnh cho doanh nghiệp lớn với SLA cam kết",
+        "contactSales": "Liên hệ tư vấn"
+      },
+      "faq": {
+        "title": "Câu hỏi thường gặp"
+      },
+      "banner": {
+        "title": "Sẵn sàng dịch nhanh hơn 10 lần?",
+        "subtitle": "1 Credit = 1 trang dịch. Không subscription. Không giới hạn thời gian."
+      },
+      "features": [
+        "Dịch PDF, Word, Subtitle",
+        "Giữ nguyên format gốc",
+        "Glossary không giới hạn",
+        "Review song ngữ",
+        "OCR hình ảnh",
+        "Credits không hết hạn"
+      ],
+      "faqItems": [
+        {
+          "question": "Credit có hết hạn không?",
+          "answer": "Không. Credits không có ngày hết hạn, bạn có thể dùng bất kỳ lúc nào."
+        },
+        {
+          "question": "Tôi dùng cho team được không?",
+          "answer": "Có. Gói Pro hỗ trợ team access, hoặc liên hệ Enterprise để được tư vấn giải pháp phù hợp."
+        },
+        {
+          "question": "PDF 200 trang thì tốn bao nhiêu credit?",
+          "answer": "200 credits. Mỗi trang = 1 credit, tính theo số trang thực tế của tài liệu."
+        },
+        {
+          "question": "API tính credit như thế nào?",
+          "answer": "Mỗi trang qua API = 1 credit, giống như sử dụng giao diện web."
+        },
+        {
+          "question": "Có hoàn tiền không?",
+          "answer": "Credits không hoàn tiền, nhưng bạn có thể dùng thử miễn phí trước khi mua."
+        }
+      ],
+      "usageExamples": {
+        "pdf10": "PDF 10 trang",
+        "contract50": "Hợp đồng 50 trang",
+        "ppt100": "PPT 100 slides",
+        "subtitle": "Phụ đề phim"
+      },
+      "planSavings": {
+        "save20": "Tiết kiệm 20%",
+        "save50": "Tiết kiệm 50%"
+      },
+      "enterpriseFeatures": [
+        "Giảm giá lên đến 40%",
+        "SLA cam kết",
+        "Hỗ trợ 24/7 dedicated",
+        "Tích hợp tùy chỉnh"
+      ]
+    },
+    "testimonials": {
+      "title": "Khách hàng nói gì",
+      "subtitle": "Hàng ngàn khách hàng tin tưởng sử dụng"
+    },
+    "cta": {
+      "title": "Sẵn sàng bắt đầu?",
+      "subtitle": "Tham gia cùng hơn 10.000 khách hàng đang sử dụng AnyTrans để dịch tài liệu chuyên nghiệp",
+      "primaryButton": "Dùng thử miễn phí",
+      "secondaryButton": "Liên hệ tư vấn",
+      "description": "Đăng ký ngay để nhận 100 credits miễn phí",
+      "button": "Đăng ký miễn phí"
+    },
+    "footer": {
+      "product": "Sản phẩm",
+      "company": "Công ty",
+      "resources": "Tài nguyên",
+      "legal": "Pháp lý",
+      "copyright": "© {year} AnyTrans. Đã đăng ký bản quyền.",
+      "links": {
+        "features": "Tính năng",
+        "pricing": "Bảng giá",
+        "api": "API",
+        "integrations": "Tích hợp",
+        "changelog": "Nhật ký thay đổi",
+        "about": "Về chúng tôi",
+        "blog": "Blog",
+        "careers": "Tuyển dụng",
+        "contact": "Liên hệ",
+        "partners": "Đối tác",
+        "documentation": "Tài liệu",
+        "guides": "Hướng dẫn",
+        "tutorials": "Video hướng dẫn",
+        "caseStudies": "Case studies",
+        "support": "Hỗ trợ",
+        "terms": "Điều khoản",
+        "privacy": "Bảo mật",
+        "cookies": "Cookie",
+        "dmca": "DMCA"
+      }
+    },
+    "nav": {
+      "features": "Tính năng",
+      "pricing": "Bảng giá",
+      "about": "Về chúng tôi",
+      "contact": "Liên hệ",
+      "login": "Đăng nhập",
+      "getStarted": "Bắt đầu"
+    },
+    "about": {
+      "hero": {
+        "title": "Xoá bỏ rào cản ngôn ngữ",
+        "subtitle": "bằng sức mạnh AI",
+        "description": "AnyTrans là nền tảng dịch thuật AI tiên tiến, giúp bạn dịch tài liệu chuyên nghiệp với độ chính xác cao và giữ nguyên định dạng gốc."
+      },
+      "stats": {
+        "customers": "Khách hàng tin dùng",
+        "pages": "Trang đã dịch",
+        "languages": "Ngôn ngữ hỗ trợ",
+        "accuracy": "Độ chính xác"
+      },
+      "story": {
+        "title": "Câu chuyện của chúng tôi",
+        "subtitle": "Từ ý tưởng đơn giản đến nền tảng dịch thuật AI hàng đầu"
+      },
+      "mission": {
+        "title": "Sứ mệnh",
+        "description": "Xoá bỏ rào cản ngôn ngữ trong công việc và học tập. Giúp mọi người tiếp cận tri thức toàn cầu một cách dễ dàng, nhanh chóng và chính xác."
+      },
+      "vision": {
+        "title": "Tầm nhìn",
+        "description": "Trở thành nền tảng dịch thuật AI hàng đầu Đông Nam Á, nơi công nghệ phục vụ con người và kết nối các nền văn hoá khác nhau."
+      },
+      "values": {
+        "title": "Những giá trị định hình chúng tôi",
+        "subtitle": "Mỗi quyết định và hành động của chúng tôi đều được dẫn dắt bởi những giá trị này",
+        "innovation": {
+          "title": "Đổi mới sáng tạo",
+          "description": "Không ngừng nghiên cứu và ứng dụng công nghệ AI tiên tiến nhất để nâng cao chất lượng dịch thuật."
+        },
+        "quality": {
+          "title": "Chất lượng hàng đầu",
+          "description": "Cam kết độ chính xác 99.9% và giữ nguyên định dạng tài liệu gốc."
+        },
+        "customer": {
+          "title": "Khách hàng là trọng tâm",
+          "description": "Lắng nghe, thấu hiểu và đồng hành cùng khách hàng trong mọi dự án dịch thuật."
+        },
+        "teamwork": {
+          "title": "Tinh thần đồng đội",
+          "description": "Xây dựng môi trường làm việc cởi mở, sáng tạo và hỗ trợ lẫn nhau để cùng phát triển."
+        }
+      },
+      "timeline": {
+        "title": "Hành trình phát triển",
+        "subtitle": "Những cột mốc quan trọng trên con đường xây dựng AnyTrans",
+        "milestones": {
+          "2021": {
+            "title": "Khởi đầu hành trình",
+            "description": "AnyTrans ra đời từ ý tưởng đơn giản: dịch tài liệu PDF mà không làm mất format."
+          },
+          "2022": {
+            "title": "1.000 người dùng đầu tiên",
+            "description": "Đạt mốc 1.000 khách hàng và ra mắt tính năng Glossary cho doanh nghiệp."
+          },
+          "2023": {
+            "title": "Mở rộng thị trường",
+            "description": "Hỗ trợ 50+ ngôn ngữ, tích hợp OCR và ra mắt API cho developers."
+          },
+          "2024": {
+            "title": "10.000 khách hàng",
+            "description": "Đạt mốc 10.000 khách hàng tin dùng và 5 triệu trang tài liệu đã dịch."
+          },
+          "2025": {
+            "title": "Tương lai phía trước",
+            "description": "Tiếp tục đổi mới với AI thế hệ mới, hướng tới mục tiêu trở thành nền tảng dịch thuật #1 Đông Nam Á."
+          }
+        }
+      },
+      "team": {
+        "title": "Những người đứng sau AnyTrans",
+        "subtitle": "Đội ngũ đam mê công nghệ và luôn nỗ lực mang đến giải pháp tốt nhất"
+      }
+    },
+    "contact": {
+      "hero": {
+        "title": "Bắt đầu một",
+        "titleHighlight": "cuộc trò chuyện",
+        "description": "Chúng tôi ở đây để giúp bạn. Gửi tin nhắn và chúng tôi sẽ phản hồi trong vòng 24 giờ."
+      },
+      "infoPanel": {
+        "title": "Thông tin liên hệ",
+        "subtitle": "Hãy nói điều gì đó để bắt đầu cuộc trò chuyện!"
+      },
+      "form": {
+        "fullName": "Tên đầy đủ",
+        "fullNamePlaceholder": "Nguyễn Văn A",
+        "phone": "Số điện thoại",
+        "phonePlaceholder": "+84 123 456 789",
+        "email": "Email",
+        "emailPlaceholder": "demo@gmail.com",
+        "selectSubject": "Select Subject?",
+        "message": "Tin nhắn",
+        "messagePlaceholder": "Viết tin nhắn của bạn...",
+        "submit": "Gửi tin nhắn",
+        "submitting": "Đang gửi...",
+        "subjects": {
+          "general": "General Inquiry",
+          "support": "Support",
+          "feedback": "Feedback",
+          "other": "Other"
+        }
+      },
+      "info": {
+        "email": "Email",
+        "phone": "Điện thoại",
+        "address": "Địa chỉ"
+      }
+    }
+  }
+}

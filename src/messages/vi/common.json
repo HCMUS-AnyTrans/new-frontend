@@ -1,0 +1,26 @@
+{
+  "common": {
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "add": "Thêm",
+    "search": "Tìm kiếm",
+    "loading": "Đang tải...",
+    "error": "Có lỗi xảy ra",
+    "success": "Thành công",
+    "confirm": "Xác nhận",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "previous": "Trước",
+    "submit": "Gửi",
+    "reset": "Đặt lại",
+    "close": "Đóng",
+    "open": "Mở",
+    "yes": "Có",
+    "no": "Không",
+    "viewAll": "Xem tất cả",
+    "noData": "Không có dữ liệu",
+    "actions": "Hành động"
+  }
+}

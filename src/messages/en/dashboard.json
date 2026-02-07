@@ -1,0 +1,81 @@
+{
+  "dashboard": {
+    "sidebar": {
+      "mainMenu": "Main Menu",
+      "other": "Other",
+      "dashboard": "Dashboard",
+      "documents": "Document Translation",
+      "subtitles": "Subtitle Translation",
+      "glossary": "Glossary",
+      "history": "History",
+      "settings": "Settings",
+      "help": "Help",
+      "profile": "Profile",
+      "logout": "Logout"
+    },
+    "pages": {
+      "dashboard": "Dashboard",
+      "documents": "Document Translation",
+      "subtitles": "Subtitle Translation",
+      "glossary": "Glossary",
+      "history": "History",
+      "settings": "Settings",
+      "help": "Help"
+    },
+    "welcome": {
+      "greeting": "Hello, {name}",
+      "description": "Your translation activity overview for today."
+    },
+    "stats": {
+      "totalCredits": "Total Credits",
+      "totalJobs": "Total Jobs",
+      "processing": "Processing",
+      "completedThisMonth": "Completed This Month",
+      "vsLastMonth": "vs last month",
+      "vsYesterday": "vs yesterday",
+      "documentsAndSubtitles": "{docs} Documents | {subs} Subtitles",
+      "successRate": "Success rate: {rate}%"
+    },
+    "quickActions": {
+      "uploadDocument": "Upload Document",
+      "uploadSubtitle": "Upload Subtitle",
+      "buyCredits": "Buy Credits"
+    },
+    "activity": {
+      "title": "Recent Activity",
+      "viewAll": "View all"
+    },
+    "recentJobs": {
+      "title": "Recent Jobs",
+      "viewAll": "View all",
+      "fileName": "File Name",
+      "type": "Type",
+      "languages": "Languages",
+      "status": "Status",
+      "credits": "Credits",
+      "createdAt": "Created At",
+      "actions": "Actions",
+      "download": "Download",
+      "viewDetails": "View Details",
+      "document": "Document",
+      "subtitle": "Subtitle"
+    },
+    "storage": {
+      "title": "Storage",
+      "remaining": "{value} GB remaining"
+    },
+    "charts": {
+      "jobsByDay": "Jobs by Day (Last 7 Days)",
+      "creditAllocation": "Credit Allocation",
+      "documents": "Documents",
+      "subtitles": "Subtitles",
+      "remaining": "Remaining"
+    },
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "succeeded": "Completed",
+      "failed": "Failed"
+    }
+  }
+}

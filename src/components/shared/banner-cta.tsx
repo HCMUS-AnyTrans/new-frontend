@@ -1,4 +1,7 @@
-import Link from "next/link"
+"use client"
+
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -27,22 +30,30 @@ export interface BannerCTAProps {
  * 
  * @example
  * <BannerCTA 
- *   title="Sẵn sàng bắt đầu?"
- *   subtitle="Tham gia cùng hàng ngàn khách hàng"
- *   primaryButtonText="Dùng thử miễn phí"
- *   secondaryButtonText="Liên hệ tư vấn"
+ *   title="Ready to get started?"
+ *   subtitle="Join thousands of customers"
+ *   primaryButtonText="Try for free"
+ *   secondaryButtonText="Contact sales"
  * />
  */
 export function BannerCTA({
   className,
-  title = "Sẵn sàng bắt đầu?",
-  subtitle = "Tham gia cùng hơn 10.000 khách hàng đang sử dụng AnyTrans để dịch tài liệu chuyên nghiệp",
-  primaryButtonText = "Dùng thử miễn phí",
+  title,
+  subtitle,
+  primaryButtonText,
   primaryButtonHref = "/register",
-  secondaryButtonText = "Liên hệ tư vấn",
+  secondaryButtonText,
   secondaryButtonHref = "/contact",
   showDecorations = true,
 }: BannerCTAProps) {
+  const t = useTranslations("marketing.cta")
+
+  // Use provided props or fall back to translations
+  const displayTitle = title ?? t("title")
+  const displaySubtitle = subtitle ?? t("subtitle")
+  const displayPrimaryText = primaryButtonText ?? t("primaryButton")
+  const displaySecondaryText = secondaryButtonText ?? t("secondaryButton")
+
   return (
     <section className={cn("py-20 lg:py-28", className)}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -57,11 +68,11 @@ export function BannerCTA({
 
           <div className="relative z-10">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-foreground mb-4">
-              {title}
+              {displayTitle}
             </h2>
-            {subtitle && (
+            {displaySubtitle && (
               <p className="text-lg sm:text-xl text-primary-foreground/80 max-w-2xl mx-auto mb-8">
-                {subtitle}
+                {displaySubtitle}
               </p>
             )}
 
@@ -73,7 +84,7 @@ export function BannerCTA({
                 asChild
               >
                 <Link href={primaryButtonHref} className="flex items-center gap-2">
-                  {primaryButtonText}
+                  {displayPrimaryText}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
@@ -83,7 +94,7 @@ export function BannerCTA({
                 className="px-8 h-14 text-lg font-semibold bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
                 asChild
               >
-                <Link href={secondaryButtonHref}>{secondaryButtonText}</Link>
+                <Link href={secondaryButtonHref}>{displaySecondaryText}</Link>
               </Button>
             </div>
           </div>

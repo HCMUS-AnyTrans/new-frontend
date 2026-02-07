@@ -1,0 +1,5 @@
+export { AboutHero } from "./about-hero"
+export { OurStory } from "./our-story"
+export { CoreValues } from "./core-values"
+export { TimelineSection } from "./timeline"
+export { TeamSection } from "./team-section"

@@ -1,16 +1,20 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/mode-toggle"
-import { mainNavItems, type NavItem } from "@/data/navigation"
+import { ModeToggle, LanguageSwitcher } from "@/components/shared"
 import { siteConfig } from "@/data/site"
 
-export type { NavItem }
+export interface NavItem {
+  label: string
+  href: string
+  labelKey?: string
+}
 
 export interface HeaderProps {
   logo?: {
@@ -32,12 +36,21 @@ export interface HeaderProps {
 
 export function Header({
   logo = { text: siteConfig.name, icon: "A", href: "/" },
-  navItems = mainNavItems,
-  ctaButton = { label: "Bắt đầu miễn phí", href: "/register", showIcon: true },
-  loginButton = { label: "Đăng nhập", href: "/login" },
 }: HeaderProps) {
+  const t = useTranslations("marketing.nav")
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  // Build nav items with translations
+  const navItems: NavItem[] = [
+    { label: t("features"), href: "#features" },
+    { label: t("pricing"), href: "/pricing" },
+    { label: t("about"), href: "/about" },
+    { label: t("contact"), href: "/contact" },
+  ]
+
+  const ctaButton = { label: t("getStarted"), href: "/register", showIcon: true }
+  const loginButton = { label: t("login"), href: "/login" }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -94,6 +107,7 @@ export function Header({
 
             {/* CTA Buttons */}
             <div className="hidden md:flex items-center gap-3">
+              <LanguageSwitcher />
               <ModeToggle />
               <Button variant="ghost" asChild>
                 <Link href={loginButton.href}>{loginButton.label}</Link>
@@ -148,7 +162,8 @@ export function Header({
                   </motion.div>
                 ))}
                 <div className="border-t border-border mt-2 pt-4 flex flex-col gap-2">
-                  <div className="flex justify-center mb-2">
+                  <div className="flex justify-center gap-2 mb-2">
+                    <LanguageSwitcher />
                     <ModeToggle />
                   </div>
                   <Button variant="ghost" className="justify-center" asChild>

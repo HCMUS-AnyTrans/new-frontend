@@ -1,0 +1,60 @@
+{
+  "documents": {
+    "wizard": {
+      "title": "Document Translation",
+      "steps": {
+        "upload": "Upload",
+        "configure": "Configure",
+        "review": "Review"
+      }
+    },
+    "upload": {
+      "title": "Upload Document",
+      "description": "Drag and drop or click to select files",
+      "supportedFormats": "Supported: PDF, DOCX, PPTX, XLSX",
+      "maxSize": "Max 50MB",
+      "uploading": "Uploading...",
+      "uploadSuccess": "Upload successful"
+    },
+    "configure": {
+      "title": "Configure Translation",
+      "sourceLanguage": "Source language",
+      "targetLanguage": "Target language",
+      "domain": "Domain",
+      "tone": "Tone",
+      "glossary": "Glossary",
+      "useGlossary": "Use custom glossary"
+    },
+    "review": {
+      "title": "Review & Confirm",
+      "originalDocument": "Original document",
+      "translatedDocument": "Translated document",
+      "estimatedCredits": "Estimated credits",
+      "startTranslation": "Start translation",
+      "download": "Download"
+    },
+    "languages": {
+      "vi": "Vietnamese",
+      "en": "English",
+      "ja": "Japanese",
+      "ko": "Korean",
+      "zh": "Chinese",
+      "fr": "French",
+      "de": "German"
+    },
+    "domains": {
+      "general": "General",
+      "legal": "Legal",
+      "medical": "Medical",
+      "technical": "Technical",
+      "business": "Business",
+      "academic": "Academic"
+    },
+    "tones": {
+      "formal": "Formal",
+      "informal": "Informal",
+      "professional": "Professional",
+      "casual": "Casual"
+    }
+  }
+}

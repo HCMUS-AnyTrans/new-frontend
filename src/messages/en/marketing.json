@@ -1,0 +1,442 @@
+{
+  "marketing": {
+    "hero": {
+      "title": "Document Translation",
+      "subtitle": "powered by AI",
+      "description": "Preserve formatting, support specialized glossary. Translate Word, PDF, Subtitle 10x faster than manual.",
+      "badge": "Trusted by 10,000+ professionals",
+      "cta": "Start for free",
+      "ctaSecondary": "Watch Demo",
+      "users": "{count}+ satisfied users"
+    },
+    "features": {
+      "sectionTitle": "Everything you need to translate",
+      "sectionSubtitle": "professional documents",
+      "mockup": {
+        "before": "BEFORE",
+        "after": "AFTER",
+        "faster": "Faster",
+        "manual": "Manual",
+        "accuracy": "Accuracy"
+      },
+      "items": {
+        "format": {
+          "title": "Preserve original formatting",
+          "description": "Tables, images, headers/footers are perfectly preserved. Export files in the original format.",
+          "highlights": ["Preserve tables", "Maintain images", "PDF/Word format"]
+        },
+        "glossary": {
+          "title": "Smart Glossary",
+          "description": "Create and manage specialized term dictionaries. Ensure consistent terminology throughout the document.",
+          "highlights": ["Specialized dictionary", "Consistent terminology", "Auto-apply"]
+        },
+        "speed": {
+          "title": "10x Faster",
+          "description": "Process 50-page documents in just minutes. Save hours of work every day.",
+          "highlights": ["50 pages/2 min", "Batch processing", "Real-time progress"]
+        },
+        "review": {
+          "title": "Bilingual Review",
+          "description": "Two-column interface for comparing original and translated versions. Easy inline editing.",
+          "highlights": ["Side-by-side comparison", "Edit inline", "Track changes"]
+        },
+        "ocr": {
+          "title": "Image OCR",
+          "description": "Recognize and translate text in images. Support for high-quality document scanning.",
+          "highlights": ["Text recognition", "Document scan", "99% accuracy"]
+        },
+        "savings": {
+          "title": "Save 80% on costs",
+          "description": "Cost only 1/5 compared to hiring translators. Clear ROI from the first month.",
+          "highlights": ["From $0.001/word", "No hidden fees", "30-day refund"]
+        }
+      },
+      "glossaryTerms": {
+        "machineLearning": { "en": "Machine Learning", "translated": "Machine Learning" },
+        "neuralNetwork": { "en": "Neural Network", "translated": "Neural Network" },
+        "deepLearning": { "en": "Deep Learning", "translated": "Deep Learning" },
+        "ai": { "en": "Artificial Intelligence", "translated": "AI" }
+      },
+      "reviewMockup": {
+        "originalTitle": "Annual Report 2024",
+        "translatedTitle": "Annual Report 2024",
+        "originalFile": "original.docx",
+        "translatedFile": "translated.docx",
+        "pages": "12 pages"
+      },
+      "ocrMockup": {
+        "scanFile": "scan.pdf",
+        "extractedFile": "extracted.docx",
+        "title": "Business Contract",
+        "imageLabel": "Image • PDF"
+      },
+      "savingsMockup": {
+        "translator": "Translator",
+        "perWord": "/word"
+      }
+    },
+    "painPoints": {
+      "title": "Are you facing these problems?",
+      "subtitle": "These are issues thousands of users experienced before finding AnyTrans",
+      "items": {
+        "format": {
+          "title": "Lost formatting when translating PDF",
+          "description": "Tables, images, layout completely broken after translation"
+        },
+        "time": {
+          "title": "Takes too much time",
+          "description": "Manual translation takes hours, even days for long documents"
+        },
+        "cost": {
+          "title": "High translation costs",
+          "description": "Hiring professional translators is expensive, doesn't fit budget"
+        }
+      }
+    },
+    "howItWorks": {
+      "sectionTitle": "Just 3 steps to get",
+      "sectionSubtitle": "perfect translation",
+      "steps": {
+        "upload": {
+          "title": "Upload document",
+          "description": "Drag and drop or select PDF, Word, or Subtitle files. Supports files up to 100MB."
+        },
+        "configure": {
+          "title": "Configure translation",
+          "description": "Choose target language, specialized glossary, and format options."
+        },
+        "download": {
+          "title": "Download result",
+          "description": "Receive translated file with preserved formatting. Review and edit if needed."
+        }
+      }
+    },
+    "pricingSection": {
+      "title": "Simple pricing,",
+      "subtitle": "pay as you go",
+      "description": "Buy credits once, use without time limit. Buy more, pay less."
+    },
+    "testimonialsSection": {
+      "title": "Trusted by",
+      "subtitle": "thousands of businesses",
+      "stats": {
+        "rating": "Average rating",
+        "users": "Satisfied users",
+        "documents": "Documents translated",
+        "uptime": "Uptime"
+      },
+      "items": [
+        {
+          "name": "Nguyen Van Minh",
+          "role": "CEO",
+          "company": "TechViet Solutions",
+          "industry": "Technology",
+          "content": "AnyTrans has helped our team save dozens of hours every week. Translation quality exceeded expectations, especially for technical documents."
+        },
+        {
+          "name": "Tran Thi Huong",
+          "role": "Service Director",
+          "company": "Legal Partners",
+          "industry": "Legal",
+          "content": "The specialized glossary feature is a game-changer. Legal terms are translated accurately and consistently throughout the 200-page contract."
+        },
+        {
+          "name": "Le Quang Huy",
+          "role": "Founder",
+          "company": "SubViet Studio",
+          "industry": "Media",
+          "content": "Subtitle translation is incredibly fast! Used to take all day, now just 10 minutes. Clear ROI from the first month."
+        },
+        {
+          "name": "Pham Thi Mai",
+          "role": "Content Manager",
+          "company": "EduGlobal",
+          "industry": "Education",
+          "content": "Academic document translation requires high accuracy. AnyTrans is not only fast but also preserves complex formulas and charts."
+        },
+        {
+          "name": "Dang Minh Tuan",
+          "role": "Product Owner",
+          "company": "FinTech Corp",
+          "industry": "Finance",
+          "content": "Smooth API integration, clear documentation. Integrated into our internal system within 2 days. Highly recommended!"
+        },
+        {
+          "name": "Vu Hoang Anh",
+          "role": "Operations Director",
+          "company": "Manufacturing Plus",
+          "industry": "Manufacturing",
+          "content": "Translated 500-page technical manual in just 30 minutes with perfect formatting. Extremely professional support team."
+        }
+      ]
+    },
+    "socialProof": {
+      "title": "Trusted by leading organizations",
+      "disclaimer": "* Sample logos - Will be updated when official partners"
+    },
+    "demo": {
+      "completed": "Complete!"
+    },
+    "pricing": {
+      "title": "Pricing",
+      "subtitle": "Choose the plan that fits your needs",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "savePercent": "Save {percent}%",
+      "perMonth": "/month",
+      "popular": "Most popular",
+      "features": "Features",
+      "cta": "Get started",
+      "plans": {
+        "free": {
+          "name": "Free",
+          "description": "For individuals",
+          "price": "0"
+        },
+        "pro": {
+          "name": "Pro",
+          "description": "For professionals",
+          "price": "9.99"
+        },
+        "business": {
+          "name": "Business",
+          "description": "For businesses",
+          "price": "24.99"
+        }
+      }
+    },
+    "pricingPage": {
+      "hero": {
+        "title": "Simple pricing,",
+        "subtitle": "pay only for what you use",
+        "description": "1 Credit = 1 page translated. No subscription. No time limit."
+      },
+      "cta": "Start for free",
+      "ctaSecondary": "Watch demo",
+      "popular": "Most popular",
+      "credits": "credits",
+      "buyNow": "Buy now",
+      "usageSection": {
+        "title": "Credits in practice"
+      },
+      "enterpriseSection": {
+        "title": "Enterprise & Volume Pricing",
+        "description": "Need more than 10,000,000 credits? We offer custom pricing for enterprises.",
+        "enterpriseTitle": "Enterprise",
+        "enterpriseDesc": "Custom solutions for large businesses with committed SLA",
+        "contactSales": "Contact sales"
+      },
+      "faq": {
+        "title": "Frequently asked questions"
+      },
+      "banner": {
+        "title": "Ready to translate 10x faster?",
+        "subtitle": "1 Credit = 1 page translated. No subscription. No time limit."
+      },
+      "features": [
+        "Translate PDF, Word, Subtitle",
+        "Preserve original formatting",
+        "Unlimited glossary",
+        "Bilingual review",
+        "Image OCR",
+        "Credits never expire"
+      ],
+      "faqItems": [
+        {
+          "question": "Do credits expire?",
+          "answer": "No. Credits have no expiration date, you can use them anytime."
+        },
+        {
+          "question": "Can I use it for my team?",
+          "answer": "Yes. Pro plan supports team access, or contact Enterprise for customized solutions."
+        },
+        {
+          "question": "How many credits for a 200-page PDF?",
+          "answer": "200 credits. Each page = 1 credit, calculated by the actual number of pages in the document."
+        },
+        {
+          "question": "How are API credits calculated?",
+          "answer": "Each page via API = 1 credit, same as using the web interface."
+        },
+        {
+          "question": "Is there a refund policy?",
+          "answer": "Credits are non-refundable, but you can try for free before purchasing."
+        }
+      ],
+      "usageExamples": {
+        "pdf10": "10-page PDF",
+        "contract50": "50-page contract",
+        "ppt100": "100-slide PPT",
+        "subtitle": "Movie subtitle"
+      },
+      "planSavings": {
+        "save20": "Save 20%",
+        "save50": "Save 50%"
+      },
+      "enterpriseFeatures": [
+        "Up to 40% discount",
+        "Committed SLA",
+        "24/7 dedicated support",
+        "Custom integration"
+      ]
+    },
+    "testimonials": {
+      "title": "What customers say",
+      "subtitle": "Trusted by thousands of customers"
+    },
+    "cta": {
+      "title": "Ready to get started?",
+      "subtitle": "Join over 10,000 customers using AnyTrans for professional document translation",
+      "primaryButton": "Try for free",
+      "secondaryButton": "Contact sales",
+      "description": "Sign up now and get 100 free credits",
+      "button": "Sign up for free"
+    },
+    "footer": {
+      "product": "Product",
+      "company": "Company",
+      "resources": "Resources",
+      "legal": "Legal",
+      "copyright": "© {year} AnyTrans. All rights reserved.",
+      "links": {
+        "features": "Features",
+        "pricing": "Pricing",
+        "api": "API",
+        "integrations": "Integrations",
+        "changelog": "Changelog",
+        "about": "About Us",
+        "blog": "Blog",
+        "careers": "Careers",
+        "contact": "Contact",
+        "partners": "Partners",
+        "documentation": "Documentation",
+        "guides": "Guides",
+        "tutorials": "Video Tutorials",
+        "caseStudies": "Case Studies",
+        "support": "Support",
+        "terms": "Terms",
+        "privacy": "Privacy",
+        "cookies": "Cookies",
+        "dmca": "DMCA"
+      }
+    },
+    "nav": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "about": "About",
+      "contact": "Contact",
+      "login": "Login",
+      "getStarted": "Get Started"
+    },
+    "about": {
+      "hero": {
+        "title": "Breaking language barriers",
+        "subtitle": "with the power of AI",
+        "description": "AnyTrans is an advanced AI translation platform that helps you translate documents professionally with high accuracy while preserving original formatting."
+      },
+      "stats": {
+        "customers": "Trusted customers",
+        "pages": "Pages translated",
+        "languages": "Languages supported",
+        "accuracy": "Accuracy"
+      },
+      "story": {
+        "title": "Our Story",
+        "subtitle": "From a simple idea to Asia's leading AI translation platform"
+      },
+      "mission": {
+        "title": "Mission",
+        "description": "Breaking language barriers in work and education. Helping everyone access global knowledge easily, quickly and accurately."
+      },
+      "vision": {
+        "title": "Vision",
+        "description": "Become Southeast Asia's leading AI translation platform, where technology serves people and connects different cultures."
+      },
+      "values": {
+        "title": "Our Core Values",
+        "subtitle": "Every decision and action we take is guided by these values",
+        "innovation": {
+          "title": "Innovation",
+          "description": "Constantly researching and applying the most advanced AI technology to improve translation quality."
+        },
+        "quality": {
+          "title": "Top Quality",
+          "description": "Committed to 99.9% accuracy and preserving original document formatting."
+        },
+        "customer": {
+          "title": "Customer-Centric",
+          "description": "Listening, understanding and accompanying customers in every translation project."
+        },
+        "teamwork": {
+          "title": "Teamwork",
+          "description": "Building an open, creative and supportive work environment for mutual growth."
+        }
+      },
+      "timeline": {
+        "title": "Our Journey",
+        "subtitle": "Key milestones in building AnyTrans",
+        "milestones": {
+          "2021": {
+            "title": "The Beginning",
+            "description": "AnyTrans was born from a simple idea: translate PDF documents without losing formatting."
+          },
+          "2022": {
+            "title": "First 1,000 Users",
+            "description": "Reached 1,000 customers and launched Glossary feature for businesses."
+          },
+          "2023": {
+            "title": "Market Expansion",
+            "description": "Support for 50+ languages, OCR integration and API launch for developers."
+          },
+          "2024": {
+            "title": "10,000 Customers",
+            "description": "Reached 10,000 trusted customers and 5 million translated pages."
+          },
+          "2025": {
+            "title": "The Future Ahead",
+            "description": "Continuing to innovate with next-gen AI, aiming to become the #1 translation platform in Southeast Asia."
+          }
+        }
+      },
+      "team": {
+        "title": "The People Behind AnyTrans",
+        "subtitle": "A team passionate about technology and dedicated to delivering the best solutions"
+      }
+    },
+    "contact": {
+      "hero": {
+        "title": "Start a",
+        "titleHighlight": "conversation",
+        "description": "We're here to help. Send us a message and we'll respond within 24 hours."
+      },
+      "infoPanel": {
+        "title": "Contact Information",
+        "subtitle": "Say something to start a conversation!"
+      },
+      "form": {
+        "fullName": "Full Name",
+        "fullNamePlaceholder": "John Doe",
+        "phone": "Phone Number",
+        "phonePlaceholder": "+1 234 567 890",
+        "email": "Email",
+        "emailPlaceholder": "demo@gmail.com",
+        "selectSubject": "Select Subject?",
+        "message": "Message",
+        "messagePlaceholder": "Write your message...",
+        "submit": "Send Message",
+        "submitting": "Sending...",
+        "subjects": {
+          "general": "General Inquiry",
+          "support": "Support",
+          "feedback": "Feedback",
+          "other": "Other"
+        }
+      },
+      "info": {
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address"
+      }
+    }
+  }
+}

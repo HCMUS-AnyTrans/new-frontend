@@ -1,0 +1,8 @@
+export { HeroSection } from "./hero-section"
+export { FeaturesSection } from "./features-section"
+export { PainPoints } from "./pain-points"
+export { HowItWorks } from "./how-it-works"
+export { PricingSection } from "./pricing-section"
+export { TestimonialsSection } from "./testimonials-section"
+export { SocialProof } from "./social-proof"
+export { TranslationDemo } from "./translation-demo"

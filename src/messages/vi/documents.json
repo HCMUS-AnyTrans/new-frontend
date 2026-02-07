@@ -1,0 +1,60 @@
+{
+  "documents": {
+    "wizard": {
+      "title": "Dịch tài liệu",
+      "steps": {
+        "upload": "Tải lên",
+        "configure": "Cấu hình",
+        "review": "Xem lại"
+      }
+    },
+    "upload": {
+      "title": "Tải lên tài liệu",
+      "description": "Kéo thả hoặc click để chọn file",
+      "supportedFormats": "Hỗ trợ: PDF, DOCX, PPTX, XLSX",
+      "maxSize": "Tối đa 50MB",
+      "uploading": "Đang tải lên...",
+      "uploadSuccess": "Tải lên thành công"
+    },
+    "configure": {
+      "title": "Cấu hình dịch",
+      "sourceLanguage": "Ngôn ngữ nguồn",
+      "targetLanguage": "Ngôn ngữ đích",
+      "domain": "Lĩnh vực",
+      "tone": "Giọng điệu",
+      "glossary": "Thuật ngữ",
+      "useGlossary": "Sử dụng thuật ngữ riêng"
+    },
+    "review": {
+      "title": "Xem lại & Xác nhận",
+      "originalDocument": "Tài liệu gốc",
+      "translatedDocument": "Tài liệu đã dịch",
+      "estimatedCredits": "Credits dự kiến",
+      "startTranslation": "Bắt đầu dịch",
+      "download": "Tải xuống"
+    },
+    "languages": {
+      "vi": "Tiếng Việt",
+      "en": "Tiếng Anh",
+      "ja": "Tiếng Nhật",
+      "ko": "Tiếng Hàn",
+      "zh": "Tiếng Trung",
+      "fr": "Tiếng Pháp",
+      "de": "Tiếng Đức"
+    },
+    "domains": {
+      "general": "Chung",
+      "legal": "Pháp luật",
+      "medical": "Y tế",
+      "technical": "Kỹ thuật",
+      "business": "Kinh doanh",
+      "academic": "Học thuật"
+    },
+    "tones": {
+      "formal": "Trang trọng",
+      "informal": "Thân mật",
+      "professional": "Chuyên nghiệp",
+      "casual": "Bình thường"
+    }
+  }
+}
