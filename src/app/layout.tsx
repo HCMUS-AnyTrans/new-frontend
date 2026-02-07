@@ -17,6 +17,14 @@ export const metadata: Metadata = {
   title: "AnyTrans - Professional Document Translation",
   description:
     "Fast, accurate document translation powered by AI. Preserves original formatting.",
+  icons: {
+    icon: [
+      { url: "/logo.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/logo.svg", sizes: "180x180", type: "image/svg+xml" },
+    ],
+  },
 };
 
 export default function RootLayout({
