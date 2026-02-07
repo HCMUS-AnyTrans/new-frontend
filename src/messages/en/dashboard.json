@@ -1,0 +1,104 @@
+{
+  "dashboard": {
+    "sidebar": {
+      "mainMenu": "Main Menu",
+      "other": "Other",
+      "dashboard": "Dashboard",
+      "documents": "Document Translation",
+      "subtitles": "Subtitle Translation",
+      "glossary": "Glossary",
+      "history": "History",
+      "settings": "Settings",
+      "help": "Help",
+      "profile": "Profile",
+      "logout": "Logout"
+    },
+    "nav": {
+      "documents": "Document Translation",
+      "subtitles": "Subtitle Translation",
+      "glossary": "Glossary",
+      "history": "History",
+      "settings": "Settings",
+      "help": "Help"
+    },
+    "header": {
+      "search": "Search...",
+      "notifications": "Notifications",
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Logout"
+    },
+    "stats": {
+      "totalCredits": "Total Credits",
+      "remainingCredits": "Remaining Credits",
+      "usedCredits": "Used",
+      "documentsTranslated": "Documents Translated",
+      "subtitlesTranslated": "Subtitles Translated",
+      "successRate": "Success Rate",
+      "documentsAndSubtitles": "{docs} Documents | {subs} Subtitles",
+      "totalJobs": "Total Jobs",
+      "processing": "Processing",
+      "completedThisMonth": "Completed This Month",
+      "successRateLabel": "Success rate: {rate}%"
+    },
+    "activity": {
+      "title": "Recent Activity",
+      "viewAll": "View all",
+      "noActivity": "No activity yet",
+      "jobComplete": "Job completed",
+      "payment": "Credits added",
+      "warning": "Low credits",
+      "jobFailed": "Job failed"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "uploadDocument": "Upload document",
+      "uploadSubtitle": "Upload subtitle",
+      "buyCredits": "Buy more credits",
+      "viewHistory": "View history"
+    },
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "succeeded": "Completed",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    },
+    "storage": {
+      "title": "Storage",
+      "used": "Used",
+      "remaining": "{value} GB remaining"
+    },
+    "pages": {
+      "dashboard": "Dashboard",
+      "documents": "Document Translation",
+      "subtitles": "Subtitle Translation",
+      "glossary": "Glossary",
+      "history": "History",
+      "settings": "Settings",
+      "help": "Help"
+    },
+    "welcome": {
+      "greeting": "Hello, {name}",
+      "description": "Your translation activity overview for today."
+    },
+    "charts": {
+      "jobsThisWeek": "Jobs This Week",
+      "creditUsage": "Credit Usage",
+      "documents": "Documents",
+      "subtitles": "Subtitles",
+      "remaining": "Remaining"
+    },
+    "table": {
+      "recentJobs": "Recent Jobs",
+      "fileName": "File Name",
+      "type": "Type",
+      "languages": "Languages",
+      "status": "Status",
+      "credits": "Credits",
+      "date": "Date",
+      "document": "Document",
+      "subtitle": "Subtitle"
+    }
+  }
+}

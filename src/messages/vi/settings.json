@@ -1,0 +1,89 @@
+{
+  "settings": {
+    "title": "Cài đặt",
+    "tabs": {
+      "profile": "Hồ sơ",
+      "preferences": "Tùy chọn",
+      "security": "Bảo mật",
+      "notifications": "Thông báo",
+      "billing": "Thanh toán",
+      "files": "Tệp tin",
+      "activity": "Hoạt động"
+    },
+    "profile": {
+      "title": "Thông tin cá nhân",
+      "description": "Quản lý thông tin tài khoản của bạn",
+      "avatar": "Ảnh đại diện",
+      "fullName": "Họ và tên",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "company": "Công ty",
+      "position": "Chức vụ",
+      "saveChanges": "Lưu thay đổi"
+    },
+    "preferences": {
+      "title": "Tùy chọn",
+      "description": "Tùy chỉnh trải nghiệm của bạn",
+      "language": "Ngôn ngữ giao diện",
+      "theme": "Chủ đề",
+      "themeLight": "Sáng",
+      "themeDark": "Tối",
+      "themeSystem": "Hệ thống",
+      "emailNotifications": "Gửi kết quả qua email",
+      "fileTtl": "Thời gian lưu file"
+    },
+    "security": {
+      "title": "Bảo mật",
+      "description": "Quản lý mật khẩu và xác thực",
+      "changePassword": "Đổi mật khẩu",
+      "currentPassword": "Mật khẩu hiện tại",
+      "newPassword": "Mật khẩu mới",
+      "confirmPassword": "Xác nhận mật khẩu mới",
+      "twoFactor": "Xác thực 2 yếu tố",
+      "twoFactorDescription": "Thêm lớp bảo mật cho tài khoản",
+      "sessions": "Phiên đăng nhập",
+      "terminateAll": "Đăng xuất tất cả"
+    },
+    "notifications": {
+      "title": "Thông báo",
+      "description": "Quản lý cách bạn nhận thông báo",
+      "email": "Email",
+      "push": "Thông báo đẩy",
+      "types": {
+        "jobComplete": "Khi job hoàn thành",
+        "jobFailed": "Khi job thất bại",
+        "lowCredits": "Khi credits sắp hết",
+        "promotions": "Khuyến mãi & ưu đãi",
+        "updates": "Cập nhật sản phẩm"
+      }
+    },
+    "billing": {
+      "title": "Thanh toán",
+      "description": "Quản lý gói dịch vụ và thanh toán",
+      "currentPlan": "Gói hiện tại",
+      "credits": "Credits",
+      "validUntil": "Có hiệu lực đến",
+      "upgrade": "Nâng cấp gói",
+      "buyCredits": "Mua thêm credits",
+      "paymentHistory": "Lịch sử thanh toán"
+    },
+    "files": {
+      "title": "Tệp tin",
+      "description": "Quản lý các tệp đã tải lên",
+      "name": "Tên file",
+      "size": "Kích thước",
+      "uploadedAt": "Ngày tải lên",
+      "expiresAt": "Hết hạn",
+      "noFiles": "Chưa có tệp nào"
+    },
+    "activity": {
+      "title": "Hoạt động",
+      "description": "Lịch sử hoạt động tài khoản",
+      "action": "Hành động",
+      "device": "Thiết bị",
+      "location": "Địa điểm",
+      "time": "Thời gian",
+      "noActivity": "Chưa có hoạt động"
+    }
+  }
+}

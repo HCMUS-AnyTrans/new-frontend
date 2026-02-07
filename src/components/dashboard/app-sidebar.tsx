@@ -1,9 +1,20 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
-import { ChevronUp, LogOut, User, Settings } from "lucide-react"
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { ChevronUp, LogOut, User, Settings } from "lucide-react";
+import {
+  LayoutDashboard,
+  FileText,
+  Subtitles,
+  BookOpen,
+  History,
+  Settings as SettingsIcon,
+  HelpCircle,
+  type LucideIcon,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarHeader,
@@ -16,24 +27,62 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarSeparator,
-} from "@/components/ui/sidebar"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+} from "@/components/ui/sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { navGroups, mockUser } from "@/data/dashboard"
+} from "@/components/ui/dropdown-menu";
+import { mockUser } from "@/data/dashboard";
+
+interface NavItem {
+  titleKey: string;
+  href: string;
+  icon: LucideIcon;
+}
+
+interface NavGroup {
+  labelKey: string;
+  items: NavItem[];
+}
+
+const navGroups: NavGroup[] = [
+  {
+    labelKey: "mainMenu",
+    items: [
+      { titleKey: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { titleKey: "documents", href: "/documents", icon: FileText },
+      { titleKey: "subtitles", href: "/subtitles", icon: Subtitles },
+      { titleKey: "glossary", href: "/glossary", icon: BookOpen },
+      { titleKey: "history", href: "/history", icon: History },
+    ],
+  },
+  {
+    labelKey: "other",
+    items: [
+      { titleKey: "settings", href: "/settings", icon: SettingsIcon },
+      { titleKey: "help", href: "/help", icon: HelpCircle },
+    ],
+  },
+];
 
 export function AppSidebar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
+  const t = useTranslations("dashboard.sidebar");
+
+  // Remove locale prefix from pathname for matching
+  const pathnameWithoutLocale = pathname.replace(/^\/(vi|en)/, "");
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
+    <Sidebar
+      collapsible="icon"
+      className="border-r border-sidebar-border bg-sidebar"
+    >
       {/* Header - Logo */}
-      <SidebarHeader className="p-4">
+      <SidebarHeader className="p-4 group-data-[collapsible=icon]:p-2">
         <Link href="/dashboard" className="flex items-center gap-2">
           <div className="relative h-8 w-8 shrink-0">
             <Image
@@ -53,32 +102,35 @@ export function AppSidebar() {
       {/* Main Navigation */}
       <SidebarContent>
         {navGroups.map((group) => (
-          <SidebarGroup key={group.label}>
+          <SidebarGroup key={group.labelKey}>
             <SidebarGroupLabel className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
-              {group.label}
+              {t(group.labelKey)}
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => {
-                  const isActive = pathname === item.href
+                  const isActive = pathnameWithoutLocale === item.href;
+                  const title = t(item.titleKey);
                   return (
                     <SidebarMenuItem key={item.href}>
                       <SidebarMenuButton
                         asChild
                         isActive={isActive}
-                        tooltip={item.title}
+                        tooltip={title}
                       >
                         <Link href={item.href}>
                           <item.icon className="size-4" />
-                          <span>{item.title}</span>
+                          <span>{title}</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
-                  )
+                  );
                 })}
               </SidebarMenu>
             </SidebarGroupContent>
-            {group.label === "Menu chính" && <SidebarSeparator className="mt-2" />}
+            {group.labelKey === "mainMenu" && (
+              <SidebarSeparator className="mt-2" />
+            )}
           </SidebarGroup>
         ))}
       </SidebarContent>
@@ -96,7 +148,10 @@ export function AppSidebar() {
             >
               <Avatar className="h-9 w-9 shrink-0">
                 {mockUser.avatarUrl && (
-                  <AvatarImage src={mockUser.avatarUrl} alt={mockUser.fullName} />
+                  <AvatarImage
+                    src={mockUser.avatarUrl}
+                    alt={mockUser.fullName}
+                  />
                 )}
                 <AvatarFallback className="bg-primary text-primary-foreground text-xs font-medium">
                   {mockUser.initials}
@@ -117,23 +172,23 @@ export function AppSidebar() {
             <DropdownMenuItem asChild>
               <Link href="/settings" className="flex items-center">
                 <User className="mr-2 size-4" />
-                Hồ sơ
+                {t("profile")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href="/settings" className="flex items-center">
                 <Settings className="mr-2 size-4" />
-                Cài đặt
+                {t("settings")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10">
               <LogOut className="mr-2 size-4" />
-              Đăng xuất
+              {t("logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

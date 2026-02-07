@@ -1,0 +1,89 @@
+{
+  "settings": {
+    "title": "Settings",
+    "tabs": {
+      "profile": "Profile",
+      "preferences": "Preferences",
+      "security": "Security",
+      "notifications": "Notifications",
+      "billing": "Billing",
+      "files": "Files",
+      "activity": "Activity"
+    },
+    "profile": {
+      "title": "Personal Information",
+      "description": "Manage your account information",
+      "avatar": "Avatar",
+      "fullName": "Full name",
+      "email": "Email",
+      "phone": "Phone number",
+      "company": "Company",
+      "position": "Position",
+      "saveChanges": "Save changes"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "description": "Customize your experience",
+      "language": "Interface language",
+      "theme": "Theme",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "themeSystem": "System",
+      "emailNotifications": "Send results via email",
+      "fileTtl": "File retention period"
+    },
+    "security": {
+      "title": "Security",
+      "description": "Manage password and authentication",
+      "changePassword": "Change password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "twoFactor": "Two-factor authentication",
+      "twoFactorDescription": "Add an extra layer of security",
+      "sessions": "Login sessions",
+      "terminateAll": "Log out all sessions"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Manage how you receive notifications",
+      "email": "Email",
+      "push": "Push notifications",
+      "types": {
+        "jobComplete": "When job completes",
+        "jobFailed": "When job fails",
+        "lowCredits": "When credits are low",
+        "promotions": "Promotions & offers",
+        "updates": "Product updates"
+      }
+    },
+    "billing": {
+      "title": "Billing",
+      "description": "Manage your plan and payments",
+      "currentPlan": "Current plan",
+      "credits": "Credits",
+      "validUntil": "Valid until",
+      "upgrade": "Upgrade plan",
+      "buyCredits": "Buy more credits",
+      "paymentHistory": "Payment history"
+    },
+    "files": {
+      "title": "Files",
+      "description": "Manage your uploaded files",
+      "name": "File name",
+      "size": "Size",
+      "uploadedAt": "Upload date",
+      "expiresAt": "Expires",
+      "noFiles": "No files yet"
+    },
+    "activity": {
+      "title": "Activity",
+      "description": "Account activity history",
+      "action": "Action",
+      "device": "Device",
+      "location": "Location",
+      "time": "Time",
+      "noActivity": "No activity yet"
+    }
+  }
+}

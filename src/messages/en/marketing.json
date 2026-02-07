@@ -1,0 +1,115 @@
+{
+  "marketing": {
+    "hero": {
+      "title": "Document Translation",
+      "subtitle": "powered by AI",
+      "description": "Fast, accurate document translation that preserves original formatting. Supports PDF, DOCX, PPTX and more.",
+      "cta": "Start for free",
+      "ctaSecondary": "Watch demo",
+      "users": "{count} satisfied users"
+    },
+    "features": {
+      "title": "Key Features",
+      "subtitle": "Most advanced AI technology for translation",
+      "preserveFormat": {
+        "title": "Preserve Original Format",
+        "description": "Tables, images, fonts - everything stays intact"
+      },
+      "glossary": {
+        "title": "Smart Glossary",
+        "description": "Consistent terminology throughout the document"
+      },
+      "speed": {
+        "title": "10x Faster",
+        "description": "Translate 100 pages in just minutes"
+      },
+      "accuracy": {
+        "title": "High Accuracy",
+        "description": "AI trained for specific domains"
+      }
+    },
+    "pricing": {
+      "title": "Pricing",
+      "subtitle": "Choose the plan that fits your needs",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "savePercent": "Save {percent}%",
+      "perMonth": "/month",
+      "popular": "Most popular",
+      "features": "Features",
+      "cta": "Get started",
+      "plans": {
+        "free": {
+          "name": "Free",
+          "description": "For individuals",
+          "price": "0"
+        },
+        "pro": {
+          "name": "Pro",
+          "description": "For professionals",
+          "price": "9.99"
+        },
+        "business": {
+          "name": "Business",
+          "description": "For businesses",
+          "price": "24.99"
+        }
+      }
+    },
+    "testimonials": {
+      "title": "What customers say",
+      "subtitle": "Trusted by thousands of customers"
+    },
+    "cta": {
+      "title": "Ready to get started?",
+      "description": "Sign up now and get 100 free credits",
+      "button": "Sign up for free"
+    },
+    "footer": {
+      "product": "Product",
+      "company": "Company",
+      "resources": "Resources",
+      "legal": "Legal",
+      "copyright": "© {year} AnyTrans. All rights reserved."
+    },
+    "nav": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "about": "About",
+      "contact": "Contact",
+      "login": "Login",
+      "getStarted": "Get Started"
+    },
+    "about": {
+      "title": "About Us",
+      "mission": {
+        "title": "Mission",
+        "description": "Breaking language barriers in global business"
+      },
+      "vision": {
+        "title": "Vision",
+        "description": "Become Asia's leading AI translation platform"
+      },
+      "team": {
+        "title": "Team",
+        "description": "Top experts in AI and translation"
+      }
+    },
+    "contact": {
+      "title": "Contact",
+      "subtitle": "We're always ready to help",
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "subject": "Subject",
+        "message": "Message",
+        "submit": "Send message"
+      },
+      "info": {
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address"
+      }
+    }
+  }
+}

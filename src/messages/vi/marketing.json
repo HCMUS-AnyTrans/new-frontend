@@ -1,0 +1,115 @@
+{
+  "marketing": {
+    "hero": {
+      "title": "Dịch tài liệu",
+      "subtitle": "chuyên nghiệp với AI",
+      "description": "Dịch tài liệu nhanh chóng, chính xác và giữ nguyên định dạng gốc. Hỗ trợ PDF, DOCX, PPTX và nhiều định dạng khác.",
+      "cta": "Bắt đầu miễn phí",
+      "ctaSecondary": "Xem demo",
+      "users": "{count} người dùng hài lòng"
+    },
+    "features": {
+      "title": "Tính năng nổi bật",
+      "subtitle": "Công nghệ AI tiên tiến nhất cho dịch thuật",
+      "preserveFormat": {
+        "title": "Giữ nguyên format gốc",
+        "description": "Bảng biểu, hình ảnh, font chữ - tất cả được giữ nguyên"
+      },
+      "glossary": {
+        "title": "Glossary thông minh",
+        "description": "Đồng nhất thuật ngữ trong toàn bộ tài liệu"
+      },
+      "speed": {
+        "title": "Nhanh gấp 10 lần",
+        "description": "Dịch 100 trang chỉ trong vài phút"
+      },
+      "accuracy": {
+        "title": "Độ chính xác cao",
+        "description": "AI được đào tạo cho từng lĩnh vực chuyên môn"
+      }
+    },
+    "pricing": {
+      "title": "Bảng giá",
+      "subtitle": "Chọn gói phù hợp với nhu cầu của bạn",
+      "monthly": "Hàng tháng",
+      "yearly": "Hàng năm",
+      "savePercent": "Tiết kiệm {percent}%",
+      "perMonth": "/tháng",
+      "popular": "Phổ biến nhất",
+      "features": "Tính năng",
+      "cta": "Bắt đầu ngay",
+      "plans": {
+        "free": {
+          "name": "Miễn phí",
+          "description": "Dành cho cá nhân",
+          "price": "0"
+        },
+        "pro": {
+          "name": "Pro",
+          "description": "Cho chuyên gia",
+          "price": "199.000"
+        },
+        "business": {
+          "name": "Business",
+          "description": "Cho doanh nghiệp",
+          "price": "499.000"
+        }
+      }
+    },
+    "testimonials": {
+      "title": "Khách hàng nói gì",
+      "subtitle": "Hàng ngàn khách hàng tin tưởng sử dụng"
+    },
+    "cta": {
+      "title": "Sẵn sàng bắt đầu?",
+      "description": "Đăng ký ngay để nhận 100 credits miễn phí",
+      "button": "Đăng ký miễn phí"
+    },
+    "footer": {
+      "product": "Sản phẩm",
+      "company": "Công ty",
+      "resources": "Tài nguyên",
+      "legal": "Pháp lý",
+      "copyright": "© {year} AnyTrans. Đã đăng ký bản quyền."
+    },
+    "nav": {
+      "features": "Tính năng",
+      "pricing": "Bảng giá",
+      "about": "Về chúng tôi",
+      "contact": "Liên hệ",
+      "login": "Đăng nhập",
+      "getStarted": "Bắt đầu"
+    },
+    "about": {
+      "title": "Về chúng tôi",
+      "mission": {
+        "title": "Sứ mệnh",
+        "description": "Phá bỏ rào cản ngôn ngữ trong kinh doanh toàn cầu"
+      },
+      "vision": {
+        "title": "Tầm nhìn",
+        "description": "Trở thành nền tảng dịch thuật AI hàng đầu châu Á"
+      },
+      "team": {
+        "title": "Đội ngũ",
+        "description": "Những chuyên gia hàng đầu về AI và dịch thuật"
+      }
+    },
+    "contact": {
+      "title": "Liên hệ",
+      "subtitle": "Chúng tôi luôn sẵn sàng hỗ trợ bạn",
+      "form": {
+        "name": "Họ tên",
+        "email": "Email",
+        "subject": "Chủ đề",
+        "message": "Nội dung",
+        "submit": "Gửi tin nhắn"
+      },
+      "info": {
+        "email": "Email",
+        "phone": "Điện thoại",
+        "address": "Địa chỉ"
+      }
+    }
+  }
+}
