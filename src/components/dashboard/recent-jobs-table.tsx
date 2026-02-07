@@ -1,9 +1,10 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,16 +12,27 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Download, Eye, ArrowRight, FileText, Subtitles } from "lucide-react"
-import { mockRecentJobs, jobStatusConfig, languageCodeMap } from "@/data/dashboard"
+} from "@/components/ui/table";
+import { Download, Eye, ArrowRight, FileText, Subtitles } from "lucide-react";
+import { mockRecentJobs, languageCodeMap } from "@/data/dashboard";
 
 export function RecentJobsTable() {
+  const t = useTranslations("dashboard.recentJobs");
+  const tStatus = useTranslations("dashboard.status");
+  const locale = useLocale();
+
+  const statusConfig: Record<string, string> = {
+    pending: "bg-warning/10 text-warning border-warning/20",
+    processing: "bg-info/10 text-info border-info/20",
+    succeeded: "bg-success/10 text-success border-success/20",
+    failed: "bg-destructive/10 text-destructive border-destructive/20",
+  };
+
   return (
     <Card className="border border-border shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-base font-semibold text-foreground">
-          Jobs gần đây
+          {t("title")}
         </CardTitle>
         <Button
           variant="ghost"
@@ -29,7 +41,7 @@ export function RecentJobsTable() {
           asChild
         >
           <Link href="/history">
-            Xem tất cả
+            {t("viewAll")}
             <ArrowRight className="size-3.5" />
           </Link>
         </Button>
@@ -40,31 +52,30 @@ export function RecentJobsTable() {
             <TableHeader>
               <TableRow className="hover:bg-transparent">
                 <TableHead className="text-xs font-medium text-muted-foreground">
-                  Tên file
+                  {t("fileName")}
                 </TableHead>
                 <TableHead className="text-xs font-medium text-muted-foreground">
-                  Loại
+                  {t("type")}
                 </TableHead>
                 <TableHead className="text-xs font-medium text-muted-foreground">
-                  Ngôn ngữ
+                  {t("languages")}
                 </TableHead>
                 <TableHead className="text-xs font-medium text-muted-foreground">
-                  Trạng thái
+                  {t("status")}
                 </TableHead>
                 <TableHead className="text-right text-xs font-medium text-muted-foreground">
-                  Credits
+                  {t("credits")}
                 </TableHead>
                 <TableHead className="text-xs font-medium text-muted-foreground">
-                  Ngày tạo
+                  {t("createdAt")}
                 </TableHead>
                 <TableHead className="text-right text-xs font-medium text-muted-foreground">
-                  Thao tác
+                  {t("actions")}
                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {mockRecentJobs.map((job) => {
-                const status = jobStatusConfig[job.status]
                 return (
                   <TableRow key={job.id} className="group">
                     <TableCell className="max-w-[200px]">
@@ -88,32 +99,38 @@ export function RecentJobsTable() {
                             : "border-accent/20 bg-accent/10 text-accent"
                         }`}
                       >
-                        {job.jobType === "document" ? "Tài liệu" : "Phụ đề"}
+                        {job.jobType === "document"
+                          ? t("document")
+                          : t("subtitle")}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1 text-sm text-foreground">
                         <span className="font-mono text-xs font-medium">
-                          {languageCodeMap[job.srcLang] || job.srcLang.toUpperCase()}
+                          {languageCodeMap[job.srcLang] ||
+                            job.srcLang.toUpperCase()}
                         </span>
                         <span className="text-muted-foreground">→</span>
                         <span className="font-mono text-xs font-medium">
-                          {languageCodeMap[job.tgtLang] || job.tgtLang.toUpperCase()}
+                          {languageCodeMap[job.tgtLang] ||
+                            job.tgtLang.toUpperCase()}
                         </span>
                       </div>
                     </TableCell>
                     <TableCell>
                       <Badge
                         variant="outline"
-                        className={`text-xs ${status?.className || ""}`}
+                        className={`text-xs ${statusConfig[job.status] || ""}`}
                       >
-                        {status?.label || job.status}
+                        {tStatus(job.status)}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
                       <span className="text-sm tabular-nums text-foreground">
                         {job.costCredits > 0
-                          ? job.costCredits.toLocaleString("vi-VN")
+                          ? job.costCredits.toLocaleString(
+                              locale === "vi" ? "vi-VN" : "en-US"
+                            )
                           : "—"}
                       </span>
                     </TableCell>
@@ -131,26 +148,22 @@ export function RecentJobsTable() {
                             className="h-7 w-7"
                           >
                             <Download className="size-3.5 text-muted-foreground" />
-                            <span className="sr-only">Tải xuống</span>
+                            <span className="sr-only">{t("download")}</span>
                           </Button>
                         )}
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7"
-                        >
+                        <Button variant="ghost" size="icon" className="h-7 w-7">
                           <Eye className="size-3.5 text-muted-foreground" />
-                          <span className="sr-only">Xem chi tiết</span>
+                          <span className="sr-only">{t("viewDetails")}</span>
                         </Button>
                       </div>
                     </TableCell>
                   </TableRow>
-                )
+                );
               })}
             </TableBody>
           </Table>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

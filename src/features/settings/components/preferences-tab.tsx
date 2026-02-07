@@ -1,61 +1,70 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Sun, Moon, Monitor } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
+import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { Sun, Moon, Monitor } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { SettingsSection, SettingsRow, SettingsDivider } from "./settings-section"
+} from "@/components/ui/select";
 import {
-  mockUserPreferences,
-  uiLanguageOptions,
-  themeOptions,
-  fileTtlOptions,
-} from "../data"
-import type { UserPreferences, UILanguage, Theme, FileTTL } from "../types"
+  SettingsSection,
+  SettingsRow,
+  SettingsDivider,
+} from "./settings-section";
+import { mockUserPreferences, uiLanguageOptions } from "../data";
+import type { UserPreferences, UILanguage, Theme, FileTTL } from "../types";
 
 const themeIcons = {
   light: Sun,
   dark: Moon,
   system: Monitor,
-}
+};
 
 interface PreferencesTabProps {
-  preferences?: UserPreferences
+  preferences?: UserPreferences;
 }
 
-export function PreferencesTab({ preferences = mockUserPreferences }: PreferencesTabProps) {
-  const [formData, setFormData] = useState<UserPreferences>(preferences)
-  const [hasChanges, setHasChanges] = useState(false)
+export function PreferencesTab({
+  preferences = mockUserPreferences,
+}: PreferencesTabProps) {
+  const t = useTranslations("settings.preferences");
+
+  const [formData, setFormData] = useState<UserPreferences>(preferences);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const updateField = <K extends keyof UserPreferences>(
     key: K,
     value: UserPreferences[K]
   ) => {
-    setFormData({ ...formData, [key]: value })
-    setHasChanges(true)
-  }
+    setFormData({ ...formData, [key]: value });
+    setHasChanges(true);
+  };
 
   const handleSave = () => {
     // TODO: Call API to save
-    setHasChanges(false)
-  }
+    setHasChanges(false);
+  };
+
+  const themeOptions = [
+    { value: "light", labelKey: "themeLight" },
+    { value: "dark", labelKey: "themeDark" },
+    { value: "system", labelKey: "themeSystem" },
+  ] as const;
+
+  const fileTtlOptions = [7, 14, 30, 60, 90] as const;
 
   return (
     <div className="space-y-6">
       {/* Display Settings */}
-      <SettingsSection title="Hiển thị">
+      <SettingsSection title={t("title")} description={t("description")}>
         <div className="space-y-1">
-          <SettingsRow
-            label="Ngôn ngữ giao diện"
-            description="Ngôn ngữ hiển thị trong ứng dụng"
-          >
+          <SettingsRow label={t("language")} description={t("languageDescription")}>
             <Select
               value={formData.uiLanguage}
               onValueChange={(v) => updateField("uiLanguage", v as UILanguage)}
@@ -78,14 +87,11 @@ export function PreferencesTab({ preferences = mockUserPreferences }: Preference
 
           <SettingsDivider />
 
-          <SettingsRow
-            label="Giao diện"
-            description="Chọn chế độ sáng, tối hoặc theo hệ thống"
-          >
+          <SettingsRow label={t("theme")} description={t("themeDescription")}>
             <div className="flex gap-1">
               {themeOptions.map((theme) => {
-                const Icon = themeIcons[theme.value as keyof typeof themeIcons]
-                const isActive = formData.theme === theme.value
+                const Icon = themeIcons[theme.value as keyof typeof themeIcons];
+                const isActive = formData.theme === theme.value;
                 return (
                   <button
                     key={theme.value}
@@ -97,9 +103,9 @@ export function PreferencesTab({ preferences = mockUserPreferences }: Preference
                     }`}
                   >
                     <Icon className="size-4" />
-                    <span>{theme.label}</span>
+                    <span>{t(theme.labelKey)}</span>
                   </button>
-                )
+                );
               })}
             </div>
           </SettingsRow>
@@ -107,11 +113,11 @@ export function PreferencesTab({ preferences = mockUserPreferences }: Preference
       </SettingsSection>
 
       {/* Translation Settings */}
-      <SettingsSection title="Dịch thuật">
+      <SettingsSection title={t("emailResults")}>
         <div className="space-y-1">
           <SettingsRow
-            label="Gửi kết quả qua email"
-            description="Nhận file đã dịch qua email khi hoàn tất"
+            label={t("emailResults")}
+            description={t("emailResultsDescription")}
           >
             <Switch
               checked={formData.sendResultViaEmail}
@@ -122,8 +128,8 @@ export function PreferencesTab({ preferences = mockUserPreferences }: Preference
           <SettingsDivider />
 
           <SettingsRow
-            label="Thời gian lưu file"
-            description="File sẽ tự động xóa sau thời gian này"
+            label={t("fileTtl")}
+            description={t("fileTtlDescription")}
           >
             <Select
               value={String(formData.fileTtl)}
@@ -133,9 +139,9 @@ export function PreferencesTab({ preferences = mockUserPreferences }: Preference
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {fileTtlOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={String(opt.value)}>
-                    {opt.label}
+                {fileTtlOptions.map((days) => (
+                  <SelectItem key={days} value={String(days)}>
+                    {t("days", { count: days })}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -147,9 +153,9 @@ export function PreferencesTab({ preferences = mockUserPreferences }: Preference
       {/* Save Button */}
       {hasChanges && (
         <div className="flex justify-end">
-          <Button onClick={handleSave}>Lưu thay đổi</Button>
+          <Button onClick={handleSave}>{t("title")}</Button>
         </div>
       )}
     </div>
-  )
+  );
 }

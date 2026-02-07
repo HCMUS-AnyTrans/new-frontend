@@ -1,23 +1,27 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   CheckCircle,
   CreditCard,
   AlertTriangle,
   XCircle,
   ArrowRight,
-} from "lucide-react"
-import { mockActivities } from "@/data/dashboard"
-import type { ActivityType } from "@/features/dashboard/types"
+} from "lucide-react";
+import { mockActivities } from "@/data/dashboard";
+import type { ActivityType } from "@/features/dashboard/types";
 
-const activityIcons: Record<ActivityType, {
-  icon: typeof CheckCircle
-  iconColor: string
-  iconBg: string
-}> = {
+const activityIcons: Record<
+  ActivityType,
+  {
+    icon: typeof CheckCircle;
+    iconColor: string;
+    iconBg: string;
+  }
+> = {
   job_complete: {
     icon: CheckCircle,
     iconColor: "text-success",
@@ -38,14 +42,16 @@ const activityIcons: Record<ActivityType, {
     iconColor: "text-warning",
     iconBg: "bg-warning/10",
   },
-}
+};
 
 export function ActivityFeed() {
+  const t = useTranslations("dashboard.activity");
+
   return (
     <Card className="border border-border shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-base font-semibold text-foreground">
-          Hoạt động gần đây
+          {t("title")}
         </CardTitle>
         <Button
           variant="ghost"
@@ -54,7 +60,7 @@ export function ActivityFeed() {
           asChild
         >
           <Link href="/notifications">
-            Xem tất cả
+            {t("viewAll")}
             <ArrowRight className="size-3.5" />
           </Link>
         </Button>
@@ -62,8 +68,8 @@ export function ActivityFeed() {
       <CardContent>
         <div className="flex flex-col gap-4">
           {mockActivities.map((activity) => {
-            const config = activityIcons[activity.type]
-            const Icon = config.icon
+            const config = activityIcons[activity.type];
+            const Icon = config.icon;
             return (
               <div key={activity.id} className="flex items-start gap-3">
                 <div
@@ -83,10 +89,10 @@ export function ActivityFeed() {
                   {activity.createdAt}
                 </span>
               </div>
-            )
+            );
           })}
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

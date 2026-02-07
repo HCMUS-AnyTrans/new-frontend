@@ -1,55 +1,71 @@
-"use client"
+"use client";
 
-import { Card, CardContent } from "@/components/ui/card"
-import { Coins, FileText, Clock, CheckCircle, TrendingUp, TrendingDown } from "lucide-react"
-import { mockStats } from "@/data/dashboard"
-
-const stats = [
-  {
-    title: "Tổng credits",
-    value: mockStats.totalCredits.toLocaleString("vi-VN"),
-    change: mockStats.creditsChange,
-    trend: mockStats.creditsTrend,
-    trendLabel: "so với tháng trước",
-    icon: Coins,
-    iconColor: "text-secondary",
-    iconBg: "bg-secondary/10",
-  },
-  {
-    title: "Tổng số jobs",
-    value: mockStats.totalJobs.toString(),
-    change: mockStats.jobsChange,
-    trend: mockStats.jobsTrend,
-    trendLabel: "so với tháng trước",
-    icon: FileText,
-    iconColor: "text-primary",
-    iconBg: "bg-primary/10",
-    subtitle: `${mockStats.documentJobs} Tài liệu  |  ${mockStats.subtitleJobs} Phụ đề`,
-  },
-  {
-    title: "Đang xử lý",
-    value: mockStats.processingJobs.toString(),
-    change: mockStats.processingChange,
-    trend: mockStats.processingTrend,
-    trendLabel: "so với hôm qua",
-    icon: Clock,
-    iconColor: "text-accent",
-    iconBg: "bg-accent/10",
-  },
-  {
-    title: "Hoàn thành tháng này",
-    value: mockStats.completedThisMonth.toString(),
-    change: mockStats.completedChange,
-    trend: mockStats.completedTrend,
-    trendLabel: "so với tháng trước",
-    icon: CheckCircle,
-    iconColor: "text-success",
-    iconBg: "bg-success/10",
-    subtitle: `Tỉ lệ thành công: ${mockStats.successRate}%`,
-  },
-]
+import { useTranslations, useLocale } from "next-intl";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Coins,
+  FileText,
+  Clock,
+  CheckCircle,
+  TrendingUp,
+  TrendingDown,
+} from "lucide-react";
+import { mockStats } from "@/data/dashboard";
 
 export function StatsCards() {
+  const t = useTranslations("dashboard.stats");
+  const locale = useLocale();
+
+  const stats = [
+    {
+      title: t("totalCredits"),
+      value: mockStats.totalCredits.toLocaleString(
+        locale === "vi" ? "vi-VN" : "en-US"
+      ),
+      change: mockStats.creditsChange,
+      trend: mockStats.creditsTrend,
+      trendLabel: t("vsLastMonth"),
+      icon: Coins,
+      iconColor: "text-secondary",
+      iconBg: "bg-secondary/10",
+    },
+    {
+      title: t("totalJobs"),
+      value: mockStats.totalJobs.toString(),
+      change: mockStats.jobsChange,
+      trend: mockStats.jobsTrend,
+      trendLabel: t("vsLastMonth"),
+      icon: FileText,
+      iconColor: "text-primary",
+      iconBg: "bg-primary/10",
+      subtitle: t("documentsAndSubtitles", {
+        docs: mockStats.documentJobs,
+        subs: mockStats.subtitleJobs,
+      }),
+    },
+    {
+      title: t("processing"),
+      value: mockStats.processingJobs.toString(),
+      change: mockStats.processingChange,
+      trend: mockStats.processingTrend,
+      trendLabel: t("vsYesterday"),
+      icon: Clock,
+      iconColor: "text-accent",
+      iconBg: "bg-accent/10",
+    },
+    {
+      title: t("completedThisMonth"),
+      value: mockStats.completedThisMonth.toString(),
+      change: mockStats.completedChange,
+      trend: mockStats.completedTrend,
+      trendLabel: t("vsLastMonth"),
+      icon: CheckCircle,
+      iconColor: "text-success",
+      iconBg: "bg-success/10",
+      subtitle: t("successRate", { rate: mockStats.successRate }),
+    },
+  ];
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => (
@@ -94,8 +110,8 @@ export function StatsCards() {
                       stat.trend === "up"
                         ? "text-success"
                         : stat.trend === "down"
-                        ? "text-accent"
-                        : "text-muted-foreground"
+                          ? "text-accent"
+                          : "text-muted-foreground"
                     }`}
                   >
                     {stat.change}
@@ -110,5 +126,5 @@ export function StatsCards() {
         </Card>
       ))}
     </div>
-  )
+  );
 }

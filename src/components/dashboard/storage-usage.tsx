@@ -1,18 +1,21 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { HardDrive } from "lucide-react"
-import { mockStorage } from "@/data/dashboard"
+import { useTranslations } from "next-intl";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { HardDrive } from "lucide-react";
+import { mockStorage } from "@/data/dashboard";
 
 export function StorageUsage() {
-  const percentage = Math.round((mockStorage.used / mockStorage.total) * 100)
+  const t = useTranslations("dashboard.storage");
+  const percentage = Math.round((mockStorage.used / mockStorage.total) * 100);
+  const remaining = (mockStorage.total - mockStorage.used).toFixed(1);
 
   return (
     <Card className="border border-border shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-base font-semibold text-foreground">
-          Lưu trữ
+          {t("title")}
         </CardTitle>
         <HardDrive className="size-4 text-muted-foreground" />
       </CardHeader>
@@ -34,10 +37,10 @@ export function StorageUsage() {
           </div>
           <Progress value={percentage} className="h-2" />
           <p className="text-xs text-muted-foreground">
-            Còn lại {(mockStorage.total - mockStorage.used).toFixed(1)} GB dung lượng
+            {t("remaining", { value: remaining })}
           </p>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

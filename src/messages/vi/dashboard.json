@@ -13,62 +13,6 @@
       "profile": "Hồ sơ",
       "logout": "Đăng xuất"
     },
-    "nav": {
-      "documents": "Dịch tài liệu",
-      "subtitles": "Dịch phụ đề",
-      "glossary": "Thuật ngữ",
-      "history": "Lịch sử",
-      "settings": "Cài đặt",
-      "help": "Trợ giúp"
-    },
-    "header": {
-      "search": "Tìm kiếm...",
-      "notifications": "Thông báo",
-      "profile": "Hồ sơ",
-      "settings": "Cài đặt",
-      "logout": "Đăng xuất"
-    },
-    "stats": {
-      "totalCredits": "Tổng Credits",
-      "remainingCredits": "Credits còn lại",
-      "usedCredits": "Đã sử dụng",
-      "documentsTranslated": "Tài liệu đã dịch",
-      "subtitlesTranslated": "Phụ đề đã dịch",
-      "successRate": "Tỉ lệ thành công",
-      "documentsAndSubtitles": "{docs} Tài liệu | {subs} Phụ đề",
-      "totalJobs": "Tổng số Jobs",
-      "processing": "Đang xử lý",
-      "completedThisMonth": "Hoàn thành tháng này",
-      "successRateLabel": "Tỉ lệ thành công: {rate}%"
-    },
-    "activity": {
-      "title": "Hoạt động gần đây",
-      "viewAll": "Xem tất cả",
-      "noActivity": "Chưa có hoạt động nào",
-      "jobComplete": "Job hoàn thành",
-      "payment": "Nạp credits thành công",
-      "warning": "Credits thấp",
-      "jobFailed": "Job thất bại"
-    },
-    "quickActions": {
-      "title": "Thao tác nhanh",
-      "uploadDocument": "Upload tài liệu",
-      "uploadSubtitle": "Upload phụ đề",
-      "buyCredits": "Mua thêm credits",
-      "viewHistory": "Xem lịch sử"
-    },
-    "status": {
-      "pending": "Chờ xử lý",
-      "processing": "Đang xử lý",
-      "succeeded": "Hoàn thành",
-      "failed": "Thất bại",
-      "cancelled": "Đã hủy"
-    },
-    "storage": {
-      "title": "Dung lượng lưu trữ",
-      "used": "Đã dùng",
-      "remaining": "Còn lại {value} GB dung lượng"
-    },
     "pages": {
       "dashboard": "Tổng quan",
       "documents": "Dịch tài liệu",
@@ -82,23 +26,56 @@
       "greeting": "Xin chào, {name}",
       "description": "Tổng quan hoạt động dịch thuật của bạn hôm nay."
     },
-    "charts": {
-      "jobsThisWeek": "Jobs trong tuần",
-      "creditUsage": "Sử dụng Credits",
-      "documents": "Tài liệu",
-      "subtitles": "Phụ đề",
-      "remaining": "Còn lại"
+    "stats": {
+      "totalCredits": "Tổng credits",
+      "totalJobs": "Tổng số jobs",
+      "processing": "Đang xử lý",
+      "completedThisMonth": "Hoàn thành tháng này",
+      "vsLastMonth": "so với tháng trước",
+      "vsYesterday": "so với hôm qua",
+      "documentsAndSubtitles": "{docs} Tài liệu | {subs} Phụ đề",
+      "successRate": "Tỉ lệ thành công: {rate}%"
     },
-    "table": {
-      "recentJobs": "Jobs gần đây",
+    "quickActions": {
+      "uploadDocument": "Upload tài liệu",
+      "uploadSubtitle": "Upload phụ đề",
+      "buyCredits": "Mua thêm credits"
+    },
+    "activity": {
+      "title": "Hoạt động gần đây",
+      "viewAll": "Xem tất cả"
+    },
+    "recentJobs": {
+      "title": "Jobs gần đây",
+      "viewAll": "Xem tất cả",
       "fileName": "Tên file",
       "type": "Loại",
       "languages": "Ngôn ngữ",
       "status": "Trạng thái",
       "credits": "Credits",
-      "date": "Ngày",
+      "createdAt": "Ngày tạo",
+      "actions": "Thao tác",
+      "download": "Tải xuống",
+      "viewDetails": "Xem chi tiết",
       "document": "Tài liệu",
       "subtitle": "Phụ đề"
+    },
+    "storage": {
+      "title": "Lưu trữ",
+      "remaining": "Còn lại {value} GB dung lượng"
+    },
+    "charts": {
+      "jobsByDay": "Jobs theo ngày (7 ngày gần nhất)",
+      "creditAllocation": "Phân bổ credits",
+      "documents": "Tài liệu",
+      "subtitles": "Phụ đề",
+      "remaining": "Còn lại"
+    },
+    "status": {
+      "pending": "Chờ xử lý",
+      "processing": "Đang xử lý",
+      "succeeded": "Hoàn thành",
+      "failed": "Thất bại"
     }
   }
 }
