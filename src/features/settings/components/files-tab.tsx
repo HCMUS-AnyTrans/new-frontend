@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations, useLocale } from "next-intl"
 import {
   FileText,
   Download,
@@ -39,14 +40,6 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("vi-VN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  })
-}
-
 function getDaysUntilExpiry(expiresAt: string): number {
   const now = new Date()
   const expiry = new Date(expiresAt)
@@ -62,6 +55,9 @@ export function FilesTab({
   files = mockUserFiles,
   storage = mockStorageUsage,
 }: FilesTabProps) {
+  const t = useTranslations("settings.files")
+  const tCommon = useTranslations("common")
+  const locale = useLocale()
   const [fileList, setFileList] = useState(files)
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; file: UserFile | null }>({
     open: false,
@@ -69,6 +65,14 @@ export function FilesTab({
   })
 
   const usagePercent = (storage.used / storage.total) * 100
+
+  function formatDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    })
+  }
 
   const handleDownload = (file: UserFile) => {
     // TODO: Call API to get download URL
@@ -89,7 +93,7 @@ export function FilesTab({
   return (
     <div className="space-y-6">
       {/* Storage Usage */}
-      <SettingsSection title="Dung lượng sử dụng">
+      <SettingsSection title={t("storageUsage")}>
         <div className="space-y-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">
@@ -101,20 +105,20 @@ export function FilesTab({
           </div>
           <Progress value={usagePercent} className="h-2" />
           <p className="text-sm text-muted-foreground">
-            {storage.fileCount} tệp đang được lưu trữ
+            {t("filesStored", { count: storage.fileCount })}
           </p>
         </div>
       </SettingsSection>
 
       {/* File List */}
       <SettingsSection
-        title="Tệp của bạn"
-        description="Quản lý các tệp đã tải lên và đã dịch"
+        title={t("yourFiles")}
+        description={t("yourFilesDescription")}
       >
         {fileList.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
             <FolderOpen className="mb-2 size-8" />
-            <p>Chưa có tệp nào</p>
+            <p>{t("noFiles")}</p>
           </div>
         ) : (
           <div className="space-y-1">
@@ -146,10 +150,10 @@ export function FilesTab({
                           {isExpiringSoon ? (
                             <span className="flex items-center gap-1 text-warning">
                               <AlertTriangle className="size-3" />
-                              Còn {daysUntilExpiry} ngày
+                              {t("daysRemaining", { count: daysUntilExpiry })}
                             </span>
                           ) : (
-                            <span>Hết hạn {formatDate(file.expiresAt)}</span>
+                            <span>{t("expiresOn", { date: formatDate(file.expiresAt) })}</span>
                           )}
                         </div>
                       </div>
@@ -185,17 +189,17 @@ export function FilesTab({
       <Dialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, file: null })}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Xác nhận xóa</DialogTitle>
+            <DialogTitle>{t("confirmDelete")}</DialogTitle>
             <DialogDescription>
-              Bạn có chắc chắn muốn xóa tệp "{deleteDialog.file?.name}"? Hành động này không thể hoàn tác.
+              {t("confirmDeleteMessage", { name: deleteDialog.file?.name || "" })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteDialog({ open: false, file: null })}>
-              Hủy
+              {tCommon("cancel")}
             </Button>
             <Button variant="destructive" onClick={confirmDelete}>
-              Xóa
+              {tCommon("delete")}
             </Button>
           </DialogFooter>
         </DialogContent>

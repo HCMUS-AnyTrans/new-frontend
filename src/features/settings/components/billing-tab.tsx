@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations, useLocale } from "next-intl"
 import { Wallet, Plus, Star, TrendingUp, ArrowUpRight, ArrowDownLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -14,31 +15,6 @@ import {
 import type { Wallet as WalletType, WalletLedger, CreditPackage, LedgerType } from "../types"
 import { cn } from "@/lib/utils"
 
-const ledgerTypeConfig: Record<LedgerType, { icon: typeof ArrowUpRight; color: string; label: string }> = {
-  credit: { icon: ArrowDownLeft, color: "text-success", label: "Nạp" },
-  debit: { icon: ArrowUpRight, color: "text-destructive", label: "Sử dụng" },
-  refund: { icon: ArrowDownLeft, color: "text-info", label: "Hoàn tiền" },
-  bonus: { icon: TrendingUp, color: "text-warning", label: "Thưởng" },
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-    maximumFractionDigits: 0,
-  }).format(amount)
-}
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("vi-VN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  })
-}
-
 interface BillingTabProps {
   wallet?: WalletType
   ledger?: WalletLedger[]
@@ -50,6 +26,34 @@ export function BillingTab({
   ledger = mockWalletLedger,
   packages = mockCreditPackages,
 }: BillingTabProps) {
+  const t = useTranslations("settings.billing")
+  const locale = useLocale()
+
+  const ledgerTypeConfig: Record<LedgerType, { icon: typeof ArrowUpRight; color: string; label: string }> = {
+    credit: { icon: ArrowDownLeft, color: "text-success", label: t("topUp") },
+    debit: { icon: ArrowUpRight, color: "text-destructive", label: t("usage") },
+    refund: { icon: ArrowDownLeft, color: "text-info", label: t("refund") },
+    bonus: { icon: TrendingUp, color: "text-warning", label: t("bonus") },
+  }
+
+  function formatCurrency(amount: number): string {
+    return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
+      style: "currency",
+      currency: locale === "vi" ? "VND" : "USD",
+      maximumFractionDigits: 0,
+    }).format(amount)
+  }
+
+  function formatDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
+
   const handlePurchase = (packageId: string) => {
     // TODO: Redirect to payment gateway
     console.log("Purchase package:", packageId)
@@ -58,7 +62,7 @@ export function BillingTab({
   return (
     <div className="space-y-6">
       {/* Wallet Balance */}
-      <SettingsSection title="Số dư hiện tại">
+      <SettingsSection title={t("currentBalance")}>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
             <div className="flex size-14 items-center justify-center rounded-xl bg-primary/10">
@@ -66,16 +70,16 @@ export function BillingTab({
             </div>
             <div>
               <p className="text-3xl font-bold text-foreground">
-                {wallet.balance.toLocaleString()}
+                {wallet.balance.toLocaleString(locale === "vi" ? "vi-VN" : "en-US")}
               </p>
-              <p className="text-sm text-muted-foreground">Credits</p>
+              <p className="text-sm text-muted-foreground">{t("credits")}</p>
             </div>
           </div>
 
           <div className="flex gap-2">
             <Button>
               <Plus className="size-4" />
-              Nạp thêm
+              {t("addMore")}
             </Button>
           </div>
         </div>
@@ -83,8 +87,8 @@ export function BillingTab({
 
       {/* Credit Packages */}
       <SettingsSection
-        title="Gói Credits"
-        description="Chọn gói phù hợp với nhu cầu của bạn"
+        title={t("creditPackages")}
+        description={t("creditPackagesDescription")}
       >
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {packages.map((pkg) => (
@@ -100,26 +104,26 @@ export function BillingTab({
               {pkg.isBestValue && (
                 <Badge className="absolute -top-2 gap-1 bg-warning text-warning-foreground">
                   <Star className="size-3" />
-                  Giá tốt nhất
+                  {t("bestValue")}
                 </Badge>
               )}
               {pkg.isPopular && !pkg.isBestValue && (
                 <Badge className="absolute -top-2" variant="secondary">
-                  Phổ biến
+                  {t("popular")}
                 </Badge>
               )}
 
               <p className="mt-2 text-2xl font-bold text-foreground">
-                {pkg.credits.toLocaleString()}
+                {pkg.credits.toLocaleString(locale === "vi" ? "vi-VN" : "en-US")}
               </p>
-              <p className="text-sm text-muted-foreground">Credits</p>
+              <p className="text-sm text-muted-foreground">{t("credits")}</p>
 
               <div className="mt-3">
                 <p className="text-lg font-semibold text-foreground">
                   {formatCurrency(pkg.price)}
                 </p>
                 {pkg.discount && (
-                  <p className="text-xs text-success">Tiết kiệm {pkg.discount}%</p>
+                  <p className="text-xs text-success">{t("save", { percent: pkg.discount })}</p>
                 )}
               </div>
 
@@ -129,7 +133,7 @@ export function BillingTab({
                 variant={pkg.isBestValue ? "default" : "outline"}
                 onClick={() => handlePurchase(pkg.id)}
               >
-                Mua ngay
+                {t("buyNow")}
               </Button>
             </div>
           ))}
@@ -138,13 +142,13 @@ export function BillingTab({
 
       {/* Transaction History */}
       <SettingsSection
-        title="Lịch sử giao dịch"
-        description="Các giao dịch gần đây"
+        title={t("transactionHistory")}
+        description={t("recentTransactions")}
       >
         {ledger.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
             <Wallet className="mb-2 size-8" />
-            <p>Chưa có giao dịch nào</p>
+            <p>{t("noTransactions")}</p>
           </div>
         ) : (
           <div className="space-y-1">
@@ -170,10 +174,10 @@ export function BillingTab({
                     </div>
                     <div className="text-right">
                       <p className={cn("font-semibold", entry.amount > 0 ? "text-success" : "text-foreground")}>
-                        {entry.amount > 0 ? "+" : ""}{entry.amount.toLocaleString()}
+                        {entry.amount > 0 ? "+" : ""}{entry.amount.toLocaleString(locale === "vi" ? "vi-VN" : "en-US")}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        Số dư: {entry.balanceAfter.toLocaleString()}
+                        {t("balance")}: {entry.balanceAfter.toLocaleString(locale === "vi" ? "vi-VN" : "en-US")}
                       </p>
                     </div>
                   </div>

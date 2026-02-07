@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations, useLocale } from "next-intl"
 import {
   Key,
   Smartphone,
@@ -36,6 +37,9 @@ export function SecurityTab({
   identities = mockAuthIdentities,
   sessions = mockSessions,
 }: SecurityTabProps) {
+  const t = useTranslations("settings.security")
+  const tCommon = useTranslations("common")
+  const locale = useLocale()
   const [showPasswordDialog, setShowPasswordDialog] = useState(false)
 
   const linkedProviders = identities.map((i) => i.provider)
@@ -48,11 +52,11 @@ export function SecurityTab({
     const diffHours = Math.floor(diffMs / 3600000)
     const diffDays = Math.floor(diffMs / 86400000)
 
-    if (diffMins < 1) return "Vừa xong"
-    if (diffMins < 60) return `${diffMins} phút trước`
-    if (diffHours < 24) return `${diffHours} giờ trước`
-    if (diffDays < 7) return `${diffDays} ngày trước`
-    return date.toLocaleDateString("vi-VN")
+    if (diffMins < 1) return t("justNow")
+    if (diffMins < 60) return t("minutesAgo", { count: diffMins })
+    if (diffHours < 24) return t("hoursAgo", { count: diffHours })
+    if (diffDays < 7) return t("daysAgo", { count: diffDays })
+    return date.toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US")
   }
 
   const getDeviceIcon = (device: string) => {
@@ -63,8 +67,8 @@ export function SecurityTab({
     <div className="space-y-6">
       {/* Password Section */}
       <SettingsSection
-        title="Mật khẩu"
-        description="Quản lý mật khẩu đăng nhập của bạn"
+        title={t("password")}
+        description={t("passwordDescription")}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -74,41 +78,41 @@ export function SecurityTab({
             <div>
               <p className="font-medium text-foreground">••••••••••</p>
               <p className="text-sm text-muted-foreground">
-                Đổi mật khẩu lần cuối: 30 ngày trước
+                {t("lastChanged", { time: t("daysAgo", { count: 30 }) })}
               </p>
             </div>
           </div>
 
           <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
             <DialogTrigger asChild>
-              <Button variant="outline">Đổi mật khẩu</Button>
+              <Button variant="outline">{t("changePassword")}</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Đổi mật khẩu</DialogTitle>
+                <DialogTitle>{t("changePassword")}</DialogTitle>
                 <DialogDescription>
-                  Nhập mật khẩu hiện tại và mật khẩu mới
+                  {t("enterCurrentAndNew")}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="current">Mật khẩu hiện tại</Label>
+                  <Label htmlFor="current">{t("currentPassword")}</Label>
                   <Input id="current" type="password" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="new">Mật khẩu mới</Label>
+                  <Label htmlFor="new">{t("newPassword")}</Label>
                   <Input id="new" type="password" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="confirm">Xác nhận mật khẩu mới</Label>
+                  <Label htmlFor="confirm">{t("confirmPassword")}</Label>
                   <Input id="confirm" type="password" />
                 </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setShowPasswordDialog(false)}>
-                  Hủy
+                  {tCommon("cancel")}
                 </Button>
-                <Button>Đổi mật khẩu</Button>
+                <Button>{t("changePassword")}</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -117,8 +121,8 @@ export function SecurityTab({
 
       {/* OAuth Providers */}
       <SettingsSection
-        title="Phương thức đăng nhập"
-        description="Liên kết tài khoản với các nhà cung cấp khác"
+        title={t("loginMethods")}
+        description={t("loginMethodsDescription")}
       >
         <div className="space-y-1">
           {authProviderOptions.map((provider, idx) => {
@@ -150,7 +154,7 @@ export function SecurityTab({
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary" className="gap-1">
                         <Check className="size-3" />
-                        Đã liên kết
+                        {t("linked")}
                       </Badge>
                       {linkedProviders.length > 1 && (
                         <Button variant="ghost" size="sm" className="text-muted-foreground">
@@ -161,7 +165,7 @@ export function SecurityTab({
                   ) : (
                     <Button variant="outline" size="sm">
                       <LinkIcon className="size-4" />
-                      Liên kết
+                      {t("link")}
                     </Button>
                   )}
                 </div>
@@ -173,12 +177,12 @@ export function SecurityTab({
 
       {/* Active Sessions */}
       <SettingsSection
-        title="Phiên đăng nhập"
-        description="Quản lý các thiết bị đã đăng nhập"
+        title={t("activeSessions")}
+        description={t("activeSessionsDescription")}
         action={
           sessions.length > 1 && (
             <Button variant="outline" size="sm" className="text-destructive">
-              Đăng xuất tất cả
+              {t("revokeAllSessions")}
             </Button>
           )
         }
@@ -201,7 +205,7 @@ export function SecurityTab({
                         </p>
                         {session.isCurrent && (
                           <Badge variant="secondary" className="text-xs">
-                            Hiện tại
+                            {t("currentDevice")}
                           </Badge>
                         )}
                       </div>
@@ -214,7 +218,7 @@ export function SecurityTab({
                   {!session.isCurrent && (
                     <Button variant="ghost" size="sm" className="text-destructive">
                       <LogOut className="size-4" />
-                      Đăng xuất
+                      {t("revokeSession")}
                     </Button>
                   )}
                 </div>

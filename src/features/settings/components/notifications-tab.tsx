@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations, useLocale } from "next-intl"
 import { Bell, Mail, Smartphone, Check, CheckCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
@@ -28,6 +29,9 @@ export function NotificationsTab({
   notifications = mockNotifications,
   preferences = mockNotificationPreferences,
 }: NotificationsTabProps) {
+  const t = useTranslations("settings.notifications")
+  const tSecurity = useTranslations("settings.security")
+  const locale = useLocale()
   const [notifList, setNotifList] = useState(notifications)
   const [prefList, setPrefList] = useState(preferences)
 
@@ -41,11 +45,11 @@ export function NotificationsTab({
     const diffHours = Math.floor(diffMs / 3600000)
     const diffDays = Math.floor(diffMs / 86400000)
 
-    if (diffMins < 1) return "Vừa xong"
-    if (diffMins < 60) return `${diffMins} phút trước`
-    if (diffHours < 24) return `${diffHours} giờ trước`
-    if (diffDays < 7) return `${diffDays} ngày trước`
-    return date.toLocaleDateString("vi-VN")
+    if (diffMins < 1) return tSecurity("justNow")
+    if (diffMins < 60) return tSecurity("minutesAgo", { count: diffMins })
+    if (diffHours < 24) return tSecurity("hoursAgo", { count: diffHours })
+    if (diffDays < 7) return tSecurity("daysAgo", { count: diffDays })
+    return date.toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US")
   }
 
   const markAllAsRead = () => {
@@ -72,13 +76,13 @@ export function NotificationsTab({
     <div className="space-y-6">
       {/* Notification List */}
       <SettingsSection
-        title="Thông báo gần đây"
-        description={unreadCount > 0 ? `${unreadCount} thông báo chưa đọc` : "Tất cả đã đọc"}
+        title={t("recentNotifications")}
+        description={unreadCount > 0 ? t("unreadCount", { count: unreadCount }) : t("allRead")}
         action={
           unreadCount > 0 && (
             <Button variant="outline" size="sm" onClick={markAllAsRead}>
               <CheckCheck className="size-4" />
-              Đánh dấu đã đọc
+              {t("markAllRead")}
             </Button>
           )
         }
@@ -86,7 +90,7 @@ export function NotificationsTab({
         {notifList.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
             <Bell className="mb-2 size-8" />
-            <p>Không có thông báo nào</p>
+            <p>{t("noNotifications")}</p>
           </div>
         ) : (
           <div className="space-y-1">
@@ -128,19 +132,19 @@ export function NotificationsTab({
 
       {/* Notification Preferences */}
       <SettingsSection
-        title="Cài đặt thông báo"
-        description="Chọn cách nhận thông báo cho từng loại"
+        title={t("preferences")}
+        description={t("preferencesDescription")}
       >
         <div className="space-y-1">
           {/* Header */}
           <div className="mb-4 flex items-center justify-end gap-8 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
               <Mail className="size-4" />
-              <span>Email</span>
+              <span>{t("email")}</span>
             </div>
             <div className="flex items-center gap-1">
               <Smartphone className="size-4" />
-              <span>Push</span>
+              <span>{t("push")}</span>
             </div>
           </div>
 

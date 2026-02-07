@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+import { useTranslations, useLocale } from "next-intl"
 import { Download, History, Monitor, Smartphone, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -14,40 +16,41 @@ import { SettingsSection, SettingsDivider } from "./settings-section"
 import { mockAuditLogs } from "../data"
 import type { AuditLog, AuditAction } from "../types"
 import { cn } from "@/lib/utils"
-import { useState } from "react"
-
-const actionConfig: Record<AuditAction, { label: string; color: string }> = {
-  login: { label: "Đăng nhập", color: "bg-success/10 text-success" },
-  logout: { label: "Đăng xuất", color: "bg-muted text-muted-foreground" },
-  password_change: { label: "Đổi mật khẩu", color: "bg-warning/10 text-warning" },
-  profile_update: { label: "Cập nhật hồ sơ", color: "bg-primary/10 text-primary" },
-  provider_link: { label: "Liên kết tài khoản", color: "bg-info/10 text-info" },
-  provider_unlink: { label: "Hủy liên kết", color: "bg-warning/10 text-warning" },
-  session_revoke: { label: "Đăng xuất thiết bị", color: "bg-destructive/10 text-destructive" },
-  file_upload: { label: "Tải lên tệp", color: "bg-primary/10 text-primary" },
-  file_delete: { label: "Xóa tệp", color: "bg-destructive/10 text-destructive" },
-  translation_start: { label: "Bắt đầu dịch", color: "bg-primary/10 text-primary" },
-  translation_complete: { label: "Dịch hoàn tất", color: "bg-success/10 text-success" },
-  credit_purchase: { label: "Nạp credits", color: "bg-success/10 text-success" },
-  settings_change: { label: "Thay đổi cài đặt", color: "bg-muted text-muted-foreground" },
-}
-
-function formatDateTime(dateStr: string): string {
-  return new Date(dateStr).toLocaleString("vi-VN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  })
-}
 
 interface ActivityTabProps {
   logs?: AuditLog[]
 }
 
 export function ActivityTab({ logs = mockAuditLogs }: ActivityTabProps) {
+  const t = useTranslations("settings.activity")
+  const locale = useLocale()
   const [filter, setFilter] = useState<string>("all")
+
+  const actionConfig: Record<AuditAction, { label: string; color: string }> = {
+    login: { label: t("login"), color: "bg-success/10 text-success" },
+    logout: { label: t("logout"), color: "bg-muted text-muted-foreground" },
+    password_change: { label: t("passwordChange"), color: "bg-warning/10 text-warning" },
+    profile_update: { label: t("profileUpdate"), color: "bg-primary/10 text-primary" },
+    provider_link: { label: t("providerLink"), color: "bg-info/10 text-info" },
+    provider_unlink: { label: t("providerUnlink"), color: "bg-warning/10 text-warning" },
+    session_revoke: { label: t("sessionRevoke"), color: "bg-destructive/10 text-destructive" },
+    file_upload: { label: t("fileUpload"), color: "bg-primary/10 text-primary" },
+    file_delete: { label: t("fileDelete"), color: "bg-destructive/10 text-destructive" },
+    translation_start: { label: t("translationStart"), color: "bg-primary/10 text-primary" },
+    translation_complete: { label: t("translationComplete"), color: "bg-success/10 text-success" },
+    credit_purchase: { label: t("creditPurchase"), color: "bg-success/10 text-success" },
+    settings_change: { label: t("settingsChange"), color: "bg-muted text-muted-foreground" },
+  }
+
+  function formatDateTime(dateStr: string): string {
+    return new Date(dateStr).toLocaleString(locale === "vi" ? "vi-VN" : "en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
 
   const filteredLogs = filter === "all"
     ? logs
@@ -66,26 +69,26 @@ export function ActivityTab({ logs = mockAuditLogs }: ActivityTabProps) {
     <div className="space-y-6">
       {/* Activity Log */}
       <SettingsSection
-        title="Nhật ký hoạt động"
-        description="Lịch sử các hoạt động trên tài khoản của bạn"
+        title={t("title")}
+        description={t("description")}
         action={
           <div className="flex items-center gap-2">
             <Select value={filter} onValueChange={setFilter}>
               <SelectTrigger className="w-40">
                 <Filter className="mr-2 size-4" />
-                <SelectValue placeholder="Lọc" />
+                <SelectValue placeholder={t("filter")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-                <SelectItem value="login">Đăng nhập</SelectItem>
-                <SelectItem value="translation_complete">Dịch thuật</SelectItem>
-                <SelectItem value="credit_purchase">Thanh toán</SelectItem>
-                <SelectItem value="settings_change">Cài đặt</SelectItem>
+                <SelectItem value="all">{t("all")}</SelectItem>
+                <SelectItem value="login">{t("login")}</SelectItem>
+                <SelectItem value="translation_complete">{t("translation")}</SelectItem>
+                <SelectItem value="credit_purchase">{t("payment")}</SelectItem>
+                <SelectItem value="settings_change">{t("settings")}</SelectItem>
               </SelectContent>
             </Select>
             <Button variant="outline" size="sm" onClick={handleExport}>
               <Download className="size-4" />
-              Xuất CSV
+              {t("exportCsv")}
             </Button>
           </div>
         }
@@ -93,7 +96,7 @@ export function ActivityTab({ logs = mockAuditLogs }: ActivityTabProps) {
         {filteredLogs.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
             <History className="mb-2 size-8" />
-            <p>Không có hoạt động nào</p>
+            <p>{t("noActivity")}</p>
           </div>
         ) : (
           <div className="space-y-1">
