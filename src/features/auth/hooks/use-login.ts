@@ -11,17 +11,17 @@ import type { LoginDto, AuthResponse } from '../types';
 interface UseLoginOptions {
   onSuccess?: (data: AuthResponse) => void;
   onError?: (error: string) => void;
-  redirectTo?: string;
 }
 
 /**
  * Hook for user login
+ * After successful login, always redirects to /dashboard
  */
 export function useLogin(options?: UseLoginOptions) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { setAuth } = useAuthStore();
-  const { onSuccess, onError, redirectTo = '/' } = options || {};
+  const { onSuccess, onError } = options || {};
 
   const mutation = useMutation({
     mutationFn: (credentials: LoginDto) => loginApi(credentials),
@@ -35,8 +35,8 @@ export function useLogin(options?: UseLoginOptions) {
       // Call custom success handler
       onSuccess?.(data);
 
-      // Redirect after login
-      router.push(redirectTo);
+      // Always redirect to dashboard after login
+      router.push('/dashboard');
     },
     onError: (error) => {
       const message = getErrorMessage(error);
