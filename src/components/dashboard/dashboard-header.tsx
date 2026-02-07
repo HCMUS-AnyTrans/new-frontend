@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ModeToggle } from "@/components/mode-toggle"
 import { pageTitles, mockUser, mockWallet } from "@/data/dashboard"
 
 export function DashboardHeader() {
@@ -30,6 +31,9 @@ export function DashboardHeader() {
 
       {/* Right Actions */}
       <div className="flex items-center gap-2">
+        {/* Theme Toggle */}
+        <ModeToggle />
+
         {/* Notification Bell */}
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="size-5 text-muted-foreground" />

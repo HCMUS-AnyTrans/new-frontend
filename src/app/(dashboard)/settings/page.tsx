@@ -1,22 +1,49 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Settings } from "lucide-react"
+"use client"
+
+import {
+  SettingsLayout,
+  SettingsTabContent,
+  ProfileTab,
+  PreferencesTab,
+  SecurityTab,
+  NotificationsTab,
+  BillingTab,
+  FilesTab,
+  ActivityTab,
+} from "@/features/settings"
 
 export default function SettingsPage() {
   return (
     <div className="flex flex-col gap-6 p-4 lg:p-6">
-      <Card className="border border-border shadow-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="size-5 text-primary" />
-            Cài đặt
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">
-            Cài đặt tài khoản và preferences. Đang được phát triển...
-          </p>
-        </CardContent>
-      </Card>
+      <SettingsLayout>
+        <SettingsTabContent value="profile">
+          <ProfileTab />
+        </SettingsTabContent>
+
+        <SettingsTabContent value="preferences">
+          <PreferencesTab />
+        </SettingsTabContent>
+
+        <SettingsTabContent value="security">
+          <SecurityTab />
+        </SettingsTabContent>
+
+        <SettingsTabContent value="notifications">
+          <NotificationsTab />
+        </SettingsTabContent>
+
+        <SettingsTabContent value="billing">
+          <BillingTab />
+        </SettingsTabContent>
+
+        <SettingsTabContent value="files">
+          <FilesTab />
+        </SettingsTabContent>
+
+        <SettingsTabContent value="activity">
+          <ActivityTab />
+        </SettingsTabContent>
+      </SettingsLayout>
     </div>
   )
 }
