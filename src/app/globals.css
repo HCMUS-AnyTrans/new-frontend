@@ -375,3 +375,74 @@
   @apply ml-1 text-foreground;
 }
 
+/* ============================================================================
+   CUSTOM SCROLLBAR
+   Thin & subtle style using primary color from design system
+   ============================================================================ */
+
+/* Webkit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(var(--primary-400) / 0.4);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(var(--primary-500) / 0.6);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(var(--primary-400) / 0.4) transparent;
+}
+
+/* Dark mode - slightly brighter for visibility */
+.dark ::-webkit-scrollbar-thumb {
+  background: oklch(var(--primary-400) / 0.5);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: oklch(var(--primary-300) / 0.7);
+}
+
+.dark * {
+  scrollbar-color: oklch(var(--primary-400) / 0.5) transparent;
+}
+
+/* ============================================================================
+   SMOOTH SCROLL BEHAVIOR
+   ============================================================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
