@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useTranslations } from "next-intl"
 import { Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,14 +19,10 @@ import {
 import { cn } from "@/lib/utils"
 import { contactFormSchema, type ContactFormValues } from "@/data/contact"
 
-const subjects = [
-  { id: "general", label: "General Inquiry" },
-  { id: "support", label: "Support" },
-  { id: "feedback", label: "Feedback" },
-  { id: "other", label: "Other" },
-]
+const subjectKeys = ["general", "support", "feedback", "other"] as const
 
 export function ContactForm() {
+  const t = useTranslations("marketing.contact.form")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<ContactFormValues>({
@@ -64,9 +61,9 @@ export function ContactForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className={labelClass}>Tên đầy đủ</FormLabel>
+                  <FormLabel className={labelClass}>{t("fullName")}</FormLabel>
                   <FormControl>
-                    <Input {...field} className={inputClass} placeholder="Nguyễn Văn A" />
+                    <Input {...field} className={inputClass} placeholder={t("fullNamePlaceholder")} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -79,9 +76,9 @@ export function ContactForm() {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className={labelClass}>Số điện thoại</FormLabel>
+                  <FormLabel className={labelClass}>{t("phone")}</FormLabel>
                   <FormControl>
-                    <Input {...field} className={inputClass} placeholder="+84 123 456 789" />
+                    <Input {...field} className={inputClass} placeholder={t("phonePlaceholder")} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -96,9 +93,9 @@ export function ContactForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className={labelClass}>Email</FormLabel>
+                  <FormLabel className={labelClass}>{t("email")}</FormLabel>
                   <FormControl>
-                    <Input {...field} className={inputClass} placeholder="demo@gmail.com" />
+                    <Input {...field} className={inputClass} placeholder={t("emailPlaceholder")} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -111,11 +108,11 @@ export function ContactForm() {
               name="topic"
               render={({ field }) => (
                 <FormItem className="col-span-1 md:col-span-2 space-y-4">
-                  <FormLabel className="text-foreground font-semibold text-sm capitalize">Select Subject?</FormLabel>
+                  <FormLabel className="text-foreground font-semibold text-sm capitalize">{t("selectSubject")}</FormLabel>
                   <div className="flex flex-wrap gap-6">
-                    {subjects.map((subject) => (
+                    {subjectKeys.map((subjectKey) => (
                       <label
-                        key={subject.id}
+                        key={subjectKey}
                         className="flex items-center gap-2 cursor-pointer group"
                       >
                         <div className="relative">
@@ -123,17 +120,17 @@ export function ContactForm() {
                             type="radio"
                             className="peer sr-only"
                             {...field}
-                            value={subject.id}
-                            checked={field.value === subject.id}
-                            onChange={() => field.onChange(subject.id)}
+                            value={subjectKey}
+                            checked={field.value === subjectKey}
+                            onChange={() => field.onChange(subjectKey)}
                           />
                           <div className="w-4 h-4 rounded-full border border-border peer-checked:bg-primary peer-checked:border-none flex items-center justify-center transition-colors">
-                            {field.value === subject.id && (
+                            {field.value === subjectKey && (
                               <Check className="w-2.5 h-2.5 text-primary-foreground" />
                             )}
                           </div>
                         </div>
-                        <span className="text-sm text-foreground">{subject.label}</span>
+                        <span className="text-sm text-foreground">{t(`subjects.${subjectKey}`)}</span>
                       </label>
                     ))}
                   </div>
@@ -149,12 +146,12 @@ export function ContactForm() {
             name="message"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className={labelClass}>Tin nhắn</FormLabel>
+                <FormLabel className={labelClass}>{t("message")}</FormLabel>
                 <FormControl>
                   <Textarea 
                     {...field} 
                     className={cn(inputClass, "resize-none min-h-[40px]")} 
-                    placeholder="Viết tin nhắn của bạn..." 
+                    placeholder={t("messagePlaceholder")} 
                   />
                 </FormControl>
                 <FormMessage />
@@ -169,7 +166,7 @@ export function ContactForm() {
               className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-[5px] px-10 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Đang gửi..." : "Gửi tin nhắn"}
+              {isSubmitting ? t("submitting") : t("submit")}
             </Button>
           </div>
         </form>

@@ -1,11 +1,12 @@
 "use client"
 
 import { useMemo } from "react"
+import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
 import { Check, X } from "lucide-react"
 
 interface PasswordRequirement {
-  label: string
+  key: string
   regex: RegExp
   met: boolean
 }
@@ -21,27 +22,27 @@ interface PasswordStrengthIndicatorProps {
  */
 const getPasswordRequirements = (password: string): PasswordRequirement[] => [
   {
-    label: "Ít nhất 8 ký tự",
+    key: "minLength",
     regex: /.{8,}/,
     met: /.{8,}/.test(password),
   },
   {
-    label: "Ít nhất 1 chữ thường",
+    key: "lowercase",
     regex: /[a-z]/,
     met: /[a-z]/.test(password),
   },
   {
-    label: "Ít nhất 1 chữ hoa",
+    key: "uppercase",
     regex: /[A-Z]/,
     met: /[A-Z]/.test(password),
   },
   {
-    label: "Ít nhất 1 số",
+    key: "number",
     regex: /[0-9]/,
     met: /[0-9]/.test(password),
   },
   {
-    label: "Ít nhất 1 ký tự đặc biệt",
+    key: "special",
     regex: /[^a-zA-Z0-9]/,
     met: /[^a-zA-Z0-9]/.test(password),
   },
@@ -58,15 +59,12 @@ const getStrengthLevel = (metCount: number, total: number): StrengthLevel => {
   return "strong"
 }
 
-const strengthConfig: Record<
-  StrengthLevel,
-  { label: string; color: string; bgColor: string }
-> = {
-  empty: { label: "", color: "bg-muted", bgColor: "bg-muted" },
-  weak: { label: "Yếu", color: "bg-destructive", bgColor: "bg-destructive/20" },
-  fair: { label: "Trung bình", color: "bg-orange-500", bgColor: "bg-orange-500/20" },
-  good: { label: "Tốt", color: "bg-yellow-500", bgColor: "bg-yellow-500/20" },
-  strong: { label: "Mạnh", color: "bg-green-500", bgColor: "bg-green-500/20" },
+const strengthColors: Record<StrengthLevel, string> = {
+  empty: "bg-muted",
+  weak: "bg-destructive",
+  fair: "bg-orange-500",
+  good: "bg-yellow-500",
+  strong: "bg-green-500",
 }
 
 export function PasswordStrengthIndicator({
@@ -74,6 +72,8 @@ export function PasswordStrengthIndicator({
   className,
   showRequirements = true,
 }: PasswordStrengthIndicatorProps) {
+  const t = useTranslations("auth.passwordStrength")
+
   const requirements = useMemo(
     () => getPasswordRequirements(password),
     [password]
@@ -81,7 +81,8 @@ export function PasswordStrengthIndicator({
 
   const metCount = requirements.filter((r) => r.met).length
   const strengthLevel = getStrengthLevel(metCount, requirements.length)
-  const config = strengthConfig[strengthLevel]
+  const strengthColor = strengthColors[strengthLevel]
+  const strengthLabel = strengthLevel !== "empty" ? t(strengthLevel) : ""
 
   if (!password) {
     return null
@@ -92,8 +93,8 @@ export function PasswordStrengthIndicator({
       {/* Strength Bar */}
       <div className="space-y-1.5">
         <div className="flex justify-between items-center">
-          <span className="text-xs text-muted-foreground">Độ mạnh mật khẩu</span>
-          {config.label && (
+          <span className="text-xs text-muted-foreground">{t("label")}</span>
+          {strengthLabel && (
             <span
               className={cn(
                 "text-xs font-medium",
@@ -103,7 +104,7 @@ export function PasswordStrengthIndicator({
                 strengthLevel === "strong" && "text-green-600"
               )}
             >
-              {config.label}
+              {strengthLabel}
             </span>
           )}
         </div>
@@ -113,7 +114,7 @@ export function PasswordStrengthIndicator({
               key={index}
               className={cn(
                 "h-1.5 flex-1 rounded-full transition-colors duration-200",
-                index < metCount ? config.color : "bg-muted"
+                index < metCount ? strengthColor : "bg-muted"
               )}
             />
           ))}
@@ -123,9 +124,9 @@ export function PasswordStrengthIndicator({
       {/* Requirements List */}
       {showRequirements && (
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-          {requirements.map((requirement, index) => (
+          {requirements.map((requirement) => (
             <li
-              key={index}
+              key={requirement.key}
               className={cn(
                 "flex items-center gap-1.5 text-xs transition-colors duration-200",
                 requirement.met ? "text-green-600" : "text-muted-foreground"
@@ -136,7 +137,7 @@ export function PasswordStrengthIndicator({
               ) : (
                 <X className="h-3.5 w-3.5 shrink-0" />
               )}
-              <span>{requirement.label}</span>
+              <span>{t(`requirements.${requirement.key}`)}</span>
             </li>
           ))}
         </ul>

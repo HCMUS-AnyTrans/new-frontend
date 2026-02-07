@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { motion } from "framer-motion"
 import { FileX2, Clock, Wallet, AlertTriangle } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
@@ -7,34 +8,29 @@ import { cn } from "@/lib/utils"
 
 interface PainPoint {
   icon: React.ReactNode
-  title: string
-  description: string
+  titleKey: string
+  descriptionKey: string
 }
 
 export interface PainPointsProps {
-  headline?: {
-    title: string
-    subtitle?: string
-  }
-  painPoints?: PainPoint[]
   className?: string
 }
 
-const defaultPainPoints: PainPoint[] = [
+const painPointsConfig: PainPoint[] = [
   {
     icon: <FileX2 className="w-8 h-8" />,
-    title: "Mất format khi dịch PDF",
-    description: "Bảng biểu, hình ảnh, layout bị phá vỡ hoàn toàn sau khi dịch",
+    titleKey: "format.title",
+    descriptionKey: "format.description",
   },
   {
     icon: <Clock className="w-8 h-8" />,
-    title: "Tốn quá nhiều thời gian",
-    description: "Dịch thủ công mất hàng giờ, thậm chí hàng ngày cho tài liệu dài",
+    titleKey: "time.title",
+    descriptionKey: "time.description",
   },
   {
     icon: <Wallet className="w-8 h-8" />,
-    title: "Chi phí dịch thuật cao",
-    description: "Thuê dịch giả chuyên nghiệp tốn kém, không phù hợp ngân sách",
+    titleKey: "cost.title",
+    descriptionKey: "cost.description",
   },
 ]
 
@@ -61,14 +57,10 @@ const itemVariants = {
   },
 }
 
-export function PainPoints({
-  headline = {
-    title: "Bạn có đang gặp những rắc rối này?",
-    subtitle: "Đây là những vấn đề mà hàng nghìn người dùng đã từng trải qua trước khi tìm đến AnyTrans",
-  },
-  painPoints = defaultPainPoints,
-  className,
-}: PainPointsProps) {
+export function PainPoints({ className }: PainPointsProps) {
+  const t = useTranslations("marketing.painPoints")
+  const tItems = useTranslations("marketing.painPoints.items")
+
   return (
     <section
       className={cn(
@@ -93,13 +85,11 @@ export function PainPoints({
         >
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
-            {headline.title}
+            {t("title")}
           </h2>
-          {headline.subtitle && (
-            <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
-              {headline.subtitle}
-            </p>
-          )}
+          <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
+            {t("subtitle")}
+          </p>
         </motion.div>
 
         {/* Pain Points Grid */}
@@ -110,7 +100,7 @@ export function PainPoints({
           viewport={{ once: true, margin: "-50px" }}
           className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
         >
-          {painPoints.map((point, index) => (
+          {painPointsConfig.map((point, index) => (
             <motion.div key={index} variants={itemVariants}>
               <Card className="group relative h-full border-0 bg-background/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 {/* Accent top border */}
@@ -124,10 +114,10 @@ export function PainPoints({
 
                   {/* Content */}
                   <h3 className="text-xl font-semibold text-foreground mb-2">
-                    {point.title}
+                    {tItems(point.titleKey)}
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    {point.description}
+                    {tItems(point.descriptionKey)}
                   </p>
                 </CardContent>
               </Card>

@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { motion } from "framer-motion"
 import { Languages, CheckCircle2, FileText } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -35,6 +36,8 @@ export function TranslationDemo({
   targetText = "Con cáo nâu nhanh nhẹn nhảy qua con chó lười. Tài liệu này chứa thông tin bảo mật.",
   className,
 }: TranslationDemoProps) {
+  const t = useTranslations("marketing.demo")
+  
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8, rotateY: -10 }}
@@ -122,7 +125,7 @@ export function TranslationDemo({
           </div>
           <span className="text-sm font-semibold text-success flex items-center gap-1">
             <CheckCircle2 className="w-4 h-4" />
-            Hoàn tất!
+            {t("completed")}
           </span>
         </motion.div>
       </div>

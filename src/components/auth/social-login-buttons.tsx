@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { initiateGoogleAuth } from "@/features/authentication"
@@ -23,6 +24,8 @@ export function SocialLoginButtons({
   isLoading,
   className,
 }: SocialLoginButtonsProps) {
+  const t = useTranslations("auth.social")
+
   const handleSocialLogin = async (provider: string) => {
     if (onSocialLogin) {
       await onSocialLogin(provider)
@@ -54,7 +57,7 @@ export function SocialLoginButtons({
       {/* Divider with Text */}
       <div className="flex items-center gap-4 mb-4">
         <div className="flex-1 h-px bg-border opacity-50" />
-        <span className="text-sm text-muted-foreground">Or login with</span>
+        <span className="text-sm text-muted-foreground">{t("orLoginWith")}</span>
         <div className="flex-1 h-px bg-border opacity-50" />
       </div>
 
@@ -80,7 +83,7 @@ export function SocialLoginButtons({
               height={24}
               className="w-6 h-6"
             />
-            <span className="sr-only">Login with {provider.name}</span>
+            <span className="sr-only">{t("loginWith", { provider: provider.name })}</span>
           </Button>
         ))}
       </div>

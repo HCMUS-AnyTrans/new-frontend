@@ -1,3 +1,6 @@
+"use client"
+
+import { useTranslations } from "next-intl"
 import { SectionBackground } from "@/components/shared"
 import { History } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -6,9 +9,11 @@ import { milestones, type Milestone } from "@/data/about"
 interface TimelineItemProps {
   milestone: Milestone
   index: number
+  title: string
+  description: string
 }
 
-function TimelineItem({ milestone, index }: TimelineItemProps) {
+function TimelineItem({ milestone, index, title, description }: TimelineItemProps) {
   const isLeft = index % 2 === 0
 
   return (
@@ -38,9 +43,9 @@ function TimelineItem({ milestone, index }: TimelineItemProps) {
           {milestone.year}
         </div>
         <h3 className="text-xl font-bold text-foreground mb-2">
-          {milestone.title}
+          {title}
         </h3>
-        <p className="text-muted-foreground">{milestone.description}</p>
+        <p className="text-muted-foreground">{description}</p>
       </div>
 
       {/* Timeline dot - visible on desktop */}
@@ -66,6 +71,8 @@ export interface TimelineSectionProps {
 }
 
 export function TimelineSection({ className }: TimelineSectionProps) {
+  const t = useTranslations("marketing.about.timeline")
+
   return (
     <SectionBackground
       background="transparent"
@@ -80,10 +87,10 @@ export function TimelineSection({ className }: TimelineSectionProps) {
         <div className="text-center mb-12 lg:mb-16">
 
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Hành trình phát triển
+            {t("title")}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Những cột mốc quan trọng trên con đường xây dựng AnyTrans
+            {t("subtitle")}
           </p>
         </div>
 
@@ -99,6 +106,8 @@ export function TimelineSection({ className }: TimelineSectionProps) {
                 key={milestone.year}
                 milestone={milestone}
                 index={index}
+                title={t(`milestones.${milestone.year}.title`)}
+                description={t(`milestones.${milestone.year}.description`)}
               />
             ))}
           </div>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef, useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import type { UsageExample } from "@/data/pricing"
@@ -73,6 +74,7 @@ export function UsageExampleCard({
   example,
   className,
 }: UsageExampleCardProps) {
+  const t = useTranslations("marketing.pricingPage")
   const { count, ref } = useCountUp(example.credits, 1200)
   const Icon = example.icon
 
@@ -91,7 +93,7 @@ export function UsageExampleCard({
           </div>
           <p className="text-muted-foreground text-sm mb-2">{example.label}</p>
           <p className="text-4xl font-bold text-foreground">{count}</p>
-          <p className="text-muted-foreground text-xs mt-1">credits</p>
+          <p className="text-muted-foreground text-xs mt-1">{t("credits")}</p>
         </CardContent>
       </Card>
     </div>

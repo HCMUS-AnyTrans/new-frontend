@@ -1,30 +1,30 @@
 "use client"
 
 import { useRef } from "react"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import { motion, useInView } from "framer-motion"
 import { Upload, Settings, Download, ArrowRight, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SectionBackground } from "@/components/shared"
 import { cn } from "@/lib/utils"
 
-interface Step {
+interface StepConfig {
   number: string
   icon: React.ElementType
-  title: string
-  description: string
+  titleKey: string
+  descriptionKey: string
   iconBg: string
   titleColor: string
   titleBg: string
 }
 
-const steps: Step[] = [
+const stepsConfig: StepConfig[] = [
   {
     number: "01",
     icon: Upload,
-    title: "Tải lên tài liệu",
-    description:
-      "Kéo thả hoặc chọn file PDF, Word, hoặc Subtitle. Hỗ trợ file lên đến 100MB.",
+    titleKey: "upload.title",
+    descriptionKey: "upload.description",
     iconBg: "bg-primary",
     titleColor: "text-primary",
     titleBg: "bg-primary/10",
@@ -32,9 +32,8 @@ const steps: Step[] = [
   {
     number: "02",
     icon: Settings,
-    title: "Cấu hình dịch",
-    description:
-      "Chọn ngôn ngữ đích, glossary chuyên ngành và các tùy chọn format.",
+    titleKey: "configure.title",
+    descriptionKey: "configure.description",
     iconBg: "bg-secondary-600",
     titleColor: "text-secondary-600",
     titleBg: "bg-secondary/20",
@@ -42,9 +41,8 @@ const steps: Step[] = [
   {
     number: "03",
     icon: Download,
-    title: "Tải về kết quả",
-    description:
-      "Nhận file đã dịch với format giữ nguyên. Review và chỉnh sửa nếu cần.",
+    titleKey: "download.title",
+    descriptionKey: "download.description",
     iconBg: "bg-success",
     titleColor: "text-success",
     titleBg: "bg-success/10",
@@ -52,11 +50,12 @@ const steps: Step[] = [
 ]
 
 interface StepCardProps {
-  step: Step
+  step: StepConfig
   index: number
+  t: (key: string) => string
 }
 
-function StepCard({ step, index }: StepCardProps) {
+function StepCard({ step, index, t }: StepCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -88,11 +87,11 @@ function StepCard({ step, index }: StepCardProps) {
         {/* Content */}
         <h3 className="text-xl font-bold mb-3">
           <span className={cn("px-2 py-1 rounded-md", step.titleBg)}>
-            <span className={step.titleColor}>{step.title}</span>
+            <span className={step.titleColor}>{t(step.titleKey)}</span>
           </span>
         </h3>
         <p className="text-muted-foreground leading-relaxed">
-          {step.description}
+          {t(step.descriptionKey)}
         </p>
 
         {/* Hover Arrow */}
@@ -109,6 +108,8 @@ export interface HowItWorksProps {
 }
 
 export function HowItWorks({ className }: HowItWorksProps) {
+  const t = useTranslations("marketing.howItWorks")
+  const tSteps = useTranslations("marketing.howItWorks.steps")
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
@@ -135,9 +136,9 @@ export function HowItWorks({ className }: HowItWorksProps) {
         >
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
-            Chỉ 3 bước để có
+            {t("sectionTitle")}
             <br />
-            <span className="text-primary">bản dịch hoàn hảo</span>
+            <span className="text-primary">{t("sectionSubtitle")}</span>
           </h2>
         </motion.div>
 
@@ -150,8 +151,8 @@ export function HowItWorks({ className }: HowItWorksProps) {
 
           {/* Step Cards */}
           <div className="grid md:grid-cols-3 gap-8 lg:gap-10">
-            {steps.map((step, index) => (
-              <StepCard key={step.number} step={step} index={index} />
+            {stepsConfig.map((step, index) => (
+              <StepCard key={step.number} step={step} index={index} t={tSteps} />
             ))}
           </div>
         </div>

@@ -4,7 +4,8 @@ import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useSearchParams } from "next/navigation"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -36,6 +37,7 @@ export function ResetPasswordForm({
   className,
   token: tokenProp,
 }: ResetPasswordFormProps) {
+  const t = useTranslations("auth.resetPassword")
   const searchParams = useSearchParams()
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -102,7 +104,7 @@ export function ResetPasswordForm({
     } else {
       // Validate token
       if (!token) {
-        setServerError("Invalid reset link. Please request a new password reset.")
+        setServerError(t("invalidResetLink"))
         return
       }
 
@@ -122,13 +124,13 @@ export function ResetPasswordForm({
             {authValidationMessages.resetPasswordSuccess}
           </p>
           <p className="text-muted-foreground">
-            Bạn có thể đăng nhập bằng mật khẩu mới của mình.
+            {t("successMessage")}
           </p>
           <Link
             href="/login"
             className="inline-block mt-2 text-primary hover:text-primary/80 transition-colors font-semibold"
           >
-            Đi đến trang đăng nhập →
+            {t("goToLogin")}
           </Link>
         </div>
       </div>
@@ -140,15 +142,15 @@ export function ResetPasswordForm({
     return (
       <div className={cn("w-full max-w-[512px]", className)}>
         <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md text-sm space-y-2">
-          <p className="font-semibold">Invalid Reset Link</p>
+          <p className="font-semibold">{t("invalidLinkTitle")}</p>
           <p className="text-muted-foreground">
-            The password reset link is invalid or has expired. Please request a new one.
+            {t("invalidLinkMessage")}
           </p>
           <Link
             href="/forgot-password"
             className="inline-block mt-2 text-primary hover:text-primary/80 transition-colors font-semibold"
           >
-            Request new reset link →
+            {t("requestNewLink")}
           </Link>
         </div>
       </div>
@@ -175,7 +177,7 @@ export function ResetPasswordForm({
                 <FormControl>
                   <PasswordInput
                     {...field}
-                    label="Create Password"
+                    label={t("createPassword")}
                     error={!!fieldState.error}
                     disabled={isLoading}
                   />
@@ -193,9 +195,9 @@ export function ResetPasswordForm({
             render={({ field, fieldState }) => (
               <FormItem>
                 <FormControl>
-                  <PasswordInput
+                <PasswordInput
                     {...field}
-                    label="Re-enter Password"
+                    label={t("reenterPassword")}
                     error={!!fieldState.error}
                     disabled={isLoading}
                   />
@@ -212,7 +214,7 @@ export function ResetPasswordForm({
             className="w-full h-12 text-base font-semibold"
             disabled={isLoading}
           >
-            {isLoading ? "Đang đặt lại..." : "Set password"}
+            {isLoading ? t("submitting") : t("submit")}
           </Button>
         </form>
       </Form>

@@ -1,20 +1,30 @@
+"use client"
+
+import { useTranslations } from "next-intl"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { pricingFAQ } from "@/data/pricing"
+
+interface FAQItem {
+  question: string
+  answer: string
+}
 
 export interface PricingFAQProps {
   className?: string
 }
 
 export function PricingFAQ({ className }: PricingFAQProps) {
+  const t = useTranslations("marketing.pricingPage")
+  const faqItems = t.raw("faqItems") as FAQItem[]
+
   return (
     <div className={className}>
       <Accordion type="single" collapsible className="space-y-4">
-        {pricingFAQ.map((item, idx) => (
+        {faqItems.map((item, idx) => (
           <AccordionItem
             key={idx}
             value={`item-${idx}`}

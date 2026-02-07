@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef } from "react"
+import { useTranslations } from "next-intl"
 import { motion, useInView } from "framer-motion"
 import { Coins } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -13,6 +14,7 @@ export interface PricingSectionProps {
 }
 
 export function PricingSection({ className }: PricingSectionProps) {
+  const t = useTranslations("marketing.pricingSection")
   const ref = useRef<HTMLElement>(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
@@ -42,13 +44,12 @@ export function PricingSection({ className }: PricingSectionProps) {
         >
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
-            Giá đơn giản,
+            {t("title")}
             <br />
-            <span className="text-primary">trả theo nhu cầu</span>
+            <span className="text-primary">{t("subtitle")}</span>
           </h2>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Mua credits một lần, sử dụng không giới hạn thời gian. Mua càng
-            nhiều, giá càng rẻ.
+            {t("description")}
           </p>
         </motion.div>
 

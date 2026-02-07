@@ -1,7 +1,8 @@
 "use client"
 
 import { useRef, useState, useEffect } from "react"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import {
   Star,
@@ -9,26 +10,45 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
+  Users,
+  FileText,
+  Clock,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SectionBackground } from "@/components/shared"
 import { cn } from "@/lib/utils"
-import {
-  testimonials,
-  stats,
-  avatarColors,
-  type Testimonial,
-  type Stat,
-} from "@/data/testimonials"
+import { avatarColors } from "@/data/testimonials"
+import type { LucideIcon } from "lucide-react"
+
+// Types for translated testimonials
+interface TranslatedTestimonial {
+  name: string
+  role: string
+  company: string
+  industry: string
+  content: string
+}
+
+// Stats configuration (icons only - labels come from translations)
+const statsConfig: { id: string; icon: LucideIcon; value: string }[] = [
+  { id: "rating", icon: Star, value: "4.9/5" },
+  { id: "users", icon: Users, value: "10K+" },
+  { id: "documents", icon: FileText, value: "5M+" },
+  { id: "uptime", icon: Clock, value: "99.9%" },
+]
+
+// Avatar initials mapping
+const avatarInitials = ["NM", "TH", "LH", "PM", "DT", "VA"]
 
 // --- Sub-components ---
 
 interface TestimonialCardProps {
-  testimonial: Testimonial
+  testimonial: TranslatedTestimonial
+  avatar: string
   colorIndex: number
 }
 
-function TestimonialCard({ testimonial, colorIndex }: TestimonialCardProps) {
+function TestimonialCard({ testimonial, avatar, colorIndex }: TestimonialCardProps) {
   return (
     <motion.div whileHover={{ y: -4 }} className="relative group h-full">
       <div className="relative bg-card rounded-2xl border border-border p-6 shadow-lg hover:shadow-xl hover:border-primary/30 transition-all duration-300 h-full flex flex-col">
@@ -39,7 +59,7 @@ function TestimonialCard({ testimonial, colorIndex }: TestimonialCardProps) {
 
         {/* Rating */}
         <div className="flex gap-1 mb-4">
-          {[...Array(testimonial.rating)].map((_, i) => (
+          {[...Array(5)].map((_, i) => (
             <Star
               key={i}
               className="w-4 h-4 fill-secondary text-secondary"
@@ -60,7 +80,7 @@ function TestimonialCard({ testimonial, colorIndex }: TestimonialCardProps) {
               avatarColors[colorIndex % avatarColors.length]
             )}
           >
-            {testimonial.avatar}
+            {avatar}
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-foreground truncate">
@@ -80,12 +100,13 @@ function TestimonialCard({ testimonial, colorIndex }: TestimonialCardProps) {
 }
 
 interface StatItemProps {
-  stat: Stat
+  stat: { id: string; icon: LucideIcon; value: string }
+  label: string
   index: number
   isInView: boolean
 }
 
-function StatItem({ stat, index, isInView }: StatItemProps) {
+function StatItem({ stat, label, index, isInView }: StatItemProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -99,7 +120,7 @@ function StatItem({ stat, index, isInView }: StatItemProps) {
       <div className="text-2xl lg:text-3xl font-extrabold text-foreground">
         {stat.value}
       </div>
-      <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
+      <div className="text-sm text-muted-foreground mt-1">{label}</div>
     </motion.div>
   )
 }
@@ -111,11 +132,15 @@ export interface TestimonialsSectionProps {
 }
 
 export function TestimonialsSection({ className }: TestimonialsSectionProps) {
+  const t = useTranslations("marketing.testimonialsSection")
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
   const [itemsPerPage, setItemsPerPage] = useState(3)
+
+  // Get testimonials from translations
+  const testimonials = t.raw("items") as TranslatedTestimonial[]
 
   useEffect(() => {
     const checkMobile = () => setItemsPerPage(window.innerWidth < 768 ? 1 : 3)
@@ -160,9 +185,9 @@ export function TestimonialsSection({ className }: TestimonialsSectionProps) {
         >
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground text-balance">
-            Được tin tưởng bởi
+            {t("title")}
             <br />
-            <span className="text-primary">hàng ngàn doanh nghiệp</span>
+            <span className="text-primary">{t("subtitle")}</span>
           </h2>
         </motion.div>
 
@@ -198,13 +223,17 @@ export function TestimonialsSection({ className }: TestimonialsSectionProps) {
                 transition={{ duration: 0.3 }}
                 className="grid md:grid-cols-3 gap-6"
               >
-                {currentTestimonials.map((testimonial, idx) => (
-                  <TestimonialCard
-                    key={testimonial.name}
-                    testimonial={testimonial}
-                    colorIndex={currentIndex * itemsPerPage + idx}
-                  />
-                ))}
+                {currentTestimonials.map((testimonial, idx) => {
+                  const globalIdx = currentIndex * itemsPerPage + idx
+                  return (
+                    <TestimonialCard
+                      key={testimonial.name}
+                      testimonial={testimonial}
+                      avatar={avatarInitials[globalIdx % avatarInitials.length]}
+                      colorIndex={globalIdx}
+                    />
+                  )
+                })}
               </motion.div>
             </AnimatePresence>
           </div>
@@ -234,8 +263,14 @@ export function TestimonialsSection({ className }: TestimonialsSectionProps) {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
         >
-          {stats.map((stat, index) => (
-            <StatItem key={stat.label} stat={stat} index={index} isInView={isInView} />
+          {statsConfig.map((stat, index) => (
+            <StatItem
+              key={stat.id}
+              stat={stat}
+              label={t(`stats.${stat.id}`)}
+              index={index}
+              isInView={isInView}
+            />
           ))}
         </motion.div>
       </div>

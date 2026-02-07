@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -40,6 +41,7 @@ export function RegisterForm({
   className,
   redirectTo = "/login",
 }: RegisterFormProps) {
+  const t = useTranslations("auth.register")
   const [serverError, setServerError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
@@ -112,13 +114,13 @@ export function RegisterForm({
         <div className="bg-success/10 border border-success text-success px-4 py-3 rounded-md text-sm space-y-2">
           <p className="font-semibold">{successMessage}</p>
           <p className="text-muted-foreground">
-            Vui lòng kiểm tra email để xác thực tài khoản của bạn.
+            {t("successMessage")}
           </p>
           <Link
             href="/login"
             className="inline-block mt-2 text-primary hover:text-primary/80 transition-colors font-semibold"
           >
-            Đi đến trang đăng nhập →
+            {t("goToLogin")}
           </Link>
         </div>
       </div>
@@ -146,7 +148,7 @@ export function RegisterForm({
                   <FormControl>
                     <FloatingLabelInput
                       {...field}
-                      label="First Name"
+                      label={t("firstName")}
                       error={!!fieldState.error}
                       disabled={isLoading}
                     />
@@ -164,7 +166,7 @@ export function RegisterForm({
                   <FormControl>
                     <FloatingLabelInput
                       {...field}
-                      label="Last Name"
+                      label={t("lastName")}
                       error={!!fieldState.error}
                       disabled={isLoading}
                     />
@@ -186,7 +188,7 @@ export function RegisterForm({
                     <FloatingLabelInput
                       {...field}
                       type="email"
-                      label="Email"
+                      label={t("email")}
                       error={!!fieldState.error}
                       disabled={isLoading}
                     />
@@ -205,7 +207,7 @@ export function RegisterForm({
                     <PhoneInput
                       value={field.value || ""}
                       onChange={field.onChange}
-                      label="Phone Number"
+                      label={t("phone")}
                       error={!!fieldState.error}
                       disabled={isLoading}
                       defaultCountry="VN"
@@ -226,7 +228,7 @@ export function RegisterForm({
                 <FormControl>
                   <PasswordInput
                     {...field}
-                    label="Password"
+                    label={t("password")}
                     error={!!fieldState.error}
                     disabled={isLoading}
                   />
@@ -246,7 +248,7 @@ export function RegisterForm({
                 <FormControl>
                   <PasswordInput
                     {...field}
-                    label="Confirm Password"
+                    label={t("confirmPassword")}
                     error={!!fieldState.error}
                     disabled={isLoading}
                   />
@@ -275,19 +277,19 @@ export function RegisterForm({
                     htmlFor={field.name}
                     className="text-sm font-medium text-foreground cursor-pointer"
                   >
-                    I agree to all the{" "}
+                    {t("agreeTerms")}{" "}
                     <Link
                       href="/terms"
                       className="font-semibold text-primary hover:text-primary/80 transition-colors"
                     >
-                      Terms
+                      {t("terms")}
                     </Link>{" "}
-                    and{" "}
+                    {t("and")}{" "}
                     <Link
                       href="/privacy"
                       className="font-semibold text-primary hover:text-primary/80 transition-colors"
                     >
-                      Privacy Policies
+                      {t("privacyPolicies")}
                     </Link>
                   </Label>
                   <FormMessage />
@@ -303,17 +305,17 @@ export function RegisterForm({
             className="w-full h-12 text-base font-semibold"
             disabled={isLoading}
           >
-            {isLoading ? "Đang tạo tài khoản..." : "Create account"}
+            {isLoading ? t("submitting") : t("submit")}
           </Button>
 
           {/* Login Link */}
           <p className="text-center text-sm text-foreground">
-            Already have an account?{" "}
+            {t("hasAccount")}{" "}
             <Link
               href="/login"
               className="font-semibold text-primary hover:text-primary/80 transition-colors"
             >
-              Login
+              {t("signIn")}
             </Link>
           </p>
         </form>

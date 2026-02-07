@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 import { cn } from "@/lib/utils"
@@ -10,7 +11,6 @@ interface Logo {
 }
 
 interface SocialProofProps {
-  title?: string
   logos?: Logo[]
   className?: string
 }
@@ -40,10 +40,10 @@ function LogoPlaceholder({ name, width }: Logo) {
 }
 
 export function SocialProof({
-  title = "Được tin dùng bởi các tổ chức hàng đầu",
   logos = defaultLogos,
   className,
 }: SocialProofProps) {
+  const t = useTranslations("marketing.socialProof")
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
@@ -62,7 +62,7 @@ export function SocialProof({
           transition={{ duration: 0.5 }}
           className="text-center text-sm font-medium text-muted-foreground uppercase tracking-wider mb-10"
         >
-          {title}
+          {t("title")}
         </motion.p>
 
         {/* Desktop: Grid */}
@@ -110,7 +110,7 @@ export function SocialProof({
           transition={{ duration: 0.5, delay: 0.8 }}
           className="text-center text-xs text-muted-foreground/50 mt-8 italic"
         >
-          * Logo mẫu - Sẽ được cập nhật khi có đối tác chính thức
+          {t("disclaimer")}
         </motion.p>
       </div>
     </section>

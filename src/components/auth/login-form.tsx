@@ -4,7 +4,8 @@ import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useSearchParams } from "next/navigation"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -39,6 +40,7 @@ export function LoginForm({
   className,
   redirectTo,
 }: LoginFormProps) {
+  const t = useTranslations("auth.login")
   const searchParams = useSearchParams()
   const [serverError, setServerError] = useState<string | null>(null)
 
@@ -114,7 +116,7 @@ export function LoginForm({
                   <FloatingLabelInput
                     {...field}
                     type="email"
-                    label="Email"
+                    label={t("email")}
                     error={!!fieldState.error}
                     disabled={isLoading}
                   />
@@ -133,7 +135,7 @@ export function LoginForm({
                 <FormControl>
                   <PasswordInput
                     {...field}
-                    label="Password"
+                    label={t("password")}
                     error={!!fieldState.error}
                     disabled={isLoading}
                   />
@@ -161,7 +163,7 @@ export function LoginForm({
                     htmlFor={field.name}
                     className="text-sm font-medium text-foreground cursor-pointer"
                   >
-                    Remember me
+                    {t("rememberMe")}
                   </Label>
                 </FormItem>
               )}
@@ -170,7 +172,7 @@ export function LoginForm({
               href="/forgot-password"
               className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
             >
-              Forgot Password
+              {t("forgotPassword")}
             </Link>
           </div>
 
@@ -181,17 +183,17 @@ export function LoginForm({
             className="w-full h-12 text-base font-semibold"
             disabled={isLoading}
           >
-            {isLoading ? "Đang đăng nhập..." : "Login"}
+            {isLoading ? t("submitting") : t("submit")}
           </Button>
 
           {/* Sign Up Link */}
           <p className="text-center text-sm text-foreground">
-            Don&apos;t have an account?{" "}
+            {t("noAccount")}{" "}
             <Link
               href="/register"
               className="font-semibold text-primary hover:text-primary/80 transition-colors"
             >
-              Sign up
+              {t("signUp")}
             </Link>
           </p>
         </form>

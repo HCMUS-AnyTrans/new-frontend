@@ -1,11 +1,16 @@
+"use client"
+
+import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
 import { missionVision, type MissionVisionItem } from "@/data/about"
 
 interface MissionVisionCardProps {
   item: MissionVisionItem
+  title: string
+  description: string
 }
 
-function MissionVisionCard({ item }: MissionVisionCardProps) {
+function MissionVisionCard({ item, title, description }: MissionVisionCardProps) {
   const Icon = item.icon
 
   return (
@@ -31,8 +36,8 @@ function MissionVisionCard({ item }: MissionVisionCardProps) {
       </div>
 
       {/* Content */}
-      <h3 className="text-2xl font-bold text-foreground mb-4">{item.title}</h3>
-      <p className="text-muted-foreground leading-relaxed">{item.description}</p>
+      <h3 className="text-2xl font-bold text-foreground mb-4">{title}</h3>
+      <p className="text-muted-foreground leading-relaxed">{description}</p>
     </div>
   )
 }
@@ -42,23 +47,30 @@ export interface OurStoryProps {
 }
 
 export function OurStory({ className }: OurStoryProps) {
+  const t = useTranslations("marketing.about")
+
   return (
     <section className={cn("py-20 lg:py-28", className)}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12 lg:mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Câu chuyện của chúng tôi
+            {t("story.title")}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Từ ý tưởng đơn giản đến nền tảng dịch thuật AI hàng đầu
+            {t("story.subtitle")}
           </p>
         </div>
 
         {/* Mission & Vision Cards */}
         <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
           {missionVision.map((item) => (
-            <MissionVisionCard key={item.id} item={item} />
+            <MissionVisionCard
+              key={item.id}
+              item={item}
+              title={t(`${item.id}.title`)}
+              description={t(`${item.id}.description`)}
+            />
           ))}
         </div>
       </div>

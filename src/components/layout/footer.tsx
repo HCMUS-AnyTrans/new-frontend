@@ -1,16 +1,11 @@
 "use client"
 
 import { motion } from "framer-motion"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import Image from "next/image"
 import { Mail, Phone, MapPin } from "lucide-react"
 import { cn } from "@/lib/utils"
-import {
-  footerNavSections,
-  bottomLinks as defaultBottomLinks,
-  type FooterSection,
-  type NavItem,
-} from "@/data/navigation"
 import {
   siteConfig,
   contactInfo as defaultContactInfo,
@@ -19,9 +14,19 @@ import {
   type ContactInfo,
 } from "@/data/site"
 
+export interface NavItem {
+  label: string
+  href: string
+}
+
+export interface FooterSection {
+  title: string
+  links: NavItem[]
+}
+
 // Re-export types for external use
 export type FooterLink = NavItem
-export type { FooterSection, SocialLink, ContactInfo }
+export type { SocialLink, ContactInfo }
 
 export interface FooterProps {
   className?: string
@@ -31,11 +36,9 @@ export interface FooterProps {
     href?: string
   }
   description?: string
-  sections?: Record<string, FooterSection>
   socialLinks?: SocialLink[]
   contactInfo?: ContactInfo
   copyright?: string
-  bottomLinks?: NavItem[]
 }
 
 // --- Sub-components ---
@@ -89,15 +92,63 @@ export function Footer({
   className,
   logo = { text: siteConfig.name, icon: "A", href: "/" },
   description = siteConfig.description,
-  sections = footerNavSections,
   socialLinks = defaultSocialLinks,
   contactInfo = defaultContactInfo,
   copyright,
-  bottomLinks = defaultBottomLinks,
 }: FooterProps) {
+  const t = useTranslations("marketing.footer")
+  const tLinks = useTranslations("marketing.footer.links")
   const currentYear = new Date().getFullYear()
-  const copyrightText =
-    copyright || `© ${currentYear} ${logo.text}. All rights reserved.`
+  const copyrightText = copyright || t("copyright", { year: currentYear })
+
+  // Build footer sections with translations
+  const sections: Record<string, FooterSection> = {
+    product: {
+      title: t("product"),
+      links: [
+        { label: tLinks("features"), href: "#features" },
+        { label: tLinks("pricing"), href: "/pricing" },
+        { label: tLinks("api"), href: "/api" },
+        { label: tLinks("integrations"), href: "/integrations" },
+        { label: tLinks("changelog"), href: "/changelog" },
+      ],
+    },
+    company: {
+      title: t("company"),
+      links: [
+        { label: tLinks("about"), href: "/about" },
+        { label: tLinks("blog"), href: "/blog" },
+        { label: tLinks("careers"), href: "/careers" },
+        { label: tLinks("contact"), href: "/contact" },
+        { label: tLinks("partners"), href: "/partners" },
+      ],
+    },
+    resources: {
+      title: t("resources"),
+      links: [
+        { label: tLinks("documentation"), href: "/docs" },
+        { label: tLinks("guides"), href: "/guides" },
+        { label: tLinks("tutorials"), href: "/tutorials" },
+        { label: tLinks("caseStudies"), href: "/case-studies" },
+        { label: tLinks("support"), href: "/support" },
+      ],
+    },
+    legal: {
+      title: t("legal"),
+      links: [
+        { label: tLinks("terms"), href: "/terms" },
+        { label: tLinks("privacy"), href: "/privacy" },
+        { label: tLinks("cookies"), href: "/cookies" },
+        { label: tLinks("dmca"), href: "/dmca" },
+      ],
+    },
+  }
+
+  const bottomLinks: NavItem[] = [
+    { label: tLinks("terms"), href: "/terms" },
+    { label: tLinks("privacy"), href: "/privacy" },
+    { label: tLinks("cookies"), href: "/cookies" },
+  ]
 
   return (
     <footer

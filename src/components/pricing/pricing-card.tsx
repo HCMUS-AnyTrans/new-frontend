@@ -1,4 +1,7 @@
-import Link from "next/link"
+"use client"
+
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import { Check, Star, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -15,6 +18,7 @@ export function PricingCard({
   features,
   className,
 }: PricingCardProps) {
+  const t = useTranslations("marketing.pricingPage")
   return (
     <div
       className={cn(
@@ -38,7 +42,7 @@ export function PricingCard({
           <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
             <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold shadow-lg">
               <Star className="w-4 h-4 fill-current" />
-              Phổ biến nhất
+              {t("popular")}
             </span>
           </div>
         )}
@@ -49,7 +53,7 @@ export function PricingCard({
           <p className="text-2xl font-extrabold text-primary mt-2">
             {plan.credits}{" "}
             <span className="text-base font-medium text-muted-foreground">
-              credits
+              {t("credits")}
             </span>
           </p>
         </div>
@@ -99,7 +103,7 @@ export function PricingCard({
             href={plan.checkoutUrl}
             className="flex items-center justify-center gap-2"
           >
-            Mua ngay
+            {t("buyNow")}
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </Button>

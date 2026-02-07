@@ -1,20 +1,67 @@
 "use client"
 
 import { useRef } from "react"
+import { useTranslations } from "next-intl"
 import { motion, useInView } from "framer-motion"
 import { Check, ArrowRight, Zap } from "lucide-react"
 import { SectionBackground } from "@/components/shared"
 import { cn } from "@/lib/utils"
-import { features, type Feature } from "@/data/features"
+
+// Feature styling configuration (no text content - that comes from translations)
+const featureStyles = [
+  {
+    id: "format",
+    iconBg: "bg-primary",
+    titleColor: "text-primary",
+    titleBg: "bg-primary/10",
+    visual: "format" as const,
+  },
+  {
+    id: "glossary",
+    iconBg: "bg-secondary-600",
+    titleColor: "text-secondary-600",
+    titleBg: "bg-secondary/20",
+    visual: "glossary" as const,
+  },
+  {
+    id: "speed",
+    iconBg: "bg-destructive",
+    titleColor: "text-destructive",
+    titleBg: "bg-destructive/10",
+    visual: "speed" as const,
+  },
+  {
+    id: "review",
+    iconBg: "bg-info",
+    titleColor: "text-info",
+    titleBg: "bg-info/10",
+    visual: "review" as const,
+  },
+  {
+    id: "ocr",
+    iconBg: "bg-primary",
+    titleColor: "text-primary",
+    titleBg: "bg-primary/10",
+    visual: "ocr" as const,
+  },
+  {
+    id: "savings",
+    iconBg: "bg-success",
+    titleColor: "text-success",
+    titleBg: "bg-success/10",
+    visual: "savings" as const,
+  },
+]
 
 // Static mockup components - no loop animations for fast loading
 function FormatMockup() {
+  const t = useTranslations("marketing.features.mockup")
   return (
     <div className="relative w-full h-full min-h-48 bg-primary-50 dark:bg-primary-950/30 rounded-xl overflow-hidden p-4">
       <div className="flex gap-3 h-full">
         {/* Before */}
         <div className="flex-1 bg-card rounded-lg shadow-sm border border-border p-3 relative">
-          <div className="text-[10px] font-semibold text-muted-foreground mb-2">BEFORE</div>
+          <div className="text-[10px] font-semibold text-muted-foreground mb-2">{t("before")}</div>
           <div className="space-y-1.5">
             <div className="h-2 bg-muted rounded w-full" />
             <div className="h-2 bg-muted rounded w-3/4" />
@@ -37,7 +84,7 @@ function FormatMockup() {
         
         {/* After */}
         <div className="flex-1 bg-card rounded-lg shadow-sm border border-primary/20 p-3 relative">
-          <div className="text-[10px] font-semibold text-primary mb-2">AFTER</div>
+          <div className="text-[10px] font-semibold text-primary mb-2">{t("after")}</div>
           <div className="space-y-1.5">
             <div className="h-2 bg-primary/10 rounded w-full" />
             <div className="h-2 bg-primary/10 rounded w-3/4" />
@@ -58,11 +105,12 @@ function FormatMockup() {
 }
 
 function GlossaryMockup() {
+  const t = useTranslations("marketing.features.glossaryTerms")
   const terms = [
-    { en: "Machine Learning", vi: "Học máy" },
-    { en: "Neural Network", vi: "Mạng nơ-ron" },
-    { en: "Deep Learning", vi: "Học sâu" },
-    { en: "Artificial Intelligence", vi: "Trí tuệ nhân tạo" },
+    { en: t("machineLearning.en"), translated: t("machineLearning.translated") },
+    { en: t("neuralNetwork.en"), translated: t("neuralNetwork.translated") },
+    { en: t("deepLearning.en"), translated: t("deepLearning.translated") },
+    { en: t("ai.en"), translated: t("ai.translated") },
   ]
   
   return (
@@ -78,7 +126,7 @@ function GlossaryMockup() {
             </div>
             <ArrowRight className="w-4 h-4 text-secondary-600 shrink-0" />
             <div className="flex-1 text-xs font-semibold text-secondary-600 truncate">
-              {term.vi}
+              {term.translated}
             </div>
             <Check className="w-4 h-4 text-secondary-600" />
           </div>
@@ -89,15 +137,16 @@ function GlossaryMockup() {
 }
 
 function SpeedMockup() {
+  const t = useTranslations("marketing.features.mockup")
   return (
     <div className="relative w-full h-full min-h-48 bg-destructive/10 dark:bg-destructive/5 rounded-xl overflow-hidden p-4 flex flex-col justify-center">
       <div className="text-center mb-4">
         <div className="text-4xl font-extrabold text-destructive">10x</div>
-        <div className="text-sm text-muted-foreground mt-1">Nhanh hơn</div>
+        <div className="text-sm text-muted-foreground mt-1">{t("faster")}</div>
       </div>
       <div className="flex items-center gap-2">
         <div className="flex-1">
-          <div className="text-[10px] text-muted-foreground mb-1">Thủ công</div>
+          <div className="text-[10px] text-muted-foreground mb-1">{t("manual")}</div>
           <div className="h-3 bg-muted rounded-full w-full" />
         </div>
         <div className="text-xs text-muted-foreground">vs</div>
@@ -281,33 +330,44 @@ function FeatureVisual({ type }: { type: string }) {
   }
 }
 
-interface FeatureContentProps {
-  feature: Feature
+interface FeatureStyle {
+  id: string
+  iconBg: string
+  titleColor: string
+  titleBg: string
+  visual: "format" | "glossary" | "speed" | "review" | "ocr" | "savings"
 }
 
-function FeatureContent({ feature }: FeatureContentProps) {
+interface FeatureContentProps {
+  featureStyle: FeatureStyle
+  title: string
+  description: string
+  highlights: string[]
+}
+
+function FeatureContent({ featureStyle, title, description, highlights }: FeatureContentProps) {
   return (
     <div className="space-y-6">
       {/* Title with background highlight */}
       <h3 className="text-2xl lg:text-3xl font-bold">
-        <span className={cn("px-2 py-1 rounded-md", feature.titleBg)}>
-          <span className={feature.titleColor}>{feature.title}</span>
+        <span className={cn("px-2 py-1 rounded-md", featureStyle.titleBg)}>
+          <span className={featureStyle.titleColor}>{title}</span>
         </span>
       </h3>
 
       {/* Description */}
       <p className="text-lg text-muted-foreground leading-relaxed">
-        {feature.description}
+        {description}
       </p>
 
       {/* Highlights */}
       <ul className="space-y-3">
-        {feature.highlights.map((highlight) => (
+        {highlights.map((highlight) => (
           <li key={highlight} className="flex items-center gap-3">
             <div
               className={cn(
                 "w-6 h-6 rounded-full flex items-center justify-center shrink-0",
-                feature.iconBg
+                featureStyle.iconBg
               )}
             >
               <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
@@ -327,6 +387,7 @@ export interface FeaturesSectionProps {
 }
 
 export function FeaturesSection({ className }: FeaturesSectionProps) {
+  const t = useTranslations("marketing.features")
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
@@ -353,38 +414,50 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
         >
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
-            Mọi thứ bạn cần để dịch
+            {t("sectionTitle")}
             <br />
-            <span className="text-primary">tài liệu chuyên nghiệp</span>
+            <span className="text-primary">{t("sectionSubtitle")}</span>
           </h2>
         </motion.div>
 
         {/* Features List */}
         <div className="space-y-16 lg:space-y-24">
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className={cn(
-                "flex flex-col gap-8 lg:gap-16 items-stretch",
-                index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
-              )}
-            >
-              {/* Visual */}
-              <div className="w-full lg:w-2/5 flex">
-                <div className="relative bg-card rounded-2xl border border-border shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer w-full flex">
-                  <FeatureVisual type={feature.visual} />
+          {featureStyles.map((featureStyle, index) => {
+            const featureData = t.raw(`items.${featureStyle.id}`) as {
+              title: string
+              description: string
+              highlights: string[]
+            }
+            return (
+              <motion.div
+                key={featureStyle.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className={cn(
+                  "flex flex-col gap-8 lg:gap-16 items-stretch",
+                  index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
+                )}
+              >
+                {/* Visual */}
+                <div className="w-full lg:w-2/5 flex">
+                  <div className="relative bg-card rounded-2xl border border-border shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer w-full flex">
+                    <FeatureVisual type={featureStyle.visual} />
+                  </div>
                 </div>
-              </div>
 
-              {/* Content */}
-              <div className="w-full lg:w-3/5">
-                <FeatureContent feature={feature} />
-              </div>
-            </motion.div>
-          ))}
+                {/* Content */}
+                <div className="w-full lg:w-3/5">
+                  <FeatureContent
+                    featureStyle={featureStyle}
+                    title={featureData.title}
+                    description={featureData.description}
+                    highlights={featureData.highlights}
+                  />
+                </div>
+              </motion.div>
+            )
+          })}
         </div>
       </div>
     </SectionBackground>

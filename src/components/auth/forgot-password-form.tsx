@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -31,6 +32,7 @@ export function ForgotPasswordForm({
   isLoading: isLoadingProp,
   className,
 }: ForgotPasswordFormProps) {
+  const t = useTranslations("auth.forgotPassword")
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
 
@@ -97,7 +99,7 @@ export function ForgotPasswordForm({
         <div className="bg-success/10 border border-success text-success px-4 py-3 rounded-md text-sm space-y-2">
           <p className="font-semibold">{authValidationMessages.forgotPasswordSuccess}</p>
           <p className="text-muted-foreground">
-            Vui lòng kiểm tra hộp thư email của bạn để nhận link khôi phục mật khẩu.
+            {t("successMessage")}
           </p>
         </div>
       </div>
@@ -125,7 +127,7 @@ export function ForgotPasswordForm({
                   <FloatingLabelInput
                     {...field}
                     type="email"
-                    label="Email"
+                    label={t("email")}
                     error={!!fieldState.error}
                     disabled={isLoading}
                   />
@@ -142,7 +144,7 @@ export function ForgotPasswordForm({
             className="w-full h-12 text-base font-semibold"
             disabled={isLoading}
           >
-            {isLoading ? "Đang gửi..." : "Submit"}
+            {isLoading ? t("submitting") : t("submit")}
           </Button>
         </form>
       </Form>

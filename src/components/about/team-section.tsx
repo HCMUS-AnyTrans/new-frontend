@@ -1,3 +1,6 @@
+"use client"
+
+import { useTranslations } from "next-intl"
 import { Users, User } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { teamMembers, type TeamMember } from "@/data/about"
@@ -32,6 +35,8 @@ export interface TeamSectionProps {
 }
 
 export function TeamSection({ className }: TeamSectionProps) {
+  const t = useTranslations("marketing.about.team")
+
   return (
     <section
       className={cn(
@@ -47,10 +52,10 @@ export function TeamSection({ className }: TeamSectionProps) {
         <div className="text-center mb-12 lg:mb-16">
 
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Những người đứng sau AnyTrans
+            {t("title")}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Đội ngũ đam mê công nghệ và luôn nỗ lực mang đến giải pháp tốt nhất
+            {t("subtitle")}
           </p>
         </div>
 

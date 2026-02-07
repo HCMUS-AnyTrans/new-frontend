@@ -1,4 +1,7 @@
-import Link from "next/link"
+"use client"
+
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import { Building2, ArrowRight, Zap, Shield, Headphones, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -15,6 +18,7 @@ export function EnterpriseBlock({
   className,
   variant = "dark",
 }: EnterpriseBlockProps) {
+  const t = useTranslations("marketing.pricingPage.enterpriseSection")
   const isDark = variant === "dark"
 
   return (
@@ -55,7 +59,7 @@ export function EnterpriseBlock({
                   isDark ? "text-background" : "text-foreground"
                 )}
               >
-                Enterprise
+                {t("enterpriseTitle")}
               </h3>
               <p
                 className={cn(
@@ -63,7 +67,7 @@ export function EnterpriseBlock({
                   isDark ? "text-muted" : "text-muted-foreground"
                 )}
               >
-                Giải pháp tùy chỉnh cho doanh nghiệp lớn với SLA cam kết
+                {t("enterpriseDesc")}
               </p>
             </div>
           </div>
@@ -80,7 +84,7 @@ export function EnterpriseBlock({
             asChild
           >
             <Link href="/contact" className="flex items-center gap-2">
-              Liên hệ tư vấn
+              {t("contactSales")}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Button>

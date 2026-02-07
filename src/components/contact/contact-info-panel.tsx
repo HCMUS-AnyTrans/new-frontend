@@ -1,7 +1,11 @@
+"use client"
+
+import { useTranslations } from "next-intl"
 import { Mail, Phone, MapPin, Twitter, Instagram, DiscIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
 
 export function ContactInfoPanel() {
+  const t = useTranslations("marketing.contact.infoPanel")
+
   return (
     <div className="relative bg-primary rounded-[10px] p-10 overflow-hidden h-full flex flex-col justify-between min-h-[600px]">
       {/* Decorative Circles */}
@@ -11,10 +15,10 @@ export function ContactInfoPanel() {
       {/* Header */}
       <div>
         <h2 className="text-primary-foreground text-[28px] font-semibold mb-2">
-          Thông tin liên hệ
+          {t("title")}
         </h2>
         <p className="text-primary-foreground/80 text-lg">
-          Hãy nói điều gì đó để bắt đầu cuộc trò chuyện!
+          {t("subtitle")}
         </p>
       </div>
 

@@ -1,7 +1,8 @@
 "use client"
 
 import { useRef } from "react"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { ArrowRight, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -10,26 +11,6 @@ import { TranslationDemo } from "./translation-demo"
 import { cn } from "@/lib/utils"
 
 export interface HeroSectionProps {
-  badge?: {
-    text: string
-    pulse?: boolean
-    variant?: "success" | "info" | "warning" | "primary"
-  }
-  headline?: {
-    line1: string
-    line2: string
-  }
-  subheadline?: string | React.ReactNode
-  primaryCTA?: {
-    label: string
-    href: string
-    showIcon?: boolean
-  }
-  secondaryCTA?: {
-    label: string
-    href: string
-    icon?: "play" | "arrow"
-  }
   stats?: {
     users: number
     rating: number
@@ -39,32 +20,6 @@ export interface HeroSectionProps {
 }
 
 export function HeroSection({
-  badge = {
-    text: "Trusted by 10,000+ professionals",
-    pulse: true,
-    variant: "success",
-  },
-  headline = {
-    line1: "Dịch tài liệu",
-    line2: "chuyên nghiệp với AI",
-  },
-  subheadline = (
-    <>
-      Giữ nguyên format, hỗ trợ glossary chuyên ngành.
-      <br className="hidden sm:block" />
-      Dịch Word, PDF, Subtitle nhanh gấp 10 lần thủ công.
-    </>
-  ),
-  primaryCTA = {
-    label: "Bắt đầu miễn phí",
-    href: "/register",
-    showIcon: true,
-  },
-  secondaryCTA = {
-    label: "Xem Demo",
-    href: "/demo",
-    icon: "play",
-  },
   stats = {
     users: 10000,
     rating: 4.9,
@@ -72,6 +27,7 @@ export function HeroSection({
   showDemo = true,
   className,
 }: HeroSectionProps) {
+  const t = useTranslations("marketing.hero")
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -82,7 +38,7 @@ export function HeroSection({
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
 
   const formatUsers = (num: number) => {
-    return num >= 1000 ? `${(num / 1000).toFixed(0)},000+` : `${num}+`
+    return num >= 1000 ? `${(num / 1000).toFixed(0)},000` : `${num}`
   }
 
   return (
@@ -96,14 +52,12 @@ export function HeroSection({
           {/* Left Content */}
           <motion.div style={{ opacity }} className="text-center lg:text-left">
             {/* Badge */}
-            {badge && (
-              <TrustBadge
-                text={badge.text}
-                pulse={badge.pulse}
-                variant={badge.variant}
-                className="mb-6"
-              />
-            )}
+            <TrustBadge
+              text={t("badge")}
+              pulse={true}
+              variant="success"
+              className="mb-6"
+            />
 
             {/* Headline */}
             <motion.h1
@@ -112,9 +66,9 @@ export function HeroSection({
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-balance"
             >
-              <span className="text-foreground">{headline.line1}</span>
+              <span className="text-foreground">{t("title")}</span>
               <br />
-              <span className="text-primary">{headline.line2}</span>
+              <span className="text-primary">{t("subtitle")}</span>
             </motion.h1>
 
             {/* Subheadline */}
@@ -124,7 +78,7 @@ export function HeroSection({
               transition={{ duration: 0.5, delay: 0.2 }}
               className="mt-6 text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0 text-pretty"
             >
-              {subheadline}
+              {t("description")}
             </motion.p>
 
             {/* CTA Buttons */}
@@ -140,35 +94,26 @@ export function HeroSection({
                   className="w-full sm:w-auto shadow-lg shadow-primary/20 text-base px-8 h-14 group"
                   asChild
                 >
-                  <Link href={primaryCTA.href} className="flex items-center gap-2">
-                    {primaryCTA.label}
-                    {primaryCTA.showIcon && (
-                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    )}
+                  <Link href="/register" className="flex items-center gap-2">
+                    {t("cta")}
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>
               </motion.div>
 
-              {secondaryCTA && (
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="w-full sm:w-auto text-base px-8 h-14 group"
-                    asChild
-                  >
-                    <Link href={secondaryCTA.href} className="flex items-center gap-2">
-                      {secondaryCTA.icon === "play" && (
-                        <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                      )}
-                      {secondaryCTA.label}
-                      {secondaryCTA.icon === "arrow" && (
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                      )}
-                    </Link>
-                  </Button>
-                </motion.div>
-              )}
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full sm:w-auto text-base px-8 h-14 group"
+                  asChild
+                >
+                  <Link href="/demo" className="flex items-center gap-2">
+                    <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                    {t("ctaSecondary")}
+                  </Link>
+                </Button>
+              </motion.div>
             </motion.div>
 
             {/* Trust Bar */}
@@ -183,7 +128,7 @@ export function HeroSection({
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 text-sm">
                   <span className="text-foreground font-semibold">
-                    {formatUsers(stats.users)} người dùng hài lòng
+                    {t("users", { count: formatUsers(stats.users) })}
                   </span>
                   <StarRating rating={stats.rating} showText />
                 </div>

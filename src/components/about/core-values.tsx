@@ -1,12 +1,17 @@
+"use client"
+
+import { useTranslations } from "next-intl"
 import { Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { coreValues, type CoreValue } from "@/data/about"
 
 interface ValueCardProps {
   value: CoreValue
+  title: string
+  description: string
 }
 
-function ValueCard({ value }: ValueCardProps) {
+function ValueCard({ value, title, description }: ValueCardProps) {
   const Icon = value.icon
 
   return (
@@ -23,8 +28,8 @@ function ValueCard({ value }: ValueCardProps) {
       </div>
 
       {/* Content */}
-      <h3 className="text-xl font-bold text-foreground mb-2">{value.title}</h3>
-      <p className="text-muted-foreground leading-relaxed">{value.description}</p>
+      <h3 className="text-xl font-bold text-foreground mb-2">{title}</h3>
+      <p className="text-muted-foreground leading-relaxed">{description}</p>
     </div>
   )
 }
@@ -34,6 +39,16 @@ export interface CoreValuesProps {
 }
 
 export function CoreValues({ className }: CoreValuesProps) {
+  const t = useTranslations("marketing.about.values")
+
+  // Map value ids to translation keys
+  const valueKeys: Record<string, string> = {
+    innovation: "innovation",
+    quality: "quality",
+    customer: "customer",
+    teamwork: "teamwork",
+  }
+
   return (
     <section
       className={cn(
@@ -49,18 +64,22 @@ export function CoreValues({ className }: CoreValuesProps) {
         <div className="text-center mb-12 lg:mb-16">
 
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Những giá trị định hình chúng tôi
+            {t("title")}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Mỗi quyết định và hành động của chúng tôi đều được dẫn dắt bởi những
-            giá trị này
+            {t("subtitle")}
           </p>
         </div>
 
         {/* Bento Grid */}
         <div className="grid md:grid-cols-3 gap-4 lg:gap-6">
           {coreValues.map((value) => (
-            <ValueCard key={value.id} value={value} />
+            <ValueCard
+              key={value.id}
+              value={value}
+              title={t(`${valueKeys[value.id]}.title`)}
+              description={t(`${valueKeys[value.id]}.description`)}
+            />
           ))}
         </div>
       </div>
