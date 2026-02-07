@@ -7,8 +7,7 @@ import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/mode-toggle"
-import { LanguageSwitcher } from "@/components/language-switcher"
+import { ModeToggle, LanguageSwitcher } from "@/components/shared"
 import { siteConfig } from "@/data/site"
 
 export interface NavItem {

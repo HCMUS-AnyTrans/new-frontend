@@ -8,7 +8,7 @@ import {
   PricingSection,
   TestimonialsSection,
   SocialProof,
-} from "@/components/landing";
+} from "@/features/landing";
 
 type Props = {
   params: Promise<{ locale: string }>;

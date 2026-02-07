@@ -15,8 +15,8 @@ import {
   UsageExamples,
   EnterpriseBlock,
   PricingFAQ,
-} from "@/components/pricing";
-import { usageExamples } from "@/data/pricing";
+} from "@/features/pricing";
+import { usageExamples } from "@/features/pricing/data";
 
 type Props = {
   params: Promise<{ locale: string }>;

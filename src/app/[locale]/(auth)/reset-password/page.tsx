@@ -3,7 +3,7 @@
 import { Suspense } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ResetPasswordForm, AuthHero } from "@/components/auth"
+import { ResetPasswordForm, AuthHero } from "@/features/auth"
 
 function ResetPasswordContent() {
   return (

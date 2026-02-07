@@ -2,7 +2,7 @@
 
 import { useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
-import { useAuthStore } from "@/features/authentication"
+import { useAuthStore } from "@/features/auth"
 
 function CallbackContent() {
   const searchParams = useSearchParams()

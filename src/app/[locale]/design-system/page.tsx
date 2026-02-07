@@ -1,7 +1,7 @@
 import { use } from "react";
 import { setRequestLocale } from "next-intl/server";
 import { Separator } from "@/components/ui/separator";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ModeToggle } from "@/components/shared";
 import {
   ColorPalette,
   TypographyScale,

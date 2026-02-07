@@ -1,8 +1,7 @@
 "use client"
 
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/dashboard/app-sidebar"
-import { DashboardHeader } from "@/components/dashboard/dashboard-header"
+import { AppSidebar, DashboardHeader } from "@/features/dashboard"
 
 export default function DashboardLayout({
   children,

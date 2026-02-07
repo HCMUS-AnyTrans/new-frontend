@@ -9,8 +9,8 @@ import {
   RecentJobsTable,
   ActivityFeed,
   StorageUsage,
-} from "@/components/dashboard";
-import { mockUser } from "@/data/dashboard";
+} from "@/features/dashboard";
+import { mockUser } from "@/features/dashboard/data";
 
 type Props = {
   params: Promise<{ locale: string }>;

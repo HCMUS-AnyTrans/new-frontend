@@ -5,7 +5,7 @@ import {
   ContactForm,
   ContactInfoPanel,
   ContactHero,
-} from "@/components/contact";
+} from "@/features/contact";
 
 export const metadata: Metadata = {
   title: "Liên hệ | AnyTrans",

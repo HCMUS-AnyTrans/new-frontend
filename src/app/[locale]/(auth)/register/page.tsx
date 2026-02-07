@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { RegisterForm, AuthHero } from "@/components/auth"
+import { RegisterForm, AuthHero } from "@/features/auth"
 
 export default function RegisterPage() {
   return (

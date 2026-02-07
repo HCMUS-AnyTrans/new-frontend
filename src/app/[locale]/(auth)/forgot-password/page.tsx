@@ -7,7 +7,7 @@ import {
   ForgotPasswordForm,
   SocialLoginButtons,
   AuthHero,
-} from "@/components/auth"
+} from "@/features/auth"
 
 export default function ForgotPasswordPage() {
   return (

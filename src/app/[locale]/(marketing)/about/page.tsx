@@ -8,7 +8,7 @@ import {
   CoreValues,
   TimelineSection,
   TeamSection,
-} from "@/components/about";
+} from "@/features/about";
 
 export const metadata: Metadata = {
   title: "Về chúng tôi | AnyTrans",

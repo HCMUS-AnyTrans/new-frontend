@@ -3,7 +3,7 @@
 import { Suspense } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { LoginForm, SocialLoginButtons, AuthHero } from "@/components/auth"
+import { LoginForm, SocialLoginButtons, AuthHero } from "@/features/auth"
 
 function LoginContent() {
   return (

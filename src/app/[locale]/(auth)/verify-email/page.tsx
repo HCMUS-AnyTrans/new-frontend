@@ -3,7 +3,7 @@
 import { Suspense } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { VerifyEmailHandler, AuthHero } from "@/components/auth"
+import { VerifyEmailHandler, AuthHero } from "@/features/auth"
 
 function VerifyEmailContent() {
   return (
