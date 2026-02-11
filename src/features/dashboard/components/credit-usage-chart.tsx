@@ -2,6 +2,7 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   ChartContainer,
   ChartTooltip,
@@ -9,29 +10,39 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { Pie, PieChart, Cell } from "recharts";
+import { useCreditsChart } from "../hooks";
+
+function CreditUsageChartSkeleton() {
+  return (
+    <Card className="h-full border border-border shadow-sm">
+      <CardHeader className="pb-2">
+        <Skeleton className="h-5 w-36" />
+      </CardHeader>
+      <CardContent className="pt-0">
+        <Skeleton className="mx-auto h-[200px] w-[200px] rounded-full" />
+        <div className="mt-2 flex flex-col gap-2">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="flex items-center justify-between">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-4 w-16" />
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+const FILL_COLORS = [
+  "var(--color-chart-1)",
+  "var(--color-chart-3)",
+  "var(--color-chart-2)",
+];
 
 export function CreditUsageChart() {
   const t = useTranslations("dashboard.charts");
   const locale = useLocale();
-
-  // Create localized data
-  const creditUsageData = [
-    {
-      name: t("documents"),
-      value: 8200,
-      fill: "var(--color-chart-1)",
-    },
-    {
-      name: t("subtitles"),
-      value: 3800,
-      fill: "var(--color-chart-3)",
-    },
-    {
-      name: t("remaining"),
-      value: 12450,
-      fill: "var(--color-chart-2)",
-    },
-  ];
+  const { creditsData, isLoading, isError } = useCreditsChart();
 
   const chartConfig = {
     value: {
@@ -39,6 +50,28 @@ export function CreditUsageChart() {
       color: "var(--color-chart-1)",
     },
   } satisfies ChartConfig;
+
+  if (isLoading) return <CreditUsageChartSkeleton />;
+  if (isError || !creditsData) return <CreditUsageChartSkeleton />;
+
+  // Map backend breakdown to chart data with fill colors and localized names
+  const nameMap: Record<string, string> = {
+    Documents: t("documents"),
+    Subtitles: t("subtitles"),
+  };
+
+  const creditUsageData = [
+    ...creditsData.breakdown.map((item, index) => ({
+      name: nameMap[item.name] || item.name,
+      value: item.value,
+      fill: FILL_COLORS[index] || FILL_COLORS[0],
+    })),
+    {
+      name: t("remaining"),
+      value: creditsData.totalCredits,
+      fill: FILL_COLORS[2],
+    },
+  ];
 
   const total = creditUsageData.reduce((acc, d) => acc + d.value, 0);
 

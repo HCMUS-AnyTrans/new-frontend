@@ -36,7 +36,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { mockUser } from "../data";
+import { useAuthStore, useLogout } from "@/features/auth";
 
 interface NavItem {
   titleKey: string;
@@ -72,9 +72,25 @@ const navGroups: NavGroup[] = [
 export function AppSidebar() {
   const pathname = usePathname();
   const t = useTranslations("dashboard.sidebar");
+  const user = useAuthStore((s) => s.user);
+  const { logout } = useLogout();
 
   // Remove locale prefix from pathname for matching
   const pathnameWithoutLocale = pathname.replace(/^\/(vi|en)/, "");
+
+  // Generate user initials from fullName
+  const initials = user?.fullName
+    ? user.fullName
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "??";
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <Sidebar
@@ -147,22 +163,22 @@ export function AppSidebar() {
               className="flex w-full items-center gap-3 rounded-lg p-2 mx-2 text-left hover:bg-muted transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:mx-0"
             >
               <Avatar className="h-9 w-9 shrink-0">
-                {mockUser.avatarUrl && (
+                {user?.avatarUrl && (
                   <AvatarImage
-                    src={mockUser.avatarUrl}
-                    alt={mockUser.fullName}
+                    src={user.avatarUrl}
+                    alt={user.fullName}
                   />
                 )}
                 <AvatarFallback className="bg-primary text-primary-foreground text-xs font-medium">
-                  {mockUser.initials}
+                  {initials}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-1 flex-col min-w-0 group-data-[collapsible=icon]:hidden">
                 <span className="text-sm font-medium text-foreground truncate">
-                  {mockUser.fullName}
+                  {user?.fullName || "---"}
                 </span>
                 <span className="text-xs text-muted-foreground truncate">
-                  {mockUser.email}
+                  {user?.email || "---"}
                 </span>
               </div>
               <ChevronUp className="size-4 text-muted-foreground group-data-[collapsible=icon]:hidden" />
@@ -182,7 +198,10 @@ export function AppSidebar() {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10">
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="text-destructive focus:text-destructive focus:bg-destructive/10"
+            >
               <LogOut className="mr-2 size-4" />
               {t("logout")}
             </DropdownMenuItem>

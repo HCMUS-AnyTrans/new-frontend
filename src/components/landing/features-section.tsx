@@ -6,7 +6,7 @@ import { motion, useInView } from "framer-motion"
 import { Check, ArrowRight, Zap } from "lucide-react"
 import { SectionBackground } from "@/components/shared"
 import { cn } from "@/lib/utils"
-import { features, type Feature } from "@/data/features"
+import { features, type Feature } from "@/features/landing/data/features"
 
 // Static mockup components - no loop animations for fast loading
 function FormatMockup() {

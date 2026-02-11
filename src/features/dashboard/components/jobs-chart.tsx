@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   ChartContainer,
   ChartTooltip,
@@ -9,10 +10,28 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import { mockJobsChartData } from "../data";
+import { useJobsChart } from "../hooks";
+
+function JobsChartSkeleton() {
+  return (
+    <Card className="h-full border border-border shadow-sm">
+      <CardHeader className="pb-2">
+        <Skeleton className="h-5 w-40" />
+      </CardHeader>
+      <CardContent className="pt-0">
+        <Skeleton className="h-[280px] w-full rounded-md" />
+        <div className="mt-3 flex items-center justify-center gap-6">
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-4 w-20" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export function JobsChart() {
   const t = useTranslations("dashboard.charts");
+  const { chartData, isLoading, isError } = useJobsChart();
 
   const chartConfig = {
     document: {
@@ -25,6 +44,9 @@ export function JobsChart() {
     },
   } satisfies ChartConfig;
 
+  if (isLoading) return <JobsChartSkeleton />;
+  if (isError || !chartData) return <JobsChartSkeleton />;
+
   return (
     <Card className="h-full border border-border shadow-sm">
       <CardHeader className="pb-2">
@@ -34,7 +56,7 @@ export function JobsChart() {
       </CardHeader>
       <CardContent className="pt-0">
         <ChartContainer config={chartConfig} className="h-[280px] w-full">
-          <BarChart data={mockJobsChartData} barGap={4}>
+          <BarChart data={chartData} barGap={4}>
             <CartesianGrid
               vertical={false}
               strokeDasharray="3 3"

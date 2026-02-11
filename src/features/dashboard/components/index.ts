@@ -1,6 +1,7 @@
 // Layout components
 export { AppSidebar } from "./app-sidebar"
 export { DashboardHeader } from "./dashboard-header"
+export { DashboardGreeting } from "./dashboard-greeting"
 
 // Stats components
 export { StatsCards } from "./stats-cards"

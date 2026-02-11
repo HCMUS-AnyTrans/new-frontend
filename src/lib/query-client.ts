@@ -57,3 +57,30 @@ export const authKeys = {
   user: () => [...authKeys.all, 'user'] as const,
   session: () => [...authKeys.all, 'session'] as const,
 };
+
+// Dashboard-related query keys
+export const dashboardKeys = {
+  all: ['dashboard'] as const,
+  stats: (query?: unknown) =>
+    [...dashboardKeys.all, 'stats', query] as const,
+  jobsChart: (query?: unknown) =>
+    [...dashboardKeys.all, 'jobs-chart', query] as const,
+  creditsChart: (query?: unknown) =>
+    [...dashboardKeys.all, 'credits-chart', query] as const,
+  storage: () => [...dashboardKeys.all, 'storage'] as const,
+};
+
+// Wallet-related query keys
+export const walletKeys = {
+  all: ['wallet'] as const,
+  balance: () => [...walletKeys.all, 'balance'] as const,
+};
+
+// Translation-related query keys
+export const translationKeys = {
+  all: ['translations'] as const,
+  list: (params?: unknown) =>
+    [...translationKeys.all, 'list', params] as const,
+  detail: (id: string) =>
+    [...translationKeys.all, 'detail', id] as const,
+};
