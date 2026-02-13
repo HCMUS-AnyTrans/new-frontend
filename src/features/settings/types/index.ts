@@ -1,24 +1,70 @@
 // =====================================================================
-// SETTINGS TYPES
+// SETTINGS TYPES — aligned with backend API
 // =====================================================================
+
+// =============== COMMON / PAGINATION ===============
+
+export interface Pagination {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+  hasNext: boolean
+  hasPrev: boolean
+}
+
+export interface PaginatedResponse<T> {
+  items: T[]
+  pagination: Pagination
+}
 
 // =============== USER & PROFILE ===============
 
+/**
+ * Matches backend ProfileResponseDto
+ * GET /settings/profile
+ */
 export interface UserProfile {
   id: string
   email: string
   fullName: string
   phone: string | null
   avatarUrl: string | null
-  isOAuthUser: boolean
   emailVerified: boolean
+  isOAuthUser: boolean
   createdAt: string
   lastLoginAt: string | null
 }
 
+/**
+ * Matches backend UpdateProfileDto
+ * PATCH /settings/profile
+ */
 export interface UpdateProfileDto {
   fullName?: string
   phone?: string | null
+  avatarUrl?: string
+}
+
+// =============== FILE UPLOAD (for avatars) ===============
+
+/**
+ * Request body for POST /files/upload/general
+ */
+export interface GeneralUploadRequest {
+  file_name: string
+  file_size: number
+  mime_type: string
+  group?: string
+}
+
+/**
+ * Response from POST /files/upload/general
+ */
+export interface GeneralUploadResponse {
+  upload_url: string
+  storage_key: string
+  expires_in: number
 }
 
 // =============== PREFERENCES ===============
@@ -43,14 +89,14 @@ export interface UpdatePreferencesDto {
 
 // =============== SECURITY ===============
 
-export type AuthProvider = "google" | "facebook" | "github" | "credentials"
+export type AuthProvider = "google" | "credentials"
 
 export interface AuthIdentity {
   id: string
   provider: AuthProvider
-  providerId: string
   email: string | null
   linkedAt: string
+  canUnlink: boolean
 }
 
 export interface Session {
@@ -86,9 +132,10 @@ export interface Notification {
   type: NotificationType
   title: string
   message: string
-  read: boolean
+  data?: Record<string, unknown>
+  isRead: boolean
+  readAt: string | null
   createdAt: string
-  link?: string
 }
 
 export interface NotificationPreference {
@@ -99,73 +146,133 @@ export interface NotificationPreference {
   pushEnabled: boolean
 }
 
+export interface UpdateNotificationPreferencesDto {
+  preferences: Array<{
+    type: NotificationType
+    emailEnabled: boolean
+    pushEnabled: boolean
+  }>
+}
+
 // =============== BILLING & WALLET ===============
 
 export interface Wallet {
   id: string
   balance: number
-  autoRechargeEnabled: boolean
-  autoRechargeThreshold: number | null
-  autoRechargePackageId: string | null
+  updatedAt: string
 }
 
-export type LedgerType = "credit" | "debit" | "refund" | "bonus"
+export type LedgerType = "topup" | "spend" | "refund"
 
 export interface WalletLedger {
   id: string
-  type: LedgerType
-  amount: number
-  balanceAfter: number
-  description: string
+  ledgerType: LedgerType
+  delta: number
+  refTable: string
+  refId: string
+  note: string
   createdAt: string
-  referenceId?: string
 }
 
-export type PaymentStatus = "pending" | "completed" | "failed" | "refunded"
-export type PaymentMethod = "vnpay" | "momo" | "stripe" | "bank_transfer"
+export interface LedgerSummary {
+  totalTopup: number
+  totalSpend: number
+  totalRefund: number
+  netChange: number
+}
+
+export interface WalletLedgerResponse extends PaginatedResponse<WalletLedger> {
+  summary: LedgerSummary
+}
+
+export type PaymentStatus = "pending" | "succeeded" | "failed" | "cancelled"
+
+export interface PaymentPackage {
+  id: string
+  name: string
+  credits: number
+}
 
 export interface Payment {
   id: string
+  provider: string
+  providerPaymentId: string
   amount: number
-  credits: number
+  currency: string
   status: PaymentStatus
-  method: PaymentMethod
   createdAt: string
-  completedAt: string | null
+  paidAt: string | null
+  package: PaymentPackage
 }
+
+export type CreditPackageType = "personal" | "business"
 
 export interface CreditPackage {
   id: string
   name: string
+  description: string[]
   credits: number
   price: number
   currency: string
+  type: CreditPackageType
+  active: boolean
+  bonus: number | null
   discount: number | null
-  isBestValue: boolean
-  isPopular: boolean
+  tags: string[]
+}
+
+export interface CreateVnpayPaymentDto {
+  packageId: string
+  returnUrl: string
+}
+
+export interface CreateVnpayPaymentResponse {
+  paymentId: string
+  paymentUrl: string
+  expiresAt: string
 }
 
 // =============== FILES ===============
 
-export type FileStatus = "active" | "expired" | "deleted"
-export type FileType = "pdf" | "docx" | "pptx" | "txt" | "srt"
+export type FileStatus = "pending" | "uploaded" | "parsed" | "failed"
+export type FileType = "doc" | "sub" | "doc-result" | "sub-result"
 
 export interface UserFile {
   id: string
   name: string
-  size: number
-  type: FileType
+  mime: string
+  sizeBytes: number
   status: FileStatus
+  type: FileType
   createdAt: string
+  storeUntil: string
+}
+
+export interface FileDetail extends UserFile {
+  sha256: string
+  metadata?: {
+    pageCount?: number
+    wordCount?: number
+    detectedLanguage?: string
+  }
+}
+
+export interface FileDownloadResponse {
+  downloadUrl: string
   expiresAt: string
-  translatedUrl?: string
-  originalUrl?: string
+  fileName: string
 }
 
 export interface StorageUsage {
   used: number
   total: number
+  unit: string
+  percentage: number
   fileCount: number
+  breakdown: {
+    documents: { count: number; size: number }
+    subtitles: { count: number; size: number }
+  }
 }
 
 // =============== ACTIVITY & AUDIT ===============
@@ -190,9 +297,9 @@ export interface AuditLog {
   action: AuditAction
   description: string
   ip: string
-  userAgent: string
-  device: string
-  browser: string
+  userAgent?: string
+  device?: string
+  browser?: string
   location: string | null
   createdAt: string
   metadata?: Record<string, unknown>
@@ -214,4 +321,45 @@ export interface SettingsTabConfig {
   label: string
   icon: string
   description: string
+}
+
+// =============== QUERY PARAMS ===============
+
+export interface NotificationsQuery {
+  page?: number
+  limit?: number
+  isRead?: boolean
+  type?: NotificationType
+}
+
+export interface LedgerQuery {
+  page?: number
+  limit?: number
+  type?: LedgerType
+  from?: string
+  to?: string
+}
+
+export interface PaymentsQuery {
+  page?: number
+  limit?: number
+  status?: PaymentStatus
+}
+
+export interface FilesQuery {
+  page?: number
+  limit?: number
+  type?: FileType
+  status?: FileStatus
+  search?: string
+  sortBy?: string
+  sortOrder?: "asc" | "desc"
+}
+
+export interface ActivityQuery {
+  page?: number
+  limit?: number
+  action?: AuditAction
+  from?: string
+  to?: string
 }

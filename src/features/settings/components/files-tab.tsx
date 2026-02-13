@@ -8,10 +8,12 @@ import {
   Trash2,
   AlertTriangle,
   FolderOpen,
+  Loader2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Dialog,
   DialogContent,
@@ -21,16 +23,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { SettingsSection, SettingsDivider } from "./settings-section"
-import { mockUserFiles, mockStorageUsage } from "../data"
-import type { UserFile, StorageUsage, FileType } from "../types"
+import { useFiles, useFileDownload, useDeleteFile, useStorageUsage } from "../hooks/use-files"
+import type { UserFile } from "../types"
 import { cn } from "@/lib/utils"
 
-const fileTypeIcons: Record<FileType, { color: string; label: string }> = {
-  pdf: { color: "text-destructive", label: "PDF" },
-  docx: { color: "text-primary", label: "DOCX" },
-  pptx: { color: "text-warning", label: "PPTX" },
-  txt: { color: "text-muted-foreground", label: "TXT" },
-  srt: { color: "text-success", label: "SRT" },
+const mimeTypeConfig: Record<string, { color: string; label: string }> = {
+  "application/pdf": { color: "text-destructive", label: "PDF" },
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": { color: "text-primary", label: "DOCX" },
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation": { color: "text-warning", label: "PPTX" },
+  "text/plain": { color: "text-muted-foreground", label: "TXT" },
+  "application/x-subrip": { color: "text-success", label: "SRT" },
+}
+
+function getFileTypeConfig(mime: string) {
+  return mimeTypeConfig[mime] ?? { color: "text-muted-foreground", label: mime.split("/").pop()?.toUpperCase() ?? "FILE" }
 }
 
 function formatFileSize(bytes: number): string {
@@ -40,31 +46,91 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
 }
 
-function getDaysUntilExpiry(expiresAt: string): number {
+function getDaysUntilExpiry(storeUntil: string): number {
   const now = new Date()
-  const expiry = new Date(expiresAt)
+  const expiry = new Date(storeUntil)
   return Math.ceil((expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 }
 
-interface FilesTabProps {
-  files?: UserFile[]
-  storage?: StorageUsage
+// ============================================================================
+// Skeleton Loading State
+// ============================================================================
+
+function FilesTabSkeleton() {
+  return (
+    <div className="space-y-6">
+      {/* Storage Usage Skeleton */}
+      <div className="rounded-lg border bg-card p-6">
+        <Skeleton className="mb-4 h-5 w-28" />
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-12" />
+          </div>
+          <Skeleton className="h-2 w-full" />
+          <Skeleton className="h-4 w-24" />
+        </div>
+      </div>
+
+      {/* File List Skeleton */}
+      <div className="rounded-lg border bg-card p-6">
+        <Skeleton className="mb-1 h-5 w-20" />
+        <Skeleton className="mb-4 h-4 w-40" />
+        <div className="space-y-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-3">
+                <Skeleton className="size-10 rounded-lg" />
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="h-5 w-12" />
+                  </div>
+                  <Skeleton className="h-3 w-48" />
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
+                <Skeleton className="size-8" />
+                <Skeleton className="size-8" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
 }
 
-export function FilesTab({
-  files = mockUserFiles,
-  storage = mockStorageUsage,
-}: FilesTabProps) {
+// ============================================================================
+// Main Component
+// ============================================================================
+
+export function FilesTab() {
   const t = useTranslations("settings.files")
   const tCommon = useTranslations("common")
   const locale = useLocale()
-  const [fileList, setFileList] = useState(files)
+
+  // Data hooks
+  const { files, isLoading: isLoadingFiles } = useFiles()
+  const { storage, isLoading: isLoadingStorage } = useStorageUsage()
+  const { download, isDownloading } = useFileDownload()
+  const { deleteFile, isDeleting } = useDeleteFile()
+
+  // Local state
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; file: UserFile | null }>({
     open: false,
     file: null,
   })
 
-  const usagePercent = (storage.used / storage.total) * 100
+  const isLoading = isLoadingFiles || isLoadingStorage
+
+  // Show skeleton while loading
+  if (isLoading) {
+    return <FilesTabSkeleton />
+  }
+
+  const fileList = files ?? []
+  const usagePercent = storage?.percentage ?? 0
 
   function formatDate(dateStr: string): string {
     return new Date(dateStr).toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {
@@ -75,8 +141,7 @@ export function FilesTab({
   }
 
   const handleDownload = (file: UserFile) => {
-    // TODO: Call API to get download URL
-    console.log("Download file:", file.name)
+    download(file.id)
   }
 
   const handleDelete = (file: UserFile) => {
@@ -85,7 +150,7 @@ export function FilesTab({
 
   const confirmDelete = () => {
     if (deleteDialog.file) {
-      setFileList(fileList.filter((f) => f.id !== deleteDialog.file?.id))
+      deleteFile(deleteDialog.file.id)
       setDeleteDialog({ open: false, file: null })
     }
   }
@@ -97,7 +162,7 @@ export function FilesTab({
         <div className="space-y-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">
-              {formatFileSize(storage.used)} / {formatFileSize(storage.total)}
+              {storage ? `${storage.used} / ${storage.total} ${storage.unit}` : "- / -"}
             </span>
             <span className="font-medium text-foreground">
               {usagePercent.toFixed(1)}%
@@ -105,7 +170,7 @@ export function FilesTab({
           </div>
           <Progress value={usagePercent} className="h-2" />
           <p className="text-sm text-muted-foreground">
-            {t("filesStored", { count: storage.fileCount })}
+            {t("filesStored", { count: storage?.fileCount ?? 0 })}
           </p>
         </div>
       </SettingsSection>
@@ -123,8 +188,8 @@ export function FilesTab({
         ) : (
           <div className="space-y-1">
             {fileList.map((file, idx) => {
-              const typeConfig = fileTypeIcons[file.type]
-              const daysUntilExpiry = getDaysUntilExpiry(file.expiresAt)
+              const typeConfig = getFileTypeConfig(file.mime)
+              const daysUntilExpiry = getDaysUntilExpiry(file.storeUntil)
               const isExpiringSoon = daysUntilExpiry <= 7
 
               return (
@@ -145,15 +210,15 @@ export function FilesTab({
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <span>{formatFileSize(file.size)}</span>
-                          <span>•</span>
+                          <span>{formatFileSize(file.sizeBytes)}</span>
+                          <span>&bull;</span>
                           {isExpiringSoon ? (
                             <span className="flex items-center gap-1 text-warning">
                               <AlertTriangle className="size-3" />
                               {t("daysRemaining", { count: daysUntilExpiry })}
                             </span>
                           ) : (
-                            <span>{t("expiresOn", { date: formatDate(file.expiresAt) })}</span>
+                            <span>{t("expiresOn", { date: formatDate(file.storeUntil) })}</span>
                           )}
                         </div>
                       </div>
@@ -165,14 +230,20 @@ export function FilesTab({
                         size="icon-sm"
                         onClick={() => handleDownload(file)}
                         className="text-muted-foreground hover:text-foreground"
+                        disabled={isDownloading}
                       >
-                        <Download className="size-4" />
+                        {isDownloading ? (
+                          <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                          <Download className="size-4" />
+                        )}
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon-sm"
                         onClick={() => handleDelete(file)}
                         className="text-muted-foreground hover:text-destructive"
+                        disabled={isDeleting}
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -198,7 +269,10 @@ export function FilesTab({
             <Button variant="outline" onClick={() => setDeleteDialog({ open: false, file: null })}>
               {tCommon("cancel")}
             </Button>
-            <Button variant="destructive" onClick={confirmDelete}>
+            <Button variant="destructive" onClick={confirmDelete} disabled={isDeleting}>
+              {isDeleting ? (
+                <Loader2 className="mr-2 size-4 animate-spin" />
+              ) : null}
               {tCommon("delete")}
             </Button>
           </DialogFooter>

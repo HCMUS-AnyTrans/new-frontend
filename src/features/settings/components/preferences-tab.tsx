@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Sun, Moon, Monitor } from "lucide-react";
+import { Sun, Moon, Monitor, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -17,7 +18,8 @@ import {
   SettingsRow,
   SettingsDivider,
 } from "./settings-section";
-import { mockUserPreferences, uiLanguageOptions } from "../data";
+import { uiLanguageOptions } from "../data";
+import { usePreferences, useUpdatePreferences } from "../hooks/use-preferences";
 import type { UserPreferences, UILanguage, Theme, FileTTL } from "../types";
 
 const themeIcons = {
@@ -26,17 +28,91 @@ const themeIcons = {
   system: Monitor,
 };
 
-interface PreferencesTabProps {
-  preferences?: UserPreferences;
+// ============================================================================
+// Skeleton Loading State
+// ============================================================================
+
+function PreferencesTabSkeleton() {
+  return (
+    <div className="space-y-6">
+      {/* Display Settings Skeleton */}
+      <div className="rounded-lg border bg-card p-6">
+        <Skeleton className="mb-1 h-5 w-24" />
+        <Skeleton className="mb-4 h-4 w-48" />
+        <div className="space-y-4">
+          <div className="flex items-center justify-between py-2">
+            <div className="space-y-1">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-3 w-40" />
+            </div>
+            <Skeleton className="h-9 w-48" />
+          </div>
+          <div className="border-t" />
+          <div className="flex items-center justify-between py-2">
+            <div className="space-y-1">
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-3 w-36" />
+            </div>
+            <div className="flex gap-1">
+              <Skeleton className="h-9 w-20" />
+              <Skeleton className="h-9 w-20" />
+              <Skeleton className="h-9 w-24" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Translation Settings Skeleton */}
+      <div className="rounded-lg border bg-card p-6">
+        <Skeleton className="mb-4 h-5 w-32" />
+        <div className="space-y-4">
+          <div className="flex items-center justify-between py-2">
+            <div className="space-y-1">
+              <Skeleton className="h-4 w-28" />
+              <Skeleton className="h-3 w-52" />
+            </div>
+            <Skeleton className="h-5 w-9" />
+          </div>
+          <div className="border-t" />
+          <div className="flex items-center justify-between py-2">
+            <div className="space-y-1">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-44" />
+            </div>
+            <Skeleton className="h-9 w-32" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export function PreferencesTab({
-  preferences = mockUserPreferences,
-}: PreferencesTabProps) {
+// ============================================================================
+// Main Component
+// ============================================================================
+
+export function PreferencesTab() {
   const t = useTranslations("settings.preferences");
 
-  const [formData, setFormData] = useState<UserPreferences>(preferences);
+  // Data hooks
+  const { preferences, isLoading } = usePreferences();
+  const { updatePreferences, isUpdating } = useUpdatePreferences();
+
+  // Local state
+  const [formData, setFormData] = useState<UserPreferences | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
+
+  // Sync form data when preferences load
+  useEffect(() => {
+    if (preferences && !formData) {
+      setFormData(preferences);
+    }
+  }, [preferences, formData]);
+
+  // Show skeleton while loading
+  if (isLoading || !preferences || !formData) {
+    return <PreferencesTabSkeleton />;
+  }
 
   const updateField = <K extends keyof UserPreferences>(
     key: K,
@@ -47,8 +123,11 @@ export function PreferencesTab({
   };
 
   const handleSave = () => {
-    // TODO: Call API to save
-    setHasChanges(false);
+    updatePreferences(formData, {
+      onSuccess: () => {
+        setHasChanges(false);
+      },
+    });
   };
 
   const themeOptions = [
@@ -153,7 +232,16 @@ export function PreferencesTab({
       {/* Save Button */}
       {hasChanges && (
         <div className="flex justify-end">
-          <Button onClick={handleSave}>{t("title")}</Button>
+          <Button onClick={handleSave} disabled={isUpdating}>
+            {isUpdating ? (
+              <>
+                <Loader2 className="mr-2 size-4 animate-spin" />
+                {t("title")}
+              </>
+            ) : (
+              t("title")
+            )}
+          </Button>
         </div>
       )}
     </div>

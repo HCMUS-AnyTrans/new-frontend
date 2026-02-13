@@ -84,3 +84,42 @@ export const translationKeys = {
   detail: (id: string) =>
     [...translationKeys.all, 'detail', id] as const,
 };
+
+// Settings-related query keys
+export const settingsKeys = {
+  all: ['settings'] as const,
+  profile: () => [...settingsKeys.all, 'profile'] as const,
+  preferences: () => [...settingsKeys.all, 'preferences'] as const,
+  identities: () => [...settingsKeys.all, 'identities'] as const,
+  sessions: () => [...settingsKeys.all, 'sessions'] as const,
+  notificationPreferences: () =>
+    [...settingsKeys.all, 'notification-preferences'] as const,
+  activity: (params?: unknown) =>
+    [...settingsKeys.all, 'activity', params] as const,
+};
+
+// Notification-related query keys
+export const notificationKeys = {
+  all: ['notifications'] as const,
+  list: (params?: unknown) =>
+    [...notificationKeys.all, 'list', params] as const,
+};
+
+// Billing-related query keys
+export const billingKeys = {
+  all: ['billing'] as const,
+  ledger: (params?: unknown) =>
+    [...billingKeys.all, 'ledger', params] as const,
+  creditPackages: () =>
+    [...billingKeys.all, 'credit-packages'] as const,
+  payments: (params?: unknown) =>
+    [...billingKeys.all, 'payments', params] as const,
+};
+
+// File-related query keys
+export const fileKeys = {
+  all: ['files'] as const,
+  list: (params?: unknown) =>
+    [...fileKeys.all, 'list', params] as const,
+  storage: () => [...fileKeys.all, 'storage'] as const,
+};
