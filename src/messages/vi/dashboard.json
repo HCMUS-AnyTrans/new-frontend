@@ -77,6 +77,19 @@
       "processing": "Đang xử lý",
       "succeeded": "Hoàn thành",
       "failed": "Thất bại"
+    },
+    "history": {
+      "title": "Lịch sử dịch thuật",
+      "description": "Xem tất cả các bản dịch và trạng thái của chúng.",
+      "searchPlaceholder": "Tìm kiếm theo tên file...",
+      "filterStatus": "Trạng thái",
+      "allStatuses": "Tất cả trạng thái",
+      "noJobs": "Chưa có bản dịch nào",
+      "noJobsDescription": "Lịch sử dịch thuật sẽ hiển thị ở đây khi bạn bắt đầu dịch tài liệu.",
+      "noResults": "Không tìm thấy kết quả",
+      "noResultsDescription": "Hãy thử điều chỉnh từ khóa tìm kiếm hoặc bộ lọc.",
+      "totalJobs": "{count} bản dịch",
+      "pageInfo": "Trang {page}/{totalPages}"
     }
   }
 }

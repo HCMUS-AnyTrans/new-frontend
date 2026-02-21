@@ -13,3 +13,4 @@ export * from './contact';
 export * from './documents';
 // Dashboard exports: use `import { ... } from '@/features/dashboard'` directly
 // Settings exports: use `import { ... } from '@/features/settings'` directly
+// History exports: use `import { ... } from '@/features/history'` directly

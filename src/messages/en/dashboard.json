@@ -77,6 +77,19 @@
       "processing": "Processing",
       "succeeded": "Completed",
       "failed": "Failed"
+    },
+    "history": {
+      "title": "Translation History",
+      "description": "View all your translation jobs and their status.",
+      "searchPlaceholder": "Search by file name...",
+      "filterStatus": "Status",
+      "allStatuses": "All statuses",
+      "noJobs": "No translation jobs found",
+      "noJobsDescription": "Your translation history will appear here once you start translating documents.",
+      "noResults": "No results found",
+      "noResultsDescription": "Try adjusting your search or filter criteria.",
+      "totalJobs": "{count} jobs total",
+      "pageInfo": "Page {page} of {totalPages}"
     }
   }
 }
