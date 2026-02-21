@@ -29,7 +29,7 @@ export interface PlanFeature {
 
 export interface UsageExample {
   icon: LucideIcon
-  label: string
+  labelKey: string
   credits: number
 }
 
@@ -82,27 +82,14 @@ export const pricingPlans: Plan[] = [
 ]
 
 // ============================================================================
-// FEATURES - Shared across all plans
-// ============================================================================
-
-export const pricingFeatures: string[] = [
-  "Dịch PDF, Word, Excel",
-  "Giữ nguyên format gốc",
-  "Glossary không giới hạn",
-  "Review song ngữ",
-  "OCR hình ảnh",
-  "Credits không hết hạn",
-]
-
-// ============================================================================
 // USAGE EXAMPLES - For pricing page
 // ============================================================================
 
 export const usageExamples: UsageExample[] = [
-  { icon: FileText, label: "PDF 10 trang", credits: 10 },
-  { icon: FileCheck, label: "Hợp đồng 50 trang", credits: 50 },
-  { icon: Presentation, label: "PPT 100 slides", credits: 100 },
-  { icon: BookOpen, label: "Luận văn 80 trang", credits: 80 },
+  { icon: FileText, labelKey: "pdf10", credits: 10 },
+  { icon: FileCheck, labelKey: "contract50", credits: 50 },
+  { icon: Presentation, labelKey: "ppt100", credits: 100 },
+  { icon: BookOpen, labelKey: "thesis", credits: 80 },
 ]
 
 // ============================================================================

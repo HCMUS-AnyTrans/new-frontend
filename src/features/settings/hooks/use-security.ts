@@ -67,7 +67,7 @@ export function useLinkIdentity() {
 
   const mutation = useMutation({
     mutationFn: (provider: string) =>
-      linkIdentityApi(provider, '/settings/security'),
+      linkIdentityApi(provider, '/settings?tab=security'),
     onSuccess: (data) => {
       // Navigate to the OAuth provider - this is a full page redirect
       // The redirectUrl is relative (e.g. /auth/google?state=abc), so prepend API base

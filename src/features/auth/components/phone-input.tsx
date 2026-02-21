@@ -3,8 +3,10 @@
 import * as React from "react"
 import PhoneInputWithCountry from "react-phone-number-input"
 import type { Country } from "react-phone-number-input"
+import flags from "react-phone-number-input/flags"
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
+import { CountrySelect } from "./country-select"
 
 // Import the default styles - we'll override with custom CSS
 import "react-phone-number-input/style.css"
@@ -71,6 +73,8 @@ const PhoneInput = React.forwardRef<HTMLDivElement, PhoneInputProps>(
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           className="phone-input-field"
+          countrySelectComponent={CountrySelect}
+          flags={flags}
         />
         <Label
           className={cn(

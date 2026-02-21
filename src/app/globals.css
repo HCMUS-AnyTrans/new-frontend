@@ -325,28 +325,19 @@
   @apply opacity-50 cursor-not-allowed;
 }
 
-/* Country selector button */
+/* Country selector button — now handled by custom CountrySelect component */
 .phone-input-container .PhoneInputCountry {
-  @apply relative flex items-center justify-center h-full pl-4 pr-3;
-  @apply border-r border-input;
+  @apply relative flex items-center justify-center h-full;
 }
 
-/* Country flag */
+/* Country flag inside custom trigger */
 .phone-input-container .PhoneInputCountryIcon {
   @apply w-6 h-4 rounded-sm overflow-hidden;
 }
 
-/* Country select dropdown arrow */
-.phone-input-container .PhoneInputCountrySelectArrow {
-  @apply ml-1 w-0 h-0 opacity-60;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 5px solid currentColor;
-}
-
-/* Hidden native select for accessibility */
-.phone-input-container .PhoneInputCountrySelect {
-  @apply absolute inset-0 w-full h-full opacity-0 cursor-pointer;
+/* Country flag SVG/image */
+.phone-input-container .PhoneInputCountryIconImg {
+  @apply w-full h-full object-cover;
 }
 
 /* Phone number input field */
@@ -360,11 +351,6 @@
   @apply text-transparent;
 }
 
-/* Country flag emoji fallback (when no flag images) */
-.phone-input-container .PhoneInputCountryIconImg {
-  @apply w-full h-full object-cover;
-}
-
 /* Remove default focus outline from input */
 .phone-input-container .PhoneInputInput:focus {
   outline: none;
@@ -373,6 +359,20 @@
 /* Ensure country code text has proper spacing */
 .phone-input-container .PhoneInputCountryCallingCode {
   @apply ml-1 text-foreground;
+}
+
+/* Custom country select dropdown list scrollbar */
+.country-select-list::-webkit-scrollbar {
+  width: 4px;
+}
+.country-select-list::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+.country-select-list::-webkit-scrollbar-thumb {
+  @apply bg-border rounded-full;
+}
+.country-select-list::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/30;
 }
 
 /* ============================================================================

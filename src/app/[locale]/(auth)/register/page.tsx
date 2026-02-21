@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { RegisterForm, AuthHero } from "@/features/auth"
+import { RegisterForm, SocialLoginButtons, AuthHero } from "@/features/auth"
 
 export default function RegisterPage() {
   return (
@@ -50,6 +50,9 @@ export default function RegisterPage() {
 
                 {/* Register Form - uses hooks internally */}
                 <RegisterForm />
+
+                {/* Social Login - uses hooks internally */}
+                <SocialLoginButtons mode="register" />
               </div>
             </div>
           </div>
