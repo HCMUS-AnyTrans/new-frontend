@@ -303,13 +303,6 @@ export type SettingsTab =
   | "files"
   | "activity"
 
-export interface SettingsTabConfig {
-  id: SettingsTab
-  label: string
-  icon: string
-  description: string
-}
-
 // =============== QUERY PARAMS ===============
 
 export interface NotificationsQuery {

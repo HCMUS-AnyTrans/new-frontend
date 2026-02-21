@@ -1,10 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import { History, Monitor, Smartphone } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { SettingsSection, SettingsDivider } from "./settings-section"
+import { Pagination } from "@/components/ui/pagination"
 import { useActivity } from "../hooks/use-activity"
 import type { AuditAction } from "../types"
 import { cn } from "@/lib/utils"
@@ -48,8 +50,11 @@ export function ActivityTab() {
   const t = useTranslations("settings.activity")
   const locale = useLocale()
 
+  // Pagination state
+  const [page, setPage] = useState(1)
+
   // Data hooks
-  const { logs, isLoading } = useActivity()
+  const { logs, pagination: activityPagination, isLoading, isFetching: isFetchingActivity } = useActivity({ page, limit: 10 })
 
   // Show skeleton while loading
   if (isLoading) {
@@ -150,6 +155,18 @@ export function ActivityTab() {
               )
             })}
           </div>
+        )}
+
+        {/* Activity Pagination */}
+        {activityPagination && (
+          <Pagination
+            page={activityPagination.page}
+            totalPages={activityPagination.totalPages}
+            hasNext={activityPagination.hasNext}
+            hasPrev={activityPagination.hasPrev}
+            onPageChange={setPage}
+            isFetching={isFetchingActivity}
+          />
         )}
       </SettingsSection>
     </div>

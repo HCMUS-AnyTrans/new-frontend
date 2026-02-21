@@ -117,7 +117,6 @@ export type {
   AuditAction,
   AuditLog,
   SettingsTab,
-  SettingsTabConfig,
   NotificationsQuery,
   LedgerQuery,
   PaymentsQuery,
