@@ -88,7 +88,7 @@ function NotificationsTabSkeleton() {
 
 export function NotificationsTab() {
   const t = useTranslations("settings.notifications")
-  const tSecurity = useTranslations("settings.security")
+  const tCommon = useTranslations("common")
   const locale = useLocale()
 
   // Data hooks
@@ -116,10 +116,10 @@ export function NotificationsTab() {
     const diffHours = Math.floor(diffMs / 3600000)
     const diffDays = Math.floor(diffMs / 86400000)
 
-    if (diffMins < 1) return tSecurity("justNow")
-    if (diffMins < 60) return tSecurity("minutesAgo", { count: diffMins })
-    if (diffHours < 24) return tSecurity("hoursAgo", { count: diffHours })
-    if (diffDays < 7) return tSecurity("daysAgo", { count: diffDays })
+    if (diffMins < 1) return tCommon("justNow")
+    if (diffMins < 60) return tCommon("minutesAgo", { count: diffMins })
+    if (diffHours < 24) return tCommon("hoursAgo", { count: diffHours })
+    if (diffDays < 7) return tCommon("daysAgo", { count: diffDays })
     return date.toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US")
   }
 
@@ -233,8 +233,12 @@ export function NotificationsTab() {
               {idx > 0 && <SettingsDivider />}
               <div className="flex items-center justify-between py-2">
                 <div>
-                  <p className="font-medium text-foreground">{pref.label}</p>
-                  <p className="text-sm text-muted-foreground">{pref.description}</p>
+                  <p className="font-medium text-foreground">
+                    {t(`types.${pref.type}.label`)}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t(`types.${pref.type}.description`)}
+                  </p>
                 </div>
                 <div className="flex items-center gap-8">
                   <Switch

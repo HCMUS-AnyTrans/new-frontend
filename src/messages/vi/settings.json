@@ -73,7 +73,33 @@
       "preferences": "Cài đặt thông báo",
       "preferencesDescription": "Chọn cách nhận thông báo cho từng loại",
       "email": "Email",
-      "push": "Push"
+      "push": "Đẩy",
+      "types": {
+        "translation_complete": {
+          "label": "Dịch hoàn tất",
+          "description": "Thông báo khi tài liệu được dịch xong"
+        },
+        "credit_purchase": {
+          "label": "Nạp credits",
+          "description": "Thông báo khi nạp credits thành công"
+        },
+        "file_expiring": {
+          "label": "File sắp hết hạn",
+          "description": "Nhắc nhở khi file sắp bị xóa"
+        },
+        "security_alert": {
+          "label": "Cảnh báo bảo mật",
+          "description": "Đăng nhập từ thiết bị hoặc vị trí mới"
+        },
+        "promotion": {
+          "label": "Khuyến mãi",
+          "description": "Ưu đãi và chương trình khuyến mãi"
+        },
+        "system": {
+          "label": "Hệ thống",
+          "description": "Thông báo từ hệ thống"
+        }
+      }
     },
     "billing": {
       "title": "Thanh toán & Credits",

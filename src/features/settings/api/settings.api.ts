@@ -159,7 +159,7 @@ export async function linkIdentityApi(
 ): Promise<{ redirectUrl: string }> {
   const response = await apiClient.post<{ redirectUrl: string }>(
     `/settings/security/identities/${provider}/link`,
-    null,
+    undefined,
     { params: returnUrl ? { returnUrl } : undefined }
   );
   return response.data;

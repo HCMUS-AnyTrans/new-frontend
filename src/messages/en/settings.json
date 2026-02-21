@@ -73,7 +73,33 @@
       "preferences": "Notification Settings",
       "preferencesDescription": "Choose how to receive each type of notification",
       "email": "Email",
-      "push": "Push"
+      "push": "Push",
+      "types": {
+        "translation_complete": {
+          "label": "Translation Complete",
+          "description": "When a translation job finishes"
+        },
+        "credit_purchase": {
+          "label": "Credit Purchase",
+          "description": "When credits are added to your wallet"
+        },
+        "file_expiring": {
+          "label": "File Expiring",
+          "description": "When files are about to expire"
+        },
+        "security_alert": {
+          "label": "Security Alert",
+          "description": "Login from new device or location"
+        },
+        "promotion": {
+          "label": "Promotion",
+          "description": "Deals and promotional offers"
+        },
+        "system": {
+          "label": "System",
+          "description": "System notifications"
+        }
+      }
     },
     "billing": {
       "title": "Billing & Credits",

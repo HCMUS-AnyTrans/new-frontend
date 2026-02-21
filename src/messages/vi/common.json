@@ -21,6 +21,10 @@
     "no": "Không",
     "viewAll": "Xem tất cả",
     "noData": "Không có dữ liệu",
-    "actions": "Hành động"
+    "actions": "Hành động",
+    "justNow": "Vừa xong",
+    "minutesAgo": "{count} phút trước",
+    "hoursAgo": "{count} giờ trước",
+    "daysAgo": "{count} ngày trước"
   }
 }
