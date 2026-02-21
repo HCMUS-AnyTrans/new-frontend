@@ -21,6 +21,11 @@
     "no": "No",
     "viewAll": "View all",
     "noData": "No data",
-    "actions": "Actions"
+    "actions": "Actions",
+    "justNow": "Just now",
+    "minutesAgo": "{count} minutes ago",
+    "hoursAgo": "{count} hours ago",
+    "daysAgo": "{count} days ago",
+    "pageOf": "Page {page} of {totalPages}"
   }
 }

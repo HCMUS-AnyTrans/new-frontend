@@ -67,11 +67,11 @@ export const useAuthStore = create<AuthStore>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
-      // Rehydrate callback
-      onRehydrateStorage: () => (state) => {
-        if (state) {
-          state.setInitialized(true);
-        }
+      // Rehydrate callback — do NOT set isInitialized here.
+      // AuthProvider is the sole owner of isInitialized, ensuring
+      // the session is verified (via refresh) before rendering gated content.
+      onRehydrateStorage: () => () => {
+        // no-op: AuthProvider calls setInitialized(true) after refresh attempt
       },
     }
   )

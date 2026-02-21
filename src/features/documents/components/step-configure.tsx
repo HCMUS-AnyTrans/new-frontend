@@ -1,16 +1,16 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { LanguageSelector } from "./language-selector"
 import { DomainSelector } from "./domain-selector"
 import { ToneSelector } from "./tone-selector"
 import { GlossarySection } from "./glossary-section"
-import type { TranslationConfig, Glossary, LanguageCode } from "../types"
+import type { TranslationConfig, LanguageCode } from "../types"
 
 interface StepConfigureProps {
   config: TranslationConfig
-  glossaries: Glossary[]
   onConfigChange: (updates: Partial<TranslationConfig>) => void
   onBack: () => void
   onStart: () => void
@@ -19,12 +19,12 @@ interface StepConfigureProps {
 
 export function StepConfigure({
   config,
-  glossaries,
   onConfigChange,
   onBack,
   onStart,
   isLoading,
 }: StepConfigureProps) {
+  const t = useTranslations("documents.configure")
   const isSameLang = config.srcLang !== "auto" && config.srcLang === config.tgtLang
 
   // Manual terms handlers
@@ -49,7 +49,7 @@ export function StepConfigure({
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <h2 className="text-2xl font-bold text-foreground">Cấu hình dịch thuật</h2>
+      <h2 className="text-2xl font-bold text-foreground">{t("title")}</h2>
 
       {/* Language Selector */}
       <LanguageSelector
@@ -62,7 +62,7 @@ export function StepConfigure({
       {/* Domain & Tone Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Lĩnh vực & Giọng điệu</CardTitle>
+          <CardTitle className="text-base">{t("domainAndTone")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <DomainSelector
@@ -73,12 +73,9 @@ export function StepConfigure({
         </CardContent>
       </Card>
 
-      {/* Glossary Section */}
+      {/* Glossary Section — manual inline terms only */}
       <GlossarySection
-        glossaries={glossaries}
-        selectedGlossaryId={config.glossaryId}
         manualTerms={config.manualTerms}
-        onGlossaryChange={(glossaryId) => onConfigChange({ glossaryId })}
         onAddManualTerm={addManualTerm}
         onUpdateManualTerm={updateManualTerm}
         onRemoveManualTerm={removeManualTerm}
@@ -87,10 +84,10 @@ export function StepConfigure({
       {/* Action buttons */}
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
         <Button variant="outline" onClick={onBack}>
-          Quay lại
+          {t("back")}
         </Button>
         <Button onClick={onStart} disabled={isSameLang || isLoading}>
-          {isLoading ? "Đang xử lý..." : "Bắt đầu dịch"}
+          {isLoading ? t("processing") : t("startTranslation")}
         </Button>
       </div>
     </div>

@@ -47,12 +47,12 @@ export const testimonials: Testimonial[] = [
   },
   {
     name: "Lê Quang Huy",
-    role: "Founder",
-    company: "SubViet Studio",
-    industry: "Truyền thông",
+    role: "Giám đốc nghiên cứu",
+    company: "SciPub Vietnam",
+    industry: "Xuất bản",
     avatar: "LH",
     content:
-      "Dịch subtitle nhanh không tưởng! Trước đây mất cả ngày, giờ chỉ cần 10 phút. ROI rõ ràng ngay từ tháng đầu tiên.",
+      "Dịch luận văn khoa học 300 trang trước đây mất cả tuần. Với AnyTrans, chúng tôi hoàn thành trong chưa đầy 1 giờ với tất cả công thức và biểu đồ được giữ nguyên hoàn hảo.",
     rating: 5,
   },
   {

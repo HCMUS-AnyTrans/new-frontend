@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { domains } from "../data"
@@ -10,9 +11,11 @@ interface DomainSelectorProps {
 }
 
 export function DomainSelector({ value, onChange }: DomainSelectorProps) {
+  const t = useTranslations("documents")
+
   return (
     <div>
-      <Label className="mb-2 block">Lĩnh vực</Label>
+      <Label className="mb-2 block">{t("configure.domainLabel")}</Label>
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
         {domains.map((domain) => (
           <button
@@ -27,7 +30,7 @@ export function DomainSelector({ value, onChange }: DomainSelectorProps) {
             )}
           >
             <span className="text-lg">{domain.icon}</span>
-            <span className="text-xs font-medium">{domain.name}</span>
+            <span className="text-xs font-medium">{t(`domains.${domain.id}`)}</span>
           </button>
         ))}
       </div>

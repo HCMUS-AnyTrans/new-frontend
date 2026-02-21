@@ -24,7 +24,8 @@
       "memberSince": "Member Since",
       "lastLogin": "Last Login",
       "saveChanges": "Save Changes",
-      "saving": "Saving..."
+      "saving": "Saving...",
+      "avatarHint": "JPG, PNG or GIF. Max 2MB."
     },
     "preferences": {
       "title": "System Preferences",
@@ -57,15 +58,10 @@
       "loginMethodsDescription": "Link accounts with other providers",
       "linked": "Linked",
       "link": "Link",
-      "activeSessions": "Active Sessions",
-      "activeSessionsDescription": "Manage devices logged into your account",
-      "currentDevice": "Current",
-      "revokeSession": "Log Out",
-      "revokeAllSessions": "Log Out All",
-      "justNow": "Just now",
-      "minutesAgo": "{count} minutes ago",
-      "hoursAgo": "{count} hours ago",
-      "daysAgo": "{count} days ago"
+      "daysAgo": "{count} days ago",
+      "linkSuccess": "Successfully linked {provider} account!",
+      "linkError": "Failed to link account. Please try again.",
+      "changePasswordError": "Failed to change password. Please try again."
     },
     "notifications": {
       "title": "Notification Settings",
@@ -78,7 +74,33 @@
       "preferences": "Notification Settings",
       "preferencesDescription": "Choose how to receive each type of notification",
       "email": "Email",
-      "push": "Push"
+      "push": "Push",
+      "types": {
+        "translation_complete": {
+          "label": "Translation Complete",
+          "description": "When a translation job finishes"
+        },
+        "credit_purchase": {
+          "label": "Credit Purchase",
+          "description": "When credits are added to your wallet"
+        },
+        "file_expiring": {
+          "label": "File Expiring",
+          "description": "When files are about to expire"
+        },
+        "security_alert": {
+          "label": "Security Alert",
+          "description": "Login from new device or location"
+        },
+        "promotion": {
+          "label": "Promotion",
+          "description": "Deals and promotional offers"
+        },
+        "system": {
+          "label": "System",
+          "description": "System notifications"
+        }
+      }
     },
     "billing": {
       "title": "Billing & Credits",
@@ -92,14 +114,29 @@
       "popular": "Popular",
       "save": "Save {percent}%",
       "buyNow": "Buy Now",
+      "bonusPercent": "+{percent}% bonus",
       "transactionHistory": "Transaction History",
-      "recentTransactions": "Recent transactions",
+      "recentTransactions": "Recent credit transactions",
       "noTransactions": "No transactions yet",
       "balance": "Balance",
       "topUp": "Top Up",
       "usage": "Usage",
       "refund": "Refund",
-      "bonus": "Bonus"
+      "bonus": "Bonus",
+      "paymentHistory": "Payment History",
+      "paymentHistoryDescription": "Your payment transactions",
+      "noPayments": "No payments yet",
+      "paymentStatus": {
+        "pending": "Pending",
+        "succeeded": "Succeeded",
+        "failed": "Failed",
+        "cancelled": "Cancelled"
+      },
+      "paymentAmount": "Amount",
+      "package": "Package",
+      "vnpaySuccess": "Payment successful! Credits have been added to your account.",
+      "vnpayError": "Payment was not successful. Please try again.",
+      "vnpayPending": "Payment is being processed. Please wait a moment."
     },
     "files": {
       "title": "File Management",

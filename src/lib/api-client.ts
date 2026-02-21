@@ -51,7 +51,18 @@ const processQueue = (error: Error | null, token: string | null = null) => {
 };
 
 /**
- * Request interceptor - adds authorization header and logging
+ * Get current locale from URL path
+ * - /en/dashboard -> 'en'
+ * - /dashboard -> 'vi' (default locale has no prefix)
+ */
+const getLocaleFromPath = (): string => {
+  if (typeof window === 'undefined') return 'vi';
+  const pathLocale = window.location.pathname.split('/')[1];
+  return ['en'].includes(pathLocale) ? pathLocale : 'vi';
+};
+
+/**
+ * Request interceptor - adds authorization header, Accept-Language, and logging
  */
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -59,6 +70,11 @@ apiClient.interceptors.request.use(
     const token = getAccessToken();
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    // Add Accept-Language header for backend localization
+    if (config.headers) {
+      config.headers['Accept-Language'] = getLocaleFromPath();
     }
 
     // Development logging
@@ -104,8 +120,12 @@ apiClient.interceptors.response.use(
       _retry?: boolean;
     };
 
-    // Development logging
-    if (IS_DEV) {
+    // Development logging (skip for auth endpoints — failures are expected)
+    const isAuthEndpointError =
+      originalRequest?.url?.includes('/auth/refresh') ||
+      originalRequest?.url?.includes('/auth/login') ||
+      originalRequest?.url?.includes('/auth/logout');
+    if (IS_DEV && !isAuthEndpointError) {
       console.error(
         `[API Error] ${originalRequest?.method?.toUpperCase()} ${originalRequest?.url}`,
         {
@@ -121,10 +141,11 @@ apiClient.interceptors.response.use(
       originalRequest &&
       !originalRequest._retry
     ) {
-      // Don't retry if this is already a refresh request or login request
+      // Don't retry if this is already a refresh, login, or logout request
       const isAuthEndpoint =
         originalRequest.url?.includes('/auth/refresh') ||
-        originalRequest.url?.includes('/auth/login');
+        originalRequest.url?.includes('/auth/login') ||
+        originalRequest.url?.includes('/auth/logout');
 
       if (isAuthEndpoint) {
         // Don't clear auth state for login failures (user might just have wrong credentials)

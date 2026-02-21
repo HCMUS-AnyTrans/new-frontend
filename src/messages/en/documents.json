@@ -5,56 +5,87 @@
       "steps": {
         "upload": "Upload",
         "configure": "Configure",
-        "review": "Review"
+        "review": "Result"
       }
     },
     "upload": {
-      "title": "Upload Document",
-      "description": "Drag and drop or click to select files",
-      "supportedFormats": "Supported: PDF, DOCX, PPTX, XLSX",
-      "maxSize": "Max 50MB",
-      "uploading": "Uploading...",
-      "uploadSuccess": "Upload successful"
+      "dropzone": "Drag and drop your document here",
+      "or": "or",
+      "browse": "Browse files",
+      "supportedFormats": "Supported: {extensions} (max 50MB)",
+      "valid": "Valid",
+      "next": "Continue",
+      "errorUnsupported": "Unsupported file format. Please select a PDF, DOCX, or PPTX file.",
+      "errorTooLarge": "File is too large. Maximum size is 50MB."
     },
     "configure": {
-      "title": "Configure Translation",
-      "sourceLanguage": "Source language",
-      "targetLanguage": "Target language",
-      "domain": "Domain",
-      "tone": "Tone",
-      "glossary": "Glossary",
-      "useGlossary": "Use custom glossary"
+      "title": "Translation Configuration",
+      "language": "Language",
+      "from": "From",
+      "to": "To",
+      "sourcePlaceholder": "Select source language",
+      "targetPlaceholder": "Select target language",
+      "sameLangError": "Source and target languages cannot be the same",
+      "domainAndTone": "Domain & Tone",
+      "domainLabel": "Domain",
+      "toneLabel": "Translation tone",
+      "glossary": "Glossary (Terminology)",
+      "glossaryDescription": "Add specialized terms for more accurate translation",
+      "addTerm": "Add term",
+      "sourceTerm": "Source term",
+      "translatedTerm": "Translation",
+      "noTerms": "No terms added yet. Click the button below to add.",
+      "back": "Back",
+      "startTranslation": "Start translation",
+      "processing": "Processing..."
     },
     "review": {
-      "title": "Review & Confirm",
-      "originalDocument": "Original document",
-      "translatedDocument": "Translated document",
-      "estimatedCredits": "Estimated credits",
-      "startTranslation": "Start translation",
-      "download": "Download"
+      "title": "Translation Result",
+      "document": "Document: {name}",
+      "uploading": "Uploading document...",
+      "uploadingHint": "Please wait a moment",
+      "preparing": "Preparing translation...",
+      "preparingHint": "Confirming upload and creating translation job",
+      "translating": "Translating document...",
+      "translatingHint": "This may take a few minutes depending on document size",
+      "success": "Translation successful!",
+      "successHint": "Your document has been translated and is ready to download",
+      "failed": "Translation failed",
+      "unknownError": "An unknown error occurred",
+      "download": "Download translation",
+      "downloading": "Downloading...",
+      "newTranslation": "Translate new document"
     },
     "languages": {
+      "auto": "Auto-detect",
       "vi": "Vietnamese",
       "en": "English",
       "ja": "Japanese",
       "ko": "Korean",
       "zh": "Chinese",
       "fr": "French",
-      "de": "German"
+      "de": "German",
+      "es": "Spanish"
     },
     "domains": {
       "general": "General",
-      "legal": "Legal",
+      "tech": "Technology",
       "medical": "Medical",
-      "technical": "Technical",
-      "business": "Business",
-      "academic": "Academic"
+      "legal": "Legal",
+      "finance": "Finance",
+      "marketing": "Marketing"
     },
     "tones": {
       "formal": "Formal",
-      "informal": "Informal",
+      "casual": "Casual",
       "professional": "Professional",
-      "casual": "Casual"
+      "friendly": "Friendly"
+    },
+    "toneDescriptions": {
+      "formal": "Suitable for official documents",
+      "casual": "Suitable for everyday communication",
+      "professional": "Suitable for work environment",
+      "friendly": "Approachable and easy to understand"
     }
   }
 }

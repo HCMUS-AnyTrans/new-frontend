@@ -91,7 +91,7 @@ export function UsageExampleCard({
           <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
             <Icon className="w-6 h-6 text-primary" />
           </div>
-          <p className="text-muted-foreground text-sm mb-2">{example.label}</p>
+          <p className="text-muted-foreground text-sm mb-2">{t(`usageExamples.${example.labelKey}`)}</p>
           <p className="text-4xl font-bold text-foreground">{count}</p>
           <p className="text-muted-foreground text-xs mt-1">{t("credits")}</p>
         </CardContent>
@@ -113,7 +113,7 @@ export function UsageExamples({ examples, className }: UsageExamplesProps) {
   return (
     <div className={cn("grid grid-cols-2 md:grid-cols-4 gap-6", className)}>
       {examples.map((example) => (
-        <UsageExampleCard key={example.label} example={example} />
+        <UsageExampleCard key={example.labelKey} example={example} />
       ))}
     </div>
   )

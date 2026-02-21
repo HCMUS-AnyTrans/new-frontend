@@ -1,18 +1,20 @@
 "use client"
 
-import { useState } from "react"
-import { useTranslations, useLocale } from "next-intl"
+import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
+import { useSearchParams } from "next/navigation"
 import {
   Key,
-  Smartphone,
-  Monitor,
-  LogOut,
   Check,
   Link as LinkIcon,
   Unlink,
+  Loader2,
+  CheckCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import {
   Dialog,
   DialogContent,
@@ -25,46 +27,136 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { SettingsSection, SettingsDivider } from "./settings-section"
-import { mockAuthIdentities, mockSessions, authProviderOptions } from "../data"
-import type { AuthIdentity, Session, AuthProvider } from "../types"
+import { authProviderOptions } from "../data"
+import {
+  useIdentities,
+  useUnlinkIdentity,
+  useLinkIdentity,
+  useChangePassword,
+} from "../hooks/use-security"
+import type { AuthProvider, ChangePasswordDto } from "../types"
 
-interface SecurityTabProps {
-  identities?: AuthIdentity[]
-  sessions?: Session[]
+// ============================================================================
+// Skeleton Loading State
+// ============================================================================
+
+function SecurityTabSkeleton() {
+  return (
+    <div className="space-y-6">
+      {/* Password Skeleton */}
+      <div className="rounded-lg border bg-card p-6">
+        <Skeleton className="mb-1 h-5 w-20" />
+        <Skeleton className="mb-4 h-4 w-40" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Skeleton className="size-10 rounded-lg" />
+            <div className="space-y-1">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-32" />
+            </div>
+          </div>
+          <Skeleton className="h-9 w-28" />
+        </div>
+      </div>
+
+      {/* OAuth Skeleton */}
+      <div className="rounded-lg border bg-card p-6">
+        <Skeleton className="mb-1 h-5 w-32" />
+        <Skeleton className="mb-4 h-4 w-48" />
+        <div className="space-y-4">
+          {[1, 2].map((i) => (
+            <div key={i} className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-3">
+                <Skeleton className="size-10 rounded-lg" />
+                <div className="space-y-1">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-3 w-36" />
+                </div>
+              </div>
+              <Skeleton className="h-6 w-16" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
 }
 
-export function SecurityTab({
-  identities = mockAuthIdentities,
-  sessions = mockSessions,
-}: SecurityTabProps) {
+// ============================================================================
+// Main Component
+// ============================================================================
+
+export function SecurityTab() {
   const t = useTranslations("settings.security")
   const tCommon = useTranslations("common")
-  const locale = useLocale()
+  const searchParams = useSearchParams()
+
+  // Data hooks
+  const { identities, isLoading: isLoadingIdentities } = useIdentities()
+  const { unlinkIdentity, isUnlinking } = useUnlinkIdentity()
+  const { linkIdentity, isLinking } = useLinkIdentity()
+  const { changePassword, isChanging, isError: isPasswordError, error: passwordError, reset: resetPassword } = useChangePassword()
+
+  // Local state
   const [showPasswordDialog, setShowPasswordDialog] = useState(false)
+  const [passwordForm, setPasswordForm] = useState<ChangePasswordDto>({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  })
 
-  const linkedProviders = identities.map((i) => i.provider)
+  // Handle ?linked=google callback after OAuth redirect
+  const [linkSuccess, setLinkSuccess] = useState<string | null>(null)
+  useEffect(() => {
+    const linked = searchParams.get("linked")
+    if (linked) {
+      setLinkSuccess(linked)
+      // Clean up the URL query param without a full page reload
+      const url = new URL(window.location.href)
+      url.searchParams.delete("linked")
+      window.history.replaceState({}, "", url.toString())
+    }
+  }, [searchParams])
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr)
-    const now = new Date()
-    const diffMs = now.getTime() - date.getTime()
-    const diffMins = Math.floor(diffMs / 60000)
-    const diffHours = Math.floor(diffMs / 3600000)
-    const diffDays = Math.floor(diffMs / 86400000)
+  const isLoading = isLoadingIdentities
 
-    if (diffMins < 1) return t("justNow")
-    if (diffMins < 60) return t("minutesAgo", { count: diffMins })
-    if (diffHours < 24) return t("hoursAgo", { count: diffHours })
-    if (diffDays < 7) return t("daysAgo", { count: diffDays })
-    return date.toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US")
+  // Show skeleton while loading
+  if (isLoading) {
+    return <SecurityTabSkeleton />
   }
 
-  const getDeviceIcon = (device: string) => {
-    return device.toLowerCase().includes("mobile") ? Smartphone : Monitor
+  const linkedProviders = (identities ?? []).map((i) => i.provider)
+
+  const handleChangePassword = () => {
+    changePassword(passwordForm, {
+      onSuccess: () => {
+        setShowPasswordDialog(false)
+        setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" })
+        resetPassword()
+      },
+    })
+  }
+
+  const handleOpenPasswordDialog = (open: boolean) => {
+    setShowPasswordDialog(open)
+    if (!open) {
+      setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" })
+      resetPassword()
+    }
   }
 
   return (
     <div className="space-y-6">
+      {/* Link success banner */}
+      {linkSuccess && (
+        <Alert className="border-success bg-success/10 text-success [&>svg]:text-success">
+          <CheckCircle className="size-4" />
+          <AlertDescription>
+            {t("linkSuccess", { provider: linkSuccess.charAt(0).toUpperCase() + linkSuccess.slice(1) })}
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Password Section */}
       <SettingsSection
         title={t("password")}
@@ -83,7 +175,7 @@ export function SecurityTab({
             </div>
           </div>
 
-          <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+          <Dialog open={showPasswordDialog} onOpenChange={handleOpenPasswordDialog}>
             <DialogTrigger asChild>
               <Button variant="outline">{t("changePassword")}</Button>
             </DialogTrigger>
@@ -97,22 +189,57 @@ export function SecurityTab({
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
                   <Label htmlFor="current">{t("currentPassword")}</Label>
-                  <Input id="current" type="password" />
+                  <Input
+                    id="current"
+                    type="password"
+                    value={passwordForm.currentPassword}
+                    onChange={(e) =>
+                      setPasswordForm({ ...passwordForm, currentPassword: e.target.value })
+                    }
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="new">{t("newPassword")}</Label>
-                  <Input id="new" type="password" />
+                  <Input
+                    id="new"
+                    type="password"
+                    value={passwordForm.newPassword}
+                    onChange={(e) =>
+                      setPasswordForm({ ...passwordForm, newPassword: e.target.value })
+                    }
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirm">{t("confirmPassword")}</Label>
-                  <Input id="confirm" type="password" />
+                  <Input
+                    id="confirm"
+                    type="password"
+                    value={passwordForm.confirmPassword}
+                    onChange={(e) =>
+                      setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })
+                    }
+                  />
                 </div>
+                {isPasswordError && (
+                  <p className="text-sm text-destructive">
+                    {(passwordError as Error)?.message || t("changePasswordError")}
+                  </p>
+                )}
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setShowPasswordDialog(false)}>
+                <Button variant="outline" onClick={() => handleOpenPasswordDialog(false)}>
                   {tCommon("cancel")}
                 </Button>
-                <Button>{t("changePassword")}</Button>
+                <Button onClick={handleChangePassword} disabled={isChanging}>
+                  {isChanging ? (
+                    <>
+                      <Loader2 className="mr-2 size-4 animate-spin" />
+                      {t("changePassword")}
+                    </>
+                  ) : (
+                    t("changePassword")
+                  )}
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -127,7 +254,7 @@ export function SecurityTab({
         <div className="space-y-1">
           {authProviderOptions.map((provider, idx) => {
             const isLinked = linkedProviders.includes(provider.id as AuthProvider)
-            const identity = identities.find((i) => i.provider === provider.id)
+            const identity = (identities ?? []).find((i) => i.provider === provider.id)
 
             return (
               <div key={provider.id}>
@@ -156,69 +283,31 @@ export function SecurityTab({
                         <Check className="size-3" />
                         {t("linked")}
                       </Badge>
-                      {linkedProviders.length > 1 && (
-                        <Button variant="ghost" size="sm" className="text-muted-foreground">
+                      {identity?.canUnlink && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-muted-foreground"
+                          onClick={() => identity && unlinkIdentity(identity.id)}
+                          disabled={isUnlinking}
+                        >
                           <Unlink className="size-4" />
                         </Button>
                       )}
                     </div>
                   ) : (
-                    <Button variant="outline" size="sm">
-                      <LinkIcon className="size-4" />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => linkIdentity(provider.id)}
+                      disabled={isLinking}
+                    >
+                      {isLinking ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        <LinkIcon className="size-4" />
+                      )}
                       {t("link")}
-                    </Button>
-                  )}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </SettingsSection>
-
-      {/* Active Sessions */}
-      <SettingsSection
-        title={t("activeSessions")}
-        description={t("activeSessionsDescription")}
-        action={
-          sessions.length > 1 && (
-            <Button variant="outline" size="sm" className="text-destructive">
-              {t("revokeAllSessions")}
-            </Button>
-          )
-        }
-      >
-        <div className="space-y-1">
-          {sessions.map((session, idx) => {
-            const DeviceIcon = getDeviceIcon(session.device)
-            return (
-              <div key={session.id}>
-                {idx > 0 && <SettingsDivider />}
-                <div className="flex items-center justify-between py-2">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
-                      <DeviceIcon className="size-5 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium text-foreground">
-                          {session.browser} - {session.os}
-                        </p>
-                        {session.isCurrent && (
-                          <Badge variant="secondary" className="text-xs">
-                            {t("currentDevice")}
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        {session.location} • {formatDate(session.lastActiveAt)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {!session.isCurrent && (
-                    <Button variant="ghost" size="sm" className="text-destructive">
-                      <LogOut className="size-4" />
-                      {t("revokeSession")}
                     </Button>
                   )}
                 </div>

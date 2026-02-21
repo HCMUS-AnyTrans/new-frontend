@@ -46,9 +46,8 @@ function CallbackContent() {
         // Set auth state
         setAuth(user, accessToken)
 
-        // Redirect to home or intended destination
-        const redirectTo = searchParams.get("redirect") || "/"
-        router.replace(redirectTo)
+        // Always redirect to dashboard after OAuth login
+        router.replace('/dashboard')
       } catch (error) {
         console.error("OAuth callback error:", error)
         clearAuth()

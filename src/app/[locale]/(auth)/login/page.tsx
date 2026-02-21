@@ -3,9 +3,12 @@
 import { Suspense } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { LoginForm, SocialLoginButtons, AuthHero } from "@/features/auth"
+import { useTranslations } from "next-intl"
+import { LoginForm, SocialLoginButtons, AuthHero, AuthRedirect } from "@/features/auth"
 
 function LoginContent() {
+  const t = useTranslations("auth.login")
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Logo */}
@@ -34,10 +37,10 @@ function LoginContent() {
                 {/* Header */}
                 <div className="space-y-4">
                   <h1 className="text-4xl font-semibold text-foreground">
-                    Login
+                    {t("title")}
                   </h1>
                   <p className="text-base text-muted-foreground">
-                    Login to access your travelwise account
+                    {t("subtitle")}
                   </p>
                 </div>
 
@@ -67,7 +70,6 @@ function LoadingFallback() {
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
         <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-        <p className="text-muted-foreground">Loading...</p>
       </div>
     </div>
   )
@@ -75,8 +77,10 @@ function LoadingFallback() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <LoginContent />
-    </Suspense>
+    <AuthRedirect>
+      <Suspense fallback={<LoadingFallback />}>
+        <LoginContent />
+      </Suspense>
+    </AuthRedirect>
   )
 }
