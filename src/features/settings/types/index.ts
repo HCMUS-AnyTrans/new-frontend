@@ -71,19 +71,18 @@ export interface GeneralUploadResponse {
 
 export type UILanguage = "vi" | "en" | "ja" | "ko" | "zh"
 export type Theme = "light" | "dark" | "system"
-export type FileTTL = 7 | 14 | 30 | 60 | 90
+// fileTtl is stored in minutes: 10080=7d, 20160=14d, 43200=30d, 86400=60d, 129600=90d
+export type FileTTL = 10080 | 20160 | 43200 | 86400 | 129600
 
 export interface UserPreferences {
   uiLanguage: UILanguage
   theme: Theme
-  sendResultViaEmail: boolean
   fileTtl: FileTTL
 }
 
 export interface UpdatePreferencesDto {
   uiLanguage?: UILanguage
   theme?: Theme
-  sendResultViaEmail?: boolean
   fileTtl?: FileTTL
 }
 

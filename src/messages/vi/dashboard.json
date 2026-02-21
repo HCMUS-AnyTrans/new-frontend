@@ -28,7 +28,7 @@
     },
     "stats": {
       "totalCredits": "Tổng credits",
-      "totalJobs": "Tổng số jobs",
+      "totalJobs": "Tổng bản dịch",
       "processing": "Đang xử lý",
       "completedThisMonth": "Hoàn thành tháng này",
       "vsLastMonth": "so với tháng trước",
@@ -37,8 +37,8 @@
       "successRate": "Tỉ lệ thành công: {rate}%"
     },
     "quickActions": {
-      "uploadDocument": "Upload tài liệu",
-      "uploadSubtitle": "Upload phụ đề",
+      "uploadDocument": "Tải lên tài liệu",
+      "uploadSubtitle": "Tải lên phụ đề",
       "buyCredits": "Mua thêm credits"
     },
     "activity": {
@@ -46,7 +46,7 @@
       "viewAll": "Xem tất cả"
     },
     "recentJobs": {
-      "title": "Jobs gần đây",
+      "title": "Bản dịch gần đây",
       "noJobs": "Chưa có thông tin",
       "viewAll": "Xem tất cả",
       "fileName": "Tên file",
@@ -71,7 +71,7 @@
       "ofTotal": "tổng credit"
     },
     "charts": {
-      "jobsByDay": "Jobs theo ngày (7 ngày gần nhất)",
+      "jobsByDay": "Bản dịch theo ngày (7 ngày gần nhất)",
       "creditAllocation": "Phân bổ credits",
       "noUsageInfo": "Chưa có thông tin sử dụng credit",
       "documents": "Tài liệu",

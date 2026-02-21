@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Camera, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/features/auth/components/phone-input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -308,14 +309,17 @@ export function ProfileTab() {
 
           <SettingsRow label={t("phone")}>
             {isEditing ? (
-              <Input
-                value={formData.phone}
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
-                placeholder="+84 xxx xxx xxx"
-                className="w-64"
-              />
+              <div className="w-72">
+                <PhoneInput
+                  value={formData.phone}
+                  onChange={(value) =>
+                    setFormData({ ...formData, phone: value || "" })
+                  }
+                  label={t("phone")}
+                  disabled={isUpdating}
+                  defaultCountry="VN"
+                />
+              </div>
             ) : (
               <span className="text-sm text-foreground">
                 {profile.phone || (

@@ -147,7 +147,10 @@ export function ActivityTab() {
         ) : (
           <div className="space-y-1">
             {logList.map((log, idx) => {
-              const config = actionConfig[log.action]
+              const config = actionConfig[log.action as AuditAction] || {
+                label: log.action,
+                color: "bg-muted text-muted-foreground",
+              }
               const DeviceIcon = getDeviceIcon(log.device)
 
               return (

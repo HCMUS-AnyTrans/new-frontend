@@ -209,7 +209,7 @@
       "hero": {
         "title": "Giá đơn giản,",
         "subtitle": "chỉ trả cho những gì bạn dùng",
-        "description": "1 Credit = 1 trang dịch. Không subscription. Không giới hạn thời gian."
+        "description": "1 Credit = 1 trang dịch. Không đăng ký dài hạn. Không giới hạn thời gian."
       },
       "cta": "Bắt đầu miễn phí",
       "ctaSecondary": "Xem demo",
@@ -217,7 +217,7 @@
       "credits": "credits",
       "buyNow": "Mua ngay",
       "usageSection": {
-        "title": "Credits trong thực tế"
+        "title": "Sử dụng credits trong thực tế"
       },
       "enterpriseSection": {
         "title": "Enterprise & Volume Pricing",
@@ -231,7 +231,7 @@
       },
       "banner": {
         "title": "Sẵn sàng dịch nhanh hơn 10 lần?",
-        "subtitle": "1 Credit = 1 trang dịch. Không subscription. Không giới hạn thời gian."
+        "subtitle": "1 Credit = 1 trang dịch. Không đăng ký dài hạn. Không giới hạn thời gian."
       },
       "features": [
         "Dịch PDF, Word, Subtitle",

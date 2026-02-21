@@ -48,11 +48,11 @@ export const themeOptions = [
 ] as const
 
 export const fileTtlOptions = [
-  { value: 7, label: "7 ng\u00E0y" },
-  { value: 14, label: "14 ng\u00E0y" },
-  { value: 30, label: "30 ng\u00E0y" },
-  { value: 60, label: "60 ng\u00E0y" },
-  { value: 90, label: "90 ng\u00E0y" },
+  { value: 10080, label: "7 ngày" },
+  { value: 20160, label: "14 ngày" },
+  { value: 43200, label: "30 ngày" },
+  { value: 86400, label: "60 ngày" },
+  { value: 129600, label: "90 ngày" },
 ] as const
 
 // =============== MOCK USER PROFILE ===============
@@ -73,9 +73,8 @@ export const mockUserProfile: UserProfile = {
 
 export const mockUserPreferences: UserPreferences = {
   uiLanguage: "vi",
-  theme: "system",
-  sendResultViaEmail: true,
-  fileTtl: 30,
+  theme: "dark",
+  fileTtl: 10080,
 }
 
 // =============== MOCK AUTH IDENTITIES ===============

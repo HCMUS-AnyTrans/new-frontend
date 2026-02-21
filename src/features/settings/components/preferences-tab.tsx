@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Sun, Moon, Monitor, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
@@ -27,6 +26,15 @@ const themeIcons = {
   dark: Moon,
   system: Monitor,
 };
+
+// Minutes to days mapping for fileTtl
+const FILE_TTL_OPTIONS: { value: FileTTL; days: number }[] = [
+  { value: 10080, days: 7 },
+  { value: 20160, days: 14 },
+  { value: 43200, days: 30 },
+  { value: 86400, days: 60 },
+  { value: 129600, days: 90 },
+];
 
 // ============================================================================
 // Skeleton Loading State
@@ -62,18 +70,10 @@ function PreferencesTabSkeleton() {
         </div>
       </div>
 
-      {/* Translation Settings Skeleton */}
+      {/* File Settings Skeleton */}
       <div className="rounded-lg border bg-card p-6">
         <Skeleton className="mb-4 h-5 w-32" />
         <div className="space-y-4">
-          <div className="flex items-center justify-between py-2">
-            <div className="space-y-1">
-              <Skeleton className="h-4 w-28" />
-              <Skeleton className="h-3 w-52" />
-            </div>
-            <Skeleton className="h-5 w-9" />
-          </div>
-          <div className="border-t" />
           <div className="flex items-center justify-between py-2">
             <div className="space-y-1">
               <Skeleton className="h-4 w-24" />
@@ -93,6 +93,7 @@ function PreferencesTabSkeleton() {
 
 export function PreferencesTab() {
   const t = useTranslations("settings.preferences");
+  const tCommon = useTranslations("common");
 
   // Data hooks
   const { preferences, isLoading } = usePreferences();
@@ -135,8 +136,6 @@ export function PreferencesTab() {
     { value: "dark", labelKey: "themeDark" },
     { value: "system", labelKey: "themeSystem" },
   ] as const;
-
-  const fileTtlOptions = [7, 14, 30, 60, 90] as const;
 
   return (
     <div className="space-y-6">
@@ -191,21 +190,9 @@ export function PreferencesTab() {
         </div>
       </SettingsSection>
 
-      {/* Translation Settings */}
-      <SettingsSection title={t("emailResults")}>
+      {/* File Settings */}
+      <SettingsSection title={t("fileTtl")}>
         <div className="space-y-1">
-          <SettingsRow
-            label={t("emailResults")}
-            description={t("emailResultsDescription")}
-          >
-            <Switch
-              checked={formData.sendResultViaEmail}
-              onCheckedChange={(v) => updateField("sendResultViaEmail", v)}
-            />
-          </SettingsRow>
-
-          <SettingsDivider />
-
           <SettingsRow
             label={t("fileTtl")}
             description={t("fileTtlDescription")}
@@ -218,9 +205,9 @@ export function PreferencesTab() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {fileTtlOptions.map((days) => (
-                  <SelectItem key={days} value={String(days)}>
-                    {t("days", { count: days })}
+                {FILE_TTL_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={String(option.value)}>
+                    {t("days", { count: option.days })}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -236,10 +223,10 @@ export function PreferencesTab() {
             {isUpdating ? (
               <>
                 <Loader2 className="mr-2 size-4 animate-spin" />
-                {t("title")}
+                {tCommon("save")}
               </>
             ) : (
-              t("title")
+              tCommon("save")
             )}
           </Button>
         </div>
