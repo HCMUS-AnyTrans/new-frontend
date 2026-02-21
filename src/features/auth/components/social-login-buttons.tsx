@@ -34,7 +34,6 @@ export function SocialLoginButtons({
       initiateGoogleAuth()
     } else {
       // Facebook login not yet implemented
-      console.log(`Social login with: ${provider}`)
       alert(`${provider} login not yet implemented`)
     }
   }

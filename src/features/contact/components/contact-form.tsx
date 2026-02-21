@@ -36,9 +36,9 @@ export function ContactForm() {
     },
   })
 
-  function onSubmit(data: ContactFormValues) {
+  function onSubmit(_data: ContactFormValues) {
     setIsSubmitting(true)
-    console.log(data)
+    // TODO: integrate with real contact API
     setTimeout(() => {
       setIsSubmitting(false)
       form.reset()
