@@ -127,9 +127,6 @@ export type {
 
 // Data
 export {
-  settingsTabs,
   uiLanguageOptions,
-  themeOptions,
-  fileTtlOptions,
   authProviderOptions,
 } from "./data"

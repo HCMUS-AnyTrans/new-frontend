@@ -23,6 +23,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { SettingsSection, SettingsDivider } from "./settings-section"
+import { Pagination } from "@/components/ui/pagination"
 import { useFiles, useFileDownload, useDeleteFile, useStorageUsage } from "../hooks/use-files"
 import type { UserFile } from "../types"
 import { cn } from "@/lib/utils"
@@ -110,8 +111,11 @@ export function FilesTab() {
   const tCommon = useTranslations("common")
   const locale = useLocale()
 
+  // Pagination state
+  const [page, setPage] = useState(1)
+
   // Data hooks
-  const { files, isLoading: isLoadingFiles } = useFiles()
+  const { files, pagination: filesPagination, isLoading: isLoadingFiles, isFetching: isFetchingFiles } = useFiles({ page, limit: 10 })
   const { storage, isLoading: isLoadingStorage } = useStorageUsage()
   const { download, isDownloading } = useFileDownload()
   const { deleteFile, isDeleting } = useDeleteFile()
@@ -253,6 +257,18 @@ export function FilesTab() {
               )
             })}
           </div>
+        )}
+
+        {/* Files Pagination */}
+        {filesPagination && (
+          <Pagination
+            page={filesPagination.page}
+            totalPages={filesPagination.totalPages}
+            hasNext={filesPagination.hasNext}
+            hasPrev={filesPagination.hasPrev}
+            onPageChange={setPage}
+            isFetching={isFetchingFiles}
+          />
         )}
       </SettingsSection>
 

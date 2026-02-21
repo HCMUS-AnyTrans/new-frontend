@@ -1,11 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import { Bell, Mail, Smartphone, CheckCheck, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Skeleton } from "@/components/ui/skeleton"
 import { SettingsSection, SettingsDivider } from "./settings-section"
+import { Pagination } from "@/components/ui/pagination"
 import {
   useNotifications,
   useMarkNotificationRead,
@@ -91,8 +93,11 @@ export function NotificationsTab() {
   const tCommon = useTranslations("common")
   const locale = useLocale()
 
+  // Pagination state
+  const [page, setPage] = useState(1)
+
   // Data hooks
-  const { notifications, unreadCount, isLoading: isLoadingNotifs } = useNotifications()
+  const { notifications, pagination: notifPagination, unreadCount, isLoading: isLoadingNotifs, isFetching: isFetchingNotifs } = useNotifications({ page, limit: 10 })
   const { markRead } = useMarkNotificationRead()
   const { markAllRead, isMarking: isMarkingAll } = useMarkAllNotificationsRead()
   const { preferences, isLoading: isLoadingPrefs } = useNotificationPreferences()
@@ -174,7 +179,7 @@ export function NotificationsTab() {
           </div>
         ) : (
           <div className="space-y-1">
-            {notifList.slice(0, 5).map((notif, idx) => (
+            {notifList.map((notif, idx) => (
               <div key={notif.id}>
                 {idx > 0 && <SettingsDivider />}
                 <button
@@ -207,6 +212,18 @@ export function NotificationsTab() {
               </div>
             ))}
           </div>
+        )}
+
+        {/* Notifications Pagination */}
+        {notifPagination && (
+          <Pagination
+            page={notifPagination.page}
+            totalPages={notifPagination.totalPages}
+            hasNext={notifPagination.hasNext}
+            hasPrev={notifPagination.hasPrev}
+            onPageChange={setPage}
+            isFetching={isFetchingNotifs}
+          />
         )}
       </SettingsSection>
 
