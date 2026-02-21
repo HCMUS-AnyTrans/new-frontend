@@ -64,9 +64,8 @@ export function StatsCards() {
       icon: FileText,
       iconColor: "text-primary",
       iconBg: "bg-primary/10",
-      subtitle: t("documentsAndSubtitles", {
+      subtitle: t("documentsCount", {
         docs: stats.documentJobs,
-        subs: stats.subtitleJobs,
       }),
     },
     {

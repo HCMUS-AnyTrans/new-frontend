@@ -3,7 +3,7 @@
     "hero": {
       "title": "Dịch tài liệu",
       "subtitle": "chuyên nghiệp với AI",
-      "description": "Giữ nguyên format, hỗ trợ glossary chuyên ngành. Dịch Word, PDF, Subtitle nhanh gấp 10 lần thủ công.",
+      "description": "Giữ nguyên format, hỗ trợ glossary chuyên ngành. Dịch Word, PDF, Excel nhanh gấp 10 lần thủ công.",
       "badge": "Được tin tưởng bởi 10,000+ chuyên gia",
       "cta": "Bắt đầu miễn phí",
       "ctaSecondary": "Xem Demo",
@@ -99,7 +99,7 @@
       "steps": {
         "upload": {
           "title": "Tải lên tài liệu",
-          "description": "Kéo thả hoặc chọn file PDF, Word, hoặc Subtitle. Hỗ trợ file lên đến 100MB."
+          "description": "Kéo thả hoặc chọn file PDF, Word, hoặc Excel. Hỗ trợ file lên đến 100MB."
         },
         "configure": {
           "title": "Cấu hình dịch",
@@ -142,10 +142,10 @@
         },
         {
           "name": "Lê Quang Huy",
-          "role": "Founder",
-          "company": "SubViet Studio",
-          "industry": "Truyền thông",
-          "content": "Dịch subtitle nhanh không tưởng! Trước đây mất cả ngày, giờ chỉ cần 10 phút. ROI rõ ràng ngay từ tháng đầu tiên."
+          "role": "Giám đốc nghiên cứu",
+          "company": "SciPub Vietnam",
+          "industry": "Xuất bản",
+          "content": "Dịch luận văn khoa học 300 trang trước đây mất cả tuần. Với AnyTrans, chúng tôi hoàn thành trong chưa đầy 1 giờ với tất cả công thức và biểu đồ được giữ nguyên hoàn hảo. Thay đổi hoàn toàn quy trình xuất bản học thuật."
         },
         {
           "name": "Phạm Thị Mai",
@@ -234,7 +234,7 @@
         "subtitle": "1 Credit = 1 trang dịch. Không đăng ký dài hạn. Không giới hạn thời gian."
       },
       "features": [
-        "Dịch PDF, Word, Subtitle",
+        "Dịch PDF, Word, Excel",
         "Giữ nguyên format gốc",
         "Glossary không giới hạn",
         "Review song ngữ",
@@ -267,7 +267,7 @@
         "pdf10": "PDF 10 trang",
         "contract50": "Hợp đồng 50 trang",
         "ppt100": "PPT 100 slides",
-        "subtitle": "Phụ đề phim"
+        "thesis": "Luận văn 80 trang"
       },
       "planSavings": {
         "save20": "Tiết kiệm 20%",

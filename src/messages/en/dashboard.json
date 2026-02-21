@@ -5,7 +5,6 @@
       "other": "Other",
       "dashboard": "Dashboard",
       "documents": "Document Translation",
-      "subtitles": "Subtitle Translation",
       "glossary": "Glossary",
       "history": "History",
       "settings": "Settings",
@@ -16,7 +15,6 @@
     "pages": {
       "dashboard": "Dashboard",
       "documents": "Document Translation",
-      "subtitles": "Subtitle Translation",
       "glossary": "Glossary",
       "history": "History",
       "settings": "Settings",
@@ -33,12 +31,11 @@
       "completedThisMonth": "Completed This Month",
       "vsLastMonth": "vs last month",
       "vsYesterday": "vs yesterday",
-      "documentsAndSubtitles": "{docs} Documents | {subs} Subtitles",
+      "documentsCount": "{docs} Documents",
       "successRate": "Success rate: {rate}%"
     },
     "quickActions": {
       "uploadDocument": "Upload Document",
-      "uploadSubtitle": "Upload Subtitle",
       "buyCredits": "Buy Credits"
     },
     "activity": {
@@ -58,8 +55,7 @@
       "actions": "Actions",
       "download": "Download",
       "viewDetails": "View Details",
-      "document": "Document",
-      "subtitle": "Subtitle"
+      "document": "Document"
     },
     "storage": {
       "title": "Storage",
@@ -67,7 +63,6 @@
       "creditUsageTitle": "Credit Usage",
       "noUsageInfo": "No credit usage information yet",
       "documents": "Documents",
-      "subtitles": "Subtitles",
       "ofTotal": "of total"
     },
     "charts": {
@@ -75,7 +70,6 @@
       "creditAllocation": "Credit Allocation",
       "noUsageInfo": "No credit usage information yet",
       "documents": "Documents",
-      "subtitles": "Subtitles",
       "remaining": "Remaining"
     },
     "status": {

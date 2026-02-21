@@ -24,7 +24,7 @@ interface TranslationDemoProps {
 const floatingDocuments: FloatingDocument[] = [
   { label: "PDF", color: "bg-destructive", delay: 0 },
   { label: "Word", color: "bg-accent", delay: 0.2 },
-  { label: "SRT", color: "bg-success", delay: 0.4 },
+  { label: "XLSX", color: "bg-success", delay: 0.4 },
 ]
 
 export function TranslationDemo({

@@ -5,7 +5,6 @@
       "other": "Khác",
       "dashboard": "Tổng quan",
       "documents": "Dịch tài liệu",
-      "subtitles": "Dịch phụ đề",
       "glossary": "Từ điển thuật ngữ",
       "history": "Lịch sử",
       "settings": "Cài đặt",
@@ -16,7 +15,6 @@
     "pages": {
       "dashboard": "Tổng quan",
       "documents": "Dịch tài liệu",
-      "subtitles": "Dịch phụ đề",
       "glossary": "Thuật ngữ",
       "history": "Lịch sử",
       "settings": "Cài đặt",
@@ -33,12 +31,11 @@
       "completedThisMonth": "Hoàn thành tháng này",
       "vsLastMonth": "so với tháng trước",
       "vsYesterday": "so với hôm qua",
-      "documentsAndSubtitles": "{docs} Tài liệu | {subs} Phụ đề",
+      "documentsCount": "{docs} Tài liệu",
       "successRate": "Tỉ lệ thành công: {rate}%"
     },
     "quickActions": {
       "uploadDocument": "Tải lên tài liệu",
-      "uploadSubtitle": "Tải lên phụ đề",
       "buyCredits": "Mua thêm credits"
     },
     "activity": {
@@ -58,8 +55,7 @@
       "actions": "Thao tác",
       "download": "Tải xuống",
       "viewDetails": "Xem chi tiết",
-      "document": "Tài liệu",
-      "subtitle": "Phụ đề"
+      "document": "Tài liệu"
     },
     "storage": {
       "title": "Lưu trữ",
@@ -67,7 +63,6 @@
       "creditUsageTitle": "Credit đã sử dụng",
       "noUsageInfo": "Chưa có thông tin sử dụng credit",
       "documents": "Tài liệu",
-      "subtitles": "Phụ đề",
       "ofTotal": "tổng credit"
     },
     "charts": {
@@ -75,7 +70,6 @@
       "creditAllocation": "Phân bổ credits",
       "noUsageInfo": "Chưa có thông tin sử dụng credit",
       "documents": "Tài liệu",
-      "subtitles": "Phụ đề",
       "remaining": "Còn lại"
     },
     "status": {

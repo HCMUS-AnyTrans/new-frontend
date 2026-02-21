@@ -55,13 +55,12 @@ export function CreditUsageChart() {
   if (isError || !creditsData) return <CreditUsageChartSkeleton />;
 
   const { usage } = creditsData;
-  const totalUsed = usage.documentsUsed + usage.subtitlesUsed;
+  const totalUsed = usage.documentsUsed;
   const hasUsage = totalUsed > 0;
 
-  // Map backend breakdown to chart data (Documents + Subtitles only, no "remaining")
+  // Map backend breakdown to chart data (Documents only)
   const nameMap: Record<string, string> = {
     Documents: t("documents"),
-    Subtitles: t("subtitles"),
   };
 
   const creditUsageData = creditsData.breakdown.map((item, index) => ({

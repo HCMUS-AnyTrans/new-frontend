@@ -38,10 +38,6 @@ export function JobsChart() {
       label: t("documents"),
       color: "var(--color-chart-1)",
     },
-    subtitle: {
-      label: t("subtitles"),
-      color: "var(--color-chart-3)",
-    },
   } satisfies ChartConfig;
 
   if (isLoading) return <JobsChartSkeleton />;
@@ -86,12 +82,6 @@ export function JobsChart() {
               radius={[4, 4, 0, 0]}
               maxBarSize={32}
             />
-            <Bar
-              dataKey="subtitle"
-              fill="var(--color-subtitle)"
-              radius={[4, 4, 0, 0]}
-              maxBarSize={32}
-            />
           </BarChart>
         </ChartContainer>
         <div className="mt-3 flex items-center justify-center gap-6">
@@ -99,12 +89,6 @@ export function JobsChart() {
             <div className="h-2.5 w-2.5 rounded-sm bg-chart-1" />
             <span className="text-xs text-muted-foreground">
               {t("documents")}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-2.5 w-2.5 rounded-sm bg-chart-3" />
-            <span className="text-xs text-muted-foreground">
-              {t("subtitles")}
             </span>
           </div>
         </div>

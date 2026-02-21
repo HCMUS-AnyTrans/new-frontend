@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Download, Eye, ArrowRight, FileText, Subtitles } from "lucide-react";
+import { Download, Eye, ArrowRight, FileText } from "lucide-react";
 import { languageCodeMap } from "../data";
 import { useRecentJobs } from "../hooks";
 
@@ -156,11 +156,7 @@ export function RecentJobsTable() {
                   <TableRow key={job.job_id} className="group">
                     <TableCell className="max-w-[200px]">
                       <div className="flex items-center gap-2">
-                        {jobType === "document" ? (
                           <FileText className="size-4 shrink-0 text-primary" />
-                        ) : (
-                          <Subtitles className="size-4 shrink-0 text-accent" />
-                        )}
                         <span className="truncate text-sm font-medium text-foreground">
                           {fileName}
                         </span>
@@ -169,15 +165,9 @@ export function RecentJobsTable() {
                     <TableCell>
                       <Badge
                         variant="outline"
-                        className={`text-xs ${
-                          jobType === "document"
-                            ? "border-primary/20 bg-primary/10 text-primary"
-                            : "border-accent/20 bg-accent/10 text-accent"
-                        }`}
+                        className="text-xs border-primary/20 bg-primary/10 text-primary"
                       >
-                        {jobType === "document"
-                          ? t("document")
-                          : t("subtitle")}
+                        {t("document")}
                       </Badge>
                     </TableCell>
                     <TableCell>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { FileUp, Subtitles, Coins } from "lucide-react";
+import { FileUp, Coins } from "lucide-react";
 
 export function QuickActions() {
   const t = useTranslations("dashboard.quickActions");
@@ -14,12 +14,6 @@ export function QuickActions() {
         <Link href="/documents">
           <FileUp className="size-4" />
           {t("uploadDocument")}
-        </Link>
-      </Button>
-      <Button asChild className="gap-2 bg-accent hover:bg-accent/90">
-        <Link href="/subtitles">
-          <Subtitles className="size-4" />
-          {t("uploadSubtitle")}
         </Link>
       </Button>
       <Button

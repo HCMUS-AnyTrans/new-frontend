@@ -8,7 +8,6 @@ import { ChevronUp, LogOut, User, Settings } from "lucide-react";
 import {
   LayoutDashboard,
   FileText,
-  Subtitles,
   BookOpen,
   History,
   Settings as SettingsIcon,
@@ -55,7 +54,6 @@ const navGroups: NavGroup[] = [
     items: [
       { titleKey: "dashboard", href: "/dashboard", icon: LayoutDashboard },
       { titleKey: "documents", href: "/documents", icon: FileText },
-      { titleKey: "subtitles", href: "/subtitles", icon: Subtitles },
       { titleKey: "glossary", href: "/glossary", icon: BookOpen },
       { titleKey: "history", href: "/history", icon: History },
     ],

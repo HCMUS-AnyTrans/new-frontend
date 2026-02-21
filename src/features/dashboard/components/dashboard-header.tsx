@@ -17,7 +17,6 @@ import { useWallet } from "../hooks";
 const pageKeyMap: Record<string, string> = {
   "/dashboard": "dashboard",
   "/documents": "documents",
-  "/subtitles": "subtitles",
   "/glossary": "glossary",
   "/history": "history",
   "/settings": "settings",

@@ -10,7 +10,7 @@ export type JobStatus = "pending" | "processing" | "succeeded" | "failed"
 /**
  * Job type matching TranslationJob.jobType in backend
  */
-export type JobType = "document" | "subtitle"
+export type JobType = "document"
 
 /**
  * Supported language codes (ISO 639-1)
@@ -38,7 +38,6 @@ export interface DashboardStats {
 
   totalJobs: number
   documentJobs: number
-  subtitleJobs: number
   jobsChange: string
   jobsTrend: TrendDirection
 
@@ -104,7 +103,6 @@ export interface CreditsChartQuery {
 export interface JobsChartDataPoint {
   day: string
   document: number
-  subtitle: number
 }
 
 /**
@@ -114,7 +112,6 @@ export interface JobChartDataPoint {
   date: string
   day: string
   document: number
-  subtitle: number
 }
 
 export interface CreditUsageDataPoint {
@@ -134,7 +131,6 @@ export interface CreditBreakdown {
 
 export interface CreditUsage {
   documentsUsed: number
-  subtitlesUsed: number
 }
 
 export interface CreditsChartResponse {
@@ -165,7 +161,6 @@ export interface StorageResponse {
   fileCount: number
   breakdown: {
     documents: StorageBreakdownItem
-    subtitles: StorageBreakdownItem
   }
 }
 

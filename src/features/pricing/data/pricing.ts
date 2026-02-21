@@ -2,7 +2,7 @@ import {
   FileText,
   FileCheck,
   Presentation,
-  Film,
+  BookOpen,
   LucideIcon,
 } from "lucide-react"
 
@@ -86,7 +86,7 @@ export const pricingPlans: Plan[] = [
 // ============================================================================
 
 export const pricingFeatures: string[] = [
-  "Dịch PDF, Word, Subtitle",
+  "Dịch PDF, Word, Excel",
   "Giữ nguyên format gốc",
   "Glossary không giới hạn",
   "Review song ngữ",
@@ -102,7 +102,7 @@ export const usageExamples: UsageExample[] = [
   { icon: FileText, label: "PDF 10 trang", credits: 10 },
   { icon: FileCheck, label: "Hợp đồng 50 trang", credits: 50 },
   { icon: Presentation, label: "PPT 100 slides", credits: 100 },
-  { icon: Film, label: "Phụ đề phim", credits: 80 },
+  { icon: BookOpen, label: "Luận văn 80 trang", credits: 80 },
 ]
 
 // ============================================================================

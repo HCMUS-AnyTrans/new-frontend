@@ -1,7 +1,6 @@
 import {
   LayoutDashboard,
   FileText,
-  Subtitles,
   BookOpen,
   History,
   Settings,
@@ -40,11 +39,6 @@ export const mainNavItems: NavItem[] = [
     title: "Dịch tài liệu",
     href: "/documents",
     icon: FileText,
-  },
-  {
-    title: "Dịch phụ đề",
-    href: "/subtitles",
-    icon: Subtitles,
   },
   {
     title: "Từ điển thuật ngữ",
@@ -89,7 +83,6 @@ export const navGroups: NavGroup[] = [
 export const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
   "/documents": "Dịch tài liệu",
-  "/subtitles": "Dịch phụ đề",
   "/glossary": "Từ điển thuật ngữ",
   "/history": "Lịch sử",
   "/settings": "Cài đặt",

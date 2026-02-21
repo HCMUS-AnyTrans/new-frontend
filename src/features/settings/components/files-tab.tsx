@@ -33,7 +33,6 @@ const mimeTypeConfig: Record<string, { color: string; label: string }> = {
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": { color: "text-primary", label: "DOCX" },
   "application/vnd.openxmlformats-officedocument.presentationml.presentation": { color: "text-warning", label: "PPTX" },
   "text/plain": { color: "text-muted-foreground", label: "TXT" },
-  "application/x-subrip": { color: "text-success", label: "SRT" },
 }
 
 function getFileTypeConfig(mime: string) {

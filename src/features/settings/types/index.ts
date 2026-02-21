@@ -258,7 +258,6 @@ export interface StorageUsage {
   fileCount: number
   breakdown: {
     documents: { count: number; size: number }
-    subtitles: { count: number; size: number }
   }
 }
 
