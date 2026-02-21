@@ -1,19 +1,9 @@
 "use client"
 
 import { Check } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
 import type { TranslationStep } from "../types"
-
-interface Step {
-  number: TranslationStep
-  label: string
-}
-
-const steps: Step[] = [
-  { number: 1, label: "Tải lên" },
-  { number: 2, label: "Cấu hình" },
-  { number: 3, label: "Xem trước" },
-]
 
 interface TranslationStepperProps {
   currentStep: TranslationStep
@@ -21,6 +11,14 @@ interface TranslationStepperProps {
 }
 
 export function TranslationStepper({ currentStep, className }: TranslationStepperProps) {
+  const t = useTranslations("documents.wizard.steps")
+
+  const steps: { number: TranslationStep; label: string }[] = [
+    { number: 1, label: t("upload") },
+    { number: 2, label: t("configure") },
+    { number: 3, label: t("review") },
+  ]
+
   return (
     <div className={cn("flex items-center justify-center py-6", className)}>
       {steps.map((step, idx) => {

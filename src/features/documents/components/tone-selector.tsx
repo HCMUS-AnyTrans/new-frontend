@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { tones } from "../data"
@@ -10,9 +11,11 @@ interface ToneSelectorProps {
 }
 
 export function ToneSelector({ value, onChange }: ToneSelectorProps) {
+  const t = useTranslations("documents")
+
   return (
     <div>
-      <Label className="mb-2 block">Giọng điệu dịch</Label>
+      <Label className="mb-2 block">{t("configure.toneLabel")}</Label>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {tones.map((tone) => (
           <button
@@ -32,10 +35,10 @@ export function ToneSelector({ value, onChange }: ToneSelectorProps) {
                 value === tone.id ? "text-primary" : "text-foreground"
               )}
             >
-              {tone.name}
+              {t(`tones.${tone.id}`)}
             </span>
             <span className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
-              {tone.description}
+              {t(`toneDescriptions.${tone.id}`)}
             </span>
           </button>
         ))}

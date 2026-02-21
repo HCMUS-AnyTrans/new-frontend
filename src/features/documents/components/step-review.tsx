@@ -1,245 +1,259 @@
 "use client"
 
-import { useState } from "react"
 import {
-  ZoomIn,
-  ZoomOut,
   Download,
   RefreshCcw,
   Loader2,
   CheckCircle2,
   XCircle,
-  Save,
+  FileText,
+  File,
+  Presentation,
+  Upload,
+  AlertCircle,
 } from "lucide-react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { useTranslations } from "next-intl"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn } from "@/lib/utils"
-import type { TranslationJob, TranslationConfig, UploadedFile } from "../types"
-import { languages } from "../data"
+import type { TranslationFlowStatus, TranslationJobResponse, UploadedFile } from "../types"
+import type { LanguageCode } from "../types"
 
 // =============== TYPES ===============
 
 interface StepReviewProps {
   file: UploadedFile
-  config: TranslationConfig
-  job: TranslationJob
-  originalText: string
-  translatedText: string
+  /** The multi-step flow status (uploading → confirming → creating → translating → succeeded/failed) */
+  flowStatus: TranslationFlowStatus
+  /** Upload progress percentage (0-100) during the "uploading" phase */
+  uploadProgress: number
+  /** Translation job data from polling (null until job is created) */
+  jobData: TranslationJobResponse | null
+  /** Error message from any step */
+  error: string | null
+  /** Source language code */
+  srcLang: LanguageCode
+  /** Target language code */
+  tgtLang: LanguageCode
   onDownload: () => void
   onReset: () => void
+  isDownloading?: boolean
 }
 
-// =============== ZOOM CONTROLS ===============
+// =============== HELPERS ===============
 
-const ZOOM_LEVELS = [75, 100, 125, 150, 175, 200] as const
-type ZoomLevel = (typeof ZOOM_LEVELS)[number]
-
-interface ZoomControlsProps {
-  zoom: ZoomLevel
-  onZoomIn: () => void
-  onZoomOut: () => void
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return bytes + " B"
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB"
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB"
 }
 
-function ZoomControls({ zoom, onZoomIn, onZoomOut }: ZoomControlsProps) {
-  const canZoomIn = zoom < ZOOM_LEVELS[ZOOM_LEVELS.length - 1]
-  const canZoomOut = zoom > ZOOM_LEVELS[0]
+function getFileIcon(fileName: string) {
+  const ext = fileName.split(".").pop()?.toLowerCase()
+  if (ext === "pdf") return <FileText className="size-10 text-destructive" />
+  if (ext === "pptx") return <Presentation className="size-10 text-warning" />
+  return <File className="size-10 text-primary" />
+}
 
+// =============== UPLOADING STATE ===============
+
+function UploadingCard({ progress, t }: { progress: number; t: (key: string) => string }) {
   return (
-    <div className="flex items-center gap-1">
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        onClick={onZoomOut}
-        disabled={!canZoomOut}
-        className="size-7"
-      >
-        <ZoomOut className="size-4" />
-      </Button>
-      <span className="min-w-[3rem] text-center text-xs text-muted-foreground">{zoom}%</span>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        onClick={onZoomIn}
-        disabled={!canZoomIn}
-        className="size-7"
-      >
-        <ZoomIn className="size-4" />
-      </Button>
-    </div>
-  )
-}
-
-// =============== DOCUMENT PANE ===============
-
-interface DocumentPaneProps {
-  title: string
-  langCode: string
-  content: string
-  zoom: ZoomLevel
-  onZoomIn: () => void
-  onZoomOut: () => void
-  isLoading?: boolean
-  className?: string
-}
-
-function DocumentPane({
-  title,
-  langCode,
-  content,
-  zoom,
-  onZoomIn,
-  onZoomOut,
-  isLoading,
-  className,
-}: DocumentPaneProps) {
-  const lang = languages.find((l) => l.code === langCode)
-  const langName = lang?.name || langCode.toUpperCase()
-
-  return (
-    <Card className={cn("flex h-full flex-col overflow-hidden", className)}>
-      <CardHeader className="flex flex-row items-center justify-between gap-2 border-b px-4 py-3">
-        <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-foreground">{title}</h3>
-          <Badge variant="secondary" className="text-xs">
-            {langName}
-          </Badge>
+    <Card className="mx-auto max-w-lg">
+      <CardContent className="p-8">
+        <div className="space-y-6 text-center">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
+            <Upload className="size-8 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">{t("uploading")}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t("uploadingHint")}
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Progress value={progress} className="h-2" />
+            <p className="text-sm font-medium text-primary">{progress}%</p>
+          </div>
         </div>
-        <ZoomControls zoom={zoom} onZoomIn={onZoomIn} onZoomOut={onZoomOut} />
-      </CardHeader>
-      <CardContent className="flex-1 overflow-auto p-0">
-        {isLoading ? (
-          <div className="flex h-full items-center justify-center p-8">
-            <Loader2 className="size-8 animate-spin text-muted-foreground" />
-          </div>
-        ) : (
-          <div
-            className="whitespace-pre-wrap p-4 leading-relaxed text-foreground transition-all"
-            style={{ fontSize: `${zoom}%` }}
-          >
-            {content || (
-              <span className="italic text-muted-foreground">Chưa có nội dung</span>
-            )}
-          </div>
-        )}
       </CardContent>
     </Card>
   )
 }
 
-// =============== PROGRESS OVERLAY ===============
+// =============== PREPARING STATE (confirming upload / creating job) ===============
 
-interface ProgressOverlayProps {
-  job: TranslationJob
+function PreparingCard({ t }: { t: (key: string) => string }) {
+  return (
+    <Card className="mx-auto max-w-lg">
+      <CardContent className="p-8">
+        <div className="space-y-6 text-center">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
+            <Loader2 className="size-8 animate-spin text-primary" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">{t("preparing")}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t("preparingHint")}
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
 }
 
-function ProgressOverlay({ job }: ProgressOverlayProps) {
-  if (job.status === "idle" || job.status === "success") return null
+// =============== TRANSLATING STATE (indeterminate progress) ===============
+
+function TranslatingCard({ t }: { t: (key: string) => string }) {
+  return (
+    <Card className="mx-auto max-w-lg">
+      <CardContent className="p-8">
+        <div className="space-y-6 text-center">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
+            <Loader2 className="size-8 animate-spin text-primary" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">{t("translating")}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t("translatingHint")}
+            </p>
+          </div>
+          {/* Indeterminate progress bar */}
+          <div className="relative h-2 overflow-hidden rounded-full bg-muted">
+            <div className="absolute inset-y-0 w-1/3 animate-[indeterminate_1.5s_ease-in-out_infinite] rounded-full bg-primary" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+// =============== SUCCESS STATE (download card) ===============
+
+interface SuccessCardProps {
+  file: UploadedFile
+  jobData: TranslationJobResponse | null
+  srcLang: LanguageCode
+  tgtLang: LanguageCode
+  onDownload: () => void
+  isDownloading?: boolean
+  t: (key: string) => string
+  tLang: (key: string) => string
+}
+
+function SuccessCard({ file, jobData, srcLang, tgtLang, onDownload, isDownloading, t, tLang }: SuccessCardProps) {
+  const outputFile = jobData?.output_file
+  const outputFileName = outputFile?.name || `translated-${file.name}`
+  const outputFileSize = outputFile?.size_bytes
 
   return (
-    <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-      <Card className="w-full max-w-md border shadow-lg">
-        <CardContent className="p-6">
-          {job.status === "processing" && (
-            <div className="space-y-4 text-center">
-              <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
-                <Loader2 className="size-8 animate-spin text-primary" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-foreground">Đang dịch tài liệu...</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Vui lòng chờ trong giây lát
-                </p>
-              </div>
-              <div className="space-y-2">
-                <Progress value={job.progress} className="h-2" />
-                <p className="text-sm font-medium text-primary">{job.progress}%</p>
-              </div>
+    <Card className="mx-auto max-w-lg">
+      <CardContent className="p-8">
+        <div className="space-y-6">
+          {/* Success header */}
+          <div className="text-center">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-success/10">
+              <CheckCircle2 className="size-8 text-success" />
             </div>
-          )}
+            <h3 className="text-lg font-semibold text-foreground">{t("success")}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t("successHint")}
+            </p>
+          </div>
 
-          {job.status === "failed" && (
-            <div className="space-y-4 text-center">
-              <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-destructive/10">
-                <XCircle className="size-8 text-destructive" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-foreground">Dịch thất bại</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {job.error || "Đã xảy ra lỗi không xác định"}
-                </p>
-              </div>
+          {/* Translation info */}
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <Badge variant="secondary">{tLang(srcLang === "auto" ? "en" : srcLang)}</Badge>
+            <span>→</span>
+            <Badge variant="secondary">{tLang(tgtLang)}</Badge>
+          </div>
+
+          {/* Output file card */}
+          <div className="flex items-center gap-4 rounded-xl border border-border bg-muted/30 p-4">
+            <div className="shrink-0">{getFileIcon(outputFileName)}</div>
+            <div className="min-w-0 flex-1">
+              <h4 className="truncate font-semibold text-foreground">{outputFileName}</h4>
+              {outputFileSize && (
+                <p className="text-sm text-muted-foreground">{formatFileSize(outputFileSize)}</p>
+              )}
             </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+          </div>
+
+          {/* Download button */}
+          <Button onClick={onDownload} disabled={isDownloading} className="w-full" size="lg">
+            {isDownloading ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                {t("downloading")}
+              </>
+            ) : (
+              <>
+                <Download className="size-4" />
+                {t("download")}
+              </>
+            )}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+// =============== FAILED STATE ===============
+
+interface FailedCardProps {
+  error: string | null
+  jobError: string | null | undefined
+  t: (key: string) => string
+}
+
+function FailedCard({ error, jobError, t }: FailedCardProps) {
+  const errorMessage = error || jobError || t("unknownError")
+
+  return (
+    <Card className="mx-auto max-w-lg">
+      <CardContent className="p-8">
+        <div className="space-y-6 text-center">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-destructive/10">
+            <XCircle className="size-8 text-destructive" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">{t("failed")}</h3>
+            <div className="mt-3 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-left">
+              <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
+              <p className="text-sm text-destructive">{errorMessage}</p>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 
 // =============== BOTTOM BAR ===============
 
 interface BottomBarProps {
-  job: TranslationJob
-  onDownload: () => void
+  flowStatus: TranslationFlowStatus
+  jobStatus: string | undefined
   onReset: () => void
+  t: (key: string) => string
 }
 
-function BottomBar({ job, onDownload, onReset }: BottomBarProps) {
-  const isSuccess = job.status === "success"
+function BottomBar({ flowStatus, jobStatus, onReset, t }: BottomBarProps) {
+  const isFinished =
+    flowStatus === "succeeded" ||
+    flowStatus === "failed" ||
+    jobStatus === "succeeded" ||
+    jobStatus === "failed"
 
   return (
-    <div className="sticky bottom-0 z-20 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-        {/* Left side info */}
-        <div className="flex items-center gap-4 text-sm">
-          {isSuccess && (
-            <>
-              <div className="flex items-center gap-2 text-success">
-                <CheckCircle2 className="size-4" />
-                <span className="font-medium">Dịch thành công</span>
-              </div>
-              <div className="hidden items-center gap-1.5 text-muted-foreground sm:flex">
-                <Save className="size-4" />
-                <span>Tự động lưu</span>
-              </div>
-            </>
-          )}
-          {job.status === "processing" && (
-            <div className="flex items-center gap-2 text-primary">
-              <Loader2 className="size-4 animate-spin" />
-              <span className="font-medium">Đang xử lý...</span>
-            </div>
-          )}
-          {job.status === "failed" && (
-            <div className="flex items-center gap-2 text-destructive">
-              <XCircle className="size-4" />
-              <span className="font-medium">Thất bại</span>
-            </div>
-          )}
-        </div>
-
-        {/* Right side - Cost + Actions */}
-        <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-muted px-3 py-1.5 text-sm">
-            <span className="text-muted-foreground">Chi phí: </span>
-            <span className="font-semibold text-foreground">{job.costCredits} Credits</span>
-          </div>
-
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={onReset}>
-              <RefreshCcw className="size-4" />
-              Dịch tài liệu mới
-            </Button>
-            <Button onClick={onDownload} disabled={!isSuccess}>
-              <Download className="size-4" />
-              Tải xuống
-            </Button>
-          </div>
-        </div>
-      </div>
+    <div className="mt-8 flex justify-center">
+      <Button variant="outline" onClick={onReset} disabled={!isFinished}>
+        <RefreshCcw className="size-4" />
+        {t("newTranslation")}
+      </Button>
     </div>
   )
 }
@@ -248,107 +262,67 @@ function BottomBar({ job, onDownload, onReset }: BottomBarProps) {
 
 export function StepReview({
   file,
-  config,
-  job,
-  originalText,
-  translatedText,
+  flowStatus,
+  uploadProgress,
+  jobData,
+  error,
+  srcLang,
+  tgtLang,
   onDownload,
   onReset,
+  isDownloading,
 }: StepReviewProps) {
-  // Zoom states for each pane
-  const [srcZoom, setSrcZoom] = useState<ZoomLevel>(100)
-  const [tgtZoom, setTgtZoom] = useState<ZoomLevel>(100)
+  const t = useTranslations("documents.review")
+  const tLang = useTranslations("documents.languages")
 
-  const handleZoomIn = (current: ZoomLevel): ZoomLevel => {
-    const idx = ZOOM_LEVELS.indexOf(current)
-    return idx < ZOOM_LEVELS.length - 1 ? ZOOM_LEVELS[idx + 1] : current
-  }
-
-  const handleZoomOut = (current: ZoomLevel): ZoomLevel => {
-    const idx = ZOOM_LEVELS.indexOf(current)
-    return idx > 0 ? ZOOM_LEVELS[idx - 1] : current
-  }
-
-  const srcLangCode = config.srcLang === "auto" ? "en" : config.srcLang
-  const isProcessing = job.status === "processing"
+  // Determine which card to show based on the combined flow + job status
+  const jobStatus = jobData?.status
+  const isTranslating =
+    flowStatus === "translating" &&
+    (jobStatus === "pending" || jobStatus === "processing" || !jobStatus)
+  const isSucceeded =
+    flowStatus === "succeeded" || jobStatus === "succeeded"
+  const isFailed =
+    flowStatus === "failed" || jobStatus === "failed"
 
   return (
-    <div className="relative flex h-full flex-col">
-      {/* Progress Overlay */}
-      <ProgressOverlay job={job} />
-
+    <div className="flex flex-col">
       {/* Document Title */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-foreground">Xem trước bản dịch</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Tài liệu: {file.name}</p>
-        </div>
+      <div className="mb-6 text-center">
+        <h2 className="text-xl font-bold text-foreground">{t("title")}</h2>
+        <p className="mt-1 text-sm text-muted-foreground">{t("document", { name: file.name })}</p>
       </div>
 
-      {/* Desktop: Side-by-side */}
-      <div className="hidden flex-1 gap-4 lg:flex">
-        <DocumentPane
-          title="Bản gốc"
-          langCode={srcLangCode}
-          content={originalText}
-          zoom={srcZoom}
-          onZoomIn={() => setSrcZoom(handleZoomIn(srcZoom))}
-          onZoomOut={() => setSrcZoom(handleZoomOut(srcZoom))}
-          className="flex-1"
-        />
-        <DocumentPane
-          title="Bản dịch"
-          langCode={config.tgtLang}
-          content={translatedText}
-          zoom={tgtZoom}
-          onZoomIn={() => setTgtZoom(handleZoomIn(tgtZoom))}
-          onZoomOut={() => setTgtZoom(handleZoomOut(tgtZoom))}
-          isLoading={isProcessing}
-          className="flex-1"
-        />
+      {/* State-specific card */}
+      <div className="flex-1">
+        {flowStatus === "uploading" && (
+          <UploadingCard progress={uploadProgress} t={t} />
+        )}
+
+        {(flowStatus === "confirming" || flowStatus === "creating") && (
+          <PreparingCard t={t} />
+        )}
+
+        {isTranslating && <TranslatingCard t={t} />}
+
+        {isSucceeded && (
+          <SuccessCard
+            file={file}
+            jobData={jobData}
+            srcLang={srcLang}
+            tgtLang={tgtLang}
+            onDownload={onDownload}
+            isDownloading={isDownloading}
+            t={t}
+            tLang={tLang}
+          />
+        )}
+
+        {isFailed && <FailedCard error={error} jobError={jobData?.error} t={t} />}
       </div>
 
-      {/* Mobile: Tabs */}
-      <div className="flex-1 lg:hidden">
-        <Tabs defaultValue="original" className="flex h-full flex-col">
-          <TabsList variant="line" className="mb-4 w-full">
-            <TabsTrigger value="original" className="flex-1">
-              Bản gốc
-            </TabsTrigger>
-            <TabsTrigger value="translated" className="flex-1">
-              Bản dịch
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="original" className="mt-0 flex-1">
-            <DocumentPane
-              title="Bản gốc"
-              langCode={srcLangCode}
-              content={originalText}
-              zoom={srcZoom}
-              onZoomIn={() => setSrcZoom(handleZoomIn(srcZoom))}
-              onZoomOut={() => setSrcZoom(handleZoomOut(srcZoom))}
-              className="h-full"
-            />
-          </TabsContent>
-
-          <TabsContent value="translated" className="mt-0 flex-1">
-            <DocumentPane
-              title="Bản dịch"
-              langCode={config.tgtLang}
-              content={translatedText}
-              zoom={tgtZoom}
-              onZoomIn={() => setTgtZoom(handleZoomIn(tgtZoom))}
-              onZoomOut={() => setTgtZoom(handleZoomOut(tgtZoom))}
-              isLoading={isProcessing}
-              className="h-full"
-            />
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      {/* Bottom Bar */}
-      <BottomBar job={job} onDownload={onDownload} onReset={onReset} />
+      {/* Bottom actions */}
+      <BottomBar flowStatus={flowStatus} jobStatus={jobStatus} onReset={onReset} t={t} />
     </div>
   )
 }
