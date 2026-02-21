@@ -120,8 +120,12 @@ apiClient.interceptors.response.use(
       _retry?: boolean;
     };
 
-    // Development logging
-    if (IS_DEV) {
+    // Development logging (skip for auth endpoints — failures are expected)
+    const isAuthEndpointError =
+      originalRequest?.url?.includes('/auth/refresh') ||
+      originalRequest?.url?.includes('/auth/login') ||
+      originalRequest?.url?.includes('/auth/logout');
+    if (IS_DEV && !isAuthEndpointError) {
       console.error(
         `[API Error] ${originalRequest?.method?.toUpperCase()} ${originalRequest?.url}`,
         {
@@ -137,10 +141,11 @@ apiClient.interceptors.response.use(
       originalRequest &&
       !originalRequest._retry
     ) {
-      // Don't retry if this is already a refresh request or login request
+      // Don't retry if this is already a refresh, login, or logout request
       const isAuthEndpoint =
         originalRequest.url?.includes('/auth/refresh') ||
-        originalRequest.url?.includes('/auth/login');
+        originalRequest.url?.includes('/auth/login') ||
+        originalRequest.url?.includes('/auth/logout');
 
       if (isAuthEndpoint) {
         // Don't clear auth state for login failures (user might just have wrong credentials)
