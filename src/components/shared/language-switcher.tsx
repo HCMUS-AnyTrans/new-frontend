@@ -1,29 +1,17 @@
 "use client";
 
-import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import type { Locale } from "@/i18n/routing";
+import { useLanguageSync } from "@/features/settings/hooks";
 
 export function LanguageSwitcher() {
-  const locale = useLocale() as Locale;
-  const pathname = usePathname();
-  const router = useRouter();
-
-  const handleToggleLocale = () => {
-    const newLocale: Locale = locale === "vi" ? "en" : "vi";
-    // Remove current locale prefix and add new one
-    const pathnameWithoutLocale = pathname.replace(/^\/(vi|en)/, "");
-    const newPath = `/${newLocale}${pathnameWithoutLocale || ""}`;
-    router.push(newPath);
-  };
+  const { locale, toggleLanguage } = useLanguageSync();
 
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={handleToggleLocale}
+      onClick={toggleLanguage}
       className="relative hover:bg-transparent dark:hover:bg-transparent"
       title={locale === "vi" ? "Switch to English" : "Chuyển sang Tiếng Việt"}
     >

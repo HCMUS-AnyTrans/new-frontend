@@ -7,9 +7,6 @@
 export const uiLanguageOptions = [
   { value: "vi", label: "Tiếng Việt", flag: "🇻🇳" },
   { value: "en", label: "English", flag: "🇺🇸" },
-  { value: "ja", label: "日本語", flag: "🇯🇵" },
-  { value: "ko", label: "한국어", flag: "🇰🇷" },
-  { value: "zh", label: "中文", flag: "🇨🇳" },
 ] as const
 
 // =============== PROVIDER OPTIONS ===============

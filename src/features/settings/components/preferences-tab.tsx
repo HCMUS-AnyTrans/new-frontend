@@ -19,6 +19,8 @@ import {
 } from "./settings-section";
 import { uiLanguageOptions } from "../data";
 import { usePreferences, useUpdatePreferences } from "../hooks/use-preferences";
+import { useThemeSync } from "../hooks/use-theme-sync";
+import { useLanguageSync } from "../hooks/use-language-sync";
 import type { UserPreferences, UILanguage, Theme, FileTTL } from "../types";
 
 const themeIcons = {
@@ -99,14 +101,20 @@ export function PreferencesTab() {
   const { preferences, isLoading } = usePreferences();
   const { updatePreferences, isUpdating } = useUpdatePreferences();
 
-  // Local state
-  const [formData, setFormData] = useState<UserPreferences | null>(null);
+  // Theme hook — instant apply + backend sync
+  const { theme: activeTheme, changeTheme } = useThemeSync();
+
+  // Language hook — instant apply + backend sync
+  const { locale, changeLanguage } = useLanguageSync();
+
+  // Local state (fileTtl only — theme and language are handled instantly)
+  const [formData, setFormData] = useState<Pick<UserPreferences, "fileTtl"> | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
 
   // Sync form data when preferences load
   useEffect(() => {
     if (preferences && !formData) {
-      setFormData(preferences);
+      setFormData({ fileTtl: preferences.fileTtl });
     }
   }, [preferences, formData]);
 
@@ -115,11 +123,8 @@ export function PreferencesTab() {
     return <PreferencesTabSkeleton />;
   }
 
-  const updateField = <K extends keyof UserPreferences>(
-    key: K,
-    value: UserPreferences[K]
-  ) => {
-    setFormData({ ...formData, [key]: value });
+  const handleFileTtlChange = (value: FileTTL) => {
+    setFormData({ fileTtl: value });
     setHasChanges(true);
   };
 
@@ -143,37 +148,38 @@ export function PreferencesTab() {
       <SettingsSection title={t("title")} description={t("description")}>
         <div className="space-y-1">
           <SettingsRow label={t("language")} description={t("languageDescription")}>
-            <Select
-              value={formData.uiLanguage}
-              onValueChange={(v) => updateField("uiLanguage", v as UILanguage)}
-            >
-              <SelectTrigger className="w-48">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {uiLanguageOptions.map((lang) => (
-                  <SelectItem key={lang.value} value={lang.value}>
-                    <span className="flex items-center gap-2">
-                      <span>{lang.flag}</span>
-                      <span>{lang.label}</span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-1">
+              {uiLanguageOptions.map((lang) => {
+                const isActive = locale === lang.value;
+                return (
+                  <button
+                    key={lang.value}
+                    onClick={() => changeLanguage(lang.value as UILanguage)}
+                    className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors ${
+                      isActive
+                        ? "border-primary bg-primary/5 text-primary"
+                        : "border-border bg-card text-foreground hover:bg-muted/50"
+                    }`}
+                  >
+                    <span>{lang.flag}</span>
+                    <span>{lang.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </SettingsRow>
 
           <SettingsDivider />
 
           <SettingsRow label={t("theme")} description={t("themeDescription")}>
             <div className="flex gap-1">
-              {themeOptions.map((theme) => {
-                const Icon = themeIcons[theme.value as keyof typeof themeIcons];
-                const isActive = formData.theme === theme.value;
+              {themeOptions.map((opt) => {
+                const Icon = themeIcons[opt.value as keyof typeof themeIcons];
+                const isActive = activeTheme === opt.value;
                 return (
                   <button
-                    key={theme.value}
-                    onClick={() => updateField("theme", theme.value as Theme)}
+                    key={opt.value}
+                    onClick={() => changeTheme(opt.value as Theme)}
                     className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors ${
                       isActive
                         ? "border-primary bg-primary/5 text-primary"
@@ -181,7 +187,7 @@ export function PreferencesTab() {
                     }`}
                   >
                     <Icon className="size-4" />
-                    <span>{t(theme.labelKey)}</span>
+                    <span>{t(opt.labelKey)}</span>
                   </button>
                 );
               })}
@@ -199,7 +205,7 @@ export function PreferencesTab() {
           >
             <Select
               value={String(formData.fileTtl)}
-              onValueChange={(v) => updateField("fileTtl", Number(v) as FileTTL)}
+              onValueChange={(v) => handleFileTtlChange(Number(v) as FileTTL)}
             >
               <SelectTrigger className="w-32">
                 <SelectValue />

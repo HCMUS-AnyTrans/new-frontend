@@ -6,6 +6,12 @@ export { useUploadAvatar } from './use-upload-avatar';
 // Preferences hooks
 export { usePreferences, useUpdatePreferences } from './use-preferences';
 
+// Theme sync hook
+export { useThemeSync } from './use-theme-sync';
+
+// Language sync hook
+export { useLanguageSync } from './use-language-sync';
+
 // Security hooks
 export {
   useIdentities,

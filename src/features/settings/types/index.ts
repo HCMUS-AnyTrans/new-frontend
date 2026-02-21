@@ -69,7 +69,7 @@ export interface GeneralUploadResponse {
 
 // =============== PREFERENCES ===============
 
-export type UILanguage = "vi" | "en" | "ja" | "ko" | "zh"
+export type UILanguage = "vi" | "en"
 export type Theme = "light" | "dark" | "system"
 // fileTtl is stored in minutes: 10080=7d, 20160=14d, 43200=30d, 86400=60d, 129600=90d
 export type FileTTL = 10080 | 20160 | 43200 | 86400 | 129600
