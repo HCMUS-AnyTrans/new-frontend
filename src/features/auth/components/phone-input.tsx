@@ -77,10 +77,9 @@ const PhoneInput = React.forwardRef<HTMLDivElement, PhoneInputProps>(
             "absolute pointer-events-none transition-all duration-200",
             labelLeftPosition,
             "text-muted-foreground",
-            // Float up when focused or has value
-            isFocused || hasValue
-              ? "top-1.5 text-xs"
-              : "top-1/2 -translate-y-1/2 text-base",
+            // Always float label — country code (+84) is always visible so
+            // the resting position would overlap with it
+            "top-1.5 text-xs",
             // Color states
             isFocused && !error && "text-primary",
             error && "text-destructive"
