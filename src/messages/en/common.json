@@ -25,6 +25,7 @@
     "justNow": "Just now",
     "minutesAgo": "{count} minutes ago",
     "hoursAgo": "{count} hours ago",
-    "daysAgo": "{count} days ago"
+    "daysAgo": "{count} days ago",
+    "pageOf": "Page {page} of {totalPages}"
   }
 }

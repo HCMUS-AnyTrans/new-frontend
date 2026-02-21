@@ -113,14 +113,29 @@
       "popular": "Popular",
       "save": "Save {percent}%",
       "buyNow": "Buy Now",
+      "bonusPercent": "+{percent}% bonus",
       "transactionHistory": "Transaction History",
-      "recentTransactions": "Recent transactions",
+      "recentTransactions": "Recent credit transactions",
       "noTransactions": "No transactions yet",
       "balance": "Balance",
       "topUp": "Top Up",
       "usage": "Usage",
       "refund": "Refund",
-      "bonus": "Bonus"
+      "bonus": "Bonus",
+      "paymentHistory": "Payment History",
+      "paymentHistoryDescription": "Your payment transactions",
+      "noPayments": "No payments yet",
+      "paymentStatus": {
+        "pending": "Pending",
+        "succeeded": "Succeeded",
+        "failed": "Failed",
+        "cancelled": "Cancelled"
+      },
+      "paymentAmount": "Amount",
+      "package": "Package",
+      "vnpaySuccess": "Payment successful! Credits have been added to your account.",
+      "vnpayError": "Payment was not successful. Please try again.",
+      "vnpayPending": "Payment is being processed. Please wait a moment."
     },
     "files": {
       "title": "File Management",

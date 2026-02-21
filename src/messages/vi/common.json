@@ -25,6 +25,7 @@
     "justNow": "Vừa xong",
     "minutesAgo": "{count} phút trước",
     "hoursAgo": "{count} giờ trước",
-    "daysAgo": "{count} ngày trước"
+    "daysAgo": "{count} ngày trước",
+    "pageOf": "Trang {page}/{totalPages}"
   }
 }

@@ -113,14 +113,29 @@
       "popular": "Phổ biến",
       "save": "Tiết kiệm {percent}%",
       "buyNow": "Mua ngay",
+      "bonusPercent": "+{percent}% thưởng",
       "transactionHistory": "Lịch sử giao dịch",
-      "recentTransactions": "Các giao dịch gần đây",
+      "recentTransactions": "Các giao dịch credits gần đây",
       "noTransactions": "Chưa có giao dịch nào",
       "balance": "Số dư",
       "topUp": "Nạp",
       "usage": "Sử dụng",
       "refund": "Hoàn tiền",
-      "bonus": "Thưởng"
+      "bonus": "Thưởng",
+      "paymentHistory": "Lịch sử thanh toán",
+      "paymentHistoryDescription": "Các giao dịch thanh toán của bạn",
+      "noPayments": "Chưa có thanh toán nào",
+      "paymentStatus": {
+        "pending": "Đang xử lý",
+        "succeeded": "Thành công",
+        "failed": "Thất bại",
+        "cancelled": "Đã hủy"
+      },
+      "paymentAmount": "Số tiền",
+      "package": "Gói",
+      "vnpaySuccess": "Thanh toán thành công! Credits đã được cộng vào tài khoản của bạn.",
+      "vnpayError": "Thanh toán không thành công. Vui lòng thử lại.",
+      "vnpayPending": "Thanh toán đang được xử lý. Vui lòng đợi trong giây lát."
     },
     "files": {
       "title": "Quản lý tệp",

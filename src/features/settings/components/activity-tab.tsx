@@ -1,18 +1,9 @@
 "use client"
 
-import { useState } from "react"
 import { useTranslations, useLocale } from "next-intl"
-import { Download, History, Monitor, Smartphone, Filter } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { History, Monitor, Smartphone } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { SettingsSection, SettingsDivider } from "./settings-section"
 import { useActivity } from "../hooks/use-activity"
 import type { AuditAction } from "../types"
@@ -26,16 +17,10 @@ function ActivityTabSkeleton() {
   return (
     <div className="space-y-6">
       <div className="rounded-lg border bg-card p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
+          <div className="mb-4">
             <Skeleton className="mb-1 h-5 w-24" />
             <Skeleton className="h-4 w-40" />
           </div>
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-9 w-40" />
-            <Skeleton className="h-8 w-28" />
-          </div>
-        </div>
         <div className="space-y-4">
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="flex items-start gap-3 py-3">
@@ -62,12 +47,9 @@ function ActivityTabSkeleton() {
 export function ActivityTab() {
   const t = useTranslations("settings.activity")
   const locale = useLocale()
-  const [filter, setFilter] = useState<string>("all")
 
-  // Data hooks — pass filter as action param if not "all"
-  const { logs, isLoading } = useActivity(
-    filter !== "all" ? { action: filter as AuditAction } : undefined
-  )
+  // Data hooks
+  const { logs, isLoading } = useActivity()
 
   // Show skeleton while loading
   if (isLoading) {
@@ -102,11 +84,6 @@ export function ActivityTab() {
 
   const logList = logs ?? []
 
-  const handleExport = () => {
-    // TODO: Call API to export CSV
-    console.log("Export activity logs")
-  }
-
   const getDeviceIcon = (device?: string) => {
     return device?.toLowerCase().includes("mobile") ? Smartphone : Monitor
   }
@@ -117,27 +94,6 @@ export function ActivityTab() {
       <SettingsSection
         title={t("title")}
         description={t("description")}
-        action={
-          <div className="flex items-center gap-2">
-            <Select value={filter} onValueChange={setFilter}>
-              <SelectTrigger className="w-40">
-                <Filter className="mr-2 size-4" />
-                <SelectValue placeholder={t("filter")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("all")}</SelectItem>
-                <SelectItem value="login">{t("login")}</SelectItem>
-                <SelectItem value="translation_complete">{t("translation")}</SelectItem>
-                <SelectItem value="credit_purchase">{t("payment")}</SelectItem>
-                <SelectItem value="settings_change">{t("settings")}</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" size="sm" onClick={handleExport}>
-              <Download className="size-4" />
-              {t("exportCsv")}
-            </Button>
-          </div>
-        }
       >
         {logList.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
