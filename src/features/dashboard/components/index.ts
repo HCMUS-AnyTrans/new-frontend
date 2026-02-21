@@ -13,5 +13,4 @@ export { StorageUsage } from "./storage-usage"
 export { RecentJobsTable } from "./recent-jobs-table"
 
 // Widgets
-export { ActivityFeed } from "./activity-feed"
 export { QuickActions } from "./quick-actions"
