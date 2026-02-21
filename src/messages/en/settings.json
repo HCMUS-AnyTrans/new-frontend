@@ -24,7 +24,8 @@
       "memberSince": "Member Since",
       "lastLogin": "Last Login",
       "saveChanges": "Save Changes",
-      "saving": "Saving..."
+      "saving": "Saving...",
+      "avatarHint": "JPG, PNG or GIF. Max 2MB."
     },
     "preferences": {
       "title": "System Preferences",

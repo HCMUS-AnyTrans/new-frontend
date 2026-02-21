@@ -252,7 +252,7 @@ export function ProfileTab() {
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              JPG, PNG or GIF. Max 2MB.
+              {t("avatarHint")}
             </p>
           </div>
           <input

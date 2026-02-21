@@ -24,7 +24,8 @@
       "memberSince": "Thành viên từ",
       "lastLogin": "Đăng nhập gần nhất",
       "saveChanges": "Lưu thay đổi",
-      "saving": "Đang lưu..."
+      "saving": "Đang lưu...",
+      "avatarHint": "JPG, PNG hoặc GIF. Tối đa 2MB."
     },
     "preferences": {
       "title": "Tùy chọn hệ thống",
