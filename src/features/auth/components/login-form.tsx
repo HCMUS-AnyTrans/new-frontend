@@ -45,7 +45,7 @@ export function LoginForm({
   const [serverError, setServerError] = useState<string | null>(null)
 
   // Get redirect URL from query params or prop
-  const redirectUrl = redirectTo || searchParams.get("redirect") || "/"
+  const redirectUrl = redirectTo || searchParams.get("redirect") || "/dashboard"
 
   // Use the login hook
   const { login, isLoading: isLoginLoading, error: loginError } = useLogin({

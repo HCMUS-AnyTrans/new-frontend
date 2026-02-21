@@ -47,6 +47,7 @@
     },
     "recentJobs": {
       "title": "Recent Jobs",
+      "noJobs": "No information yet",
       "viewAll": "View all",
       "fileName": "File Name",
       "type": "Type",
@@ -62,11 +63,17 @@
     },
     "storage": {
       "title": "Storage",
-      "remaining": "{value} GB remaining"
+      "remaining": "{value} GB remaining",
+      "creditUsageTitle": "Credit Usage",
+      "noUsageInfo": "No credit usage information yet",
+      "documents": "Documents",
+      "subtitles": "Subtitles",
+      "ofTotal": "of total"
     },
     "charts": {
       "jobsByDay": "Jobs by Day (Last 7 Days)",
       "creditAllocation": "Credit Allocation",
+      "noUsageInfo": "No credit usage information yet",
       "documents": "Documents",
       "subtitles": "Subtitles",
       "remaining": "Remaining"

@@ -24,7 +24,7 @@ export function QuickActions() {
       </Button>
       <Button
         variant="outline"
-        className="gap-2 border-secondary text-secondary hover:bg-secondary/10"
+        className="gap-2 border-secondary text-secondary hover:bg-secondary/10 hover:text-secondary cursor-pointer"
       >
         <Coins className="size-4" />
         {t("buyCredits")}

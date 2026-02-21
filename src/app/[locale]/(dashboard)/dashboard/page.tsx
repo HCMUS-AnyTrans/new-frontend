@@ -5,8 +5,6 @@ import {
   JobsChart,
   CreditUsageChart,
   RecentJobsTable,
-  ActivityFeed,
-  StorageUsage,
   DashboardGreeting,
 } from "@/features/dashboard";
 
@@ -41,16 +39,6 @@ export default async function DashboardPage({ params }: Props) {
 
       {/* Recent Jobs Table */}
       <RecentJobsTable />
-
-      {/* Activity Feed + Storage */}
-      <div className="grid gap-6 lg:grid-cols-5">
-        <div className="lg:col-span-3">
-          <ActivityFeed />
-        </div>
-        <div className="lg:col-span-2">
-          <StorageUsage />
-        </div>
-      </div>
     </div>
   );
 }

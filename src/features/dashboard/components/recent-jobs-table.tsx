@@ -124,9 +124,19 @@ export function RecentJobsTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {jobs.map((job) => {
-                const fileName =
-                  job.input_file?.name || job.job_id;
+              {jobs.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="h-24 text-center text-sm text-muted-foreground"
+                  >
+                    {t("noJobs")}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                jobs.map((job) => {
+                  const fileName =
+                    job.input_file?.name || job.job_id;
                 const jobType = job.job_type;
                 const srcLang = job.src_lang;
                 const tgtLang = job.tgt_lang;
@@ -227,7 +237,7 @@ export function RecentJobsTable() {
                     </TableCell>
                   </TableRow>
                 );
-              })}
+              }))}
             </TableBody>
           </Table>
         </div>

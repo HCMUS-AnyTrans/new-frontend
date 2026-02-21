@@ -47,6 +47,7 @@
     },
     "recentJobs": {
       "title": "Jobs gần đây",
+      "noJobs": "Chưa có thông tin",
       "viewAll": "Xem tất cả",
       "fileName": "Tên file",
       "type": "Loại",
@@ -62,11 +63,17 @@
     },
     "storage": {
       "title": "Lưu trữ",
-      "remaining": "Còn lại {value} GB dung lượng"
+      "remaining": "Còn lại {value} GB dung lượng",
+      "creditUsageTitle": "Credit đã sử dụng",
+      "noUsageInfo": "Chưa có thông tin sử dụng credit",
+      "documents": "Tài liệu",
+      "subtitles": "Phụ đề",
+      "ofTotal": "tổng credit"
     },
     "charts": {
       "jobsByDay": "Jobs theo ngày (7 ngày gần nhất)",
       "creditAllocation": "Phân bổ credits",
+      "noUsageInfo": "Chưa có thông tin sử dụng credit",
       "documents": "Tài liệu",
       "subtitles": "Phụ đề",
       "remaining": "Còn lại"
