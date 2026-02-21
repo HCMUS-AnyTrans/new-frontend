@@ -6,7 +6,6 @@ import type {
   UserProfile,
   UserPreferences,
   AuthIdentity,
-  Session,
   Notification,
   NotificationPreference,
   Wallet,
@@ -93,33 +92,6 @@ export const mockAuthIdentities: AuthIdentity[] = [
     email: "nguyenvana@gmail.com",
     linkedAt: "2025-06-20T14:30:00Z",
     canUnlink: true,
-  },
-]
-
-// =============== MOCK SESSIONS ===============
-
-export const mockSessions: Session[] = [
-  {
-    id: "session-001",
-    device: "Windows PC",
-    browser: "Chrome 121",
-    os: "Windows 11",
-    ip: "113.161.xxx.xxx",
-    location: "H\u00E0 N\u1ED9i, Vi\u1EC7t Nam",
-    lastActiveAt: "2026-02-06T10:30:00Z",
-    createdAt: "2026-02-06T08:00:00Z",
-    isCurrent: true,
-  },
-  {
-    id: "session-002",
-    device: "iPhone 15",
-    browser: "Safari 17",
-    os: "iOS 17.3",
-    ip: "115.73.xxx.xxx",
-    location: "TP. H\u1ED3 Ch\u00ED Minh, Vi\u1EC7t Nam",
-    lastActiveAt: "2026-02-04T15:20:00Z",
-    createdAt: "2026-02-01T09:00:00Z",
-    isCurrent: false,
   },
 ]
 

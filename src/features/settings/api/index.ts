@@ -5,8 +5,6 @@ export {
   requestGeneralUploadApi,
   uploadFileToPresignedUrl,
   buildStorageUrl,
-  uploadAvatarApi,
-  deleteAvatarApi,
   // Preferences
   getPreferencesApi,
   updatePreferencesApi,
@@ -14,9 +12,7 @@ export {
   changePasswordApi,
   getIdentitiesApi,
   unlinkIdentityApi,
-  getSessionsApi,
-  revokeSessionApi,
-  revokeAllSessionsApi,
+  linkIdentityApi,
   // Notifications
   getNotificationsApi,
   markNotificationReadApi,

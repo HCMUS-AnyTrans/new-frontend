@@ -98,18 +98,6 @@ export interface AuthIdentity {
   canUnlink: boolean
 }
 
-export interface Session {
-  id: string
-  device: string
-  browser: string
-  os: string
-  ip: string
-  location: string | null
-  lastActiveAt: string
-  createdAt: string
-  isCurrent: boolean
-}
-
 export interface ChangePasswordDto {
   currentPassword: string
   newPassword: string

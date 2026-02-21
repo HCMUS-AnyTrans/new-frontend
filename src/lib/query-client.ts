@@ -91,7 +91,6 @@ export const settingsKeys = {
   profile: () => [...settingsKeys.all, 'profile'] as const,
   preferences: () => [...settingsKeys.all, 'preferences'] as const,
   identities: () => [...settingsKeys.all, 'identities'] as const,
-  sessions: () => [...settingsKeys.all, 'sessions'] as const,
   notificationPreferences: () =>
     [...settingsKeys.all, 'notification-preferences'] as const,
   activity: (params?: unknown) =>

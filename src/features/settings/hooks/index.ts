@@ -10,9 +10,7 @@ export { usePreferences, useUpdatePreferences } from './use-preferences';
 export {
   useIdentities,
   useUnlinkIdentity,
-  useSessions,
-  useRevokeSession,
-  useRevokeAllSessions,
+  useLinkIdentity,
   useChangePassword,
 } from './use-security';
 

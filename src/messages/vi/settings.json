@@ -57,15 +57,10 @@
       "loginMethodsDescription": "Liên kết tài khoản với các nhà cung cấp khác",
       "linked": "Đã liên kết",
       "link": "Liên kết",
-      "activeSessions": "Phiên đăng nhập",
-      "activeSessionsDescription": "Quản lý các thiết bị đã đăng nhập",
-      "currentDevice": "Hiện tại",
-      "revokeSession": "Đăng xuất",
-      "revokeAllSessions": "Đăng xuất tất cả",
-      "justNow": "Vừa xong",
-      "minutesAgo": "{count} phút trước",
-      "hoursAgo": "{count} giờ trước",
-      "daysAgo": "{count} ngày trước"
+      "daysAgo": "{count} ngày trước",
+      "linkSuccess": "Đã liên kết tài khoản {provider} thành công!",
+      "linkError": "Không thể liên kết tài khoản. Vui lòng thử lại.",
+      "changePasswordError": "Đổi mật khẩu thất bại. Vui lòng thử lại."
     },
     "notifications": {
       "title": "Cài đặt thông báo",

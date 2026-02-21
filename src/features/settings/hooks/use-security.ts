@@ -4,9 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   getIdentitiesApi,
   unlinkIdentityApi,
-  getSessionsApi,
-  revokeSessionApi,
-  revokeAllSessionsApi,
+  linkIdentityApi,
   changePasswordApi,
 } from '../api/settings.api';
 import { settingsKeys } from '@/lib/query-client';
@@ -59,66 +57,27 @@ export function useUnlinkIdentity() {
 }
 
 /**
- * Hook to fetch active sessions
+ * Hook to link an OAuth provider.
+ * Calls the backend to get a redirect URL, then navigates to it.
+ * The backend returns JSON { redirectUrl } which points to /auth/google?state=<token>.
+ * The frontend must build the full URL using the API base URL and navigate via window.location.href.
  */
-export function useSessions() {
-  const { isAuthenticated, accessToken } = useAuthStore();
-
-  const result = useQuery({
-    queryKey: settingsKeys.sessions(),
-    queryFn: getSessionsApi,
-    enabled: isAuthenticated && !!accessToken,
-    staleTime: 60 * 1000,
-    gcTime: 5 * 60 * 1000,
-  });
-
-  return {
-    sessions: result.data,
-    isLoading: result.isLoading,
-    isFetching: result.isFetching,
-    isError: result.isError,
-    error: result.error,
-    refetch: result.refetch,
-  };
-}
-
-/**
- * Hook to revoke a session
- */
-export function useRevokeSession() {
-  const queryClient = useQueryClient();
+export function useLinkIdentity() {
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
   const mutation = useMutation({
-    mutationFn: (sessionId: string) => revokeSessionApi(sessionId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: settingsKeys.sessions() });
+    mutationFn: (provider: string) =>
+      linkIdentityApi(provider, '/settings/security'),
+    onSuccess: (data) => {
+      // Navigate to the OAuth provider - this is a full page redirect
+      // The redirectUrl is relative (e.g. /auth/google?state=abc), so prepend API base
+      window.location.href = `${API_BASE_URL}${data.redirectUrl}`;
     },
   });
 
   return {
-    revokeSession: mutation.mutate,
-    isRevoking: mutation.isPending,
-    isError: mutation.isError,
-    error: mutation.error,
-  };
-}
-
-/**
- * Hook to revoke all other sessions
- */
-export function useRevokeAllSessions() {
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: () => revokeAllSessionsApi(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: settingsKeys.sessions() });
-    },
-  });
-
-  return {
-    revokeAllSessions: mutation.mutate,
-    isRevoking: mutation.isPending,
+    linkIdentity: mutation.mutate,
+    isLinking: mutation.isPending,
     isError: mutation.isError,
     error: mutation.error,
   };

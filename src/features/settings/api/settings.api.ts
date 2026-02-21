@@ -9,7 +9,6 @@ import type {
   UpdatePreferencesDto,
   ChangePasswordDto,
   AuthIdentity,
-  Session,
   Notification,
   NotificationsQuery,
   NotificationPreference,
@@ -102,31 +101,6 @@ export function buildStorageUrl(storageKey: string): string {
   return `${storageBase}/${storageKey}`;
 }
 
-/**
- * Upload profile avatar (multipart)
- * POST /settings/profile/avatar
- */
-export async function uploadAvatarApi(
-  file: File
-): Promise<{ avatarUrl: string }> {
-  const formData = new FormData();
-  formData.append('avatar', file);
-  const response = await apiClient.post<{ avatarUrl: string }>(
-    '/settings/profile/avatar',
-    formData,
-    { headers: { 'Content-Type': 'multipart/form-data' } }
-  );
-  return response.data;
-}
-
-/**
- * Delete profile avatar
- * DELETE /settings/profile/avatar
- */
-export async function deleteAvatarApi(): Promise<void> {
-  await apiClient.delete('/settings/profile/avatar');
-}
-
 // ============================================================================
 // Preferences API Functions
 // ============================================================================
@@ -163,11 +137,32 @@ export async function updatePreferencesApi(
 /**
  * Change password
  * POST /auth/change-password
+ * Backend only accepts currentPassword + newPassword (no confirmPassword)
  */
 export async function changePasswordApi(
   dto: ChangePasswordDto
 ): Promise<void> {
-  await apiClient.post('/auth/change-password', dto);
+  await apiClient.post('/auth/change-password', {
+    currentPassword: dto.currentPassword,
+    newPassword: dto.newPassword,
+  });
+}
+
+/**
+ * Link an OAuth provider to the current account
+ * POST /settings/security/identities/:provider/link
+ * Returns a redirect URL that the frontend should navigate to via window.location.href
+ */
+export async function linkIdentityApi(
+  provider: string,
+  returnUrl?: string
+): Promise<{ redirectUrl: string }> {
+  const response = await apiClient.post<{ redirectUrl: string }>(
+    `/settings/security/identities/${provider}/link`,
+    null,
+    { params: returnUrl ? { returnUrl } : undefined }
+  );
+  return response.data;
 }
 
 /**
@@ -189,36 +184,6 @@ export async function unlinkIdentityApi(
   identityId: string
 ): Promise<void> {
   await apiClient.delete(`/settings/security/identities/${identityId}`);
-}
-
-/**
- * Get active sessions
- * GET /settings/security/sessions
- */
-export async function getSessionsApi(): Promise<Session[]> {
-  const response = await apiClient.get<Session[]>(
-    '/settings/security/sessions'
-  );
-  return response.data;
-}
-
-/**
- * Revoke a specific session
- * DELETE /settings/security/sessions/:sessionId
- */
-export async function revokeSessionApi(sessionId: string): Promise<void> {
-  await apiClient.delete(`/settings/security/sessions/${sessionId}`);
-}
-
-/**
- * Revoke all other sessions (except current)
- * DELETE /settings/security/sessions
- */
-export async function revokeAllSessionsApi(): Promise<{ revokedCount: number }> {
-  const response = await apiClient.delete<{ revokedCount: number }>(
-    '/settings/security/sessions'
-  );
-  return response.data;
 }
 
 // ============================================================================

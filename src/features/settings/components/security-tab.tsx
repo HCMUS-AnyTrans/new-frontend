@@ -1,20 +1,20 @@
 "use client"
 
-import { useState } from "react"
-import { useTranslations, useLocale } from "next-intl"
+import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
+import { useSearchParams } from "next/navigation"
 import {
   Key,
-  Smartphone,
-  Monitor,
-  LogOut,
   Check,
   Link as LinkIcon,
   Unlink,
   Loader2,
+  CheckCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import {
   Dialog,
   DialogContent,
@@ -31,9 +31,7 @@ import { authProviderOptions } from "../data"
 import {
   useIdentities,
   useUnlinkIdentity,
-  useSessions,
-  useRevokeSession,
-  useRevokeAllSessions,
+  useLinkIdentity,
   useChangePassword,
 } from "../hooks/use-security"
 import type { AuthProvider, ChangePasswordDto } from "../types"
@@ -80,31 +78,6 @@ function SecurityTabSkeleton() {
           ))}
         </div>
       </div>
-
-      {/* Sessions Skeleton */}
-      <div className="rounded-lg border bg-card p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <Skeleton className="mb-1 h-5 w-28" />
-            <Skeleton className="h-4 w-44" />
-          </div>
-          <Skeleton className="h-8 w-32" />
-        </div>
-        <div className="space-y-4">
-          {[1, 2].map((i) => (
-            <div key={i} className="flex items-center justify-between py-2">
-              <div className="flex items-center gap-3">
-                <Skeleton className="size-10 rounded-lg" />
-                <div className="space-y-1">
-                  <Skeleton className="h-4 w-36" />
-                  <Skeleton className="h-3 w-44" />
-                </div>
-              </div>
-              <Skeleton className="h-8 w-20" />
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   )
 }
@@ -116,14 +89,12 @@ function SecurityTabSkeleton() {
 export function SecurityTab() {
   const t = useTranslations("settings.security")
   const tCommon = useTranslations("common")
-  const locale = useLocale()
+  const searchParams = useSearchParams()
 
   // Data hooks
   const { identities, isLoading: isLoadingIdentities } = useIdentities()
   const { unlinkIdentity, isUnlinking } = useUnlinkIdentity()
-  const { sessions, isLoading: isLoadingSessions } = useSessions()
-  const { revokeSession, isRevoking: isRevokingSession } = useRevokeSession()
-  const { revokeAllSessions, isRevoking: isRevokingAll } = useRevokeAllSessions()
+  const { linkIdentity, isLinking } = useLinkIdentity()
   const { changePassword, isChanging, isError: isPasswordError, error: passwordError, reset: resetPassword } = useChangePassword()
 
   // Local state
@@ -134,7 +105,20 @@ export function SecurityTab() {
     confirmPassword: "",
   })
 
-  const isLoading = isLoadingIdentities || isLoadingSessions
+  // Handle ?linked=google callback after OAuth redirect
+  const [linkSuccess, setLinkSuccess] = useState<string | null>(null)
+  useEffect(() => {
+    const linked = searchParams.get("linked")
+    if (linked) {
+      setLinkSuccess(linked)
+      // Clean up the URL query param without a full page reload
+      const url = new URL(window.location.href)
+      url.searchParams.delete("linked")
+      window.history.replaceState({}, "", url.toString())
+    }
+  }, [searchParams])
+
+  const isLoading = isLoadingIdentities
 
   // Show skeleton while loading
   if (isLoading) {
@@ -142,25 +126,6 @@ export function SecurityTab() {
   }
 
   const linkedProviders = (identities ?? []).map((i) => i.provider)
-
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr)
-    const now = new Date()
-    const diffMs = now.getTime() - date.getTime()
-    const diffMins = Math.floor(diffMs / 60000)
-    const diffHours = Math.floor(diffMs / 3600000)
-    const diffDays = Math.floor(diffMs / 86400000)
-
-    if (diffMins < 1) return t("justNow")
-    if (diffMins < 60) return t("minutesAgo", { count: diffMins })
-    if (diffHours < 24) return t("hoursAgo", { count: diffHours })
-    if (diffDays < 7) return t("daysAgo", { count: diffDays })
-    return date.toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US")
-  }
-
-  const getDeviceIcon = (device: string) => {
-    return device.toLowerCase().includes("mobile") ? Smartphone : Monitor
-  }
 
   const handleChangePassword = () => {
     changePassword(passwordForm, {
@@ -182,6 +147,16 @@ export function SecurityTab() {
 
   return (
     <div className="space-y-6">
+      {/* Link success banner */}
+      {linkSuccess && (
+        <Alert className="border-success bg-success/10 text-success [&>svg]:text-success">
+          <CheckCircle className="size-4" />
+          <AlertDescription>
+            {t("linkSuccess", { provider: linkSuccess.charAt(0).toUpperCase() + linkSuccess.slice(1) })}
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Password Section */}
       <SettingsSection
         title={t("password")}
@@ -321,77 +296,18 @@ export function SecurityTab() {
                       )}
                     </div>
                   ) : (
-                    <Button variant="outline" size="sm">
-                      <LinkIcon className="size-4" />
-                      {t("link")}
-                    </Button>
-                  )}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </SettingsSection>
-
-      {/* Active Sessions */}
-      <SettingsSection
-        title={t("activeSessions")}
-        description={t("activeSessionsDescription")}
-        action={
-          (sessions ?? []).length > 1 && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-destructive"
-              onClick={() => revokeAllSessions()}
-              disabled={isRevokingAll}
-            >
-              {isRevokingAll ? (
-                <Loader2 className="mr-2 size-4 animate-spin" />
-              ) : null}
-              {t("revokeAllSessions")}
-            </Button>
-          )
-        }
-      >
-        <div className="space-y-1">
-          {(sessions ?? []).map((session, idx) => {
-            const DeviceIcon = getDeviceIcon(session.device)
-            return (
-              <div key={session.id}>
-                {idx > 0 && <SettingsDivider />}
-                <div className="flex items-center justify-between py-2">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
-                      <DeviceIcon className="size-5 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium text-foreground">
-                          {session.browser} - {session.os}
-                        </p>
-                        {session.isCurrent && (
-                          <Badge variant="secondary" className="text-xs">
-                            {t("currentDevice")}
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        {session.location} • {formatDate(session.lastActiveAt)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {!session.isCurrent && (
                     <Button
-                      variant="ghost"
+                      variant="outline"
                       size="sm"
-                      className="text-destructive"
-                      onClick={() => revokeSession(session.id)}
-                      disabled={isRevokingSession}
+                      onClick={() => linkIdentity(provider.id)}
+                      disabled={isLinking}
                     >
-                      <LogOut className="size-4" />
-                      {t("revokeSession")}
+                      {isLinking ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        <LinkIcon className="size-4" />
+                      )}
+                      {t("link")}
                     </Button>
                   )}
                 </div>

@@ -57,15 +57,10 @@
       "loginMethodsDescription": "Link accounts with other providers",
       "linked": "Linked",
       "link": "Link",
-      "activeSessions": "Active Sessions",
-      "activeSessionsDescription": "Manage devices logged into your account",
-      "currentDevice": "Current",
-      "revokeSession": "Log Out",
-      "revokeAllSessions": "Log Out All",
-      "justNow": "Just now",
-      "minutesAgo": "{count} minutes ago",
-      "hoursAgo": "{count} hours ago",
-      "daysAgo": "{count} days ago"
+      "daysAgo": "{count} days ago",
+      "linkSuccess": "Successfully linked {provider} account!",
+      "linkError": "Failed to link account. Please try again.",
+      "changePasswordError": "Failed to change password. Please try again."
     },
     "notifications": {
       "title": "Notification Settings",
