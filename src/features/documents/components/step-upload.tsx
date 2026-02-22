@@ -2,6 +2,7 @@
 
 import { useRef, useCallback } from "react"
 import { Upload, FileText, File, X, Check, AlertCircle, Presentation } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -39,6 +40,7 @@ export function StepUpload({
   onDragChange,
   onNext,
 }: StepUploadProps) {
+  const t = useTranslations("documents.upload")
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleDrop = useCallback(
@@ -106,15 +108,15 @@ export function StepUpload({
                 <span className="text-3xl">📄</span>
               </div>
               <h3 className="mb-2 text-xl font-semibold text-foreground">
-                Kéo thả tài liệu vào đây
+                {t("dropzone")}
               </h3>
-              <p className="mb-6 text-muted-foreground">hoặc</p>
+              <p className="mb-6 text-muted-foreground">{t("or")}</p>
               <Button onClick={() => inputRef.current?.click()}>
                 <Upload className="size-4" />
-                Chọn tệp từ máy
+                {t("browse")}
               </Button>
               <p className="mt-4 text-sm text-muted-foreground">
-                Hỗ trợ: {ALLOWED_EXTENSIONS.join(", ")} (tối đa 50MB)
+                {t("supportedFormats", { extensions: ALLOWED_EXTENSIONS.join(", ") })}
               </p>
             </div>
           ) : (
@@ -140,7 +142,7 @@ export function StepUpload({
                   {!error && (
                     <div className="mt-2 flex items-center gap-2 text-success">
                       <Check className="size-4" />
-                      <span className="text-sm font-medium">Hợp lệ</span>
+                      <span className="text-sm font-medium">{t("valid")}</span>
                     </div>
                   )}
                 </div>
@@ -161,7 +163,7 @@ export function StepUpload({
       {/* Next button */}
       <div className="mt-8 flex justify-end">
         <Button onClick={onNext} disabled={!isValid} size="lg">
-          Tiếp tục
+          {t("next")}
         </Button>
       </div>
 

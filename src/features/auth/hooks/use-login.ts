@@ -9,19 +9,21 @@ import { authKeys } from '@/lib/query-client';
 import type { LoginDto, AuthResponse } from '../types';
 
 interface UseLoginOptions {
+  /** Custom redirect path after login (defaults to '/dashboard') */
+  redirectTo?: string;
   onSuccess?: (data: AuthResponse) => void;
   onError?: (error: string) => void;
-  redirectTo?: string;
 }
 
 /**
  * Hook for user login
+ * After successful login, redirects to the provided path (defaults to /dashboard)
  */
 export function useLogin(options?: UseLoginOptions) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { setAuth } = useAuthStore();
-  const { onSuccess, onError, redirectTo = '/' } = options || {};
+  const { redirectTo = '/dashboard', onSuccess, onError } = options || {};
 
   const mutation = useMutation({
     mutationFn: (credentials: LoginDto) => loginApi(credentials),

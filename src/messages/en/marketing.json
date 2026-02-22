@@ -3,7 +3,7 @@
     "hero": {
       "title": "Document Translation",
       "subtitle": "powered by AI",
-      "description": "Preserve formatting, support specialized glossary. Translate Word, PDF, Subtitle 10x faster than manual.",
+      "description": "Preserve formatting, support specialized glossary. Translate Word, PDF, Excel 10x faster than manual.",
       "badge": "Trusted by 10,000+ professionals",
       "cta": "Start for free",
       "ctaSecondary": "Watch Demo",
@@ -99,7 +99,7 @@
       "steps": {
         "upload": {
           "title": "Upload document",
-          "description": "Drag and drop or select PDF, Word, or Subtitle files. Supports files up to 100MB."
+          "description": "Drag and drop or select PDF, Word, or Excel files. Supports files up to 100MB."
         },
         "configure": {
           "title": "Configure translation",
@@ -142,10 +142,10 @@
         },
         {
           "name": "Le Quang Huy",
-          "role": "Founder",
-          "company": "SubViet Studio",
-          "industry": "Media",
-          "content": "Subtitle translation is incredibly fast! Used to take all day, now just 10 minutes. Clear ROI from the first month."
+          "role": "Research Director",
+          "company": "SciPub Vietnam",
+          "industry": "Publishing",
+          "content": "Translating a 300-page scientific thesis used to take weeks. With AnyTrans, we finished in under an hour with all formulas and charts perfectly preserved. A game-changer for academic publishing."
         },
         {
           "name": "Pham Thi Mai",
@@ -234,7 +234,7 @@
         "subtitle": "1 Credit = 1 page translated. No subscription. No time limit."
       },
       "features": [
-        "Translate PDF, Word, Subtitle",
+        "Translate PDF, Word, Excel",
         "Preserve original formatting",
         "Unlimited glossary",
         "Bilingual review",
@@ -267,7 +267,7 @@
         "pdf10": "10-page PDF",
         "contract50": "50-page contract",
         "ppt100": "100-slide PPT",
-        "subtitle": "Movie subtitle"
+        "thesis": "80-page thesis"
       },
       "planSavings": {
         "save20": "Save 20%",

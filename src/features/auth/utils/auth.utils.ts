@@ -46,5 +46,5 @@ export function buildLoginUrl(redirectTo?: string): string {
  * Get redirect URL from query parameters
  */
 export function getRedirectUrl(searchParams: URLSearchParams): string {
-  return searchParams.get('redirect') || '/';
+  return searchParams.get('redirect') || '/dashboard';
 }

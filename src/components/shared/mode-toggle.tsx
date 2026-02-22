@@ -1,11 +1,11 @@
 "use client"
 
 import * as React from "react"
-import { useTheme } from "next-themes"
 import { motion } from "framer-motion"
+import { useThemeSync } from "@/features/settings/hooks"
 
 export function ModeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, toggleTheme } = useThemeSync()
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
@@ -16,11 +16,11 @@ export function ModeToggle() {
     return <div className="w-16 h-8 rounded-full bg-muted/20 animate-pulse" />
   }
 
-  const isDark = theme === "dark"
+  const isDark = resolvedTheme === "dark"
 
   return (
     <button
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      onClick={toggleTheme}
       className="relative w-16 h-8 rounded-full cursor-pointer overflow-hidden shadow-inner transition-colors duration-500 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
       style={{
         background: isDark

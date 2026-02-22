@@ -45,7 +45,10 @@ export function LoginForm({
   const [serverError, setServerError] = useState<string | null>(null)
 
   // Get redirect URL from query params or prop
-  const redirectUrl = redirectTo || searchParams.get("redirect") || "/"
+  const redirectUrl = redirectTo || searchParams.get("redirect") || "/dashboard"
+
+  // Get OAuth error from query params (set by callback page)
+  const oauthError = searchParams.get("error")
 
   // Use the login hook
   const { login, isLoading: isLoginLoading, error: loginError } = useLogin({
@@ -63,8 +66,8 @@ export function LoginForm({
     },
   })
 
-  // Derive error state from hook or local state
-  const displayError = serverError || loginError
+  // Derive error state from hook or local state or OAuth callback
+  const displayError = serverError || loginError || oauthError
 
   const isLoading = isLoadingProp ?? isLoginLoading
 

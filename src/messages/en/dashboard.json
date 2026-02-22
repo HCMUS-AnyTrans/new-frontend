@@ -5,7 +5,6 @@
       "other": "Other",
       "dashboard": "Dashboard",
       "documents": "Document Translation",
-      "subtitles": "Subtitle Translation",
       "glossary": "Glossary",
       "history": "History",
       "settings": "Settings",
@@ -16,7 +15,6 @@
     "pages": {
       "dashboard": "Dashboard",
       "documents": "Document Translation",
-      "subtitles": "Subtitle Translation",
       "glossary": "Glossary",
       "history": "History",
       "settings": "Settings",
@@ -33,12 +31,11 @@
       "completedThisMonth": "Completed This Month",
       "vsLastMonth": "vs last month",
       "vsYesterday": "vs yesterday",
-      "documentsAndSubtitles": "{docs} Documents | {subs} Subtitles",
+      "documentsCount": "{docs} Documents",
       "successRate": "Success rate: {rate}%"
     },
     "quickActions": {
       "uploadDocument": "Upload Document",
-      "uploadSubtitle": "Upload Subtitle",
       "buyCredits": "Buy Credits"
     },
     "activity": {
@@ -47,6 +44,7 @@
     },
     "recentJobs": {
       "title": "Recent Jobs",
+      "noJobs": "No information yet",
       "viewAll": "View all",
       "fileName": "File Name",
       "type": "Type",
@@ -57,18 +55,21 @@
       "actions": "Actions",
       "download": "Download",
       "viewDetails": "View Details",
-      "document": "Document",
-      "subtitle": "Subtitle"
+      "document": "Document"
     },
     "storage": {
       "title": "Storage",
-      "remaining": "{value} GB remaining"
+      "remaining": "{value} GB remaining",
+      "creditUsageTitle": "Credit Usage",
+      "noUsageInfo": "No credit usage information yet",
+      "documents": "Documents",
+      "ofTotal": "of total"
     },
     "charts": {
       "jobsByDay": "Jobs by Day (Last 7 Days)",
       "creditAllocation": "Credit Allocation",
+      "noUsageInfo": "No credit usage information yet",
       "documents": "Documents",
-      "subtitles": "Subtitles",
       "remaining": "Remaining"
     },
     "status": {
@@ -76,6 +77,19 @@
       "processing": "Processing",
       "succeeded": "Completed",
       "failed": "Failed"
+    },
+    "history": {
+      "title": "Translation History",
+      "description": "View all your translation jobs and their status.",
+      "searchPlaceholder": "Search by file name...",
+      "filterStatus": "Status",
+      "allStatuses": "All statuses",
+      "noJobs": "No translation jobs found",
+      "noJobsDescription": "Your translation history will appear here once you start translating documents.",
+      "noResults": "No results found",
+      "noResultsDescription": "Try adjusting your search or filter criteria.",
+      "totalJobs": "{count} jobs total",
+      "pageInfo": "Page {page} of {totalPages}"
     }
   }
 }

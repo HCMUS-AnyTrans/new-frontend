@@ -3,6 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { ChevronLeft } from "lucide-react"
+import { useTranslations } from "next-intl"
 import {
   ForgotPasswordForm,
   SocialLoginButtons,
@@ -10,6 +11,8 @@ import {
 } from "@/features/auth"
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations("auth.forgotPassword")
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Logo */}
@@ -41,17 +44,16 @@ export default function ForgotPasswordPage() {
                   className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
                 >
                   <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                  Back to login
+                  {t("backToLogin")}
                 </Link>
 
                 {/* Header */}
                 <div className="space-y-4">
                   <h1 className="text-4xl font-semibold text-foreground">
-                    Forgot your password?
+                    {t("title")}
                   </h1>
                   <p className="text-base text-muted-foreground">
-                    Don&apos;t worry, happens to all of us. Enter your email
-                    below to recover your password
+                    {t("subtitle")}
                   </p>
                 </div>
 

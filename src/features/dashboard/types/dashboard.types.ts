@@ -10,7 +10,7 @@ export type JobStatus = "pending" | "processing" | "succeeded" | "failed"
 /**
  * Job type matching TranslationJob.jobType in backend
  */
-export type JobType = "document" | "subtitle"
+export type JobType = "document"
 
 /**
  * Supported language codes (ISO 639-1)
@@ -38,7 +38,6 @@ export interface DashboardStats {
 
   totalJobs: number
   documentJobs: number
-  subtitleJobs: number
   jobsChange: string
   jobsTrend: TrendDirection
 
@@ -80,13 +79,39 @@ export interface ActivityItem {
 }
 
 // ============================================================================
-// Chart Data
+// Query Params - Matching Backend query.dto.ts
+// ============================================================================
+
+export interface DashboardStatsQuery {
+  period?: "week" | "month" | "quarter" | "year"
+  timezone?: string
+}
+
+export interface JobsChartQuery {
+  days?: 7 | 14 | 30
+  timezone?: string
+}
+
+export interface CreditsChartQuery {
+  period?: "week" | "month" | "quarter" | "year"
+}
+
+// ============================================================================
+// Chart Data - Matching Backend Response DTOs
 // ============================================================================
 
 export interface JobsChartDataPoint {
   day: string
   document: number
-  subtitle: number
+}
+
+/**
+ * Extended chart data point with date from backend
+ */
+export interface JobChartDataPoint {
+  date: string
+  day: string
+  document: number
 }
 
 export interface CreditUsageDataPoint {
@@ -95,13 +120,58 @@ export interface CreditUsageDataPoint {
   fill: string
 }
 
+/**
+ * Credit breakdown from backend CreditsChartDto
+ */
+export interface CreditBreakdown {
+  name: string
+  value: number
+  percentage: number
+}
+
+export interface CreditUsage {
+  documentsUsed: number
+}
+
+export interface CreditsChartResponse {
+  totalCredits: number
+  breakdown: CreditBreakdown[]
+  usage: CreditUsage
+}
+
 // ============================================================================
-// Storage
+// Storage - Matching Backend StorageDto
 // ============================================================================
 
 export interface StorageInfo {
   used: number // in GB
   total: number // in GB
+}
+
+export interface StorageBreakdownItem {
+  count: number
+  size: number
+}
+
+export interface StorageResponse {
+  used: number
+  total: number
+  unit: string
+  percentage: number
+  fileCount: number
+  breakdown: {
+    documents: StorageBreakdownItem
+  }
+}
+
+// ============================================================================
+// Wallet - Matching Backend WalletResponseDto
+// ============================================================================
+
+export interface WalletResponse {
+  id: string
+  balance: number
+  updatedAt: string
 }
 
 // ============================================================================

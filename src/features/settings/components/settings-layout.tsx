@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   User,
@@ -47,18 +48,36 @@ interface SettingsLayoutProps {
   onTabChange?: (tab: SettingsTab) => void;
 }
 
+const validTabs = tabConfigs.map((t) => t.id);
+
 export function SettingsLayout({
   children,
   defaultTab = "profile",
   onTabChange,
 }: SettingsLayoutProps) {
-  const [activeTab, setActiveTab] = useState<SettingsTab>(defaultTab);
+  const searchParams = useSearchParams();
   const t = useTranslations("settings.tabs");
+
+  // Read ?tab= from URL to support deep-linking (e.g. /settings?tab=security)
+  const tabFromUrl = searchParams.get("tab") as SettingsTab | null;
+  const initialTab =
+    tabFromUrl && validTabs.includes(tabFromUrl) ? tabFromUrl : defaultTab;
+
+  const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab);
 
   const handleTabChange = (value: string) => {
     const tab = value as SettingsTab;
     setActiveTab(tab);
     onTabChange?.(tab);
+
+    // Sync URL search params so the tab is preserved on refresh / shareable
+    const url = new URL(window.location.href);
+    if (tab === "profile") {
+      url.searchParams.delete("tab");
+    } else {
+      url.searchParams.set("tab", tab);
+    }
+    window.history.replaceState({}, "", url.toString());
   };
 
   return (

@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useCallback, useEffect, useRef } from "react"
+import { useState, useCallback } from "react"
+import { useTranslations } from "next-intl"
 import { TranslationStepper } from "./translation-stepper"
 import { StepUpload } from "./step-upload"
 import { StepConfigure } from "./step-configure"
@@ -8,30 +9,22 @@ import { StepReview } from "./step-review"
 import {
   type TranslationStep,
   type TranslationConfig,
-  type TranslationJob,
   type UploadedFile,
   ALLOWED_FILE_TYPES,
   MAX_FILE_SIZE,
 } from "../types"
+import { defaultConfig } from "../data"
 import {
-  defaultConfig,
-  mockGlossaries,
-  mockOriginalText,
-  mockTranslatedText,
-} from "../data"
-
-// =============== INITIAL STATES ===============
-
-const initialJob: TranslationJob = {
-  id: "",
-  status: "idle",
-  progress: 0,
-  costCredits: 25,
-}
+  useUploadAndTranslate,
+  useTranslationJob,
+  useDownloadFile,
+} from "../hooks"
 
 // =============== MAIN COMPONENT ===============
 
 export function DocumentTranslationWizard() {
+  const t = useTranslations("documents.upload")
+
   // Step state
   const [step, setStep] = useState<TranslationStep>(1)
 
@@ -43,26 +36,42 @@ export function DocumentTranslationWizard() {
   // Config state
   const [config, setConfig] = useState<TranslationConfig>(defaultConfig)
 
-  // Job state
-  const [job, setJob] = useState<TranslationJob>(initialJob)
+  // API hooks
+  const {
+    flowStatus,
+    uploadProgress,
+    jobId,
+    error: flowError,
+    startTranslation,
+    reset: resetFlow,
+  } = useUploadAndTranslate()
 
-  // Translation content
-  const [translatedContent, setTranslatedContent] = useState("")
+  const { data: jobData } = useTranslationJob(jobId, {
+    enabled: flowStatus === "translating",
+  })
 
-  // Ref for progress interval
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const { download, isDownloading } = useDownloadFile()
+
+  // Update flow status when job polling returns a terminal state
+  // The wizard tracks "succeeded" / "failed" based on job polling data
+  const effectiveFlowStatus =
+    jobData?.status === "succeeded"
+      ? "succeeded"
+      : jobData?.status === "failed"
+        ? "failed"
+        : flowStatus
 
   // =============== FILE HANDLERS ===============
 
   const validateFile = useCallback((f: File): string | null => {
     if (!ALLOWED_FILE_TYPES.includes(f.type as (typeof ALLOWED_FILE_TYPES)[number])) {
-      return "Định dạng file không được hỗ trợ. Vui lòng chọn file PDF, DOCX hoặc PPTX."
+      return t("errorUnsupported")
     }
     if (f.size > MAX_FILE_SIZE) {
-      return "File quá lớn. Kích thước tối đa là 50MB."
+      return t("errorTooLarge")
     }
     return null
-  }, [])
+  }, [t])
 
   const handleFileSelect = useCallback(
     (f: File) => {
@@ -111,98 +120,36 @@ export function DocumentTranslationWizard() {
     goToStep(1)
   }, [goToStep])
 
-  // =============== TRANSLATION SIMULATION ===============
-
-  const simulateTranslation = useCallback(() => {
-    // Reset previous state
-    setTranslatedContent("")
-    setJob({
-      id: `job-${Date.now()}`,
-      status: "processing",
-      progress: 0,
-      costCredits: 25,
-    })
-
-    // Clear any existing interval
-    if (progressIntervalRef.current) {
-      clearInterval(progressIntervalRef.current)
-    }
-
-    // Simulate progress
-    let progress = 0
-    progressIntervalRef.current = setInterval(() => {
-      progress += Math.random() * 15 + 5
-
-      if (progress >= 100) {
-        progress = 100
-        if (progressIntervalRef.current) {
-          clearInterval(progressIntervalRef.current)
-          progressIntervalRef.current = null
-        }
-
-        // Complete with success
-        setJob((prev) => ({
-          ...prev,
-          status: "success",
-          progress: 100,
-        }))
-        setTranslatedContent(mockTranslatedText)
-      } else {
-        setJob((prev) => ({
-          ...prev,
-          progress: Math.round(progress),
-        }))
-      }
-    }, 300)
-  }, [])
+  // =============== TRANSLATION FLOW ===============
 
   const handleStartTranslation = useCallback(() => {
+    if (!file) return
+
+    // Move to step 3 immediately to show upload progress
     goToStep(3)
-    // Start simulation after a short delay to let the UI render
-    setTimeout(() => {
-      simulateTranslation()
-    }, 100)
-  }, [goToStep, simulateTranslation])
+
+    // Start the real upload → confirm → create job flow
+    startTranslation(file.file, config)
+  }, [file, config, goToStep, startTranslation])
 
   // =============== RESULT HANDLERS ===============
 
   const handleDownload = useCallback(() => {
-    // In a real app, this would trigger a download of the translated document
-    const blob = new Blob([translatedContent], { type: "text/plain" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `translated-${file?.name || "document"}.txt`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }, [translatedContent, file])
+    const outputFileId = jobData?.output_file?.id
+    if (!outputFileId) return
+
+    const outputFileName = jobData?.output_file?.name || `translated-${file?.name || "document"}`
+    download(outputFileId, outputFileName)
+  }, [jobData, file, download])
 
   const handleReset = useCallback(() => {
-    // Clear interval if running
-    if (progressIntervalRef.current) {
-      clearInterval(progressIntervalRef.current)
-      progressIntervalRef.current = null
-    }
-
     // Reset all states
+    resetFlow()
     setStep(1)
     setFile(null)
     setFileError(null)
     setConfig(defaultConfig)
-    setJob(initialJob)
-    setTranslatedContent("")
-  }, [])
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current)
-      }
-    }
-  }, [])
+  }, [resetFlow])
 
   // =============== RENDER ===============
 
@@ -228,23 +175,25 @@ export function DocumentTranslationWizard() {
         {step === 2 && (
           <StepConfigure
             config={config}
-            glossaries={mockGlossaries}
             onConfigChange={handleConfigChange}
             onBack={handleConfigBack}
             onStart={handleStartTranslation}
-            isLoading={false}
+            isLoading={flowStatus !== "idle" && flowStatus !== "failed"}
           />
         )}
 
         {step === 3 && file && (
           <StepReview
             file={file}
-            config={config}
-            job={job}
-            originalText={mockOriginalText}
-            translatedText={translatedContent}
+            flowStatus={effectiveFlowStatus}
+            uploadProgress={uploadProgress}
+            jobData={jobData ?? null}
+            error={flowError}
+            srcLang={config.srcLang}
+            tgtLang={config.tgtLang}
             onDownload={handleDownload}
             onReset={handleReset}
+            isDownloading={isDownloading}
           />
         )}
       </div>

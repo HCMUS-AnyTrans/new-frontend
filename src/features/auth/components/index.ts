@@ -1,6 +1,7 @@
 // Core auth components
 export * from './AuthProvider';
 export * from './ProtectedRoute';
+export * from './AuthRedirect';
 
 // Auth forms
 export { LoginForm } from './login-form';

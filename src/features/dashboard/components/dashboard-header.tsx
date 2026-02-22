@@ -8,14 +8,15 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ModeToggle, LanguageSwitcher } from "@/components/shared";
-import { mockUser, mockWallet } from "../data";
+import { useAuthStore } from "@/features/auth";
+import { useWallet } from "../hooks";
 
 // Map pathname to translation key
 const pageKeyMap: Record<string, string> = {
   "/dashboard": "dashboard",
   "/documents": "documents",
-  "/subtitles": "subtitles",
   "/glossary": "glossary",
   "/history": "history",
   "/settings": "settings",
@@ -26,6 +27,8 @@ export function DashboardHeader() {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("dashboard.pages");
+  const user = useAuthStore((s) => s.user);
+  const { wallet, isLoading: walletLoading } = useWallet();
 
   // Remove locale prefix from pathname
   const pathnameWithoutLocale = pathname.replace(/^\/(vi|en)/, "");
@@ -33,6 +36,16 @@ export function DashboardHeader() {
   // Get page title translation key
   const pageKey = pageKeyMap[pathnameWithoutLocale] || "dashboard";
   const pageTitle = t(pageKey);
+
+  // Generate user initials from fullName
+  const initials = user?.fullName
+    ? user.fullName
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "??";
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b border-border bg-background/95 backdrop-blur-sm px-4 lg:px-6">
@@ -64,26 +77,30 @@ export function DashboardHeader() {
         </Button>
 
         {/* Credits Badge - Hidden on mobile */}
-        <Badge
-          variant="secondary"
-          className="hidden gap-1.5 bg-secondary/20 text-foreground sm:flex"
-        >
-          <Coins className="size-3.5 text-secondary" />
-          <span className="tabular-nums">
-            {mockWallet.balance.toLocaleString(
-              locale === "vi" ? "vi-VN" : "en-US"
-            )}
-          </span>
-          <span className="text-muted-foreground">credits</span>
-        </Badge>
+        {walletLoading ? (
+          <Skeleton className="hidden h-6 w-24 sm:block" />
+        ) : (
+          <Badge
+            variant="secondary"
+            className="hidden gap-1.5 bg-secondary/20 text-foreground sm:flex"
+          >
+            <Coins className="size-3.5 text-secondary" />
+            <span className="tabular-nums">
+              {(wallet?.balance ?? 0).toLocaleString(
+                locale === "vi" ? "vi-VN" : "en-US"
+              )}
+            </span>
+            <span className="text-muted-foreground">credits</span>
+          </Badge>
+        )}
 
         {/* User Avatar */}
         <Avatar className="h-8 w-8">
-          {mockUser.avatarUrl && (
-            <AvatarImage src={mockUser.avatarUrl} alt={mockUser.fullName} />
+          {user?.avatarUrl && (
+            <AvatarImage src={user.avatarUrl} alt={user.fullName} />
           )}
           <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-            {mockUser.initials}
+            {initials}
           </AvatarFallback>
         </Avatar>
       </div>
