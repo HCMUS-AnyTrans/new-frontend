@@ -122,3 +122,14 @@ export const fileKeys = {
     [...fileKeys.all, 'list', params] as const,
   storage: () => [...fileKeys.all, 'storage'] as const,
 };
+
+// Glossary-related query keys
+export const glossaryKeys = {
+  all: ['glossaries'] as const,
+  list: (params?: unknown) =>
+    [...glossaryKeys.all, 'list', params] as const,
+  detail: (id: string) =>
+    [...glossaryKeys.all, 'detail', id] as const,
+  terms: (glossaryId: string, params?: unknown) =>
+    [...glossaryKeys.all, 'terms', glossaryId, params] as const,
+};
