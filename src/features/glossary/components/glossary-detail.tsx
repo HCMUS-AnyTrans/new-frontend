@@ -6,13 +6,6 @@ import { ArrowLeft, ArrowRight, BookOpen, Upload } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
 import { Pagination } from '@/components/ui/pagination';
 import { useGlossaryDetail } from '../hooks/use-glossary-detail';
 import { useTerms } from '../hooks/use-terms';
@@ -99,92 +92,86 @@ export function GlossaryDetail({ glossaryId, onBack }: GlossaryDetailProps) {
   // ─── Render ─────────────────────────────────────────────────────────
   return (
     <>
-      <Card className="border border-border shadow-sm">
-        <CardHeader>
-          {/* Back button */}
-          <div className="mb-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onBack}
-              className="gap-1 text-muted-foreground hover:text-foreground -ml-2"
-            >
-              <ArrowLeft className="size-4" />
-              {t('backToList')}
-            </Button>
+      {/* Back button */}
+      <div className="mb-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onBack}
+          className="gap-1 text-muted-foreground hover:text-foreground -ml-2"
+        >
+          <ArrowLeft className="size-4" />
+          {t('backToList')}
+        </Button>
+      </div>
+
+      {/* Glossary header info */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+        <div>
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
+            <BookOpen className="size-5 text-primary" />
+            {t(`domains.${glossary.domain}`)}
+          </h2>
+          <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
+            <Badge variant="outline" className="text-xs font-normal">
+              {t(`languages.${glossary.srcLang}`)}
+            </Badge>
+            <ArrowRight className="size-3.5 text-muted-foreground shrink-0" />
+            <Badge variant="outline" className="text-xs font-normal">
+              {t(`languages.${glossary.tgtLang}`)}
+            </Badge>
+            <span className="text-muted-foreground mx-1">·</span>
+            <span>{t('termCount', { count: glossary.termCount })}</span>
           </div>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setBulkImportOpen(true)}
+        >
+          <Upload className="size-4" />
+          {tTerms('bulkImport')}
+        </Button>
+      </div>
 
-          {/* Glossary header info */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <BookOpen className="size-5 text-primary" />
-                {t(`domains.${glossary.domain}`)}
-              </CardTitle>
-              <CardDescription className="flex items-center gap-2 mt-1">
-                <Badge variant="outline" className="text-xs font-normal">
-                  {t(`languages.${glossary.srcLang}`)}
-                </Badge>
-                <ArrowRight className="size-3.5 text-muted-foreground shrink-0" />
-                <Badge variant="outline" className="text-xs font-normal">
-                  {t(`languages.${glossary.tgtLang}`)}
-                </Badge>
-                <span className="text-muted-foreground mx-1">·</span>
-                <span>{t('termCount', { count: glossary.termCount })}</span>
-              </CardDescription>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setBulkImportOpen(true)}
-            >
-              <Upload className="size-4" />
-              {tTerms('bulkImport')}
-            </Button>
-          </div>
-        </CardHeader>
+      {/* Inline add term form */}
+      <AddTermForm glossaryId={glossaryId} />
 
-        <CardContent>
-          {/* Inline add term form */}
-          <AddTermForm glossaryId={glossaryId} />
+      {/* Term search */}
+      <div className="mb-4">
+        <Input
+          placeholder={tTerms('searchPlaceholder')}
+          value={termSearch}
+          onChange={handleSearchChange}
+          className="max-w-sm"
+        />
+      </div>
 
-          {/* Term search */}
-          <div className="mb-4">
-            <Input
-              placeholder={tTerms('searchPlaceholder')}
-              value={termSearch}
-              onChange={handleSearchChange}
-              className="max-w-sm"
+      {/* Term table or empty/loading state */}
+      {isLoadingTerms ? (
+        <TermTableSkeleton />
+      ) : !terms || terms.length === 0 ? (
+        <TermEmptyState hasSearch={termSearch !== ''} />
+      ) : (
+        <>
+          <TermTable
+            terms={terms}
+            onEdit={handleEditTerm}
+            onDelete={handleDeleteTerm}
+          />
+
+          {termPagination && termPagination.totalPages > 1 && (
+            <Pagination
+              page={termPagination.page}
+              totalPages={termPagination.totalPages}
+              hasNext={termPagination.hasNext}
+              hasPrev={termPagination.hasPrev}
+              onPageChange={setTermPage}
+              isFetching={isFetchingTerms}
             />
-          </div>
-
-          {/* Term table or empty/loading state */}
-          {isLoadingTerms ? (
-            <TermTableSkeleton />
-          ) : !terms || terms.length === 0 ? (
-            <TermEmptyState hasSearch={termSearch !== ''} />
-          ) : (
-            <>
-              <TermTable
-                terms={terms}
-                onEdit={handleEditTerm}
-                onDelete={handleDeleteTerm}
-              />
-
-              {termPagination && termPagination.totalPages > 1 && (
-                <Pagination
-                  page={termPagination.page}
-                  totalPages={termPagination.totalPages}
-                  hasNext={termPagination.hasNext}
-                  hasPrev={termPagination.hasPrev}
-                  onPageChange={setTermPage}
-                  isFetching={isFetchingTerms}
-                />
-              )}
-            </>
           )}
-        </CardContent>
-      </Card>
+        </>
+      )}
 
       {/* Term dialogs */}
       <EditTermDialog

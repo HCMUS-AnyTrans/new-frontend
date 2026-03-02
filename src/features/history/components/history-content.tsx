@@ -1,14 +1,6 @@
 'use client';
 
 import { useTranslations, useLocale } from 'next-intl';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
-import { History } from 'lucide-react';
 import { useHistoryJobs } from '../hooks';
 import { HistoryFilters } from './history-filters';
 import { HistoryTable } from './history-table';
@@ -42,33 +34,24 @@ export function HistoryContent() {
   }
 
   return (
-    <Card className="border border-border shadow-sm">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <History className="size-5 text-primary" />
-          {t('title')}
-        </CardTitle>
-        <CardDescription>{t('description')}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <HistoryFilters
-          search={search}
-          onSearchChange={handleSearchChange}
-          statusFilter={statusFilter}
-          onStatusChange={handleStatusChange}
-        />
+    <>
+      <HistoryFilters
+        search={search}
+        onSearchChange={handleSearchChange}
+        statusFilter={statusFilter}
+        onStatusChange={handleStatusChange}
+      />
 
-        {jobs.length === 0 ? (
-          <HistoryEmptyState hasFilters={hasFilters} />
-        ) : (
-          <>
-            <HistoryTable jobs={jobs} locale={locale} />
-            {meta && (
-              <HistoryPagination meta={meta} onPageChange={setPage} />
-            )}
-          </>
-        )}
-      </CardContent>
-    </Card>
+      {jobs.length === 0 ? (
+        <HistoryEmptyState hasFilters={hasFilters} />
+      ) : (
+        <>
+          <HistoryTable jobs={jobs} locale={locale} />
+          {meta && (
+            <HistoryPagination meta={meta} onPageChange={setPage} />
+          )}
+        </>
+      )}
+    </>
   );
 }

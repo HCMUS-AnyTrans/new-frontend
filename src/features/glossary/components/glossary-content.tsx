@@ -2,14 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
-import { BookOpen, Plus } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Pagination } from '@/components/ui/pagination';
 import { useGlossaries } from '../hooks/use-glossaries';
@@ -123,60 +116,47 @@ export function GlossaryContent() {
   // ─── List View ──────────────────────────────────────────────────────
   return (
     <>
-      {/* <Card className="border border-border shadow-sm"> */}
-        <CardHeader>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <BookOpen className="size-5 text-primary" />
-                {t('title')}
-              </CardTitle>
-              <CardDescription>{t('description')}</CardDescription>
-            </div>
-            <Button size="sm" onClick={() => setCreateOpen(true)}>
-              <Plus className="size-4" />
-              {t('createGlossary')}
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <GlossaryFilters
-            search={search}
-            onSearchChange={handleSearchChange}
-            domainFilter={domainFilter}
-            onDomainChange={handleDomainChange}
-            srcLangFilter={srcLangFilter}
-            onSrcLangChange={handleSrcLangChange}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <GlossaryFilters
+          search={search}
+          onSearchChange={handleSearchChange}
+          domainFilter={domainFilter}
+          onDomainChange={handleDomainChange}
+          srcLangFilter={srcLangFilter}
+          onSrcLangChange={handleSrcLangChange}
+        />
+        <Button size="sm" className="shrink-0" onClick={() => setCreateOpen(true)}>
+          <Plus className="size-4" />
+          {t('createGlossary')}
+        </Button>
+      </div>
+
+      {!glossaries || glossaries.length === 0 ? (
+        <GlossaryEmptyState
+          hasFilters={hasFilters}
+          onCreateClick={() => setCreateOpen(true)}
+        />
+      ) : (
+        <>
+          <GlossaryList
+            glossaries={glossaries}
+            onGlossaryClick={handleGlossaryClick}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
           />
 
-          {!glossaries || glossaries.length === 0 ? (
-            <GlossaryEmptyState
-              hasFilters={hasFilters}
-              onCreateClick={() => setCreateOpen(true)}
+          {pagination && pagination.totalPages > 1 && (
+            <Pagination
+              page={pagination.page}
+              totalPages={pagination.totalPages}
+              hasNext={pagination.hasNext}
+              hasPrev={pagination.hasPrev}
+              onPageChange={setPage}
+              isFetching={isFetching}
             />
-          ) : (
-            <>
-              <GlossaryList
-                glossaries={glossaries}
-                onGlossaryClick={handleGlossaryClick}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-
-              {pagination && pagination.totalPages > 1 && (
-                <Pagination
-                  page={pagination.page}
-                  totalPages={pagination.totalPages}
-                  hasNext={pagination.hasNext}
-                  hasPrev={pagination.hasPrev}
-                  onPageChange={setPage}
-                  isFetching={isFetching}
-                />
-              )}
-            </>
           )}
-        </CardContent>
-      {/* </Card> */}
+        </>
+      )}
 
       {/* Dialogs */}
       <CreateGlossaryDialog
