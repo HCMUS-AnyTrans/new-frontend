@@ -59,9 +59,19 @@ export function useAddTerm(options?: UseAddTermOptions) {
         { queryKey: glossaryKeys.terms(glossaryId) },
         (old) => {
           if (!old) return old;
+          // Insert at correct alphabetical position (matching server sort: srcTerm ASC)
+          const newItems = [...old.items];
+          const insertIndex = newItems.findIndex(
+            (t) => t.srcTerm.localeCompare(optimisticTerm.srcTerm) > 0
+          );
+          if (insertIndex === -1) {
+            newItems.push(optimisticTerm);
+          } else {
+            newItems.splice(insertIndex, 0, optimisticTerm);
+          }
           return {
             ...old,
-            items: [optimisticTerm, ...old.items],
+            items: newItems,
             pagination: {
               ...old.pagination,
               total: old.pagination.total + 1,

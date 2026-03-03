@@ -37,36 +37,39 @@ export function AddTermForm({ glossaryId }: AddTermFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 mb-4">
-      <Input
-        placeholder={t('srcTermPlaceholder')}
-        value={srcTerm}
-        onChange={(e) => setSrcTerm(e.target.value)}
-        className="flex-1"
-        disabled={isAdding}
-        aria-label={t('srcTerm')}
-      />
-      <Input
-        placeholder={t('tgtTermPlaceholder')}
-        value={tgtTerm}
-        onChange={(e) => setTgtTerm(e.target.value)}
-        className="flex-1"
-        disabled={isAdding}
-        aria-label={t('tgtTerm')}
-      />
-      <Button
-        type="submit"
-        size="sm"
-        disabled={isAdding || !srcTerm.trim() || !tgtTerm.trim()}
-        className="shrink-0"
-      >
-        {isAdding ? (
-          <Loader2 className="size-4 animate-spin" />
-        ) : (
-          <Plus className="size-4" />
-        )}
-        {t('addTerm')}
-      </Button>
-    </form>
+    <div className="rounded-2xl border bg-card p-5 mb-6">
+      <h3 className="text-sm font-semibold mb-4">{t('addNewTerm')}</h3>
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+        <Input
+          placeholder={t('srcTermPlaceholder')}
+          value={srcTerm}
+          onChange={(e) => setSrcTerm(e.target.value)}
+          className="flex-1"
+          disabled={isAdding}
+          aria-label={t('srcTerm')}
+        />
+        <Input
+          placeholder={t('tgtTermPlaceholder')}
+          value={tgtTerm}
+          onChange={(e) => setTgtTerm(e.target.value)}
+          className="flex-1"
+          disabled={isAdding}
+          aria-label={t('tgtTerm')}
+        />
+        <Button
+          type="submit"
+          size="sm"
+          disabled={isAdding || !srcTerm.trim() || !tgtTerm.trim()}
+          className="shrink-0"
+        >
+          {isAdding ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <Plus className="size-4" />
+          )}
+          {t('addTerm')}
+        </Button>
+      </form>
+    </div>
   );
 }

@@ -48,11 +48,15 @@ export function GlossaryFilters({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">{t('allDomains')}</SelectItem>
-          {glossaryDomains.map((domain) => (
-            <SelectItem key={domain.id} value={domain.id}>
-              {domain.icon} {t(`domains.${domain.id}`)}
-            </SelectItem>
-          ))}
+          {glossaryDomains.map((domain) => {
+            const Icon = domain.icon;
+            return (
+              <SelectItem key={domain.id} value={domain.id}>
+                <Icon className="size-4" />
+                {t(`domains.${domain.id}`)}
+              </SelectItem>
+            );
+          })}
         </SelectContent>
       </Select>
       <Select value={srcLangFilter} onValueChange={onSrcLangChange}>

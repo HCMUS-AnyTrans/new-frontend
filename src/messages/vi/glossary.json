@@ -55,7 +55,8 @@
       "tgtLangPlaceholder": "Chọn ngôn ngữ đích",
       "creating": "Đang tạo...",
       "saving": "Đang lưu...",
-      "deleting": "Đang xóa..."
+      "deleting": "Đang xóa...",
+      "languagePair": "Cặp ngôn ngữ"
     },
     "terms": {
       "title": "Thuật ngữ",
@@ -63,6 +64,7 @@
       "srcTerm": "Thuật ngữ nguồn",
       "tgtTerm": "Thuật ngữ đích",
       "addTerm": "Thêm thuật ngữ",
+      "addNewTerm": "Thêm thuật ngữ mới",
       "editTerm": "Chỉnh sửa thuật ngữ",
       "deleteTerm": "Xóa thuật ngữ",
       "deleteTermConfirm": "Bạn có chắc chắn muốn xóa thuật ngữ này? Hành động này không thể hoàn tác.",

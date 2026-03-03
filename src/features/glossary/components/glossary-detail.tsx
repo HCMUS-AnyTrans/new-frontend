@@ -3,11 +3,11 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { ArrowLeft, ArrowRight, BookOpen, Upload } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, ArrowRight, Search, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Pagination } from '@/components/ui/pagination';
+import { glossaryDomains } from '../data';
 import { useGlossaryDetail } from '../hooks/use-glossary-detail';
 import { useTerms } from '../hooks/use-terms';
 import { AddTermForm } from './add-term-form';
@@ -91,6 +91,9 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
     return null;
   }
 
+  const domainInfo = glossaryDomains.find((d) => d.id === glossary.domain);
+  const DomainIcon = domainInfo?.icon;
+
   // ─── Render ─────────────────────────────────────────────────────────
   return (
     <>
@@ -107,27 +110,25 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
         </Button>
       </div>
 
-      {/* Glossary header info */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
-        <div>
-          <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <BookOpen className="size-5 text-primary" />
-            {glossary.name}
-          </h2>
-          <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-            <Badge variant="secondary" className="text-xs">
-              {t(`domains.${glossary.domain}`)}
-            </Badge>
-            <span className="text-muted-foreground mx-1">·</span>
-            <Badge variant="outline" className="text-xs font-normal">
-              {t(`languages.${glossary.srcLang}`)}
-            </Badge>
-            <ArrowRight className="size-3.5 text-muted-foreground shrink-0" />
-            <Badge variant="outline" className="text-xs font-normal">
-              {t(`languages.${glossary.tgtLang}`)}
-            </Badge>
-            <span className="text-muted-foreground mx-1">·</span>
-            <span>{t('termCount', { count: glossary.termCount })}</span>
+      {/* Glossary header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-muted border flex items-center justify-center text-muted-foreground shrink-0">
+            {DomainIcon && <DomainIcon className="size-5" />}
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold leading-tight">
+              {glossary.name}
+            </h2>
+            <div className="flex items-center gap-1.5 mt-1 text-sm text-muted-foreground">
+              <span>{t(`domains.${glossary.domain}`)}</span>
+              <span>·</span>
+              <span>{t(`languages.${glossary.srcLang}`)}</span>
+              <ArrowRight className="size-3 shrink-0" />
+              <span>{t(`languages.${glossary.tgtLang}`)}</span>
+              <span>·</span>
+              <span>{t('termCount', { count: glossary.termCount })}</span>
+            </div>
           </div>
         </div>
         <Button
@@ -143,30 +144,37 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
       {/* Inline add term form */}
       <AddTermForm glossaryId={glossaryId} />
 
-      {/* Term search */}
-      <div className="mb-4">
-        <Input
-          placeholder={tTerms('searchPlaceholder')}
-          value={termSearch}
-          onChange={handleSearchChange}
-          className="max-w-sm"
-        />
-      </div>
+      {/* Search + Table card */}
+      <div className="rounded-2xl border bg-card overflow-hidden">
+        {/* Search header */}
+        <div className="p-4 border-b bg-muted/30">
+          <div className="relative max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+            <Input
+              placeholder={tTerms('searchPlaceholder')}
+              value={termSearch}
+              onChange={handleSearchChange}
+              className="pl-9"
+            />
+          </div>
+        </div>
 
-      {/* Term table or empty/loading state */}
-      {isLoadingTerms ? (
-        <TermTableSkeleton />
-      ) : !terms || terms.length === 0 ? (
-        <TermEmptyState hasSearch={termSearch !== ''} />
-      ) : (
-        <>
+        {/* Table body */}
+        {isLoadingTerms ? (
+          <TermTableSkeleton />
+        ) : !terms || terms.length === 0 ? (
+          <TermEmptyState hasSearch={termSearch !== ''} />
+        ) : (
           <TermTable
             terms={terms}
             onEdit={handleEditTerm}
             onDelete={handleDeleteTerm}
           />
+        )}
 
-          {termPagination && termPagination.totalPages > 1 && (
+        {/* Pagination footer */}
+        {termPagination && termPagination.totalPages > 1 && (
+          <div className="p-4 border-t bg-muted/30">
             <Pagination
               page={termPagination.page}
               totalPages={termPagination.totalPages}
@@ -175,9 +183,9 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
               onPageChange={setTermPage}
               isFetching={isFetchingTerms}
             />
-          )}
-        </>
-      )}
+          </div>
+        )}
+      </div>
 
       {/* Term dialogs */}
       <EditTermDialog

@@ -127,9 +127,13 @@ export const fileKeys = {
 export const glossaryKeys = {
   all: ['glossaries'] as const,
   list: (params?: unknown) =>
-    [...glossaryKeys.all, 'list', params] as const,
+    params !== undefined
+      ? ([...glossaryKeys.all, 'list', params] as const)
+      : ([...glossaryKeys.all, 'list'] as const),
   detail: (id: string) =>
     [...glossaryKeys.all, 'detail', id] as const,
   terms: (glossaryId: string, params?: unknown) =>
-    [...glossaryKeys.all, 'terms', glossaryId, params] as const,
+    params !== undefined
+      ? ([...glossaryKeys.all, 'terms', glossaryId, params] as const)
+      : ([...glossaryKeys.all, 'terms', glossaryId] as const),
 };

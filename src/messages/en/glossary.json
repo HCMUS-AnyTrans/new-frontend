@@ -55,7 +55,8 @@
       "tgtLangPlaceholder": "Select target language",
       "creating": "Creating...",
       "saving": "Saving...",
-      "deleting": "Deleting..."
+      "deleting": "Deleting...",
+      "languagePair": "Language Pair"
     },
     "terms": {
       "title": "Terms",
@@ -63,6 +64,7 @@
       "srcTerm": "Source Term",
       "tgtTerm": "Target Term",
       "addTerm": "Add Term",
+      "addNewTerm": "Add New Term",
       "editTerm": "Edit Term",
       "deleteTerm": "Delete Term",
       "deleteTermConfirm": "Are you sure you want to delete this term? This action cannot be undone.",

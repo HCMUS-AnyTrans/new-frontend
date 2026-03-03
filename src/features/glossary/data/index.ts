@@ -1,4 +1,17 @@
 import { z } from 'zod';
+import {
+  Globe,
+  Laptop,
+  Stethoscope,
+  Scale,
+  Landmark,
+  Megaphone,
+  GraduationCap,
+  Cog,
+  FlaskConical,
+  FolderOpen,
+  type LucideIcon,
+} from 'lucide-react';
 
 // ============================================================================
 // DOMAIN OPTIONS
@@ -7,7 +20,7 @@ import { z } from 'zod';
 export interface DomainOption {
   id: string;
   name: string;
-  icon: string;
+  icon: LucideIcon;
 }
 
 /**
@@ -15,16 +28,16 @@ export interface DomainOption {
  * Aligned with backend domain values and document translation domains.
  */
 export const glossaryDomains: DomainOption[] = [
-  { id: 'general', name: 'Tổng quát', icon: '📋' },
-  { id: 'technology', name: 'Công nghệ', icon: '💻' },
-  { id: 'medical', name: 'Y tế', icon: '⚕️' },
-  { id: 'legal', name: 'Pháp lý', icon: '⚖️' },
-  { id: 'finance', name: 'Tài chính', icon: '💰' },
-  { id: 'marketing', name: 'Marketing', icon: '📢' },
-  { id: 'education', name: 'Giáo dục', icon: '📚' },
-  { id: 'engineering', name: 'Kỹ thuật', icon: '⚙️' },
-  { id: 'science', name: 'Khoa học', icon: '🔬' },
-  { id: 'other', name: 'Khác', icon: '📁' },
+  { id: 'general', name: 'Tổng quát', icon: Globe },
+  { id: 'technology', name: 'Công nghệ', icon: Laptop },
+  { id: 'medical', name: 'Y tế', icon: Stethoscope },
+  { id: 'legal', name: 'Pháp lý', icon: Scale },
+  { id: 'finance', name: 'Tài chính', icon: Landmark },
+  { id: 'marketing', name: 'Marketing', icon: Megaphone },
+  { id: 'education', name: 'Giáo dục', icon: GraduationCap },
+  { id: 'engineering', name: 'Kỹ thuật', icon: Cog },
+  { id: 'science', name: 'Khoa học', icon: FlaskConical },
+  { id: 'other', name: 'Khác', icon: FolderOpen },
 ];
 
 // ============================================================================
