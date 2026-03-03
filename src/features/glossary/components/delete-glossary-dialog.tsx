@@ -54,9 +54,9 @@ export function DeleteGlossaryDialog({
 
         {glossary && (
           <div className="rounded-md border bg-muted/50 p-3 text-sm">
-            <p className="font-medium">{t(`domains.${glossary.domain}`)}</p>
+            <p className="font-medium">{glossary.name}</p>
             <p className="text-muted-foreground">
-              {t(`languages.${glossary.srcLang}`)} → {t(`languages.${glossary.tgtLang}`)}
+              {t(`domains.${glossary.domain}`)} · {t(`languages.${glossary.srcLang}`)} → {t(`languages.${glossary.tgtLang}`)}
               {' · '}
               {t('termCount', { count: glossary.termCount })}
             </p>

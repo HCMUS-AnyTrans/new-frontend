@@ -7,6 +7,7 @@
 export interface Glossary {
   id: string;
   userId: string;
+  name: string;
   domain: string;
   srcLang: string;
   tgtLang: string;
@@ -74,6 +75,7 @@ export interface TermListResponse {
  * Maps to backend CreateGlossaryDto.
  */
 export interface CreateGlossaryDto {
+  name: string;
   domain: string;
   srcLang: string;
   tgtLang: string;
@@ -84,6 +86,7 @@ export interface CreateGlossaryDto {
  * Maps to backend UpdateGlossaryDto. All fields optional.
  */
 export interface UpdateGlossaryDto {
+  name?: string;
   domain?: string;
   srcLang?: string;
   tgtLang?: string;

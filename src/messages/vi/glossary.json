@@ -20,6 +20,7 @@
     "deleteGlossary": "Xóa bảng thuật ngữ",
     "deleteGlossaryConfirm": "Bạn có chắc chắn muốn xóa bảng thuật ngữ này? Tất cả thuật ngữ bên trong sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.",
     "domain": "Lĩnh vực",
+    "name": "Tên",
     "srcLang": "Ngôn ngữ nguồn",
     "tgtLang": "Ngôn ngữ đích",
     "createdAt": "Ngày tạo",
@@ -49,6 +50,7 @@
     },
     "form": {
       "domainPlaceholder": "Chọn lĩnh vực",
+      "namePlaceholder": "VD: Thuật ngữ công nghệ",
       "srcLangPlaceholder": "Chọn ngôn ngữ nguồn",
       "tgtLangPlaceholder": "Chọn ngôn ngữ đích",
       "creating": "Đang tạo...",

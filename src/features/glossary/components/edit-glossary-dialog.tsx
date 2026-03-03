@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Dialog,
   DialogContent,
@@ -55,6 +56,7 @@ export function EditGlossaryDialog({
   const form = useForm<CreateGlossaryFormValues>({
     resolver: zodResolver(createGlossarySchema),
     defaultValues: {
+      name: '',
       domain: '',
       srcLang: '',
       tgtLang: '',
@@ -65,6 +67,7 @@ export function EditGlossaryDialog({
   useEffect(() => {
     if (glossary) {
       form.reset({
+        name: glossary.name,
         domain: glossary.domain,
         srcLang: glossary.srcLang,
         tgtLang: glossary.tgtLang,
@@ -99,6 +102,24 @@ export function EditGlossaryDialog({
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-4"
           >
+            {/* Name */}
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('name')}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={t('form.namePlaceholder')}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             {/* Domain */}
             <FormField
               control={form.control}

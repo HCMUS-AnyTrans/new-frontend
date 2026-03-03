@@ -110,9 +110,13 @@ export function GlossaryDetail({ glossaryId, onBack }: GlossaryDetailProps) {
         <div>
           <h2 className="flex items-center gap-2 text-lg font-semibold">
             <BookOpen className="size-5 text-primary" />
-            {t(`domains.${glossary.domain}`)}
+            {glossary.name}
           </h2>
           <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
+            <Badge variant="secondary" className="text-xs">
+              {t(`domains.${glossary.domain}`)}
+            </Badge>
+            <span className="text-muted-foreground mx-1">·</span>
             <Badge variant="outline" className="text-xs font-normal">
               {t(`languages.${glossary.srcLang}`)}
             </Badge>

@@ -56,6 +56,10 @@ export const glossaryLanguages: LanguageOption[] = [
 // ============================================================================
 
 export const createGlossarySchema = z.object({
+  name: z
+    .string()
+    .min(1, 'Vui lòng nhập tên bảng thuật ngữ')
+    .max(200, 'Tên không được vượt quá 200 ký tự'),
   domain: z
     .string()
     .min(1, 'Vui lòng chọn lĩnh vực')
@@ -76,6 +80,11 @@ export const createGlossarySchema = z.object({
 export type CreateGlossaryFormValues = z.infer<typeof createGlossarySchema>;
 
 export const updateGlossarySchema = z.object({
+  name: z
+    .string()
+    .min(1, 'Vui lòng nhập tên bảng thuật ngữ')
+    .max(200, 'Tên không được vượt quá 200 ký tự')
+    .optional(),
   domain: z
     .string()
     .min(1, 'Vui lòng chọn lĩnh vực')

@@ -20,6 +20,7 @@
     "deleteGlossary": "Delete Glossary",
     "deleteGlossaryConfirm": "Are you sure you want to delete this glossary? All terms within it will be permanently removed. This action cannot be undone.",
     "domain": "Domain",
+    "name": "Name",
     "srcLang": "Source Language",
     "tgtLang": "Target Language",
     "createdAt": "Created",
@@ -49,6 +50,7 @@
     },
     "form": {
       "domainPlaceholder": "Select domain",
+      "namePlaceholder": "e.g. My Tech Glossary",
       "srcLangPlaceholder": "Select source language",
       "tgtLangPlaceholder": "Select target language",
       "creating": "Creating...",

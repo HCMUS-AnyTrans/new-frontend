@@ -36,7 +36,7 @@ export function GlossaryCard({
       onClick={() => onClick(glossary)}
       role="button"
       tabIndex={0}
-      aria-label={`${t(`domains.${glossary.domain}`)} — ${t(`languages.${glossary.srcLang}`)} → ${t(`languages.${glossary.tgtLang}`)}`}
+      aria-label={`${glossary.name} — ${t(`languages.${glossary.srcLang}`)} → ${t(`languages.${glossary.tgtLang}`)}`}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -44,11 +44,9 @@ export function GlossaryCard({
         }
       }}
     >
-      {/* Header: domain + actions */}
-      <div className="flex items-start justify-between mb-3">
-        <Badge variant="secondary" className="text-xs">
-          {t(`domains.${glossary.domain}`)}
-        </Badge>
+      {/* Header: name + actions */}
+      <div className="flex items-start justify-between mb-1">
+        <h3 className="font-medium text-sm truncate pr-2">{glossary.name}</h3>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -83,6 +81,13 @@ export function GlossaryCard({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+      </div>
+
+      {/* Domain badge */}
+      <div className="mb-3">
+        <Badge variant="secondary" className="text-xs">
+          {t(`domains.${glossary.domain}`)}
+        </Badge>
       </div>
 
       {/* Language pair */}
