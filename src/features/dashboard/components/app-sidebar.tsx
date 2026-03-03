@@ -123,7 +123,7 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => {
-                  const isActive = pathnameWithoutLocale === item.href;
+                  const isActive = pathnameWithoutLocale === item.href || pathnameWithoutLocale.startsWith(item.href + '/');
                   const title = t(item.titleKey);
                   return (
                     <SidebarMenuItem key={item.href}>

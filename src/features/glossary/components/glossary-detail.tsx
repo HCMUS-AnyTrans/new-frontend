@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 import { ArrowLeft, ArrowRight, BookOpen, Upload } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -20,7 +21,6 @@ import type { Term, TermQueryParams } from '../types';
 
 interface GlossaryDetailProps {
   glossaryId: string;
-  onBack: () => void;
 }
 
 /**
@@ -28,9 +28,11 @@ interface GlossaryDetailProps {
  * Shows glossary metadata header, inline add-term form,
  * searchable/paginated term table, and edit/delete term dialogs.
  */
-export function GlossaryDetail({ glossaryId, onBack }: GlossaryDetailProps) {
+export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
   const t = useTranslations('glossary');
   const tTerms = useTranslations('glossary.terms');
+  const router = useRouter();
+  const locale = useLocale();
 
   // ─── Term search & pagination state ─────────────────────────────────
   const [termSearch, setTermSearch] = useState('');
@@ -97,7 +99,7 @@ export function GlossaryDetail({ glossaryId, onBack }: GlossaryDetailProps) {
         <Button
           variant="ghost"
           size="sm"
-          onClick={onBack}
+          onClick={() => router.push(`/${locale}/glossary`)}
           className="gap-1 text-muted-foreground hover:text-foreground -ml-2"
         >
           <ArrowLeft className="size-4" />

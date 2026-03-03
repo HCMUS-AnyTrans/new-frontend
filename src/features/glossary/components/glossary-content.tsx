@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Pagination } from '@/components/ui/pagination';
@@ -10,7 +11,6 @@ import { GlossaryFilters } from './glossary-filters';
 import { GlossaryList } from './glossary-list';
 import { GlossaryEmptyState } from './glossary-empty-state';
 import { GlossarySkeleton } from './glossary-skeleton';
-import { GlossaryDetail } from './glossary-detail';
 import { CreateGlossaryDialog } from './create-glossary-dialog';
 import { EditGlossaryDialog } from './edit-glossary-dialog';
 import { DeleteGlossaryDialog } from './delete-glossary-dialog';
@@ -22,11 +22,8 @@ import type { Glossary, GlossaryQueryParams } from '../types';
  */
 export function GlossaryContent() {
   const t = useTranslations('glossary');
-
-  // ─── View State ──────────────────────────────────────────────────────
-  const [selectedGlossaryId, setSelectedGlossaryId] = useState<string | null>(
-    null
-  );
+  const router = useRouter();
+  const locale = useLocale();
 
   // ─── Filter & Pagination State ──────────────────────────────────────
   const [search, setSearch] = useState('');
@@ -81,12 +78,8 @@ export function GlossaryContent() {
   }, []);
 
   const handleGlossaryClick = useCallback((glossary: Glossary) => {
-    setSelectedGlossaryId(glossary.id);
-  }, []);
-
-  const handleBackToList = useCallback(() => {
-    setSelectedGlossaryId(null);
-  }, []);
+    router.push(`/${locale}/glossary/${glossary.id}`);
+  }, [router, locale]);
 
   const handleEdit = useCallback((glossary: Glossary) => {
     setSelectedGlossary(glossary);
@@ -97,16 +90,6 @@ export function GlossaryContent() {
     setSelectedGlossary(glossary);
     setDeleteOpen(true);
   }, []);
-
-  // ─── Detail View ─────────────────────────────────────────────────────
-  if (selectedGlossaryId) {
-    return (
-      <GlossaryDetail
-        glossaryId={selectedGlossaryId}
-        onBack={handleBackToList}
-      />
-    );
-  }
 
   // ─── Loading State ──────────────────────────────────────────────────
   if (isLoading || isError) {
