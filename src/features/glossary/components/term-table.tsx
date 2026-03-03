@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Pencil, Trash2, MoreHorizontal } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -11,12 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import type { Term } from '../types';
 
 interface TermTableProps {
@@ -27,7 +21,7 @@ interface TermTableProps {
 
 /**
  * Presentational table of glossary terms.
- * Each row shows source → target and an actions dropdown.
+ * Each row shows source → target and inline edit/delete buttons.
  */
 export function TermTable({ terms, onEdit, onDelete }: TermTableProps) {
   const t = useTranslations('glossary.terms');
@@ -44,14 +38,14 @@ export function TermTable({ terms, onEdit, onDelete }: TermTableProps) {
             <TableHead className="text-xs font-medium text-muted-foreground">
               {t('tgtTerm')}
             </TableHead>
-            <TableHead className="w-[60px] text-right text-xs font-medium text-muted-foreground">
+            <TableHead className="w-[80px] text-right text-xs font-medium text-muted-foreground">
               {tCommon('actions')}
             </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {terms.map((term) => (
-            <TableRow key={term.id} className="group">
+            <TableRow key={term.id}>
               <TableCell>
                 <span className="text-sm font-medium text-foreground">
                   {term.srcTerm}
@@ -63,31 +57,26 @@ export function TermTable({ terms, onEdit, onDelete }: TermTableProps) {
                 </span>
               </TableCell>
               <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-7 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity"
-                    >
-                      <MoreHorizontal className="size-4" />
-                      <span className="sr-only">{tCommon('actions')}</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => onEdit(term)}>
-                      <Pencil className="size-4" />
-                      {tCommon('edit')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-destructive focus:text-destructive"
-                      onClick={() => onDelete(term)}
-                    >
-                      <Trash2 className="size-4" />
-                      {tCommon('delete')}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex items-center justify-end gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-7"
+                    onClick={() => onEdit(term)}
+                  >
+                    <Pencil className="size-3.5" />
+                    <span className="sr-only">{tCommon('edit')}</span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-7 text-destructive hover:text-destructive"
+                    onClick={() => onDelete(term)}
+                  >
+                    <Trash2 className="size-3.5" />
+                    <span className="sr-only">{tCommon('delete')}</span>
+                  </Button>
+                </div>
               </TableCell>
             </TableRow>
           ))}
