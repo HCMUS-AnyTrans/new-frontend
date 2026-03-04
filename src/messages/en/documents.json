@@ -11,9 +11,14 @@
     "upload": {
       "dropzone": "Drag and drop your document here",
       "or": "or",
+      "dragHint": "or drag and drop",
       "browse": "Browse files",
+      "replaceFile": "Replace file",
       "supportedFormats": "Supported: {extensions} (max 50MB)",
+      "maxSize": "Maximum file size: 50MB",
+      "secureHint": "Your file is processed securely",
       "valid": "Valid",
+      "fileReady": "File is ready",
       "next": "Continue",
       "errorUnsupported": "Unsupported file format. Please select a PDF, DOCX, or PPTX file.",
       "errorTooLarge": "File is too large. Maximum size is 50MB."
