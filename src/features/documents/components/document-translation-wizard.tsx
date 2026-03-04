@@ -21,6 +21,7 @@ import {
   useEstimateCredits,
 } from "../hooks"
 import { useGlossaries, useTerms } from "@/features/glossary"
+import { useWallet } from "@/features/dashboard/hooks"
 
 // =============== MAIN COMPONENT ===============
 
@@ -53,6 +54,7 @@ export function DocumentTranslationWizard() {
   })
 
   const { download, isDownloading } = useDownloadFile()
+  const { wallet, isLoading: isLoadingWallet } = useWallet()
 
   const glossaryFilters = useMemo(
     () => ({
@@ -232,6 +234,8 @@ export function DocumentTranslationWizard() {
                 ? String(estimateError.message)
                 : null
             }
+            currentBalance={wallet?.balance}
+            isLoadingBalance={isLoadingWallet}
             onBack={handleConfigBack}
             onStart={handleStartTranslation}
             isLoading={flowStatus !== "idle" && flowStatus !== "failed"}

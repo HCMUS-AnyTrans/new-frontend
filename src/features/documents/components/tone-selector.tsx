@@ -23,7 +23,7 @@ export function ToneSelector({ value, onChange }: ToneSelectorProps) {
             type="button"
             onClick={() => onChange(tone.id)}
             className={cn(
-              "flex flex-col items-start rounded-lg border p-2.5 text-left transition-all",
+              "flex min-h-20 flex-col items-start rounded-lg border p-2.5 text-left transition-all",
               value === tone.id
                 ? "border-primary bg-primary/5"
                 : "border-border bg-card hover:bg-muted/50"

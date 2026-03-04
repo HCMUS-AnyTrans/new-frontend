@@ -39,13 +39,13 @@ export function LanguageSelector({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-3">
         <CardTitle className="text-base">{t("configure.language")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col items-center gap-4 md:flex-row">
+        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-end">
           {/* Source language */}
-          <div className="w-full flex-1">
+          <div className="w-full">
             <Label htmlFor="src-lang" className="mb-2 block">
               {t("configure.from")}
             </Label>
@@ -69,13 +69,13 @@ export function LanguageSelector({
             size="icon"
             onClick={swapLanguages}
             disabled={srcLang === "auto"}
-            className="mt-6 shrink-0"
+            className="mx-auto shrink-0 md:mb-0.5"
           >
             <ArrowLeftRight className="size-4" />
           </Button>
 
           {/* Target language */}
-          <div className="w-full flex-1">
+          <div className="w-full">
             <Label htmlFor="tgt-lang" className="mb-2 block">
               {t("configure.to")}
             </Label>

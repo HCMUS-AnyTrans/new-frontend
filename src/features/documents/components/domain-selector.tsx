@@ -25,7 +25,7 @@ export function DomainSelector({ value, onChange }: DomainSelectorProps) {
               type="button"
               onClick={() => onChange(domain.id)}
               className={cn(
-                "flex flex-col items-center gap-1 rounded-lg border p-2 text-center transition-all",
+                "flex min-h-20 flex-col items-center justify-center gap-1 rounded-lg border p-2 text-center transition-all",
                 value === domain.id
                   ? "border-primary bg-primary/5 text-primary"
                   : "border-border bg-card text-foreground hover:bg-muted/50"
