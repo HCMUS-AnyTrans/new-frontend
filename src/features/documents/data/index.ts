@@ -1,5 +1,16 @@
 import type { Language, Domain, Tone, TranslationConfig } from "../types"
-
+import {
+  Globe,
+  Laptop,
+  Stethoscope,
+  Scale,
+  Landmark,
+  Megaphone,
+  GraduationCap,
+  Cog,
+  FlaskConical,
+  FolderOpen,
+} from "lucide-react"
 // =============== LANGUAGES ===============
 
 export const languages: Language[] = [
@@ -20,12 +31,16 @@ export const targetLanguages = languages.filter((l) => l.code !== "auto")
 // =============== DOMAINS ===============
 
 export const domains: Domain[] = [
-  { id: "general", name: "Tổng quát", icon: "📋" },
-  { id: "tech", name: "Công nghệ", icon: "💻" },
-  { id: "medical", name: "Y tế", icon: "⚕️" },
-  { id: "legal", name: "Pháp lý", icon: "⚖️" },
-  { id: "finance", name: "Tài chính", icon: "💰" },
-  { id: "marketing", name: "Marketing", icon: "📢" },
+  { id: "general", name: "Tổng quát", icon: Globe },
+  { id: "technology", name: "Công nghệ", icon: Laptop },
+  { id: "medical", name: "Y tế", icon: Stethoscope },
+  { id: "legal", name: "Pháp lý", icon: Scale },
+  { id: "finance", name: "Tài chính", icon: Landmark },
+  { id: "marketing", name: "Marketing", icon: Megaphone },
+  { id: "education", name: "Giáo dục", icon: GraduationCap },
+  { id: "engineering", name: "Kỹ thuật", icon: Cog },
+  { id: "science", name: "Khoa học", icon: FlaskConical },
+  { id: "other", name: "Khác", icon: FolderOpen },
 ]
 
 // =============== TONES ===============
@@ -44,5 +59,6 @@ export const defaultConfig: TranslationConfig = {
   tgtLang: "vi",
   domain: "general",
   tone: "professional",
+  selectedGlossaryId: null,
   manualTerms: [],
 }

@@ -10,6 +10,7 @@ import {
   createTranslationJob,
   getTranslationJob,
   getFileDownloadUrl,
+  estimateTranslationCredits,
 } from '../api/documents.api';
 import type {
   TranslationFlowStatus,
@@ -17,6 +18,7 @@ import type {
   CreateTranslationJobDto,
   TranslationConfig,
   LanguageCode,
+  CreditEstimateResponse,
 } from '../types';
 import { LANGUAGE_CODE_TO_API_NAME } from '../types';
 
@@ -40,7 +42,11 @@ interface UseUploadAndTranslateReturn extends UploadAndTranslateState {
    * Start the full flow: request presigned URL → upload file → confirm → create job.
    * Called when user clicks "Start Translation" in Step 2.
    */
-  startTranslation: (file: File, config: TranslationConfig) => Promise<void>;
+  startTranslation: (
+    file: File,
+    config: TranslationConfig,
+    glossaryTerms?: Array<{ srcTerm: string; tgtTerm: string }>
+  ) => Promise<void>;
   /** Reset the flow state back to idle */
   reset: () => void;
 }
@@ -58,7 +64,8 @@ const initialState: UploadAndTranslateState = {
  */
 function buildJobDto(
   fileId: string,
-  config: TranslationConfig
+  config: TranslationConfig,
+  glossaryTerms: Array<{ srcTerm: string; tgtTerm: string }> = []
 ): CreateTranslationJobDto {
   const dto: CreateTranslationJobDto = {
     file_id: fileId,
@@ -72,12 +79,25 @@ function buildJobDto(
     doc_domain: config.domain || undefined,
   };
 
-  // Filter out empty manual terms and map to backend format
-  const validTerms = config.manualTerms.filter(
-    (t) => t.src.trim() !== '' && t.tgt.trim() !== ''
-  );
-  if (validTerms.length > 0) {
-    dto.user_glossary = validTerms.map((t) => ({
+  // Merge selected glossary terms + manual terms and remove duplicate source terms.
+  // Manual entries win when the same source appears.
+  const mergedTerms = new Map<string, { src: string; tgt: string }>();
+  glossaryTerms.forEach((term) => {
+    const src = term.srcTerm.trim();
+    const tgt = term.tgtTerm.trim();
+    if (!src || !tgt) return;
+    mergedTerms.set(src.toLowerCase(), { src, tgt });
+  });
+
+  config.manualTerms.forEach((term) => {
+    const src = term.src.trim();
+    const tgt = term.tgt.trim();
+    if (!src || !tgt) return;
+    mergedTerms.set(src.toLowerCase(), { src, tgt });
+  });
+
+  if (mergedTerms.size > 0) {
+    dto.user_glossary = Array.from(mergedTerms.values()).map((t) => ({
       src_lang: t.src.trim(),
       tgt_lang: t.tgt.trim(),
     }));
@@ -96,7 +116,11 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
   }, []);
 
   const startTranslation = useCallback(
-    async (file: File, config: TranslationConfig) => {
+    async (
+      file: File,
+      config: TranslationConfig,
+      glossaryTerms: Array<{ srcTerm: string; tgtTerm: string }> = []
+    ) => {
       abortRef.current = false;
 
       try {
@@ -113,6 +137,9 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
           mime_type: file.type,
           file_size: file.size,
           file_type: 'doc',
+          metadata: {
+            charCount: Math.max(1, Math.round(file.size / 4)),
+          },
         });
 
         if (abortRef.current) return;
@@ -142,7 +169,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
         // Step 4: Create translation job
         setState((prev) => ({ ...prev, flowStatus: 'creating' }));
 
-        const jobDto = buildJobDto(uploadResponse.file_id, config);
+        const jobDto = buildJobDto(uploadResponse.file_id, config, glossaryTerms);
         const idempotencyKey = `doc-${uploadResponse.file_id}-${Date.now()}`;
         const jobResponse = await createTranslationJob(jobDto, idempotencyKey);
 
@@ -158,10 +185,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
       } catch (err: unknown) {
         if (abortRef.current) return;
 
-        const errorMessage =
-          err && typeof err === 'object' && 'message' in err
-            ? (err as { message: string }).message
-            : 'An unexpected error occurred';
+        const errorMessage = extractErrorMessage(err);
 
         setState((prev) => ({
           ...prev,
@@ -216,6 +240,30 @@ export function useTranslationJob(
   return query;
 }
 
+interface UseEstimateCreditsOptions {
+  enabled?: boolean;
+}
+
+export function useEstimateCredits(
+  charCount: number,
+  isPdf: boolean,
+  options: UseEstimateCreditsOptions = {}
+) {
+  const { enabled = true } = options;
+
+  return useQuery<CreditEstimateResponse>({
+    queryKey: ['translations', 'estimate-credits', charCount, isPdf],
+    queryFn: () =>
+      estimateTranslationCredits({
+        job_type: 'doc-trans',
+        is_pdf: isPdf,
+        char_count: charCount,
+      }),
+    enabled: enabled && charCount > 0,
+    staleTime: 30 * 1000,
+  });
+}
+
 // ============================================================================
 // useDownloadFile — fetches presigned download URL and triggers browser download
 // ============================================================================
@@ -258,10 +306,7 @@ export function useDownloadFile(): UseDownloadFileReturn {
         document.body.removeChild(a);
       } catch (err: unknown) {
         if (!mountedRef.current) return;
-        const errorMessage =
-          err && typeof err === 'object' && 'message' in err
-            ? (err as { message: string }).message
-            : 'Download failed';
+        const errorMessage = extractErrorMessage(err, 'Download failed');
         setError(errorMessage);
       } finally {
         if (mountedRef.current) {
@@ -273,4 +318,19 @@ export function useDownloadFile(): UseDownloadFileReturn {
   );
 
   return { download, isDownloading, error };
+}
+
+function extractErrorMessage(
+  err: unknown,
+  fallback = 'An unexpected error occurred'
+): string {
+  if (!err || typeof err !== 'object') return fallback;
+
+  if ('message' in err) {
+    const message = (err as { message?: string | string[] }).message;
+    if (Array.isArray(message)) return message.join(', ');
+    if (typeof message === 'string' && message.length > 0) return message;
+  }
+
+  return fallback;
 }

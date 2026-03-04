@@ -31,10 +31,24 @@
       "toneLabel": "Giọng điệu dịch",
       "glossary": "Glossary (Bảng thuật ngữ)",
       "glossaryDescription": "Thêm thuật ngữ chuyên ngành để dịch chính xác hơn",
+      "savedGlossaryLabel": "Glossary đã lưu",
+      "savedGlossaryPlaceholder": "Chọn glossary",
+      "savedGlossaryNone": "Không dùng",
+      "savedGlossaryLoading": "Đang tải danh sách glossary...",
+      "savedGlossaryEmpty": "Không có glossary phù hợp với cặp ngôn ngữ này.",
+      "savedGlossaryTermsLoading": "Đang tải thuật ngữ glossary...",
+      "savedGlossaryTermsCount": "Sẽ áp dụng {count} thuật ngữ",
       "addTerm": "Thêm thuật ngữ",
       "sourceTerm": "Từ gốc",
       "translatedTerm": "Bản dịch",
       "noTerms": "Chưa có thuật ngữ nào. Nhấn nút bên dưới để thêm.",
+      "estimate": {
+        "title": "Ước tính credits",
+        "loading": "Đang tính credits...",
+        "total": "Tổng ước tính",
+        "credits": "credits",
+        "note": "Kết quả ước tính có thể chênh lệch nhẹ sau khi trích xuất nội dung thực tế."
+      },
       "back": "Quay lại",
       "startTranslation": "Bắt đầu dịch",
       "processing": "Đang xử lý..."
@@ -69,11 +83,15 @@
     },
     "domains": {
       "general": "Tổng quát",
-      "tech": "Công nghệ",
+      "technology": "Công nghệ",
       "medical": "Y tế",
       "legal": "Pháp lý",
       "finance": "Tài chính",
-      "marketing": "Marketing"
+      "marketing": "Marketing",
+      "education": "Giáo dục",
+      "engineering": "Kỹ thuật",
+      "science": "Khoa học",
+      "other": "Khác"
     },
     "tones": {
       "formal": "Trang trọng",

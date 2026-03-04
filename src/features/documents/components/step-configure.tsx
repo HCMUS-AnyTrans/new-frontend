@@ -8,10 +8,19 @@ import { DomainSelector } from "./domain-selector"
 import { ToneSelector } from "./tone-selector"
 import { GlossarySection } from "./glossary-section"
 import type { TranslationConfig, LanguageCode } from "../types"
+import type { Glossary, Term } from "@/features/glossary"
+import type { CreditEstimateResponse } from "../types"
 
 interface StepConfigureProps {
   config: TranslationConfig
   onConfigChange: (updates: Partial<TranslationConfig>) => void
+  glossaries: Glossary[]
+  selectedGlossaryTerms: Term[]
+  isLoadingGlossaries: boolean
+  isLoadingGlossaryTerms: boolean
+  estimate: CreditEstimateResponse | undefined
+  isEstimating: boolean
+  estimateError: string | null
   onBack: () => void
   onStart: () => void
   isLoading?: boolean
@@ -20,6 +29,13 @@ interface StepConfigureProps {
 export function StepConfigure({
   config,
   onConfigChange,
+  glossaries,
+  selectedGlossaryTerms,
+  isLoadingGlossaries,
+  isLoadingGlossaryTerms,
+  estimate,
+  isEstimating,
+  estimateError,
   onBack,
   onStart,
   isLoading,
@@ -75,11 +91,57 @@ export function StepConfigure({
 
       {/* Glossary Section — manual inline terms only */}
       <GlossarySection
+        glossaries={glossaries}
+        selectedGlossaryId={config.selectedGlossaryId}
+        selectedGlossaryTermCount={selectedGlossaryTerms.length}
+        isLoadingGlossaries={isLoadingGlossaries}
+        isLoadingGlossaryTerms={isLoadingGlossaryTerms}
+        onSelectGlossary={(id) => onConfigChange({ selectedGlossaryId: id })}
         manualTerms={config.manualTerms}
         onAddManualTerm={addManualTerm}
         onUpdateManualTerm={updateManualTerm}
         onRemoveManualTerm={removeManualTerm}
       />
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">{t("estimate.title")}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {isEstimating ? (
+            <p className="text-sm text-muted-foreground">{t("estimate.loading")}</p>
+          ) : null}
+
+          {!isEstimating && estimate ? (
+            <>
+              <div className="rounded-lg border bg-muted/30 p-3">
+                <p className="text-sm text-muted-foreground">{t("estimate.total")}</p>
+                <p className="text-xl font-semibold text-foreground">
+                  {estimate.totalCredits.toLocaleString()} {t("estimate.credits")}
+                </p>
+              </div>
+              <div className="space-y-2">
+                {estimate.breakdown.map((item) => (
+                  <div
+                    key={item.code}
+                    className="flex items-center justify-between text-sm text-muted-foreground"
+                  >
+                    <span>{item.name}</span>
+                    <span className="font-medium text-foreground">
+                      {item.credits.toLocaleString()} {t("estimate.credits")}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground">{t("estimate.note")}</p>
+            </>
+          ) : null}
+
+          {!isEstimating && !estimate && estimateError ? (
+            <p className="text-sm text-destructive">{estimateError}</p>
+          ) : null}
+        </CardContent>
+      </Card>
 
       {/* Action buttons */}
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">

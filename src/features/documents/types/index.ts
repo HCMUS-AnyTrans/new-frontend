@@ -1,3 +1,5 @@
+import type { LucideIcon } from "lucide-react"
+
 // =============== LANGUAGE TYPES ===============
 
 export type LanguageCode =
@@ -38,7 +40,7 @@ export const LANGUAGE_CODE_TO_API_NAME: Record<Exclude<LanguageCode, "auto">, st
 export interface Domain {
   id: string
   name: string
-  icon: string
+  icon: LucideIcon
 }
 
 // =============== TONE TYPES ===============
@@ -68,6 +70,7 @@ export interface UploadedFile {
   name: string
   size: number
   type: string
+  charCount: number
   file: File
 }
 
@@ -98,7 +101,10 @@ export interface RequestUploadUrlDto {
   file_size: number
   file_type: "doc" | "sub"
   sha256?: string
-  metadata?: Record<string, unknown>
+  metadata: {
+    charCount: number
+    language?: string
+  }
 }
 
 /** POST /files/upload/request — response */
@@ -125,7 +131,31 @@ export interface FileResponse {
   type: string
   created_at: string
   store_until: string
+  metadata?: {
+    charCount: number
+    language?: string
+  } | null
   is_expired: boolean
+}
+
+export interface CreditEstimateDto {
+  job_type: "doc-trans" | "sub-trans"
+  is_pdf: boolean
+  char_count: number
+}
+
+export interface CreditEstimateItem {
+  code: string
+  name: string
+  unit: string
+  quantity: number
+  price: number
+  credits: number
+}
+
+export interface CreditEstimateResponse {
+  totalCredits: number
+  breakdown: CreditEstimateItem[]
 }
 
 /** POST /translations/doc — request body */
@@ -182,6 +212,7 @@ export interface TranslationConfig {
   tgtLang: LanguageCode
   domain: string
   tone: string
+  selectedGlossaryId: string | null
   manualTerms: ManualTerm[]
 }
 

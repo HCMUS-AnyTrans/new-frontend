@@ -6,8 +6,22 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import type { ManualTerm } from "../types"
+import type { Glossary } from "@/features/glossary"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface GlossarySectionProps {
+  glossaries: Glossary[]
+  selectedGlossaryId: string | null
+  selectedGlossaryTermCount: number
+  isLoadingGlossaries: boolean
+  isLoadingGlossaryTerms: boolean
+  onSelectGlossary: (id: string | null) => void
   manualTerms: ManualTerm[]
   onAddManualTerm: () => void
   onUpdateManualTerm: (id: string, field: "src" | "tgt", value: string) => void
@@ -15,6 +29,12 @@ interface GlossarySectionProps {
 }
 
 export function GlossarySection({
+  glossaries,
+  selectedGlossaryId,
+  selectedGlossaryTermCount,
+  isLoadingGlossaries,
+  isLoadingGlossaryTerms,
+  onSelectGlossary,
   manualTerms,
   onAddManualTerm,
   onUpdateManualTerm,
@@ -29,6 +49,42 @@ export function GlossarySection({
         <CardDescription>{t("glossaryDescription")}</CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="mb-4 space-y-2">
+          <p className="text-sm font-medium text-foreground">{t("savedGlossaryLabel")}</p>
+          <Select
+            value={selectedGlossaryId ?? "none"}
+            onValueChange={(value) => onSelectGlossary(value === "none" ? null : value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder={t("savedGlossaryPlaceholder")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">{t("savedGlossaryNone")}</SelectItem>
+              {glossaries.map((glossary) => (
+                <SelectItem key={glossary.id} value={glossary.id}>
+                  {glossary.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {isLoadingGlossaries ? (
+            <p className="text-xs text-muted-foreground">{t("savedGlossaryLoading")}</p>
+          ) : null}
+
+          {!isLoadingGlossaries && glossaries.length === 0 ? (
+            <p className="text-xs text-muted-foreground">{t("savedGlossaryEmpty")}</p>
+          ) : null}
+
+          {selectedGlossaryId ? (
+            <p className="text-xs text-muted-foreground">
+              {isLoadingGlossaryTerms
+                ? t("savedGlossaryTermsLoading")
+                : t("savedGlossaryTermsCount", { count: selectedGlossaryTermCount })}
+            </p>
+          ) : null}
+        </div>
+
         <div className="space-y-3">
           {manualTerms.map((term) => (
             <div key={term.id} className="flex gap-3">

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { useTranslations } from "next-intl"
 import { TranslationStepper } from "./translation-stepper"
 import { StepUpload } from "./step-upload"
@@ -18,7 +18,9 @@ import {
   useUploadAndTranslate,
   useTranslationJob,
   useDownloadFile,
+  useEstimateCredits,
 } from "../hooks"
+import { useGlossaries, useTerms } from "@/features/glossary"
 
 // =============== MAIN COMPONENT ===============
 
@@ -51,6 +53,46 @@ export function DocumentTranslationWizard() {
   })
 
   const { download, isDownloading } = useDownloadFile()
+
+  const glossaryFilters = useMemo(
+    () => ({
+      page: 1,
+      limit: 100,
+      srcLang: config.srcLang === "auto" ? undefined : config.srcLang,
+      tgtLang: config.tgtLang,
+    }),
+    [config.srcLang, config.tgtLang]
+  )
+
+  const {
+    glossaries = [],
+    isLoading: isLoadingGlossaries,
+    isFetching: isFetchingGlossaries,
+  } = useGlossaries(glossaryFilters)
+
+  const activeSelectedGlossaryId =
+    config.selectedGlossaryId && glossaries.some((item) => item.id === config.selectedGlossaryId)
+      ? config.selectedGlossaryId
+      : null
+
+  const {
+    terms: selectedGlossaryTerms = [],
+    isLoading: isLoadingGlossaryTerms,
+    isFetching: isFetchingGlossaryTerms,
+  } = useTerms(activeSelectedGlossaryId, {
+    page: 1,
+    limit: 100,
+    sortBy: "srcTerm",
+    sortOrder: "asc",
+  })
+
+  const {
+    data: estimate,
+    isLoading: isEstimating,
+    error: estimateError,
+  } = useEstimateCredits(file?.charCount ?? 0, file?.type === "application/pdf", {
+    enabled: step === 2 && !!file,
+  })
 
   // Update flow status when job polling returns a terminal state
   // The wizard tracks "succeeded" / "failed" based on job polling data
@@ -86,6 +128,7 @@ export function DocumentTranslationWizard() {
         name: f.name,
         size: f.size,
         type: f.type,
+        charCount: Math.max(1, Math.round(f.size / 4)),
         file: f,
       })
       setFileError(null)
@@ -128,9 +171,11 @@ export function DocumentTranslationWizard() {
     // Move to step 3 immediately to show upload progress
     goToStep(3)
 
+    const usableGlossaryTerms = activeSelectedGlossaryId ? selectedGlossaryTerms : []
+
     // Start the real upload → confirm → create job flow
-    startTranslation(file.file, config)
-  }, [file, config, goToStep, startTranslation])
+    startTranslation(file.file, config, usableGlossaryTerms)
+  }, [file, config, activeSelectedGlossaryId, selectedGlossaryTerms, goToStep, startTranslation])
 
   // =============== RESULT HANDLERS ===============
 
@@ -174,8 +219,19 @@ export function DocumentTranslationWizard() {
 
         {step === 2 && (
           <StepConfigure
-            config={config}
+            config={{ ...config, selectedGlossaryId: activeSelectedGlossaryId }}
             onConfigChange={handleConfigChange}
+            glossaries={glossaries}
+            selectedGlossaryTerms={selectedGlossaryTerms}
+            isLoadingGlossaries={isLoadingGlossaries || isFetchingGlossaries}
+            isLoadingGlossaryTerms={isLoadingGlossaryTerms || isFetchingGlossaryTerms}
+            estimate={estimate}
+            isEstimating={isEstimating}
+            estimateError={
+              estimateError && typeof estimateError === "object" && "message" in estimateError
+                ? String(estimateError.message)
+                : null
+            }
             onBack={handleConfigBack}
             onStart={handleStartTranslation}
             isLoading={flowStatus !== "idle" && flowStatus !== "failed"}

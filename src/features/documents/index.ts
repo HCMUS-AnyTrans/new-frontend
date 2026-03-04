@@ -26,6 +26,9 @@ export type {
   UploadUrlResponse,
   UpdateFileStatusDto,
   FileResponse,
+  CreditEstimateDto,
+  CreditEstimateItem,
+  CreditEstimateResponse,
   CreateTranslationJobDto,
   TranslationJobResponse,
   FileDownloadUrlResponse,
@@ -47,5 +50,6 @@ export {
 export {
   useUploadAndTranslate,
   useTranslationJob,
+  useEstimateCredits,
   useDownloadFile,
 } from "./hooks"

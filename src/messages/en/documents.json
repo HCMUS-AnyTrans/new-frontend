@@ -31,10 +31,24 @@
       "toneLabel": "Translation tone",
       "glossary": "Glossary (Terminology)",
       "glossaryDescription": "Add specialized terms for more accurate translation",
+      "savedGlossaryLabel": "Saved glossary",
+      "savedGlossaryPlaceholder": "Choose a glossary",
+      "savedGlossaryNone": "None",
+      "savedGlossaryLoading": "Loading glossaries...",
+      "savedGlossaryEmpty": "No saved glossaries match this language pair.",
+      "savedGlossaryTermsLoading": "Loading glossary terms...",
+      "savedGlossaryTermsCount": "{count} terms will be included",
       "addTerm": "Add term",
       "sourceTerm": "Source term",
       "translatedTerm": "Translation",
       "noTerms": "No terms added yet. Click the button below to add.",
+      "estimate": {
+        "title": "Credit estimate",
+        "loading": "Calculating credits...",
+        "total": "Estimated total",
+        "credits": "credits",
+        "note": "Estimate may vary slightly based on final extracted content."
+      },
       "back": "Back",
       "startTranslation": "Start translation",
       "processing": "Processing..."
@@ -69,11 +83,15 @@
     },
     "domains": {
       "general": "General",
-      "tech": "Technology",
+      "technology": "Technology",
       "medical": "Medical",
       "legal": "Legal",
       "finance": "Finance",
-      "marketing": "Marketing"
+      "marketing": "Marketing",
+      "education": "Education",
+      "engineering": "Engineering",
+      "science": "Science",
+      "other": "Other"
     },
     "tones": {
       "formal": "Formal",

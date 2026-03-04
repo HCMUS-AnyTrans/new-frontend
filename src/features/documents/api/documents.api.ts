@@ -5,6 +5,8 @@ import type {
   UploadUrlResponse,
   UpdateFileStatusDto,
   FileResponse,
+  CreditEstimateDto,
+  CreditEstimateResponse,
   CreateTranslationJobDto,
   TranslationJobResponse,
   FileDownloadUrlResponse,
@@ -89,6 +91,20 @@ export async function createTranslationJob(
     '/translations/doc',
     dto,
     { headers }
+  );
+  return response.data;
+}
+
+/**
+ * Estimate required credits for a translation request.
+ * POST /translations/estimate-credits
+ */
+export async function estimateTranslationCredits(
+  dto: CreditEstimateDto
+): Promise<CreditEstimateResponse> {
+  const response = await apiClient.post<CreditEstimateResponse>(
+    '/translations/estimate-credits',
+    dto
   );
   return response.data;
 }
