@@ -1,6 +1,6 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { Link } from "@/i18n/navigation"
 import { Check, Star, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -19,6 +19,29 @@ export function PricingCard({
   className,
 }: PricingCardProps) {
   const t = useTranslations("marketing.pricingPage")
+  const locale = useLocale()
+
+  const numberFormatter = new Intl.NumberFormat(
+    locale === "vi" ? "vi-VN" : "en-US",
+    {
+      maximumFractionDigits: 2,
+    }
+  )
+
+  const creditsLabel = new Intl.NumberFormat(
+    locale === "vi" ? "vi-VN" : "en-US"
+  ).format(plan.credits)
+
+  const currencySymbol =
+    plan.currency === "VND"
+      ? "đ"
+      : plan.currency === "USD"
+        ? "$"
+        : plan.currency
+  const priceLabel = numberFormatter.format(plan.price)
+  const unitPrice = plan.credits > 0 ? plan.price / plan.credits : 0
+  const unitPriceLabel = numberFormatter.format(unitPrice)
+
   return (
     <div
       className={cn(
@@ -51,7 +74,7 @@ export function PricingCard({
         <div className="mb-6">
           <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
           <p className="text-2xl font-extrabold text-primary mt-2">
-            {plan.credits}{" "}
+            {creditsLabel}{" "}
             <span className="text-base font-medium text-muted-foreground">
               {t("credits")}
             </span>
@@ -62,20 +85,21 @@ export function PricingCard({
         <div className="mb-6">
           <div className="flex items-baseline gap-1">
             <span className="text-4xl font-extrabold text-foreground">
-              {plan.price}
+              {priceLabel}
             </span>
-            <span className="text-muted-foreground">đ</span>
+            <span className="text-muted-foreground">{currencySymbol}</span>
           </div>
           <div className="mt-2 flex items-center gap-2">
             <span className="text-sm font-medium text-primary">
-              {plan.unitPrice}/credit
+              ~{unitPriceLabel}
+              {currencySymbol}/{t("perCredit")}
             </span>
           </div>
-          {plan.savings && (
+          {plan.discount ? (
             <span className="inline-block mt-3 px-3 py-1 rounded-full bg-success/10 text-success text-xs font-semibold border border-success/20">
-              {plan.savings}
+              {t("savePercent", { percent: plan.discount })}
             </span>
-          )}
+          ) : null}
         </div>
 
         {/* Features */}

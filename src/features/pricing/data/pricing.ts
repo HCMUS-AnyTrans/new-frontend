@@ -13,11 +13,10 @@ import {
 export interface Plan {
   id: string
   name: string
-  credits: string
-  price: string
-  originalPrice?: string
-  unitPrice: string
-  savings?: string
+  credits: number
+  price: number
+  currency: string
+  discount?: number | null
   popular: boolean
   checkoutUrl: string
 }
@@ -44,42 +43,6 @@ export interface FAQItem {
   question: string
   answer: string
 }
-
-// ============================================================================
-// PRICING PLANS - Source of Truth
-// ============================================================================
-
-export const pricingPlans: Plan[] = [
-  {
-    id: "starter",
-    name: "Starter",
-    credits: "100.000",
-    price: "99.000",
-    unitPrice: "~1đ",
-    popular: false,
-    checkoutUrl: "/checkout?plan=starter",
-  },
-  {
-    id: "popular",
-    name: "Popular",
-    credits: "500.000",
-    price: "399.000",
-    unitPrice: "~0.8đ",
-    savings: "Tiết kiệm 20%",
-    popular: true,
-    checkoutUrl: "/checkout?plan=popular",
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    credits: "2.000.000",
-    price: "999.000",
-    unitPrice: "~0.5đ",
-    savings: "Tiết kiệm 50%",
-    popular: false,
-    checkoutUrl: "/checkout?plan=pro",
-  },
-]
 
 // ============================================================================
 // USAGE EXAMPLES - For pricing page

@@ -215,7 +215,12 @@
       "ctaSecondary": "Xem demo",
       "popular": "Phổ biến nhất",
       "credits": "credits",
+      "perCredit": "credit",
       "buyNow": "Mua ngay",
+      "savePercent": "Tiết kiệm {percent}%",
+      "packagesError": "Không thể tải gói credit lúc này.",
+      "packagesEmpty": "Hiện chưa có gói credit khả dụng.",
+      "retry": "Thử lại",
       "usageSection": {
         "title": "Sử dụng credits trong thực tế"
       },
@@ -279,6 +284,22 @@
         "Hỗ trợ 24/7 dedicated",
         "Tích hợp tùy chỉnh"
       ]
+    },
+    "checkout": {
+      "eyebrow": "Thanh toán an toàn",
+      "title": "Xác nhận gói credit",
+      "subtitle": "Hoàn tất thanh toán VNPay để nạp credit ngay.",
+      "total": "Tổng cộng",
+      "perCredit": "Ước tính mỗi credit",
+      "discount": "Tiết kiệm {percent}% cho gói này",
+      "bonus": "Tặng thêm {percent}% credit",
+      "payNow": "Thanh toán VNPay",
+      "processing": "Đang chuyển đến VNPay...",
+      "paymentError": "Không thể tạo thanh toán. Vui lòng thử lại.",
+      "packageNotFound": "Không tìm thấy gói hoặc gói đã ngừng bán.",
+      "backToPricing": "Quay lại bảng giá",
+      "packagesError": "Không thể tải gói credit lúc này.",
+      "retry": "Thử lại"
     },
     "testimonials": {
       "title": "Khách hàng nói gì",

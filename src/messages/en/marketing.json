@@ -215,7 +215,12 @@
       "ctaSecondary": "Watch demo",
       "popular": "Most popular",
       "credits": "credits",
+      "perCredit": "credit",
       "buyNow": "Buy now",
+      "savePercent": "Save {percent}%",
+      "packagesError": "Unable to load credit packages right now.",
+      "packagesEmpty": "No credit packages available at the moment.",
+      "retry": "Try again",
       "usageSection": {
         "title": "Credits in practice"
       },
@@ -279,6 +284,22 @@
         "24/7 dedicated support",
         "Custom integration"
       ]
+    },
+    "checkout": {
+      "eyebrow": "Secure checkout",
+      "title": "Review your credit package",
+      "subtitle": "Complete payment with VNPay and top up instantly.",
+      "total": "Total",
+      "perCredit": "Estimated per credit",
+      "discount": "Save {percent}% on this package",
+      "bonus": "Bonus {percent}% credits included",
+      "payNow": "Pay with VNPay",
+      "processing": "Redirecting to VNPay...",
+      "paymentError": "Payment could not be created. Please try again.",
+      "packageNotFound": "Package not found or no longer available.",
+      "backToPricing": "Back to pricing",
+      "packagesError": "Unable to load credit packages right now.",
+      "retry": "Try again"
     },
     "testimonials": {
       "title": "What customers say",

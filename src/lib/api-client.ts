@@ -61,6 +61,28 @@ const getLocaleFromPath = (): string => {
   return ['en'].includes(pathLocale) ? pathLocale : 'vi';
 };
 
+const PUBLIC_PATHS = [
+  '/',
+  '/pricing',
+  '/about',
+  '/contact',
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/reset-password',
+  '/verify-email',
+  '/callback',
+];
+
+const stripLocalePrefix = (path: string): string => {
+  return path.replace(/^\/(en|vi)(?=\/|$)/, '') || '/';
+};
+
+const isPublicPath = (path: string): boolean => {
+  const normalizedPath = stripLocalePrefix(path);
+  return PUBLIC_PATHS.includes(normalizedPath);
+};
+
 /**
  * Request interceptor - adds authorization header, Accept-Language, and logging
  */
@@ -211,7 +233,7 @@ apiClient.interceptors.response.use(
         // Redirect to login (only in browser)
         if (typeof window !== 'undefined') {
           const currentPath = window.location.pathname;
-          if (!currentPath.includes('/login')) {
+          if (!currentPath.includes('/login') && !isPublicPath(currentPath)) {
             window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
           }
         }

@@ -70,12 +70,9 @@ export function useWalletLedger(query?: LedgerQuery) {
  * Hook to fetch credit packages
  */
 export function useCreditPackages() {
-  const { isAuthenticated, accessToken } = useAuthStore();
-
   const result = useQuery({
     queryKey: billingKeys.creditPackages(),
     queryFn: getCreditPackagesApi,
-    enabled: isAuthenticated && !!accessToken,
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
   });
