@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import { useSearchParams } from "next/navigation"
+import { Link } from "@/i18n/navigation"
 import { useQueryClient } from "@tanstack/react-query"
 import {
   Wallet,
@@ -32,6 +33,7 @@ import {
 import type { LedgerType, PaymentStatus } from "../types"
 import { cn } from "@/lib/utils"
 import { walletKeys, billingKeys } from "@/lib/query-client"
+import { trackEvent } from "@/lib/analytics"
 
 // ============================================================================
 // Skeleton Loading State
@@ -126,7 +128,6 @@ function BillingTabSkeleton() {
 
 export function BillingTab() {
   const t = useTranslations("settings.billing")
-  const tCommon = useTranslations("common")
   const locale = useLocale()
   const searchParams = useSearchParams()
   const queryClient = useQueryClient()
@@ -155,32 +156,48 @@ export function BillingTab() {
   } = usePayments({ page: paymentsPage, limit: 10 })
   const { createPayment, isCreating } = useCreateVnpayPayment()
 
-  // VNPay callback banner state
-  const [vnpayStatus, setVnpayStatus] = useState<"success" | "error" | "pending" | null>(null)
+  const [vnpayStatus] = useState<"success" | "error" | "pending" | null>(() => {
+    const responseCode = searchParams.get("vnp_ResponseCode")
+    if (!responseCode) return null
+    if (responseCode === "00") return "success"
+    return "error"
+  })
+  const hasHandledVnpay = useRef(false)
+  const returnSource = searchParams.get("source")
 
   useEffect(() => {
     const responseCode = searchParams.get("vnp_ResponseCode")
-    if (responseCode) {
-      if (responseCode === "00") {
-        setVnpayStatus("success")
-        // Invalidate wallet + ledger + payments queries to refresh data
-        queryClient.invalidateQueries({ queryKey: walletKeys.all })
-        queryClient.invalidateQueries({ queryKey: billingKeys.all })
-      } else if (responseCode === "24") {
-        // User cancelled
-        setVnpayStatus("error")
-      } else {
-        setVnpayStatus("error")
-      }
-      // Clean up the URL query params without a full page reload
-      const url = new URL(window.location.href)
-      url.searchParams.delete("vnp_ResponseCode")
-      // Remove other VNPay params too
-      const vnpParams = Array.from(url.searchParams.keys()).filter((k) => k.startsWith("vnp_"))
-      vnpParams.forEach((k) => url.searchParams.delete(k))
-      window.history.replaceState({}, "", url.toString())
+    if (!responseCode || hasHandledVnpay.current) return
+
+    hasHandledVnpay.current = true
+
+    if (responseCode === "00") {
+      trackEvent("buy_credit_returned", {
+        source: returnSource ?? "billing",
+        status: "success",
+        responseCode,
+      })
+      // Invalidate wallet + ledger + payments queries to refresh data
+      queryClient.invalidateQueries({ queryKey: walletKeys.all })
+      queryClient.invalidateQueries({ queryKey: billingKeys.all })
+      return
     }
-  }, [searchParams, queryClient])
+
+    if (responseCode === "24") {
+      trackEvent("buy_credit_returned", {
+        source: returnSource ?? "billing",
+        status: "cancelled",
+        responseCode,
+      })
+      return
+    }
+
+    trackEvent("buy_credit_returned", {
+      source: returnSource ?? "billing",
+      status: "failed",
+      responseCode,
+    })
+  }, [searchParams, queryClient, returnSource])
 
   const isLoading = isLoadingWallet || isLoadingLedger || isLoadingPackages || isLoadingPayments
 
@@ -247,19 +264,46 @@ export function BillingTab() {
       {vnpayStatus === "success" && (
         <Alert className="border-success bg-success/10 text-success [&>svg]:text-success">
           <CheckCircle className="size-4" />
-          <AlertDescription>{t("vnpaySuccess")}</AlertDescription>
+          <AlertDescription className="flex gap-3 items-center">
+            <span>{t("vnpaySuccess")}</span>
+            {returnSource === "dashboard" ? (
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/dashboard?source=dashboard&paymentStatus=success">
+                  {t("backToDashboard")}
+                </Link>
+              </Button>
+            ) : null}
+          </AlertDescription>
         </Alert>
       )}
       {vnpayStatus === "error" && (
         <Alert variant="destructive">
           <XCircle className="size-4" />
-          <AlertDescription>{t("vnpayError")}</AlertDescription>
+          <AlertDescription className="flex gap-3 items-center">
+            <span>{t("vnpayError")}</span>
+            {returnSource === "dashboard" ? (
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/dashboard?source=dashboard&paymentStatus=error">
+                  {t("backToDashboard")}
+                </Link>
+              </Button>
+            ) : null}
+          </AlertDescription>
         </Alert>
       )}
       {vnpayStatus === "pending" && (
         <Alert className="border-yellow-500 bg-yellow-50 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400 [&>svg]:text-yellow-600">
           <Clock className="size-4" />
-          <AlertDescription>{t("vnpayPending")}</AlertDescription>
+          <AlertDescription className="flex gap-3 items-center">
+            <span>{t("vnpayPending")}</span>
+            {returnSource === "dashboard" ? (
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/dashboard?source=dashboard&paymentStatus=pending">
+                  {t("backToDashboard")}
+                </Link>
+              </Button>
+            ) : null}
+          </AlertDescription>
         </Alert>
       )}
 

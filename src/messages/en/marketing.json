@@ -298,6 +298,7 @@
       "paymentError": "Payment could not be created. Please try again.",
       "packageNotFound": "Package not found or no longer available.",
       "backToPricing": "Back to pricing",
+      "backToDashboard": "Back to dashboard",
       "packagesError": "Unable to load credit packages right now.",
       "retry": "Try again"
     },

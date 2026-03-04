@@ -38,6 +38,24 @@
       "uploadDocument": "Upload Document",
       "buyCredits": "Buy Credits"
     },
+    "buyCreditsDialog": {
+      "title": "Buy Credits",
+      "description": "Current balance: {balance} credits. Select a package to continue checkout.",
+      "bestValue": "Best value",
+      "credits": "credits",
+      "perCredit": "credit",
+      "cancel": "Cancel",
+      "viewPricing": "View pricing page",
+      "loadError": "Unable to load credit packages right now.",
+      "retry": "Try again",
+      "empty": "No credit packages are currently available."
+    },
+    "paymentBanner": {
+      "success": "Payment successful. Your credit balance has been updated.",
+      "error": "Payment failed or was cancelled. Please try again.",
+      "pending": "Payment is being processed. Please check again shortly.",
+      "dismiss": "Dismiss"
+    },
     "activity": {
       "title": "Recent Activity",
       "viewAll": "View all"

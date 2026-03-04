@@ -298,6 +298,7 @@
       "paymentError": "Không thể tạo thanh toán. Vui lòng thử lại.",
       "packageNotFound": "Không tìm thấy gói hoặc gói đã ngừng bán.",
       "backToPricing": "Quay lại bảng giá",
+      "backToDashboard": "Quay lại dashboard",
       "packagesError": "Không thể tải gói credit lúc này.",
       "retry": "Thử lại"
     },

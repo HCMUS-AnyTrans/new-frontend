@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import { useSearchParams } from "next/navigation"
 import { Link } from "@/i18n/navigation"
@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ProtectedRoute } from "@/features/auth"
 import { useCreditPackages, useCreateVnpayPayment } from "@/features/settings"
+import { trackEvent } from "@/lib/analytics"
 
 function CheckoutContent() {
   const t = useTranslations("marketing.checkout")
@@ -17,10 +18,15 @@ function CheckoutContent() {
   const locale = useLocale()
   const searchParams = useSearchParams()
   const packageId = searchParams.get("packageId")
+  const source = searchParams.get("source")
+  const isDashboardSource = source === "dashboard"
+  const backHref = isDashboardSource ? "/dashboard" : "/pricing"
+  const backLabel = isDashboardSource ? t("backToDashboard") : t("backToPricing")
 
   const { packages, isLoading, isError, refetch } = useCreditPackages()
   const { createPaymentAsync, isCreating } = useCreateVnpayPayment()
   const [paymentError, setPaymentError] = useState<string | null>(null)
+  const hasTrackedView = useRef(false)
 
   const selectedPackage = useMemo(() => {
     if (!packageId) return null
@@ -48,17 +54,44 @@ function CheckoutContent() {
   const handlePay = async () => {
     if (!selectedPackage) return
     setPaymentError(null)
+    trackEvent("buy_credit_payment_submit", {
+      source: source ?? "checkout",
+      packageId: selectedPackage.id,
+    })
     try {
-      const returnUrl = `${window.location.origin}/${locale}/settings/billing`
+      const returnUrl = `${window.location.origin}/${locale}/settings/billing${
+        isDashboardSource ? "?source=dashboard" : ""
+      }`
       const data = await createPaymentAsync({
         packageId: selectedPackage.id,
         returnUrl,
       })
+      trackEvent("buy_credit_redirect_vnpay", {
+        source: source ?? "checkout",
+        packageId: selectedPackage.id,
+        paymentId: data.paymentId,
+      })
       window.location.href = data.paymentUrl
     } catch {
+      trackEvent("buy_credit_payment_failed", {
+        source: source ?? "checkout",
+        packageId: selectedPackage.id,
+      })
       setPaymentError(t("paymentError"))
     }
   }
+
+  useEffect(() => {
+    if (!selectedPackage || hasTrackedView.current) return
+    hasTrackedView.current = true
+    trackEvent("buy_credit_checkout_viewed", {
+      source: source ?? "checkout",
+      packageId: selectedPackage.id,
+      credits: selectedPackage.credits,
+      price: selectedPackage.price,
+      currency: selectedPackage.currency,
+    })
+  }, [selectedPackage, source])
 
   return (
     <section className="py-16 px-4">
@@ -103,7 +136,7 @@ function CheckoutContent() {
             <AlertDescription className="flex flex-col gap-4">
               <span>{t("packageNotFound")}</span>
               <Button asChild variant="outline">
-                <Link href="/pricing">{t("backToPricing")}</Link>
+                <Link href={backHref}>{backLabel}</Link>
               </Button>
             </AlertDescription>
           </Alert>
@@ -181,7 +214,7 @@ function CheckoutContent() {
                   {isCreating ? t("processing") : t("payNow")}
                 </Button>
                 <Button asChild variant="outline" className="flex-1">
-                  <Link href="/pricing">{t("backToPricing")}</Link>
+                  <Link href={backHref}>{backLabel}</Link>
                 </Button>
               </div>
             </CardContent>

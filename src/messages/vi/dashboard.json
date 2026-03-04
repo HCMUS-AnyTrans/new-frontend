@@ -38,6 +38,24 @@
       "uploadDocument": "Tải lên tài liệu",
       "buyCredits": "Mua thêm credits"
     },
+    "buyCreditsDialog": {
+      "title": "Mua thêm credits",
+      "description": "Số dư hiện tại: {balance} credits. Chọn gói để tiếp tục thanh toán.",
+      "bestValue": "Giá trị tốt nhất",
+      "credits": "credits",
+      "perCredit": "credit",
+      "cancel": "Hủy",
+      "viewPricing": "Xem trang bảng giá",
+      "loadError": "Không thể tải gói credit lúc này.",
+      "retry": "Thử lại",
+      "empty": "Hiện chưa có gói credit khả dụng."
+    },
+    "paymentBanner": {
+      "success": "Thanh toán thành công. Số dư credits đã được cập nhật.",
+      "error": "Thanh toán thất bại hoặc đã bị hủy. Vui lòng thử lại.",
+      "pending": "Thanh toán đang được xử lý. Vui lòng kiểm tra lại sau ít phút.",
+      "dismiss": "Đóng"
+    },
     "activity": {
       "title": "Hoạt động gần đây",
       "viewAll": "Xem tất cả"

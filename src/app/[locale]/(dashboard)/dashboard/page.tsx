@@ -6,6 +6,7 @@ import {
   CreditUsageChart,
   DashboardGreeting,
   StorageUsage,
+  PaymentStatusBanner,
 } from "@/features/dashboard";
 
 type Props = {
@@ -25,6 +26,8 @@ export default async function DashboardPage({ params }: Props) {
           <QuickActions />
         </div>
       </div>
+
+      <PaymentStatusBanner />
 
       {/* KPI Stats Cards */}
       <div className="w-full">
