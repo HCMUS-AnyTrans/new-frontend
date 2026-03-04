@@ -25,12 +25,12 @@ export function TermTable({ terms, onEdit, onDelete }: TermTableProps) {
           <tr className="border-b bg-muted/50 text-muted-foreground">
             <th className="px-6 py-3 font-medium">{t('srcTerm')}</th>
             <th className="px-6 py-3 font-medium">{t('tgtTerm')}</th>
-            <th className="px-6 py-3 font-medium text-right w-[100px]">
+            <th className="px-6 py-3 font-medium text-right w-[200px]">
               {tCommon('actions')}
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-border">
+        <tbody className="divide-y divide-border ">
           {terms.map((term) => (
             <tr
               key={term.id}
@@ -43,16 +43,16 @@ export function TermTable({ terms, onEdit, onDelete }: TermTableProps) {
                 {term.tgtTerm}
               </td>
               <td className="px-6 py-4 text-right">
-                <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center justify-end gap-2  transition-opacity">
                   <button
-                    className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
+                    className="p-1.5 text-foreground hover:bg-muted/10 rounded-md transition-colors"
                     onClick={() => onEdit(term)}
                   >
                     <Pencil className="size-4" />
                     <span className="sr-only">{tCommon('edit')}</span>
                   </button>
                   <button
-                    className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors"
+                    className="p-1.5 text-destructive hover:bg-destructive/10 rounded-md transition-colors"
                     onClick={() => onDelete(term)}
                   >
                     <Trash2 className="size-4" />
