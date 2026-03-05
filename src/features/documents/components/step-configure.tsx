@@ -1,7 +1,8 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { CardTitle } from "@/components/ui/card"
+import { AppCard, AppCardContent, AppCardHeader } from "@/components/ui/app-card"
 import { Button } from "@/components/ui/button"
 import { LanguageSelector } from "./language-selector"
 import { DomainSelector } from "./domain-selector"
@@ -85,15 +86,15 @@ export function StepConfigure({
             onTgtLangChange={(lang: LanguageCode) => onConfigChange({ tgtLang: lang })}
           />
 
-          <Card>
-            <CardContent className="space-y-6 pt-6">
+          <AppCard>
+            <AppCardContent className="space-y-6 pt-6">
               <DomainSelector
                 value={config.domain}
                 onChange={(domain) => onConfigChange({ domain })}
               />
               <ToneSelector value={config.tone} onChange={(tone) => onConfigChange({ tone })} />
-            </CardContent>
-          </Card>
+            </AppCardContent>
+          </AppCard>
 
           <GlossarySection
             glossaries={glossaries}
@@ -110,11 +111,11 @@ export function StepConfigure({
         </div>
 
         <div className="space-y-4 xl:sticky xl:top-4 xl:self-start">
-          <Card>
-            <CardHeader>
+          <AppCard>
+            <AppCardHeader>
               <CardTitle className="text-base">{t("estimate.title")}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
+            </AppCardHeader>
+            <AppCardContent className="space-y-3">
               {isEstimating ? (
                 <p className="text-sm text-muted-foreground">{t("estimate.loading")}</p>
               ) : null}
@@ -186,11 +187,11 @@ export function StepConfigure({
               {!isEstimating && !estimate && estimateError ? (
                 <p className="text-sm text-destructive">{estimateError}</p>
               ) : null}
-            </CardContent>
-          </Card>
+            </AppCardContent>
+          </AppCard>
 
-          <Card>
-            <CardContent className="space-y-3 p-4">
+          <AppCard>
+            <AppCardContent padding="all" className="space-y-3 p-4">
               <Button variant="outline" onClick={onBack} className="w-full">
                 {t("back")}
               </Button>
@@ -204,8 +205,8 @@ export function StepConfigure({
               {isInsufficientCredits ? (
                 <p className="text-xs text-destructive">{t("estimate.insufficientActionHint")}</p>
               ) : null}
-            </CardContent>
-          </Card>
+            </AppCardContent>
+          </AppCard>
         </div>
       </div>
     </div>

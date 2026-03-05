@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ChevronUp, LogOut, User, Settings } from "lucide-react";
@@ -16,12 +15,8 @@ import {
 } from "lucide-react";
 import {
   Sidebar,
-  SidebarHeader,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
@@ -43,28 +38,13 @@ interface NavItem {
   icon: LucideIcon;
 }
 
-interface NavGroup {
-  labelKey: string;
-  items: NavItem[];
-}
-
-const navGroups: NavGroup[] = [
-  {
-    labelKey: "mainMenu",
-    items: [
-      { titleKey: "dashboard", href: "/dashboard", icon: LayoutDashboard },
-      { titleKey: "documents", href: "/documents", icon: FileText },
-      { titleKey: "glossary", href: "/glossary", icon: BookOpen },
-      { titleKey: "history", href: "/history", icon: History },
-    ],
-  },
-  {
-    labelKey: "other",
-    items: [
-      { titleKey: "settings", href: "/settings", icon: SettingsIcon },
-      { titleKey: "help", href: "/help", icon: HelpCircle },
-    ],
-  },
+const navItems: NavItem[] = [
+  { titleKey: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { titleKey: "documents", href: "/documents", icon: FileText },
+  { titleKey: "glossary", href: "/glossary", icon: BookOpen },
+  { titleKey: "history", href: "/history", icon: History },
+  { titleKey: "settings", href: "/settings", icon: SettingsIcon },
+  { titleKey: "help", href: "/help", icon: HelpCircle },
 ];
 
 export function AppSidebar() {
@@ -92,65 +72,39 @@ export function AppSidebar() {
 
   return (
     <Sidebar
-      collapsible="icon"
-      className="border-r border-sidebar-border bg-sidebar"
+      collapsible="none"
+      className="h-svh border-r border-sidebar-border bg-[#ffffff] pt-[var(--dashboard-header-height)]"
     >
-      {/* Header - Logo */}
-      <SidebarHeader className="p-4 group-data-[collapsible=icon]:p-2">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="relative h-8 w-8 shrink-0">
-            <Image
-              src="/logo.svg"
-              alt="AnyTrans Logo"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
-          <span className="text-lg font-bold text-foreground group-data-[collapsible=icon]:hidden">
-            AnyTrans
-          </span>
-        </Link>
-      </SidebarHeader>
-
       {/* Main Navigation */}
-      <SidebarContent>
-        {navGroups.map((group) => (
-          <SidebarGroup key={group.labelKey}>
-            <SidebarGroupLabel className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
-              {t(group.labelKey)}
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {group.items.map((item) => {
-                  const isActive = pathnameWithoutLocale === item.href || pathnameWithoutLocale.startsWith(item.href + '/');
-                  const title = t(item.titleKey);
-                  return (
-                    <SidebarMenuItem key={item.href}>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={isActive}
-                        tooltip={title}
-                      >
-                        <Link href={item.href}>
-                          <item.icon className="size-4" />
-                          <span>{title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  );
-                })}
-              </SidebarMenu>
-            </SidebarGroupContent>
-            {group.labelKey === "mainMenu" && (
-              <SidebarSeparator className="mt-2" />
-            )}
-          </SidebarGroup>
-        ))}
+      <SidebarContent className="px-2 pt-4">
+        <SidebarMenu className="gap-1 px-2">
+          {navItems.map((item) => {
+            const isActive =
+              pathnameWithoutLocale === item.href ||
+              pathnameWithoutLocale.startsWith(item.href + "/");
+            const title = t(item.titleKey);
+
+            return (
+              <SidebarMenuItem key={item.href}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive}
+                  tooltip={title}
+                  className="text-sidebar-foreground"
+                >
+                  <Link href={item.href}>
+                    <item.icon className="size-5" />
+                    <span>{title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
       </SidebarContent>
 
       {/* Footer - User */}
-      <SidebarFooter className="gap-3">
+      <SidebarFooter className="mt-auto gap-2 pb-3">
         <SidebarSeparator />
 
         {/* User Menu */}
@@ -158,7 +112,7 @@ export function AppSidebar() {
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="flex w-full items-center gap-3 rounded-lg p-2 mx-2 text-left hover:bg-muted transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:mx-0"
+              className="mx-2 flex w-full items-center gap-3 rounded-xl px-2.5 py-2 text-left transition-colors hover:bg-sidebar-accent group-data-[collapsible=icon]:mx-0 group-data-[collapsible=icon]:justify-center"
             >
               <Avatar className="h-9 w-9 shrink-0">
                 {user?.avatarUrl && (

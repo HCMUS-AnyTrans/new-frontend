@@ -1,15 +1,21 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function GlossarySkeleton() {
+interface GlossarySkeletonProps {
+  showFilters?: boolean;
+}
+
+export function GlossarySkeleton({ showFilters = true }: GlossarySkeletonProps) {
   return (
     <>
       {/* Filters + button skeleton */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <Skeleton className="h-10 flex-1" />
-        <Skeleton className="h-10 w-[160px]" />
-        <Skeleton className="h-10 w-[160px]" />
-        <Skeleton className="h-9 w-36" />
-      </div>
+      {showFilters && (
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+          <Skeleton className="h-10 flex-1" />
+          <Skeleton className="h-10 w-[160px]" />
+          <Skeleton className="h-10 w-[160px]" />
+          <Skeleton className="h-9 w-36" />
+        </div>
+      )}
 
       {/* Cards grid skeleton */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

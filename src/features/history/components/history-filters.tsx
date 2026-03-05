@@ -28,14 +28,14 @@ export function HistoryFilters({
           placeholder={t('searchPlaceholder')}
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-9"
+          className="bg-white pl-9"
         />
       </div>
       <Select value={statusFilter} onValueChange={onStatusChange}>
-        <SelectTrigger className="w-full sm:w-[180px]">
+        <SelectTrigger className="w-full bg-white hover:bg-white sm:w-[180px]">
           <SelectValue placeholder={t('filterStatus')} />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-white">
           {STATUS_OPTIONS.map((status) => (
             <SelectItem key={status} value={status}>
               {status === 'all' ? t('allStatuses') : tStatus(status)}

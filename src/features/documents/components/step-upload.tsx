@@ -14,7 +14,7 @@ import {
   ShieldCheck,
 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Card, CardContent } from "@/components/ui/card"
+import { AppCard, AppCardContent } from "@/components/ui/app-card"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ALLOWED_EXTENSIONS, type UploadedFile } from "../types"
@@ -115,7 +115,7 @@ export function StepUpload({
 
   return (
     <div className="mx-auto max-w-3xl">
-      <Card
+      <AppCard
         className={cn(
           "overflow-hidden border-2 border-dashed transition-all duration-200",
           isDragging
@@ -127,7 +127,7 @@ export function StepUpload({
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
       >
-        <CardContent className="p-0">
+        <AppCardContent padding="none" className="p-0">
           {/* Dropzone area */}
           {!file ? (
             <div
@@ -224,8 +224,8 @@ export function StepUpload({
               </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </AppCardContent>
+      </AppCard>
 
       {/* Error message */}
       {error && (

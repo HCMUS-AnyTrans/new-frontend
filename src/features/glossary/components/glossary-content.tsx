@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useDeferredValue } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { Plus } from 'lucide-react';
@@ -30,6 +30,7 @@ export function GlossaryContent() {
   const [domainFilter, setDomainFilter] = useState('all');
   const [srcLangFilter, setSrcLangFilter] = useState('all');
   const [page, setPage] = useState(1);
+  const deferredSearch = useDeferredValue(search);
 
   // ─── Dialog State ───────────────────────────────────────────────────
   const [createOpen, setCreateOpen] = useState(false);
@@ -45,7 +46,7 @@ export function GlossaryContent() {
     limit: 20,
     sortBy: 'createdAt',
     sortOrder: 'desc',
-    ...(search && { search }),
+    ...(deferredSearch && { search: deferredSearch }),
     ...(domainFilter !== 'all' && { domain: domainFilter }),
     ...(srcLangFilter !== 'all' && { srcLang: srcLangFilter }),
   };
@@ -91,11 +92,6 @@ export function GlossaryContent() {
     setDeleteOpen(true);
   }, []);
 
-  // ─── Loading State ──────────────────────────────────────────────────
-  if (isLoading || isError) {
-    return <GlossarySkeleton />;
-  }
-
   // ─── List View ──────────────────────────────────────────────────────
   return (
     <>
@@ -114,7 +110,14 @@ export function GlossaryContent() {
         </Button>
       </div>
 
-      {!glossaries || glossaries.length === 0 ? (
+      {isLoading && !glossaries ? (
+        <GlossarySkeleton showFilters={false} />
+      ) : isError && !glossaries ? (
+        <GlossaryEmptyState
+          hasFilters={hasFilters}
+          onCreateClick={() => setCreateOpen(true)}
+        />
+      ) : !glossaries || glossaries.length === 0 ? (
         <GlossaryEmptyState
           hasFilters={hasFilters}
           onCreateClick={() => setCreateOpen(true)}

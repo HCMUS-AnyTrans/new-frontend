@@ -2,6 +2,11 @@
 export { AppSidebar } from "./app-sidebar"
 export { DashboardHeader } from "./dashboard-header"
 export { DashboardGreeting } from "./dashboard-greeting"
+export {
+  DashboardCard,
+  DashboardCardHeader,
+  DashboardCardContent,
+} from "./dashboard-card"
 
 // Stats components
 export { StatsCards } from "./stats-cards"

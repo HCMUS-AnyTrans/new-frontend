@@ -13,7 +13,7 @@ export default function GlossaryDetailPage({
   const { glossaryId } = use(params);
 
   return (
-    <div className="flex flex-col gap-6 p-4 lg:p-6 mx-auto w-full max-w-5xl">
+    <div className="flex flex-col gap-6 p-4 lg:p-6">
       <GlossaryDetail glossaryId={glossaryId} />
     </div>
   );

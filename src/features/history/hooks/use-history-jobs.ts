@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useDeferredValue } from 'react';
 import { useRecentJobs } from '@/features/dashboard/hooks';
 import type { RecentJobsQuery } from '@/features/dashboard/api/dashboard.api';
 import { ITEMS_PER_PAGE } from '../data';
@@ -12,18 +12,12 @@ import { ITEMS_PER_PAGE } from '../data';
 export function useHistoryJobs() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const deferredSearch = useDeferredValue(search);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearch(value);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      setDebouncedSearch(value);
-      setPage(1);
-    }, 400);
+    setPage(1);
   }, []);
 
   const handleStatusChange = useCallback((value: string) => {
@@ -37,7 +31,7 @@ export function useHistoryJobs() {
     limit: ITEMS_PER_PAGE,
     sortBy: 'createdAt',
     sortOrder: 'desc',
-    ...(debouncedSearch ? { search: debouncedSearch } : {}),
+    ...(deferredSearch ? { search: deferredSearch } : {}),
     ...(statusFilter !== 'all' ? { status: statusFilter } : {}),
   };
 
@@ -45,7 +39,7 @@ export function useHistoryJobs() {
 
   const jobs = jobsData?.data ?? [];
   const meta = jobsData?.meta;
-  const hasFilters = !!debouncedSearch || statusFilter !== 'all';
+  const hasFilters = !!search || statusFilter !== 'all';
 
   return {
     // Data

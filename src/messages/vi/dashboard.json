@@ -4,7 +4,7 @@
       "mainMenu": "Menu chính",
       "other": "Khác",
       "dashboard": "Tổng quan",
-      "documents": "Dịch tài liệu",
+      "documents": "Dịch",
       "glossary": "Từ điển thuật ngữ",
       "history": "Lịch sử",
       "settings": "Cài đặt",
@@ -14,7 +14,7 @@
     },
     "pages": {
       "dashboard": "Tổng quan",
-      "documents": "Dịch tài liệu",
+      "documents": "Dịch",
       "glossary": "Thuật ngữ",
       "history": "Lịch sử",
       "settings": "Cài đặt",
@@ -84,7 +84,7 @@
       "ofTotal": "tổng credit"
     },
     "charts": {
-      "jobsByDay": "Bản dịch theo ngày (7 ngày gần nhất)",
+      "jobsByDay": "Tổng quan hoạt động",
       "creditAllocation": "Phân bổ credits",
       "noUsageInfo": "Chưa có thông tin sử dụng credit",
       "documents": "Tài liệu",

@@ -1,6 +1,7 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { CardTitle, CardDescription } from "@/components/ui/card"
+import { AppCard, AppCardContent, AppCardHeader } from "@/components/ui/app-card"
 import { cn } from "@/lib/utils"
 
 interface SettingsSectionProps {
@@ -19,8 +20,8 @@ export function SettingsSection({
   action,
 }: SettingsSectionProps) {
   return (
-    <Card className={cn("border shadow-sm", className)}>
-      <CardHeader className="flex flex-row items-start justify-between gap-4">
+    <AppCard className={className}>
+      <AppCardHeader className="flex flex-row items-start justify-between gap-4">
         <div className="space-y-1">
           <CardTitle className="text-base font-semibold">{title}</CardTitle>
           {description && (
@@ -28,9 +29,9 @@ export function SettingsSection({
           )}
         </div>
         {action && <div className="shrink-0">{action}</div>}
-      </CardHeader>
-      <CardContent>{children}</CardContent>
-    </Card>
+      </AppCardHeader>
+      <AppCardContent>{children}</AppCardContent>
+    </AppCard>
   )
 }
 

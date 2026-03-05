@@ -20,27 +20,27 @@ export function HistoryTable({ jobs, locale }: HistoryTableProps) {
   return (
     <div className="overflow-x-auto">
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-muted/40">
           <TableRow className="hover:bg-transparent">
-            <TableHead className="text-xs font-medium text-muted-foreground">
+            <TableHead className="h-11 px-4 text-sm font-medium text-muted-foreground lg:px-6">
               {tJobs('fileName')}
             </TableHead>
-            <TableHead className="text-xs font-medium text-muted-foreground">
+            <TableHead className="h-11 px-4 text-sm font-medium text-muted-foreground lg:px-6">
               {tJobs('type')}
             </TableHead>
-            <TableHead className="text-xs font-medium text-muted-foreground">
+            <TableHead className="h-11 px-4 text-sm font-medium text-muted-foreground lg:px-6">
               {tJobs('languages')}
             </TableHead>
-            <TableHead className="text-xs font-medium text-muted-foreground">
+            <TableHead className="h-11 px-4 text-sm font-medium text-muted-foreground lg:px-6">
               {tJobs('status')}
             </TableHead>
-            <TableHead className="text-right text-xs font-medium text-muted-foreground">
+            <TableHead className="h-11 px-4 text-right text-sm font-medium text-muted-foreground lg:px-6">
               {tJobs('credits')}
             </TableHead>
-            <TableHead className="text-xs font-medium text-muted-foreground">
+            <TableHead className="h-11 px-4 text-sm font-medium text-muted-foreground lg:px-6">
               {tJobs('createdAt')}
             </TableHead>
-            <TableHead className="text-right text-xs font-medium text-muted-foreground">
+            <TableHead className="h-11 px-4 text-right text-sm font-medium text-muted-foreground lg:px-6">
               {tJobs('actions')}
             </TableHead>
           </TableRow>
@@ -62,8 +62,8 @@ export function HistoryTable({ jobs, locale }: HistoryTableProps) {
             );
 
             return (
-              <TableRow key={job.job_id} className="group">
-                <TableCell className="max-w-[200px]">
+              <TableRow key={job.job_id} className="group hover:bg-muted/30">
+                <TableCell className="max-w-[220px] px-4 py-3.5 lg:px-6">
                   <div className="flex items-center gap-2">
                     <FileText className="size-4 shrink-0 text-primary" />
                     <span className="truncate text-sm font-medium text-foreground">
@@ -71,7 +71,7 @@ export function HistoryTable({ jobs, locale }: HistoryTableProps) {
                     </span>
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell className="px-4 py-3.5 lg:px-6">
                   <Badge
                     variant="outline"
                     className="text-xs border-primary/20 bg-primary/10 text-primary"
@@ -79,7 +79,7 @@ export function HistoryTable({ jobs, locale }: HistoryTableProps) {
                     {tJobs('document')}
                   </Badge>
                 </TableCell>
-                <TableCell>
+                <TableCell className="px-4 py-3.5 lg:px-6">
                   <div className="flex items-center gap-1 text-sm text-foreground">
                     <span className="font-mono text-xs font-medium">
                       {languageCodeMap[job.src_lang] ||
@@ -92,7 +92,7 @@ export function HistoryTable({ jobs, locale }: HistoryTableProps) {
                     </span>
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell className="px-4 py-3.5 lg:px-6">
                   <Badge
                     variant="outline"
                     className={`text-xs ${statusCfg?.className || ''}`}
@@ -100,7 +100,7 @@ export function HistoryTable({ jobs, locale }: HistoryTableProps) {
                     {tStatus(status)}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell className="px-4 py-3.5 text-right lg:px-6">
                   <span className="text-sm tabular-nums text-foreground">
                     {job.input_file && job.input_file.size_bytes > 0
                       ? job.input_file.size_bytes.toLocaleString(
@@ -109,12 +109,12 @@ export function HistoryTable({ jobs, locale }: HistoryTableProps) {
                       : '\u2014'}
                   </span>
                 </TableCell>
-                <TableCell>
+                <TableCell className="px-4 py-3.5 lg:px-6">
                   <span className="text-sm text-muted-foreground">
                     {createdAt}
                   </span>
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell className="px-4 py-3.5 text-right lg:px-6">
                   <div className="flex items-center justify-end gap-1">
                     {status === 'succeeded' && (
                       <Button

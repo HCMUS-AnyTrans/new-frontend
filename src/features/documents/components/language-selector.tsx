@@ -2,7 +2,8 @@
 
 import { ArrowLeftRight, AlertCircle } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { CardTitle } from "@/components/ui/card"
+import { AppCard, AppCardContent, AppCardHeader } from "@/components/ui/app-card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import {
@@ -38,11 +39,11 @@ export function LanguageSelector({
   }
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
+    <AppCard>
+      <AppCardHeader className="pb-3">
         <CardTitle className="text-base">{t("configure.language")}</CardTitle>
-      </CardHeader>
-      <CardContent>
+      </AppCardHeader>
+      <AppCardContent>
         <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-end">
           {/* Source language */}
           <div className="w-full">
@@ -100,7 +101,7 @@ export function LanguageSelector({
             <span className="text-sm font-medium">{t("configure.sameLangError")}</span>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </AppCardContent>
+    </AppCard>
   )
 }

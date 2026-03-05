@@ -1,42 +1,20 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useTranslations, useLocale } from "next-intl";
-import { Bell, Coins } from "lucide-react";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
+import { useLocale } from "next-intl";
+import { Search, MoreVertical, ChevronDown, Coins } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/features/auth";
 import { useWallet } from "../hooks";
 
-// Map pathname to translation key
-const pageKeyMap: Record<string, string> = {
-  "/dashboard": "dashboard",
-  "/documents": "documents",
-  "/glossary": "glossary",
-  "/history": "history",
-  "/settings": "settings",
-  "/help": "help",
-};
-
 export function DashboardHeader() {
-  const pathname = usePathname();
   const locale = useLocale();
-  const t = useTranslations("dashboard.pages");
   const user = useAuthStore((s) => s.user);
   const { wallet, isLoading: walletLoading } = useWallet();
 
-  // Remove locale prefix from pathname
-  const pathnameWithoutLocale = pathname.replace(/^\/(vi|en)/, "");
-
-  // Get page title translation key
-  const pageKey = pageKeyMap[pathnameWithoutLocale] || "dashboard";
-  const pageTitle = t(pageKey);
-
-  // Generate user initials from fullName
   const initials = user?.fullName
     ? user.fullName
         .split(" ")
@@ -47,55 +25,78 @@ export function DashboardHeader() {
     : "??";
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b border-border bg-background/95 backdrop-blur-sm px-4 lg:px-6">
-      {/* Sidebar Toggle */}
-      <SidebarTrigger className="-ml-1" />
-      <Separator orientation="vertical" className="h-6" />
-
-      {/* Page Title */}
-      <div className="flex flex-1 items-center gap-4">
-        <h1 className="text-lg font-semibold text-foreground">{pageTitle}</h1>
+    <header className="fixed inset-x-0 top-0 z-50 flex h-[var(--dashboard-header-height)] items-center justify-between border-b border-border bg-[#ffffff] px-4 lg:px-6">
+      <div className="flex min-w-0 items-center gap-6">
+        <Link href="/dashboard" className="flex items-center gap-2">
+          <div className="relative h-8 w-8 shrink-0">
+            <Image
+              src="/logo.svg"
+              alt="AnyTrans Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+          <span className="text-lg font-bold tracking-tight text-primary">AnyTrans</span>
+        </Link>
       </div>
 
-      {/* Right Actions */}
-      <div className="flex items-center gap-2">
-        {/* Notification Bell */}
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="size-5 text-muted-foreground" />
-          {/* Notification badge */}
-          <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-destructive-foreground">
-            3
-          </span>
-          <span className="sr-only">Notifications</span>
+      <div className="hidden flex-1 px-6 lg:block">
+        <div className="relative mx-auto w-full max-w-md">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="h-10 w-full rounded-full border border-input bg-background pl-4 pr-10 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+          />
+          <Search className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 md:gap-3">
+        <Button variant="ghost" size="icon" className="hidden md:inline-flex">
+          <MoreVertical className="size-5 text-muted-foreground" />
+          <span className="sr-only">More</span>
         </Button>
 
-        {/* Credits Badge - Hidden on mobile */}
         {walletLoading ? (
-          <Skeleton className="hidden h-6 w-24 sm:block" />
+          <Skeleton className="hidden h-9 w-28 rounded-full md:block" />
         ) : (
-          <Badge
-            variant="secondary"
-            className="hidden gap-1.5 bg-secondary/20 text-foreground sm:flex"
+          <div
+            className="hidden items-center gap-2 rounded-full border border-input px-3 py-1.5 text-sm md:flex"
+            title="Credits"
           >
-            <Coins className="size-3.5 text-secondary" />
-            <span className="tabular-nums">
+            <Coins className="size-4 text-primary" />
+            <span className="font-semibold text-foreground tabular-nums">
               {(wallet?.balance ?? 0).toLocaleString(
                 locale === "vi" ? "vi-VN" : "en-US"
               )}
             </span>
-            <span className="text-muted-foreground">credits</span>
-          </Badge>
+            <ChevronDown className="size-3.5 text-muted-foreground" />
+          </div>
         )}
 
-        {/* User Avatar */}
-        <Avatar className="h-8 w-8">
-          {user?.avatarUrl && (
-            <AvatarImage src={user.avatarUrl} alt={user.fullName} />
-          )}
-          <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
+        <Button
+          variant="outline"
+          className="hidden rounded-full px-4 text-sm font-medium md:inline-flex"
+          asChild
+        >
+          <Link href="/pricing">Pricing</Link>
+        </Button>
+
+        <button
+          type="button"
+          className="flex items-center gap-1 rounded-full border border-input bg-background p-1 transition-colors hover:bg-muted"
+        >
+          <Avatar className="h-8 w-8">
+            {user?.avatarUrl && (
+              <AvatarImage src={user.avatarUrl} alt={user.fullName} />
+            )}
+            <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+          <ChevronDown className="mr-1 hidden size-3.5 text-muted-foreground sm:block" />
+        </button>
       </div>
     </header>
   );

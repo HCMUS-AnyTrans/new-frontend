@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   ChartContainer,
@@ -12,14 +12,19 @@ import {
 import { Pie, PieChart, Cell } from "recharts";
 import { Info } from "lucide-react";
 import { useCreditsChart } from "../hooks";
+import {
+  DashboardCard,
+  DashboardCardContent,
+  DashboardCardHeader,
+} from "./dashboard-card";
 
 function CreditUsageChartSkeleton() {
   return (
-    <Card className="h-full border border-border shadow-sm">
-      <CardHeader className="pb-2">
+    <DashboardCard className="h-full">
+      <DashboardCardHeader>
         <Skeleton className="h-5 w-36" />
-      </CardHeader>
-      <CardContent className="pt-0">
+      </DashboardCardHeader>
+      <DashboardCardContent>
         <Skeleton className="mx-auto h-[200px] w-[200px] rounded-full" />
         <div className="mt-2 flex flex-col gap-2">
           {Array.from({ length: 2 }).map((_, i) => (
@@ -29,8 +34,8 @@ function CreditUsageChartSkeleton() {
             </div>
           ))}
         </div>
-      </CardContent>
-    </Card>
+      </DashboardCardContent>
+    </DashboardCard>
   );
 }
 
@@ -72,13 +77,13 @@ export function CreditUsageChart() {
   const total = creditUsageData.reduce((acc, d) => acc + d.value, 0);
 
   return (
-    <Card className="h-full border border-border shadow-sm">
-      <CardHeader className="pb-2">
+    <DashboardCard className="h-full">
+      <DashboardCardHeader>
         <CardTitle className="text-base font-semibold text-foreground">
           {t("creditAllocation")}
         </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-0">
+      </DashboardCardHeader>
+      <DashboardCardContent>
         {!hasUsage ? (
           <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
             <Info className="size-8 text-muted-foreground/50" />
@@ -148,7 +153,7 @@ export function CreditUsageChart() {
             </div>
           </>
         )}
-      </CardContent>
-    </Card>
+      </DashboardCardContent>
+    </DashboardCard>
   );
 }

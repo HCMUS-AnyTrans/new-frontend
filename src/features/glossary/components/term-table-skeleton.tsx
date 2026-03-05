@@ -8,31 +8,39 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-export function TermTableSkeleton() {
+interface TermTableSkeletonProps {
+  showControls?: boolean;
+}
+
+export function TermTableSkeleton({ showControls = true }: TermTableSkeletonProps) {
   return (
     <>
       {/* Search + add form skeleton */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
-        <Skeleton className="h-10 flex-1" />
-      </div>
-      <div className="flex gap-3 mb-6">
-        <Skeleton className="h-10 flex-1" />
-        <Skeleton className="h-10 flex-1" />
-        <Skeleton className="h-10 w-24" />
-      </div>
+      {showControls && (
+        <>
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row">
+            <Skeleton className="h-10 flex-1" />
+          </div>
+          <div className="mb-6 flex gap-3">
+            <Skeleton className="h-10 flex-1" />
+            <Skeleton className="h-10 flex-1" />
+            <Skeleton className="h-10 w-24" />
+          </div>
+        </>
+      )}
 
       {/* Table skeleton */}
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead>
+              <TableHead className="h-11 px-4 lg:px-6">
                 <Skeleton className="h-4 w-24" />
               </TableHead>
-              <TableHead>
+              <TableHead className="h-11 px-4 lg:px-6">
                 <Skeleton className="h-4 w-24" />
               </TableHead>
-              <TableHead>
+              <TableHead className="h-11 px-4 lg:px-6">
                 <Skeleton className="h-4 w-16" />
               </TableHead>
             </TableRow>
@@ -40,13 +48,13 @@ export function TermTableSkeleton() {
           <TableBody>
             {Array.from({ length: 8 }).map((_, i) => (
               <TableRow key={i}>
-                <TableCell>
+                <TableCell className="px-4 py-3.5 lg:px-6">
                   <Skeleton className="h-4 w-full" />
                 </TableCell>
-                <TableCell>
+                <TableCell className="px-4 py-3.5 lg:px-6">
                   <Skeleton className="h-4 w-full" />
                 </TableCell>
-                <TableCell>
+                <TableCell className="px-4 py-3.5 lg:px-6">
                   <Skeleton className="h-4 w-16" />
                 </TableCell>
               </TableRow>

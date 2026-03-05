@@ -1,20 +1,25 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HardDrive } from "lucide-react";
 import { useStorage } from "../hooks";
+import {
+  DashboardCard,
+  DashboardCardContent,
+  DashboardCardHeader,
+} from "./dashboard-card";
 
 function StorageUsageSkeleton() {
   return (
-    <Card className="border border-border shadow-sm">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
+    <DashboardCard>
+      <DashboardCardHeader className="flex flex-row items-center justify-between">
         <Skeleton className="h-5 w-32" />
         <Skeleton className="h-4 w-4" />
-      </CardHeader>
-      <CardContent>
+      </DashboardCardHeader>
+      <DashboardCardContent>
         <div className="flex flex-col gap-3">
           <div className="flex items-end justify-between">
             <Skeleton className="h-7 w-28" />
@@ -23,8 +28,8 @@ function StorageUsageSkeleton() {
           <Skeleton className="h-2 w-full" />
           <Skeleton className="h-3 w-36" />
         </div>
-      </CardContent>
-    </Card>
+      </DashboardCardContent>
+    </DashboardCard>
   );
 }
 
@@ -39,14 +44,14 @@ export function StorageUsage() {
   const remaining = (storage.total - storage.used).toFixed(1);
 
   return (
-    <Card className="border border-border shadow-sm">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
+    <DashboardCard>
+      <DashboardCardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-base font-semibold text-foreground">
           {t("title")}
         </CardTitle>
         <HardDrive className="size-4 text-muted-foreground" />
-      </CardHeader>
-      <CardContent>
+      </DashboardCardHeader>
+      <DashboardCardContent>
         <div className="flex flex-col gap-3">
           <div className="flex items-end justify-between">
             <div>
@@ -67,7 +72,7 @@ export function StorageUsage() {
             {t("remaining", { value: remaining })}
           </p>
         </div>
-      </CardContent>
-    </Card>
+      </DashboardCardContent>
+    </DashboardCard>
   );
 }

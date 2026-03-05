@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData } from '@tanstack/react-query';
 import { listGlossariesApi } from '../api/glossary.api';
 import { glossaryKeys } from '@/lib/query-client';
 import { useAuthStore } from '@/features/auth';
@@ -19,6 +20,7 @@ export function useGlossaries(params?: GlossaryQueryParams) {
     enabled: isAuthenticated && !!accessToken,
     staleTime: 60 * 1000,
     gcTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 
   return {

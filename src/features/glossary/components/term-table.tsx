@@ -2,6 +2,15 @@
 
 import { useTranslations } from 'next-intl';
 import { Pencil, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import type { Term } from '../types';
 
 interface TermTableProps {
@@ -20,50 +29,58 @@ export function TermTable({ terms, onEdit, onDelete }: TermTableProps) {
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-left text-sm">
-        <thead>
-          <tr className="border-b bg-muted/50 text-muted-foreground">
-            <th className="px-6 py-3 font-medium">{t('srcTerm')}</th>
-            <th className="px-6 py-3 font-medium">{t('tgtTerm')}</th>
-            <th className="px-6 py-3 font-medium text-right w-[200px]">
+      <Table>
+        <TableHeader className="bg-muted/40">
+          <TableRow className="hover:bg-transparent">
+            <TableHead className="h-11 px-4 text-sm font-medium text-muted-foreground lg:px-6">
+              {t('srcTerm')}
+            </TableHead>
+            <TableHead className="h-11 px-4 text-sm font-medium text-muted-foreground lg:px-6">
+              {t('tgtTerm')}
+            </TableHead>
+            <TableHead className="h-11 w-[180px] px-4 text-right text-sm font-medium text-muted-foreground lg:px-6">
               {tCommon('actions')}
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border ">
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {terms.map((term) => (
-            <tr
+            <TableRow
               key={term.id}
-              className="hover:bg-muted/50 transition-colors group"
+              className="group hover:bg-muted/30"
             >
-              <td className="px-6 py-4 font-medium text-foreground">
+              <TableCell className="px-4 py-3.5 text-sm font-medium text-foreground lg:px-6">
                 {term.srcTerm}
-              </td>
-              <td className="px-6 py-4 text-foreground/80">
+              </TableCell>
+              <TableCell className="px-4 py-3.5 text-sm text-foreground/80 lg:px-6">
                 {term.tgtTerm}
-              </td>
-              <td className="px-6 py-4 text-right">
-                <div className="flex items-center justify-end gap-2  transition-opacity">
-                  <button
-                    className="p-1.5 text-foreground hover:bg-muted/10 rounded-md transition-colors"
+              </TableCell>
+              <TableCell className="px-4 py-3.5 text-right lg:px-6">
+                <div className="flex items-center justify-end gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
                     onClick={() => onEdit(term)}
                   >
-                    <Pencil className="size-4" />
+                    <Pencil className="size-3.5 text-muted-foreground" />
                     <span className="sr-only">{tCommon('edit')}</span>
-                  </button>
-                  <button
-                    className="p-1.5 text-destructive hover:bg-destructive/10 rounded-md transition-colors"
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
                     onClick={() => onDelete(term)}
                   >
-                    <Trash2 className="size-4" />
+                    <Trash2 className="size-3.5 text-destructive" />
                     <span className="sr-only">{tCommon('delete')}</span>
-                  </button>
+                  </Button>
                 </div>
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
-import { useTranslations, useLocale } from 'next-intl';
+import { useLocale } from 'next-intl';
+import { AppCard, AppCardContent } from '@/components/ui/app-card';
 import { useHistoryJobs } from '../hooks';
 import { HistoryFilters } from './history-filters';
 import { HistoryTable } from './history-table';
@@ -13,7 +14,6 @@ import { HistoryTableSkeleton } from './history-table-skeleton';
  * Wires the useHistoryJobs hook to all presentational sub-components.
  */
 export function HistoryContent() {
-  const t = useTranslations('dashboard.history');
   const locale = useLocale();
 
   const {
@@ -29,10 +29,6 @@ export function HistoryContent() {
     setPage,
   } = useHistoryJobs();
 
-  if (isLoading || isError) {
-    return <HistoryTableSkeleton />;
-  }
-
   return (
     <>
       <HistoryFilters
@@ -42,15 +38,25 @@ export function HistoryContent() {
         onStatusChange={handleStatusChange}
       />
 
-      {jobs.length === 0 ? (
-        <HistoryEmptyState hasFilters={hasFilters} />
+      {isLoading && jobs.length === 0 ? (
+        <HistoryTableSkeleton showFilters={false} />
+      ) : isError && jobs.length === 0 ? (
+        <AppCard>
+          <HistoryEmptyState hasFilters={hasFilters} />
+        </AppCard>
+      ) : jobs.length === 0 ? (
+        <AppCard>
+          <HistoryEmptyState hasFilters={hasFilters} />
+        </AppCard>
       ) : (
-        <>
+        <AppCard className="overflow-hidden">
           <HistoryTable jobs={jobs} locale={locale} />
-          {meta && (
-            <HistoryPagination meta={meta} onPageChange={setPage} />
+          {meta && meta.totalPages > 1 && (
+            <AppCardContent padding="none" className="border-t px-4 py-3 lg:px-6">
+              <HistoryPagination meta={meta} onPageChange={setPage} />
+            </AppCardContent>
           )}
-        </>
+        </AppCard>
       )}
     </>
   );

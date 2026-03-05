@@ -1,13 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
-import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Coins,
-  FileText,
-  Clock,
-  CheckCircle,
+  DashboardCard,
+  DashboardCardContent,
+} from "./dashboard-card";
+import {
   TrendingUp,
   TrendingDown,
 } from "lucide-react";
@@ -15,21 +15,29 @@ import { useDashboardStats } from "../hooks";
 
 function StatsCardsSkeleton() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {Array.from({ length: 4 }).map((_, i) => (
-        <Card key={i} className="border border-border shadow-sm py-2">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-4">
-              <Skeleton className="h-12 w-12 rounded-lg" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-7 w-16" />
-                <Skeleton className="h-3 w-32" />
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {Array.from({ length: 4 }).map((_, i) => {
+        return (
+          <DashboardCard key={i}>
+            <DashboardCardContent padding="all" className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <Skeleton className="h-12 w-12 rounded-xl" />
+                <Skeleton className="h-6 w-16 rounded-full" />
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-9 w-24" />
+              </div>
+
+              <div className="space-y-2">
+                <Skeleton className="h-3 w-36" />
+                <Skeleton className="h-3 w-24" />
+              </div>
+            </DashboardCardContent>
+          </DashboardCard>
+        );
+      })}
     </div>
   );
 }
@@ -51,9 +59,10 @@ export function StatsCards() {
       change: stats.creditsChange,
       trend: stats.creditsTrend,
       trendLabel: t("vsLastMonth"),
-      icon: Coins,
-      iconColor: "text-secondary",
+      iconSrc: "/stats-card-icon/dollar.png",
+      iconAlt: "Total credits",
       iconBg: "bg-secondary/10",
+      footer: t("vsLastMonth"),
     },
     {
       title: t("totalJobs"),
@@ -61,10 +70,13 @@ export function StatsCards() {
       change: stats.jobsChange,
       trend: stats.jobsTrend,
       trendLabel: t("vsLastMonth"),
-      icon: FileText,
-      iconColor: "text-primary",
+      iconSrc: "/stats-card-icon/google-docs.png",
+      iconAlt: "Total jobs",
       iconBg: "bg-primary/10",
       subtitle: t("documentsCount", {
+        docs: stats.documentJobs,
+      }),
+      footer: t("documentsCount", {
         docs: stats.documentJobs,
       }),
     },
@@ -74,9 +86,10 @@ export function StatsCards() {
       change: stats.processingChange,
       trend: stats.processingTrend,
       trendLabel: t("vsYesterday"),
-      icon: Clock,
-      iconColor: "text-accent",
+      iconSrc: "/stats-card-icon/alarm-clock.png",
+      iconAlt: "Processing jobs",
       iconBg: "bg-accent/10",
+      footer: t("vsYesterday"),
     },
     {
       title: t("completedThisMonth"),
@@ -84,71 +97,69 @@ export function StatsCards() {
       change: stats.completedChange,
       trend: stats.completedTrend,
       trendLabel: t("vsLastMonth"),
-      icon: CheckCircle,
-      iconColor: "text-success",
+      iconSrc: "/stats-card-icon/check.png",
+      iconAlt: "Completed jobs",
       iconBg: "bg-success/10",
       subtitle: t("successRate", { rate: stats.successRate }),
+      footer: t("successRate", { rate: stats.successRate }),
     },
   ];
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
       {statCards.map((stat) => (
-        <Card key={stat.title} className="border border-border shadow-sm py-2">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-4">
-              {/* Icon */}
+        <DashboardCard key={stat.title} interactive>
+          <DashboardCardContent padding="all" className="flex flex-col gap-4">
+            <div className="flex items-start justify-between">
               <div
-                className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ${stat.iconBg}`}
+                className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${stat.iconBg}`}
               >
-                <stat.icon className={`size-6 ${stat.iconColor}`} />
+                <Image
+                  src={stat.iconSrc}
+                  alt={stat.iconAlt}
+                  width={24}
+                  height={24}
+                  className="h-6 w-6 object-contain"
+                />
               </div>
 
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                {/* Title */}
-                <p className="text-sm text-muted-foreground truncate">
-                  {stat.title}
-                </p>
-
-                {/* Value */}
-                <p className="text-2xl font-bold text-foreground tracking-tight tabular-nums">
-                  {stat.value}
-                </p>
-
-                {/* Subtitle (if exists) */}
-                {stat.subtitle && (
-                  <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                    {stat.subtitle}
-                  </p>
-                )}
-
-                {/* Trend */}
-                <div className="flex items-center gap-1 mt-1">
-                  {stat.trend === "up" ? (
-                    <TrendingUp className="size-3.5 text-success" />
-                  ) : stat.trend === "down" ? (
-                    <TrendingDown className="size-3.5 text-accent" />
-                  ) : null}
-                  <span
-                    className={`text-xs font-medium ${
-                      stat.trend === "up"
-                        ? "text-success"
-                        : stat.trend === "down"
-                          ? "text-accent"
-                          : "text-muted-foreground"
-                    }`}
-                  >
-                    {stat.change}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {stat.trendLabel}
-                  </span>
-                </div>
+              <div className="flex items-center gap-1 rounded-full border border-border px-2 py-1">
+                {stat.trend === "up" ? (
+                  <TrendingUp className="size-3.5 text-success" />
+                ) : stat.trend === "down" ? (
+                  <TrendingDown className="size-3.5 text-accent" />
+                ) : null}
+                <span
+                  className={`text-xs font-semibold ${
+                    stat.trend === "up"
+                      ? "text-success"
+                      : stat.trend === "down"
+                        ? "text-accent"
+                        : "text-muted-foreground"
+                  }`}
+                >
+                  {stat.change}
+                </span>
               </div>
             </div>
-          </CardContent>
-        </Card>
+
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-muted-foreground">
+                {stat.title}
+              </p>
+              <p className="mt-1 text-3xl font-bold tracking-tight text-foreground tabular-nums">
+                {stat.value}
+              </p>
+            </div>
+
+            <div className="text-sm font-medium text-muted-foreground">
+              <p className="truncate">{stat.footer ?? stat.trendLabel}</p>
+              {stat.subtitle && stat.subtitle !== stat.footer && (
+                <p className="mt-1 truncate text-xs">{stat.subtitle}</p>
+              )}
+            </div>
+          </DashboardCardContent>
+        </DashboardCard>
       ))}
     </div>
   );

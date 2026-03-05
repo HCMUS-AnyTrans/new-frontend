@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,15 +17,20 @@ import {
 import { Download, Eye, ArrowRight, FileText } from "lucide-react";
 import { languageCodeMap } from "../data";
 import { useRecentJobs } from "../hooks";
+import {
+  DashboardCard,
+  DashboardCardContent,
+  DashboardCardHeader,
+} from "./dashboard-card";
 
 function RecentJobsTableSkeleton() {
   return (
-    <Card className="border border-border shadow-sm">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
+    <DashboardCard>
+      <DashboardCardHeader className="flex flex-row items-center justify-between">
         <Skeleton className="h-5 w-32" />
         <Skeleton className="h-8 w-24" />
-      </CardHeader>
-      <CardContent className="p-0">
+      </DashboardCardHeader>
+      <DashboardCardContent padding="none">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -50,8 +55,8 @@ function RecentJobsTableSkeleton() {
             </TableBody>
           </Table>
         </div>
-      </CardContent>
-    </Card>
+      </DashboardCardContent>
+    </DashboardCard>
   );
 }
 
@@ -78,8 +83,8 @@ export function RecentJobsTable() {
   const jobs = jobsData.data;
 
   return (
-    <Card className="border border-border shadow-sm">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
+    <DashboardCard>
+      <DashboardCardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-base font-semibold text-foreground">
           {t("title")}
         </CardTitle>
@@ -94,8 +99,8 @@ export function RecentJobsTable() {
             <ArrowRight className="size-3.5" />
           </Link>
         </Button>
-      </CardHeader>
-      <CardContent className="p-0">
+      </DashboardCardHeader>
+      <DashboardCardContent padding="none">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -135,103 +140,103 @@ export function RecentJobsTable() {
                 </TableRow>
               ) : (
                 jobs.map((job) => {
-                  const fileName =
-                    job.input_file?.name || job.job_id;
-                const jobType = job.job_type;
-                const srcLang = job.src_lang;
-                const tgtLang = job.tgt_lang;
-                const status = job.status;
-                const createdAt = new Date(job.created_at).toLocaleString(
-                  locale === "vi" ? "vi-VN" : "en-US",
-                  {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  }
-                );
+                  const fileName = job.input_file?.name || job.job_id;
+                  const srcLang = job.src_lang;
+                  const tgtLang = job.tgt_lang;
+                  const status = job.status;
+                  const createdAt = new Date(job.created_at).toLocaleString(
+                    locale === "vi" ? "vi-VN" : "en-US",
+                    {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }
+                  );
 
-                return (
-                  <TableRow key={job.job_id} className="group">
-                    <TableCell className="max-w-[200px]">
-                      <div className="flex items-center gap-2">
+                  return (
+                    <TableRow key={job.job_id} className="group">
+                      <TableCell className="max-w-[200px]">
+                        <div className="flex items-center gap-2">
                           <FileText className="size-4 shrink-0 text-primary" />
-                        <span className="truncate text-sm font-medium text-foreground">
-                          {fileName}
+                          <span className="truncate text-sm font-medium text-foreground">
+                            {fileName}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className="text-xs border-primary/20 bg-primary/10 text-primary"
+                        >
+                          {t("document")}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1 text-sm text-foreground">
+                          <span className="font-mono text-xs font-medium">
+                            {languageCodeMap[srcLang] || srcLang.toUpperCase()}
+                          </span>
+                          <span className="text-muted-foreground">{"\u2192"}</span>
+                          <span className="font-mono text-xs font-medium">
+                            {languageCodeMap[tgtLang] || tgtLang.toUpperCase()}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={`text-xs ${statusConfig[status] || ""}`}
+                        >
+                          {tStatus(status)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <span className="text-sm tabular-nums text-foreground">
+                          {job.input_file
+                            ? job.input_file.size_bytes > 0
+                              ? job.input_file.size_bytes.toLocaleString(
+                                  locale === "vi" ? "vi-VN" : "en-US"
+                                )
+                              : "\u2014"
+                            : "\u2014"}
                         </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className="text-xs border-primary/20 bg-primary/10 text-primary"
-                      >
-                        {t("document")}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1 text-sm text-foreground">
-                        <span className="font-mono text-xs font-medium">
-                          {languageCodeMap[srcLang] ||
-                            srcLang.toUpperCase()}
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {createdAt}
                         </span>
-                        <span className="text-muted-foreground">{"\u2192"}</span>
-                        <span className="font-mono text-xs font-medium">
-                          {languageCodeMap[tgtLang] ||
-                            tgtLang.toUpperCase()}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={`text-xs ${statusConfig[status] || ""}`}
-                      >
-                        {tStatus(status)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <span className="text-sm tabular-nums text-foreground">
-                        {job.input_file
-                          ? job.input_file.size_bytes > 0
-                            ? job.input_file.size_bytes.toLocaleString(
-                                locale === "vi" ? "vi-VN" : "en-US"
-                              )
-                            : "\u2014"
-                          : "\u2014"}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm text-muted-foreground">
-                        {createdAt}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        {status === "succeeded" && (
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          {status === "succeeded" && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7"
+                            >
+                              <Download className="size-3.5 text-muted-foreground" />
+                              <span className="sr-only">{t("download")}</span>
+                            </Button>
+                          )}
                           <Button
                             variant="ghost"
                             size="icon"
                             className="h-7 w-7"
                           >
-                            <Download className="size-3.5 text-muted-foreground" />
-                            <span className="sr-only">{t("download")}</span>
+                            <Eye className="size-3.5 text-muted-foreground" />
+                            <span className="sr-only">{t("viewDetails")}</span>
                           </Button>
-                        )}
-                        <Button variant="ghost" size="icon" className="h-7 w-7">
-                          <Eye className="size-3.5 text-muted-foreground" />
-                          <span className="sr-only">{t("viewDetails")}</span>
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              }))}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                }))}
             </TableBody>
           </Table>
         </div>
-      </CardContent>
-    </Card>
+      </DashboardCardContent>
+    </DashboardCard>
   );
 }

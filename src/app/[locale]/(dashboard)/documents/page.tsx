@@ -11,7 +11,7 @@ export default function DocumentsPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] flex-col p-4 lg:p-6">
+    <div className="flex min-h-[calc(100vh-var(--dashboard-header-height))] flex-col p-4 lg:p-6">
       <DocumentTranslationWizard />
     </div>
   );

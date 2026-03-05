@@ -50,7 +50,7 @@ function SettingsContent() {
 
 function SettingsFallback() {
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-6">
+    <div className="w-full space-y-6">
       <Skeleton className="h-10 w-full" />
       <Skeleton className="h-64 w-full rounded-lg" />
     </div>

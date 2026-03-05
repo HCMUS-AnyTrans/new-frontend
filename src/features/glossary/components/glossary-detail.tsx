@@ -145,23 +145,23 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
       <AddTermForm glossaryId={glossaryId} />
 
       {/* Search + Table card */}
-      <div className="rounded-2xl border bg-card overflow-hidden">
+      <div className="overflow-hidden rounded-md border border-[#E5E5E5] bg-white">
         {/* Search header */}
-        <div className="p-4 border-b bg-muted/30">
+        <div className="border-b bg-muted/40 px-4 py-3 lg:px-6">
           <div className="relative max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <Input
               placeholder={tTerms('searchPlaceholder')}
               value={termSearch}
               onChange={handleSearchChange}
-              className="pl-9"
+              className="h-9 bg-white pl-9 text-sm"
             />
           </div>
         </div>
 
         {/* Table body */}
         {isLoadingTerms ? (
-          <TermTableSkeleton />
+          <TermTableSkeleton showControls={false} />
         ) : !terms || terms.length === 0 ? (
           <TermEmptyState hasSearch={termSearch !== ''} />
         ) : (
@@ -174,7 +174,7 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
 
         {/* Pagination footer */}
         {termPagination && termPagination.totalPages > 1 && (
-          <div className="p-4 border-t bg-muted/30">
+          <div className="border-t bg-muted/40 px-4 py-3 lg:px-6">
             <Pagination
               page={termPagination.page}
               totalPages={termPagination.totalPages}

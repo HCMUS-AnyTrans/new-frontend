@@ -1,4 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton';
+import { AppCard, AppCardContent } from '@/components/ui/app-card';
 import {
   Table,
   TableBody,
@@ -8,43 +9,59 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-export function HistoryTableSkeleton() {
+interface HistoryTableSkeletonProps {
+  showFilters?: boolean;
+}
+
+export function HistoryTableSkeleton({ showFilters = true }: HistoryTableSkeletonProps) {
   return (
     <>
-      {/* Description skeleton */}
-      <Skeleton className="h-4 w-72 mb-6" />
-
       {/* Filters skeleton */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <Skeleton className="h-10 flex-1" />
-        <Skeleton className="h-10 w-[180px]" />
-      </div>
+      {showFilters && (
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+          <Skeleton className="h-10 flex-1" />
+          <Skeleton className="h-10 w-[180px]" />
+        </div>
+      )}
 
       {/* Table skeleton */}
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              {Array.from({ length: 7 }).map((_, i) => (
-                <TableHead key={i}>
-                  <Skeleton className="h-4 w-16" />
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <TableRow key={i}>
-                {Array.from({ length: 7 }).map((_, j) => (
-                  <TableCell key={j}>
-                    <Skeleton className="h-4 w-full" />
-                  </TableCell>
+      <AppCard className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader className="bg-muted/40">
+              <TableRow className="hover:bg-transparent">
+                {Array.from({ length: 7 }).map((_, i) => (
+                  <TableHead key={i}>
+                    <Skeleton className="h-4 w-16" />
+                  </TableHead>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <TableRow key={i}>
+                  {Array.from({ length: 7 }).map((_, j) => (
+                    <TableCell key={j}>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <AppCardContent padding="none" className="border-t px-4 py-3 lg:px-6">
+          <div className="flex items-center justify-between gap-3">
+            <Skeleton className="h-4 w-44" />
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-8 w-8" />
+              <Skeleton className="h-8 w-8" />
+              <Skeleton className="h-8 w-8" />
+              <Skeleton className="h-8 w-8" />
+            </div>
+          </div>
+        </AppCardContent>
+      </AppCard>
     </>
   );
 }

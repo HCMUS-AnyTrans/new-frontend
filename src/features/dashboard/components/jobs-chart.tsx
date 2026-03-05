@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   ChartContainer,
@@ -11,21 +11,26 @@ import {
 } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { useJobsChart } from "../hooks";
+import {
+  DashboardCard,
+  DashboardCardContent,
+  DashboardCardHeader,
+} from "./dashboard-card";
 
 function JobsChartSkeleton() {
   return (
-    <Card className="h-full border border-border shadow-sm">
-      <CardHeader className="pb-2">
+    <DashboardCard className="h-full">
+      <DashboardCardHeader>
         <Skeleton className="h-5 w-40" />
-      </CardHeader>
-      <CardContent className="pt-0">
+      </DashboardCardHeader>
+      <DashboardCardContent>
         <Skeleton className="h-[280px] w-full rounded-md" />
         <div className="mt-3 flex items-center justify-center gap-6">
           <Skeleton className="h-4 w-20" />
           <Skeleton className="h-4 w-20" />
         </div>
-      </CardContent>
-    </Card>
+      </DashboardCardContent>
+    </DashboardCard>
   );
 }
 
@@ -44,13 +49,13 @@ export function JobsChart() {
   if (isError || !chartData) return <JobsChartSkeleton />;
 
   return (
-    <Card className="h-full border border-border shadow-sm">
-      <CardHeader className="pb-2">
+    <DashboardCard className="h-full">
+      <DashboardCardHeader>
         <CardTitle className="text-base font-semibold text-foreground">
           {t("jobsByDay")}
         </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-0">
+      </DashboardCardHeader>
+      <DashboardCardContent>
         <ChartContainer config={chartConfig} className="h-[280px] w-full">
           <BarChart data={chartData} barGap={4}>
             <CartesianGrid
@@ -92,7 +97,7 @@ export function JobsChart() {
             </span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </DashboardCardContent>
+    </DashboardCard>
   );
 }

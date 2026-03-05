@@ -2,7 +2,8 @@
 
 import { Plus, Trash2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { CardTitle, CardDescription } from "@/components/ui/card"
+import { AppCard, AppCardContent, AppCardHeader } from "@/components/ui/app-card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -49,12 +50,12 @@ export function GlossarySection({
   const isNearLimit = manualTerms.length >= 18
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
+    <AppCard>
+      <AppCardHeader className="pb-3">
         <CardTitle className="text-base">{t("glossary")}</CardTitle>
         <CardDescription>{t("glossaryDescription")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-5">
+      </AppCardHeader>
+      <AppCardContent className="space-y-5">
         <div className="rounded-lg border bg-muted/20 p-4">
           <div className="space-y-2">
             <Label className="text-sm font-medium text-foreground">{t("savedGlossaryLabel")}</Label>
@@ -166,7 +167,7 @@ export function GlossarySection({
             {t("termsAppliedCount", { count: totalAppliedTerms })}
           </span>
         </div>
-      </CardContent>
-    </Card>
+      </AppCardContent>
+    </AppCard>
   )
 }

@@ -4,7 +4,7 @@
       "mainMenu": "Main Menu",
       "other": "Other",
       "dashboard": "Dashboard",
-      "documents": "Document Translation",
+      "documents": "Translate",
       "glossary": "Glossary",
       "history": "History",
       "settings": "Settings",
@@ -14,7 +14,7 @@
     },
     "pages": {
       "dashboard": "Dashboard",
-      "documents": "Document Translation",
+      "documents": "Translate",
       "glossary": "Glossary",
       "history": "History",
       "settings": "Settings",
@@ -84,7 +84,7 @@
       "ofTotal": "of total"
     },
     "charts": {
-      "jobsByDay": "Jobs by Day (Last 7 Days)",
+      "jobsByDay": "Activity Overview",
       "creditAllocation": "Credit Allocation",
       "noUsageInfo": "No credit usage information yet",
       "documents": "Documents",
