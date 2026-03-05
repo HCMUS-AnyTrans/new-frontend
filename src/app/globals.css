@@ -288,6 +288,11 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .heading-serif-scope h1,
+  .heading-serif-scope h2 {
+    font-family: "Playfair Display", serif !important;
+  }
 }
 
 /* ============================================================================

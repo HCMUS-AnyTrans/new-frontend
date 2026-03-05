@@ -3,8 +3,10 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import { settingsKeys } from '@/lib/query-client';
 import { usePreferences, useUpdatePreferences } from './use-preferences';
-import type { UILanguage } from '../types';
+import type { UILanguage, UserPreferences } from '../types';
 
 /**
  * Unified language hook that syncs next-intl locale (UI) ↔ backend (persistence).
@@ -16,6 +18,7 @@ export function useLanguageSync() {
   const locale = useLocale() as UILanguage;
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { preferences } = usePreferences();
   const { updatePreferences } = useUpdatePreferences();
   const hasSynced = useRef(false);
@@ -43,10 +46,35 @@ export function useLanguageSync() {
 
   const changeLanguage = useCallback(
     (newLanguage: UILanguage) => {
+      const previousPreferences = queryClient.getQueryData<UserPreferences>(
+        settingsKeys.preferences()
+      );
+
+      queryClient.setQueryData<UserPreferences | undefined>(
+        settingsKeys.preferences(),
+        (current) => {
+          if (!current) return current;
+          return { ...current, uiLanguage: newLanguage };
+        }
+      );
+
       navigateToLocale(newLanguage);
-      updatePreferences({ uiLanguage: newLanguage });
+
+      updatePreferences(
+        { uiLanguage: newLanguage },
+        {
+          onError: () => {
+            if (previousPreferences) {
+              queryClient.setQueryData(
+                settingsKeys.preferences(),
+                previousPreferences
+              );
+            }
+          },
+        }
+      );
     },
-    [navigateToLocale, updatePreferences]
+    [navigateToLocale, queryClient, updatePreferences]
   );
 
   const toggleLanguage = useCallback(() => {

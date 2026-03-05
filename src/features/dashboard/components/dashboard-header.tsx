@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ModeToggle, LanguageSwitcher } from "@/components/shared";
 import { useAuthStore } from "@/features/auth";
 import { useWallet } from "../hooks";
 
@@ -60,12 +59,6 @@ export function DashboardHeader() {
 
       {/* Right Actions */}
       <div className="flex items-center gap-2">
-        {/* Language Switcher */}
-        <LanguageSwitcher />
-
-        {/* Theme Toggle */}
-        <ModeToggle />
-
         {/* Notification Bell */}
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="size-5 text-muted-foreground" />
