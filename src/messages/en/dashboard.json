@@ -77,7 +77,7 @@
     },
     "storage": {
       "title": "Storage",
-      "remaining": "{value} GB remaining",
+      "remaining": "{value} MB remaining",
       "creditUsageTitle": "Credit Usage",
       "noUsageInfo": "No credit usage information yet",
       "documents": "Documents",

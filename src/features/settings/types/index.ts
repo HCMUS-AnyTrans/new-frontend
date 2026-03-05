@@ -197,7 +197,7 @@ export type CreditPackageType = "personal" | "business"
 export interface CreditPackage {
   id: string
   name: string
-  description: string[]
+  description: Record<string, string[]>
   credits: number
   price: number
   currency: string

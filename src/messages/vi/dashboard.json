@@ -77,7 +77,7 @@
     },
     "storage": {
       "title": "Lưu trữ",
-      "remaining": "Còn lại {value} GB dung lượng",
+      "remaining": "Còn lại {value} MB dung lượng",
       "creditUsageTitle": "Credit đã sử dụng",
       "noUsageInfo": "Chưa có thông tin sử dụng credit",
       "documents": "Tài liệu",

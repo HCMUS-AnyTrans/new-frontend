@@ -188,9 +188,9 @@ function CheckoutContent() {
                 </div>
               ) : null}
 
-              {selectedPackage.description?.length ? (
+              {((selectedPackage.description?.[locale] ?? selectedPackage.description?.['en']) ?? []).length ? (
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  {selectedPackage.description.map((item) => (
+                  {(selectedPackage.description?.[locale] ?? selectedPackage.description?.['en'] ?? []).map((item) => (
                     <li key={item} className="flex items-start gap-2">
                       <span className="mt-1 size-1.5 rounded-full bg-primary" />
                       <span>{item}</span>

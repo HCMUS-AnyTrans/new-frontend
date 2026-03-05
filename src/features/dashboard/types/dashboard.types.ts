@@ -144,8 +144,8 @@ export interface CreditsChartResponse {
 // ============================================================================
 
 export interface StorageInfo {
-  used: number // in GB
-  total: number // in GB
+  used: number // in MB
+  total: number // in MB
 }
 
 export interface StorageBreakdownItem {
