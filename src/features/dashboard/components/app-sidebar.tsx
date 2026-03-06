@@ -73,7 +73,7 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible="none"
-      className="h-svh border-r border-sidebar-border bg-[#ffffff] pt-[var(--dashboard-header-height)]"
+      className="h-svh border-r border-sidebar-border bg-sidebar pt-[var(--dashboard-header-height)]"
     >
       {/* Main Navigation */}
       <SidebarContent className="px-2 pt-4">

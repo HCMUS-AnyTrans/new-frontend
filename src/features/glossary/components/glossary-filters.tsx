@@ -39,14 +39,14 @@ export function GlossaryFilters({
           placeholder={t('searchPlaceholder')}
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="bg-white pl-9"
+          className="bg-background pl-9"
         />
       </div>
       <Select value={domainFilter} onValueChange={onDomainChange}>
-        <SelectTrigger className="w-full bg-white hover:bg-white sm:w-[160px]">
+        <SelectTrigger className="w-full bg-background hover:bg-background sm:w-[160px]">
           <SelectValue placeholder={t('filterDomain')} />
         </SelectTrigger>
-        <SelectContent className="bg-white">
+        <SelectContent className="bg-popover">
           <SelectItem value="all">{t('allDomains')}</SelectItem>
           {glossaryDomains.map((domain) => {
             const Icon = domain.icon;
@@ -60,10 +60,10 @@ export function GlossaryFilters({
         </SelectContent>
       </Select>
       <Select value={srcLangFilter} onValueChange={onSrcLangChange}>
-        <SelectTrigger className="w-full bg-white hover:bg-white sm:w-[160px]">
+        <SelectTrigger className="w-full bg-background hover:bg-background sm:w-[160px]">
           <SelectValue placeholder={t('filterSrcLang')} />
         </SelectTrigger>
-        <SelectContent className="bg-white">
+        <SelectContent className="bg-popover">
           <SelectItem value="all">{t('allLanguages')}</SelectItem>
           {glossaryLanguages.map((lang) => (
             <SelectItem key={lang.code} value={lang.code}>

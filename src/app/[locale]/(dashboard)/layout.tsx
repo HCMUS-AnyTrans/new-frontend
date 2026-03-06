@@ -14,8 +14,8 @@ export default function DashboardLayout({
       <DashboardHeader />
       <SidebarProvider>
         <AppSidebar />
-        <SidebarInset className="h-svh overflow-hidden bg-[#F5F6F7]">
-          <main className="flex-1 overflow-y-auto bg-[#F5F6F7] pt-[var(--dashboard-header-height)] [scrollbar-gutter:stable]">
+        <SidebarInset className="h-svh overflow-hidden bg-muted/30">
+          <main className="flex-1 overflow-y-auto bg-muted/30 pt-[var(--dashboard-header-height)] [scrollbar-gutter:stable]">
             <div className="px-[var(--dashboard-content-margin)]">
               {children}
             </div>

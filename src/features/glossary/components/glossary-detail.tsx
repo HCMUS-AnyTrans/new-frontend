@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { ArrowLeft, ArrowRight, Search, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AppCard, AppCardContent } from '@/components/ui/app-card';
 import { Input } from '@/components/ui/input';
 import { Pagination } from '@/components/ui/pagination';
 import { glossaryDomains } from '../data';
@@ -145,7 +146,7 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
       <AddTermForm glossaryId={glossaryId} />
 
       {/* Search + Table card */}
-      <div className="overflow-hidden rounded-md border border-[#E5E5E5] bg-white">
+      <AppCard className="overflow-hidden">
         {/* Search header */}
         <div className="border-b bg-muted/40 px-4 py-3 lg:px-6">
           <div className="relative max-w-sm">
@@ -154,7 +155,7 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
               placeholder={tTerms('searchPlaceholder')}
               value={termSearch}
               onChange={handleSearchChange}
-              className="h-9 bg-white pl-9 text-sm"
+              className="h-9 bg-background pl-9 text-sm"
             />
           </div>
         </div>
@@ -174,7 +175,7 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
 
         {/* Pagination footer */}
         {termPagination && termPagination.totalPages > 1 && (
-          <div className="border-t bg-muted/40 px-4 py-3 lg:px-6">
+          <AppCardContent padding="none" className="border-t bg-muted/40 px-4 py-3 lg:px-6">
             <Pagination
               page={termPagination.page}
               totalPages={termPagination.totalPages}
@@ -183,9 +184,9 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
               onPageChange={setTermPage}
               isFetching={isFetchingTerms}
             />
-          </div>
+          </AppCardContent>
         )}
-      </div>
+      </AppCard>
 
       {/* Term dialogs */}
       <EditTermDialog

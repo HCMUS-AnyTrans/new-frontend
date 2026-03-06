@@ -3,11 +3,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const appCardVariants = cva(
-  "rounded-md border border-[#E5E5E5] bg-white text-[#1A202C] shadow-none gap-0 py-0",
+  "rounded-md border border-border bg-card text-card-foreground shadow-none gap-0 py-0",
   {
     variants: {
       interactive: {
-        true: "cursor-pointer transition-colors duration-200 hover:bg-[#FAFAFA]",
+        true: "cursor-pointer transition-colors duration-200 hover:bg-muted/30",
         false: "",
       },
     },
