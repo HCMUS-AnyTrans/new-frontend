@@ -17,6 +17,7 @@ export interface Plan {
   price: number
   currency: string
   discount?: number | null
+  bonus?: number | null
   popular: boolean
   checkoutUrl: string
 }

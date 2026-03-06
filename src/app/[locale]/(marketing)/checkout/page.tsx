@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { ProtectedRoute } from "@/features/auth"
 import { useCreditPackages, useCreateVnpayPayment } from "@/features/settings"
 import { trackEvent } from "@/lib/analytics"
+import { normalizePercentage } from "@/lib/percentage"
 
 function CheckoutContent() {
   const t = useTranslations("marketing.checkout")
@@ -32,6 +33,8 @@ function CheckoutContent() {
     if (!packageId) return null
     return packages?.find((pkg) => pkg.id === packageId) ?? null
   }, [packages, packageId])
+  const discountPercent = normalizePercentage(selectedPackage?.discount)
+  const bonusPercent = normalizePercentage(selectedPackage?.bonus)
 
   const numberFormatter = new Intl.NumberFormat(
     locale === "vi" ? "vi-VN" : "en-US",
@@ -176,15 +179,15 @@ function CheckoutContent() {
                 </div>
               </div>
 
-              {selectedPackage.discount ? (
+              {discountPercent ? (
                 <div className="rounded-lg border border-success/20 bg-success/10 px-4 py-3 text-sm text-success">
-                  {t("discount", { percent: selectedPackage.discount })}
+                  {t("discount", { percent: discountPercent })}
                 </div>
               ) : null}
 
-              {selectedPackage.bonus ? (
+              {bonusPercent ? (
                 <div className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-primary">
-                  {t("bonus", { percent: selectedPackage.bonus })}
+                  {t("bonus", { percent: bonusPercent })}
                 </div>
               ) : null}
 

@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation"
 import { Check, Star, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { normalizePercentage } from "@/lib/percentage"
 import type { Plan } from "../data"
 
 export interface PricingCardProps {
@@ -41,6 +42,8 @@ export function PricingCard({
   const priceLabel = numberFormatter.format(plan.price)
   const unitPrice = plan.credits > 0 ? plan.price / plan.credits : 0
   const unitPriceLabel = numberFormatter.format(unitPrice)
+  const discountPercent = normalizePercentage(plan.discount)
+  const bonusPercent = normalizePercentage(plan.bonus)
 
   return (
     <div
@@ -95,10 +98,19 @@ export function PricingCard({
               {currencySymbol}/{t("perCredit")}
             </span>
           </div>
-          {plan.discount ? (
-            <span className="inline-block mt-3 px-3 py-1 rounded-full bg-success/10 text-success text-xs font-semibold border border-success/20">
-              {t("savePercent", { percent: plan.discount })}
-            </span>
+          {discountPercent || bonusPercent ? (
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              {discountPercent ? (
+                <span className="inline-block rounded-full border border-success/20 bg-success/10 px-3 py-1 text-xs font-semibold text-success">
+                  {t("savePercent", { percent: discountPercent })}
+                </span>
+              ) : null}
+              {bonusPercent ? (
+                <span className="inline-block rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                  {t("bonusPercent", { percent: bonusPercent })}
+                </span>
+              ) : null}
+            </div>
           ) : null}
         </div>
 

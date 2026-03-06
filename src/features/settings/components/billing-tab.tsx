@@ -32,6 +32,7 @@ import {
 } from "../hooks/use-billing"
 import type { LedgerType, PaymentStatus } from "../types"
 import { cn } from "@/lib/utils"
+import { normalizePercentage } from "@/lib/percentage"
 import { walletKeys, billingKeys } from "@/lib/query-client"
 import { trackEvent } from "@/lib/analytics"
 
@@ -341,6 +342,8 @@ export function BillingTab() {
             {packageList.map((pkg) => {
               const isBestValue = pkg.tags.includes("best-value")
               const isPopular = pkg.tags.includes("popular")
+              const bonusPercent = normalizePercentage(pkg.bonus)
+              const discountPercent = normalizePercentage(pkg.discount)
 
               return (
                 <div
@@ -369,16 +372,16 @@ export function BillingTab() {
                   </p>
                   <p className="text-sm text-muted-foreground">{t("credits")}</p>
 
-                  {pkg.bonus ? (
-                    <p className="text-xs text-success">{t("bonusPercent", { percent: pkg.bonus })}</p>
+                  {bonusPercent ? (
+                    <p className="text-xs text-success">{t("bonusPercent", { percent: bonusPercent })}</p>
                   ) : null}
 
                   <div className="mt-3">
                     <p className="text-lg font-semibold text-foreground">
                       {formatCurrency(pkg.price)}
                     </p>
-                    {pkg.discount ? (
-                      <p className="text-xs text-success">{t("save", { percent: pkg.discount })}</p>
+                    {discountPercent ? (
+                      <p className="text-xs text-success">{t("save", { percent: discountPercent })}</p>
                     ) : null}
                   </div>
 
