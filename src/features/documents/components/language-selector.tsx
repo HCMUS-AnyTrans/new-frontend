@@ -30,10 +30,9 @@ export function LanguageSelector({
   onTgtLangChange,
 }: LanguageSelectorProps) {
   const t = useTranslations("documents")
-  const isSameLang = srcLang !== "auto" && srcLang === tgtLang
+  const isSameLang = srcLang === tgtLang
 
   const swapLanguages = () => {
-    if (srcLang === "auto") return
     onSrcLangChange(tgtLang)
     onTgtLangChange(srcLang)
   }
@@ -69,7 +68,6 @@ export function LanguageSelector({
             variant="outline"
             size="icon"
             onClick={swapLanguages}
-            disabled={srcLang === "auto"}
             className="mx-auto shrink-0 md:mb-0.5"
           >
             <ArrowLeftRight className="size-4" />

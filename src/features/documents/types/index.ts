@@ -3,7 +3,6 @@ import type { LucideIcon } from "lucide-react"
 // =============== LANGUAGE TYPES ===============
 
 export type LanguageCode =
-  | "auto"
   | "en"
   | "vi"
   | "ja"
@@ -24,7 +23,7 @@ export interface Language {
  * Map language code to the full name the backend expects.
  * Backend uses full names like "English", "Vietnamese" — NOT codes like "en", "vi".
  */
-export const LANGUAGE_CODE_TO_API_NAME: Record<Exclude<LanguageCode, "auto">, string> = {
+export const LANGUAGE_CODE_TO_API_NAME: Record<LanguageCode, string> = {
   en: "English",
   vi: "Vietnamese",
   ja: "Japanese",

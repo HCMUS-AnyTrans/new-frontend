@@ -60,7 +60,7 @@ export function DocumentTranslationWizard() {
     () => ({
       page: 1,
       limit: 100,
-      srcLang: config.srcLang === "auto" ? undefined : config.srcLang,
+      srcLang: config.srcLang,
       tgtLang: config.tgtLang,
     }),
     [config.srcLang, config.tgtLang]

@@ -14,7 +14,6 @@ import {
 // =============== LANGUAGES ===============
 
 export const languages: Language[] = [
-  { code: "auto", name: "Tự động phát hiện", apiName: "auto" },
   { code: "en", name: "English", apiName: "English" },
   { code: "vi", name: "Tiếng Việt", apiName: "Vietnamese" },
   { code: "ja", name: "日本語", apiName: "Japanese" },
@@ -26,11 +25,12 @@ export const languages: Language[] = [
 ]
 
 export const sourceLanguages = languages
-export const targetLanguages = languages.filter((l) => l.code !== "auto")
+export const targetLanguages = languages
 
 // =============== DOMAINS ===============
 
 export const domains: Domain[] = [
+  { id: "auto", name: "Auto Detect", icon: FolderOpen },
   { id: "general", name: "Tổng quát", icon: Globe },
   { id: "technology", name: "Công nghệ", icon: Laptop },
   { id: "medical", name: "Y tế", icon: Stethoscope },
@@ -40,7 +40,6 @@ export const domains: Domain[] = [
   { id: "education", name: "Giáo dục", icon: GraduationCap },
   { id: "engineering", name: "Kỹ thuật", icon: Cog },
   { id: "science", name: "Khoa học", icon: FlaskConical },
-  { id: "other", name: "Khác", icon: FolderOpen },
 ]
 
 // =============== TONES ===============
@@ -55,9 +54,9 @@ export const tones: Tone[] = [
 // =============== DEFAULT CONFIG ===============
 
 export const defaultConfig: TranslationConfig = {
-  srcLang: "auto",
+  srcLang: "en",
   tgtLang: "vi",
-  domain: "general",
+  domain: "auto",
   tone: "professional",
   selectedGlossaryId: null,
   manualTerms: [],

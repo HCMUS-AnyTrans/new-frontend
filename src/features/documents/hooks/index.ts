@@ -17,7 +17,6 @@ import type {
   TranslationJobResponse,
   CreateTranslationJobDto,
   TranslationConfig,
-  LanguageCode,
   CreditEstimateResponse,
 } from '../types';
 import { LANGUAGE_CODE_TO_API_NAME } from '../types';
@@ -69,14 +68,10 @@ function buildJobDto(
 ): CreateTranslationJobDto {
   const dto: CreateTranslationJobDto = {
     file_id: fileId,
-    src_lang:
-      config.srcLang === 'auto'
-        ? 'auto'
-        : LANGUAGE_CODE_TO_API_NAME[config.srcLang as Exclude<LanguageCode, 'auto'>],
-    tgt_lang:
-      LANGUAGE_CODE_TO_API_NAME[config.tgtLang as Exclude<LanguageCode, 'auto'>],
+    src_lang: LANGUAGE_CODE_TO_API_NAME[config.srcLang],
+    tgt_lang: LANGUAGE_CODE_TO_API_NAME[config.tgtLang],
     doc_tone: config.tone || undefined,
-    doc_domain: config.domain || undefined,
+    doc_domain: config.domain === 'auto' ? undefined : config.domain || undefined,
   };
 
   // Merge selected glossary terms + manual terms and remove duplicate source terms.

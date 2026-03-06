@@ -101,6 +101,7 @@
       "es": "Spanish"
     },
     "domains": {
+      "auto": "Auto Detect",
       "general": "General",
       "technology": "Technology",
       "medical": "Medical",
@@ -109,8 +110,7 @@
       "marketing": "Marketing",
       "education": "Education",
       "engineering": "Engineering",
-      "science": "Science",
-      "other": "Other"
+      "science": "Science"
     },
     "tones": {
       "formal": "Formal",

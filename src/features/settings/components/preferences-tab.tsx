@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Sun, Moon, Monitor, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ import { uiLanguageOptions } from "../data";
 import { usePreferences, useUpdatePreferences } from "../hooks/use-preferences";
 import { useThemeSync } from "../hooks/use-theme-sync";
 import { useLanguageSync } from "../hooks/use-language-sync";
-import type { UserPreferences, UILanguage, Theme, FileTTL } from "../types";
+import type { UILanguage, Theme, FileTTL } from "../types";
 
 const themeIcons = {
   light: Sun,
@@ -29,14 +29,20 @@ const themeIcons = {
   system: Monitor,
 };
 
-// Minutes to days mapping for fileTtl
-const FILE_TTL_OPTIONS: { value: FileTTL; days: number }[] = [
-  { value: 10080, days: 7 },
-  { value: 20160, days: 14 },
-  { value: 43200, days: 30 },
-  { value: 86400, days: 60 },
-  { value: 129600, days: 90 },
+// Hours options for fileTtl
+const FILE_TTL_OPTIONS: { value: FileTTL; hours: number }[] = [
+  { value: 1, hours: 1 },
+  { value: 6, hours: 6 },
+  { value: 12, hours: 12 },
+  { value: 24, hours: 24 },
 ];
+
+const DEFAULT_FILE_TTL: FileTTL = 6;
+
+function normalizeFileTtl(value: number | null | undefined): FileTTL {
+  const matched = FILE_TTL_OPTIONS.find((option) => option.value === value);
+  return matched?.value ?? DEFAULT_FILE_TTL;
+}
 
 // ============================================================================
 // Skeleton Loading State
@@ -108,30 +114,28 @@ export function PreferencesTab() {
   const { locale, changeLanguage } = useLanguageSync();
 
   // Local state (fileTtl only — theme and language are handled instantly)
-  const [formData, setFormData] = useState<Pick<UserPreferences, "fileTtl"> | null>(null);
+  const [selectedFileTtl, setSelectedFileTtl] = useState<FileTTL | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Sync form data when preferences load
-  useEffect(() => {
-    if (preferences && !formData) {
-      setFormData({ fileTtl: preferences.fileTtl });
-    }
-  }, [preferences, formData]);
-
   // Show skeleton while loading
-  if (isLoading || !preferences || !formData) {
+  if (isLoading || !preferences) {
     return <PreferencesTabSkeleton />;
   }
 
+  const normalizedPreferenceFileTtl = normalizeFileTtl(preferences.fileTtl);
+  const currentFileTtl = selectedFileTtl ?? normalizedPreferenceFileTtl;
+  const hasInvalidLegacyTtl = preferences.fileTtl !== normalizedPreferenceFileTtl;
+
   const handleFileTtlChange = (value: FileTTL) => {
-    setFormData({ fileTtl: value });
+    setSelectedFileTtl(value);
     setHasChanges(true);
   };
 
   const handleSave = () => {
-    updatePreferences(formData, {
+    updatePreferences({ fileTtl: currentFileTtl }, {
       onSuccess: () => {
         setHasChanges(false);
+        setSelectedFileTtl(null);
       },
     });
   };
@@ -204,7 +208,7 @@ export function PreferencesTab() {
             description={t("fileTtlDescription")}
           >
             <Select
-              value={String(formData.fileTtl)}
+              value={String(currentFileTtl)}
               onValueChange={(v) => handleFileTtlChange(Number(v) as FileTTL)}
             >
               <SelectTrigger className="w-32">
@@ -213,7 +217,7 @@ export function PreferencesTab() {
               <SelectContent>
                 {FILE_TTL_OPTIONS.map((option) => (
                   <SelectItem key={option.value} value={String(option.value)}>
-                    {t("days", { count: option.days })}
+                    {t("hours", { count: option.hours })}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -223,7 +227,7 @@ export function PreferencesTab() {
       </SettingsSection>
 
       {/* Save Button */}
-      {hasChanges && (
+      {(hasChanges || hasInvalidLegacyTtl) && (
         <div className="flex justify-end">
           <Button onClick={handleSave} disabled={isUpdating}>
             {isUpdating ? (

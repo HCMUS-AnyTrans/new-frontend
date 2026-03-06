@@ -55,7 +55,7 @@ export default function RegisterPage() {
                   <RegisterForm />
 
                   {/* Social Login - uses hooks internally */}
-                  <SocialLoginButtons mode="register" />
+                  <SocialLoginButtons mode="register" className="max-w-[640px]" />
                 </div>
               </div>
             </div>

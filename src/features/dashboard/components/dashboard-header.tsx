@@ -1,18 +1,26 @@
 "use client";
 
 import Image from "next/image";
-import { useLocale } from "next-intl";
-import { Search, MoreVertical, ChevronDown, Coins } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { Search, MoreVertical, ChevronDown, Coins, LogOut } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuthStore } from "@/features/auth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuthStore, useLogout } from "@/features/auth";
 import { useWallet } from "../hooks";
 
 export function DashboardHeader() {
   const locale = useLocale();
+  const tSidebar = useTranslations("dashboard.sidebar");
   const user = useAuthStore((s) => s.user);
+  const { logout } = useLogout();
   const { wallet, isLoading: walletLoading } = useWallet();
 
   const initials = user?.fullName
@@ -83,20 +91,33 @@ export function DashboardHeader() {
           <Link href="/pricing">Pricing</Link>
         </Button>
 
-        <button
-          type="button"
-          className="flex items-center gap-1 rounded-full border border-input bg-background p-1 transition-colors hover:bg-muted"
-        >
-          <Avatar className="h-8 w-8">
-            {user?.avatarUrl && (
-              <AvatarImage src={user.avatarUrl} alt={user.fullName} />
-            )}
-            <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-          <ChevronDown className="mr-1 hidden size-3.5 text-muted-foreground sm:block" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className="flex items-center gap-1 rounded-full border border-input bg-background p-1 transition-colors hover:bg-muted"
+            >
+              <Avatar className="h-8 w-8">
+                {user?.avatarUrl && (
+                  <AvatarImage src={user.avatarUrl} alt={user.fullName} />
+                )}
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <ChevronDown className="mr-1 hidden size-3.5 text-muted-foreground sm:block" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-44">
+            <DropdownMenuItem
+              onClick={() => logout()}
+              className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+            >
+              <LogOut className="mr-2 size-4 text-destructive" />
+              {tSidebar("logout")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

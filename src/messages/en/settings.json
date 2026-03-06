@@ -41,7 +41,8 @@
       "emailResultsDescription": "Automatically send email when translation is complete",
       "fileTtl": "File Retention Period",
       "fileTtlDescription": "Files will be automatically deleted after this period",
-      "days": "{count} days"
+      "days": "{count} days",
+      "hours": "{count} hours"
     },
     "security": {
       "title": "Account Security",

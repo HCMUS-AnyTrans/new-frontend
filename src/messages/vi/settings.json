@@ -41,7 +41,8 @@
       "emailResultsDescription": "Tự động gửi email khi dịch hoàn tất",
       "fileTtl": "Thời gian lưu file",
       "fileTtlDescription": "File sẽ tự động xóa sau thời gian này",
-      "days": "{count} ngày"
+      "days": "{count} ngày",
+      "hours": "{count} giờ"
     },
     "security": {
       "title": "Bảo mật tài khoản",

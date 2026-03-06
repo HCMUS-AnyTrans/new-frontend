@@ -101,6 +101,7 @@
       "es": "Tiếng Tây Ban Nha"
     },
     "domains": {
+      "auto": "Tự động nhận diện",
       "general": "Tổng quát",
       "technology": "Công nghệ",
       "medical": "Y tế",
@@ -109,8 +110,7 @@
       "marketing": "Marketing",
       "education": "Giáo dục",
       "engineering": "Kỹ thuật",
-      "science": "Khoa học",
-      "other": "Khác"
+      "science": "Khoa học"
     },
     "tones": {
       "formal": "Trang trọng",

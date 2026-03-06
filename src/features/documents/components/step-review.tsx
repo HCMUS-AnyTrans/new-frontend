@@ -165,7 +165,7 @@ function SuccessCard({ file, jobData, srcLang, tgtLang, onDownload, isDownloadin
 
           {/* Translation info */}
           <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <Badge variant="secondary">{tLang(srcLang === "auto" ? "en" : srcLang)}</Badge>
+            <Badge variant="secondary">{tLang(srcLang)}</Badge>
             <span>→</span>
             <Badge variant="secondary">{tLang(tgtLang)}</Badge>
           </div>

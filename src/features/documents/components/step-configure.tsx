@@ -46,7 +46,7 @@ export function StepConfigure({
   isLoading,
 }: StepConfigureProps) {
   const t = useTranslations("documents.configure")
-  const isSameLang = config.srcLang !== "auto" && config.srcLang === config.tgtLang
+  const isSameLang = config.srcLang === config.tgtLang
   const hasEstimate = !isEstimating && !!estimate
   const isInsufficientCredits =
     hasEstimate && typeof currentBalance === "number" && currentBalance < estimate.totalCredits
