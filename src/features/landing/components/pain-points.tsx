@@ -102,13 +102,13 @@ export function PainPoints({ className }: PainPointsProps) {
         >
           {painPointsConfig.map((point, index) => (
             <motion.div key={index} variants={itemVariants}>
-              <Card className="group relative h-full border-0 bg-background/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <Card className="group relative h-full border border-border/60 bg-background/90 backdrop-blur-sm shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-border/80 dark:bg-card/90 dark:shadow-black/20">
                 {/* Accent top border */}
                 <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-destructive/60 via-destructive to-destructive/60 rounded-t-lg" />
                 
                 <CardContent className="pt-8 pb-6 px-6">
                   {/* Icon */}
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-destructive/10 text-destructive mb-5 group-hover:scale-110 transition-transform duration-300">
+                  <div className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-destructive/10 text-destructive transition-transform duration-300 group-hover:scale-110 dark:bg-destructive/15">
                     {point.icon}
                   </div>
 
@@ -116,7 +116,7 @@ export function PainPoints({ className }: PainPointsProps) {
                   <h3 className="text-xl font-semibold text-foreground mb-2">
                     {tItems(point.titleKey)}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="leading-relaxed text-muted-foreground dark:text-muted-foreground/90">
                     {tItems(point.descriptionKey)}
                   </p>
                 </CardContent>
