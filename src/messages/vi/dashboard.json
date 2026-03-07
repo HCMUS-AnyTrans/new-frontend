@@ -5,7 +5,7 @@
       "other": "Khác",
       "dashboard": "Tổng quan",
       "documents": "Dịch",
-      "glossary": "Từ điển thuật ngữ",
+      "glossary": "Thuật ngữ",
       "history": "Lịch sử",
       "settings": "Cài đặt",
       "help": "Trợ giúp",
@@ -37,6 +37,16 @@
     "quickActions": {
       "uploadDocument": "Tải lên tài liệu",
       "buyCredits": "Mua thêm credits"
+    },
+    "headerMenu": {
+      "buyMoreCredits": "Mua thêm credits",
+      "paymentHistory": "Lịch sử thanh toán",
+      "payment": "Thanh toán",
+      "notifications": "Thông báo",
+      "references": "Tùy chọn",
+      "security": "Bảo mật",
+      "files": "Tệp tin",
+      "activity": "Hoạt động"
     },
     "buyCreditsDialog": {
       "title": "Mua thêm credits",

@@ -12,5 +12,5 @@ export const uiLanguageOptions = [
 // =============== PROVIDER OPTIONS ===============
 
 export const authProviderOptions = [
-  { id: "google", name: "Google", icon: "Google", color: "#EA4335" },
+  { id: "google", name: "Google", icon: "/authen/google.svg", color: "#EA4335" },
 ] as const

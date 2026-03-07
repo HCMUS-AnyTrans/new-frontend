@@ -344,12 +344,19 @@ export function BillingTab() {
               const isPopular = pkg.tags.includes("popular")
               const bonusPercent = normalizePercentage(pkg.bonus)
               const discountPercent = normalizePercentage(pkg.discount)
+              const discountedPrice = discountPercent
+                ? Math.round(pkg.price * (1 - discountPercent / 100))
+                : pkg.price
+              const bonusCredits = bonusPercent
+                ? Math.round((pkg.credits * bonusPercent) / 100)
+                : 0
+              const unitPrice = pkg.credits > 0 ? discountedPrice / pkg.credits : 0
 
               return (
                 <div
                   key={pkg.id}
                   className={cn(
-                    "relative flex flex-col items-center rounded-xl border-2 p-4 text-center transition-all",
+                    "relative flex flex-col rounded-xl border-2 p-4 text-left transition-all",
                     isBestValue
                       ? "border-primary bg-primary/5"
                       : "border-border bg-card"
@@ -372,22 +379,45 @@ export function BillingTab() {
                   </p>
                   <p className="text-sm text-muted-foreground">{t("credits")}</p>
 
-                  {bonusPercent ? (
-                    <p className="text-xs text-success">{t("bonusPercent", { percent: bonusPercent })}</p>
-                  ) : null}
-
-                  <div className="mt-3">
-                    <p className="text-lg font-semibold text-foreground">
-                      {formatCurrency(pkg.price)}
-                    </p>
+                  <div className="mt-4 space-y-2">
                     {discountPercent ? (
-                      <p className="text-xs text-success">{t("save", { percent: discountPercent })}</p>
-                    ) : null}
+                      <div className="space-y-1">
+                        <p className="text-sm text-muted-foreground line-through decoration-2">
+                          {formatCurrency(pkg.price, pkg.currency)}
+                        </p>
+                        <p className="text-lg font-semibold text-foreground">
+                          {formatCurrency(discountedPrice, pkg.currency)}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-lg font-semibold text-foreground">
+                        {formatCurrency(pkg.price, pkg.currency)}
+                      </p>
+                    )}
+
+                    <p className="text-xs font-medium text-primary">
+                      ~{formatCurrency(unitPrice, pkg.currency)}/{t("perCredit")}
+                    </p>
+
+                    {(discountPercent || bonusPercent) && (
+                      <div className="flex flex-wrap items-center gap-2">
+                        {discountPercent ? (
+                          <Badge className="border border-success/20 bg-success/10 text-success hover:bg-success/10">
+                            {t("save", { percent: discountPercent })}
+                          </Badge>
+                        ) : null}
+                        {bonusPercent ? (
+                          <Badge className="border border-primary/20 bg-primary/10 text-primary hover:bg-primary/10">
+                            {t("bonusCredits", { credits: bonusCredits })}
+                          </Badge>
+                        ) : null}
+                      </div>
+                    )}
                   </div>
 
                   <Button
                     size="sm"
-                    className="mt-3 w-full"
+                    className="mt-4 w-full"
                     variant={isBestValue ? "default" : "outline"}
                     onClick={() => handlePurchase(pkg.id)}
                     disabled={isCreating}

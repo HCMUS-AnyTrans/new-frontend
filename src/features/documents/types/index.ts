@@ -75,13 +75,15 @@ export interface UploadedFile {
 
 export const ALLOWED_FILE_TYPES = [
   "application/pdf",
+  "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-powerpoint",
   "application/vnd.openxmlformats-officedocument.presentationml.presentation",
 ] as const
 
-export const ALLOWED_EXTENSIONS = [".pdf", ".docx", ".pptx"]
+export const ALLOWED_EXTENSIONS = [".pdf", ".docx", ".doc", ".pptx", ".ppt"]
 
-export const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
+export const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 
 // =============== JOB TYPES ===============
 

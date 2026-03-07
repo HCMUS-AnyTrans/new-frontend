@@ -116,6 +116,8 @@
       "save": "Tiết kiệm {percent}%",
       "buyNow": "Mua ngay",
       "bonusPercent": "+{percent}% thưởng",
+      "bonusCredits": "+{credits} credits thưởng",
+      "perCredit": "credit",
       "transactionHistory": "Lịch sử giao dịch",
       "recentTransactions": "Các giao dịch credits gần đây",
       "noTransactions": "Chưa có giao dịch nào",

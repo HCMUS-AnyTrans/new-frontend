@@ -2,23 +2,37 @@
 
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { Search, MoreVertical, ChevronDown, Coins, LogOut } from "lucide-react";
+import {
+  Search,
+  ChevronDown,
+  Coins,
+  LogOut,
+  User,
+  CreditCard,
+  Bell,
+  SlidersHorizontal,
+  Shield,
+  FolderOpen,
+  History,
+} from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuthStore, useLogout } from "@/features/auth";
+import { BuyCreditsDialog } from "./buy-credits-dialog";
 import { useWallet } from "../hooks";
 
 export function DashboardHeader() {
   const locale = useLocale();
   const tSidebar = useTranslations("dashboard.sidebar");
+  const tHeaderMenu = useTranslations("dashboard.headerMenu");
   const user = useAuthStore((s) => s.user);
   const { logout } = useLogout();
   const { wallet, isLoading: walletLoading } = useWallet();
@@ -61,35 +75,41 @@ export function DashboardHeader() {
       </div>
 
       <div className="flex items-center gap-2 md:gap-3">
-        <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-          <MoreVertical className="size-5 text-muted-foreground" />
-          <span className="sr-only">More</span>
-        </Button>
-
         {walletLoading ? (
           <Skeleton className="hidden h-9 w-28 rounded-full md:block" />
         ) : (
-          <div
-            className="hidden items-center gap-2 rounded-full border border-input px-3 py-1.5 text-sm md:flex"
-            title="Credits"
-          >
-            <Coins className="size-4 text-primary" />
-            <span className="font-semibold text-foreground tabular-nums">
-              {(wallet?.balance ?? 0).toLocaleString(
-                locale === "vi" ? "vi-VN" : "en-US"
-              )}
-            </span>
-            <ChevronDown className="size-3.5 text-muted-foreground" />
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="hidden items-center gap-2 rounded-full border border-input px-3 py-1.5 text-sm md:flex"
+                title="Credits"
+              >
+                <Coins className="size-4 text-primary" />
+                <span className="font-semibold text-foreground tabular-nums">
+                  {(wallet?.balance ?? 0).toLocaleString(
+                    locale === "vi" ? "vi-VN" : "en-US"
+                  )}
+                </span>
+                <ChevronDown className="size-3.5 text-muted-foreground" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <BuyCreditsDialog>
+                <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+                  <Coins className="mr-2 size-4 text-primary" />
+                  {tHeaderMenu("buyMoreCredits")}
+                </DropdownMenuItem>
+              </BuyCreditsDialog>
+              <DropdownMenuItem asChild>
+                <Link href="/settings?tab=billing">
+                  <CreditCard className="mr-2 size-4" />
+                  {tHeaderMenu("paymentHistory")}
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
-
-        <Button
-          variant="outline"
-          className="hidden rounded-full px-4 text-sm font-medium md:inline-flex"
-          asChild
-        >
-          <Link href="/pricing">Pricing</Link>
-        </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -108,7 +128,50 @@ export function DashboardHeader() {
               <ChevronDown className="mr-1 hidden size-3.5 text-muted-foreground sm:block" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44">
+          <DropdownMenuContent align="end" className="w-52">
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=profile">
+                <User className="mr-2 size-4" />
+                {tSidebar("profile")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=billing">
+                <CreditCard className="mr-2 size-4" />
+                {tHeaderMenu("payment")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=notifications">
+                <Bell className="mr-2 size-4" />
+                {tHeaderMenu("notifications")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=preferences">
+                <SlidersHorizontal className="mr-2 size-4" />
+                {tHeaderMenu("references")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=security">
+                <Shield className="mr-2 size-4" />
+                {tHeaderMenu("security")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=files">
+                <FolderOpen className="mr-2 size-4" />
+                {tHeaderMenu("files")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=activity">
+                <History className="mr-2 size-4" />
+                {tHeaderMenu("activity")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => logout()}
               className="text-destructive focus:bg-destructive/10 focus:text-destructive"

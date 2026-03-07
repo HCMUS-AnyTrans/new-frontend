@@ -38,6 +38,16 @@
       "uploadDocument": "Upload Document",
       "buyCredits": "Buy Credits"
     },
+    "headerMenu": {
+      "buyMoreCredits": "Buy more credits",
+      "paymentHistory": "Payment history",
+      "payment": "Payment",
+      "notifications": "Notifications",
+      "references": "References",
+      "security": "Security",
+      "files": "Files",
+      "activity": "Activity"
+    },
     "buyCreditsDialog": {
       "title": "Buy Credits",
       "description": "Current balance: {balance} credits. Select a package to continue checkout.",

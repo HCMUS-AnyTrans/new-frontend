@@ -14,14 +14,14 @@
       "dragHint": "hoặc kéo và thả",
       "browse": "Chọn tệp từ máy",
       "replaceFile": "Đổi tệp",
-      "supportedFormats": "Hỗ trợ: {extensions} (tối đa 50MB)",
-      "maxSize": "Dung lượng tối đa: 50MB",
+      "supportedFormats": "Hỗ trợ: {extensions} (tối đa 10MB)",
+      "maxSize": "Dung lượng tối đa: 10MB",
       "secureHint": "Tệp được xử lý an toàn",
       "valid": "Hợp lệ",
       "fileReady": "Tệp đã sẵn sàng",
       "next": "Tiếp tục",
-      "errorUnsupported": "Định dạng file không được hỗ trợ. Vui lòng chọn file PDF, DOCX hoặc PPTX.",
-      "errorTooLarge": "File quá lớn. Kích thước tối đa là 50MB."
+      "errorUnsupported": "Định dạng file không được hỗ trợ. Vui lòng chọn file PDF, DOCX, DOC, PPTX hoặc PPT.",
+      "errorTooLarge": "File quá lớn. Kích thước tối đa là 10MB."
     },
     "configure": {
       "title": "Cấu hình dịch thuật",

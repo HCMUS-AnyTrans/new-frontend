@@ -38,7 +38,7 @@ function formatFileSize(bytes: number): string {
 function getFileIcon(fileName: string) {
   const ext = fileName.split(".").pop()?.toLowerCase()
   if (ext === "pdf") return <FileText className="size-12 text-destructive" />
-  if (ext === "pptx") return <Presentation className="size-12 text-warning" />
+  if (ext === "pptx" || ext === "ppt") return <Presentation className="size-12 text-warning" />
   return <File className="size-12 text-primary" />
 }
 
@@ -155,7 +155,13 @@ export function StepUpload({
                     DOCX
                   </span>
                   <span className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground">
+                    DOC
+                  </span>
+                  <span className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground">
                     PPTX
+                  </span>
+                  <span className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground">
+                    PPT
                   </span>
                 </div>
 

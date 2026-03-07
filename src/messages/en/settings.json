@@ -116,6 +116,8 @@
       "save": "Save {percent}%",
       "buyNow": "Buy Now",
       "bonusPercent": "+{percent}% bonus",
+      "bonusCredits": "+{credits} bonus credits",
+      "perCredit": "credit",
       "transactionHistory": "Transaction History",
       "recentTransactions": "Recent credit transactions",
       "noTransactions": "No transactions yet",
