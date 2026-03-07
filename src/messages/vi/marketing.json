@@ -219,6 +219,7 @@
       "buyNow": "Mua ngay",
       "savePercent": "Tiết kiệm {percent}%",
       "bonusPercent": "Tặng +{percent}% credits",
+      "bonusCredits": "+{credits} credits thưởng",
       "packagesError": "Không thể tải gói credit lúc này.",
       "packagesEmpty": "Hiện chưa có gói credit khả dụng.",
       "retry": "Thử lại",

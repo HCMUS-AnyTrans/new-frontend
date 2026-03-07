@@ -39,11 +39,18 @@ export function PricingCard({
       : plan.currency === "USD"
         ? "$"
         : plan.currency
-  const priceLabel = numberFormatter.format(plan.price)
-  const unitPrice = plan.credits > 0 ? plan.price / plan.credits : 0
-  const unitPriceLabel = numberFormatter.format(unitPrice)
   const discountPercent = normalizePercentage(plan.discount)
   const bonusPercent = normalizePercentage(plan.bonus)
+  const discountedPrice = discountPercent
+    ? Math.round(plan.price * (1 - discountPercent / 100))
+    : plan.price
+  const originalPriceLabel = numberFormatter.format(plan.price)
+  const discountedPriceLabel = numberFormatter.format(discountedPrice)
+  const unitPrice = plan.credits > 0 ? discountedPrice / plan.credits : 0
+  const unitPriceLabel = numberFormatter.format(unitPrice)
+  const bonusCredits = bonusPercent
+    ? Math.round((plan.credits * bonusPercent) / 100)
+    : 0
 
   return (
     <div
@@ -86,12 +93,29 @@ export function PricingCard({
 
         {/* Price */}
         <div className="mb-6">
-          <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-extrabold text-foreground">
-              {priceLabel}
-            </span>
-            <span className="text-muted-foreground">{currencySymbol}</span>
-          </div>
+          {discountPercent ? (
+            <div className="space-y-1.5">
+              <div className="flex items-baseline gap-1 text-muted-foreground">
+                <span className="text-lg font-semibold line-through decoration-2">
+                  {originalPriceLabel}
+                </span>
+                <span className="text-sm line-through decoration-2">{currencySymbol}</span>
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-extrabold text-foreground">
+                  {discountedPriceLabel}
+                </span>
+                <span className="text-muted-foreground">{currencySymbol}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-baseline gap-1">
+              <span className="text-4xl font-extrabold text-foreground">
+                {originalPriceLabel}
+              </span>
+              <span className="text-muted-foreground">{currencySymbol}</span>
+            </div>
+          )}
           <div className="mt-2 flex items-center gap-2">
             <span className="text-sm font-medium text-primary">
               ~{unitPriceLabel}
@@ -107,7 +131,7 @@ export function PricingCard({
               ) : null}
               {bonusPercent ? (
                 <span className="inline-block rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                  {t("bonusPercent", { percent: bonusPercent })}
+                  {t("bonusCredits", { percent: bonusPercent, credits: bonusCredits })}
                 </span>
               ) : null}
             </div>

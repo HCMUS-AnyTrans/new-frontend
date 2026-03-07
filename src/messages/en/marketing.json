@@ -219,6 +219,7 @@
       "buyNow": "Buy now",
       "savePercent": "Save {percent}%",
       "bonusPercent": "Bonus +{percent}% credits",
+      "bonusCredits": "+{credits} bonus credits",
       "packagesError": "Unable to load credit packages right now.",
       "packagesEmpty": "No credit packages available at the moment.",
       "retry": "Try again",
