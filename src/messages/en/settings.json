@@ -42,7 +42,10 @@
       "fileTtl": "File Retention Period",
       "fileTtlDescription": "Files will be automatically deleted after this period",
       "days": "{count} days",
-      "hours": "{count} hours"
+      "hours": "{count} hours",
+      "hourUnit": "hours",
+      "custom": "Custom",
+      "customHoursPlaceholder": "Enter hours"
     },
     "security": {
       "title": "Account Security",

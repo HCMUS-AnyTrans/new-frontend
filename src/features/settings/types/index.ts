@@ -71,8 +71,8 @@ export interface GeneralUploadResponse {
 
 export type UILanguage = "vi" | "en"
 export type Theme = "light" | "dark" | "system"
-// fileTtl is stored in hours: 1h, 6h, 12h, 24h
-export type FileTTL = 1 | 6 | 12 | 24
+// fileTtl is stored in hours and supports both presets and custom values.
+export type FileTTL = number
 
 export interface UserPreferences {
   uiLanguage: UILanguage

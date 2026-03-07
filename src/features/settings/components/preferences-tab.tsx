@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Sun, Moon, Monitor, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
@@ -40,8 +41,11 @@ const FILE_TTL_OPTIONS: { value: FileTTL; hours: number }[] = [
 const DEFAULT_FILE_TTL: FileTTL = 6;
 
 function normalizeFileTtl(value: number | null | undefined): FileTTL {
-  const matched = FILE_TTL_OPTIONS.find((option) => option.value === value);
-  return matched?.value ?? DEFAULT_FILE_TTL;
+  if (typeof value === "number" && Number.isFinite(value) && value > 0) {
+    return Math.floor(value);
+  }
+
+  return DEFAULT_FILE_TTL;
 }
 
 // ============================================================================
@@ -115,6 +119,7 @@ export function PreferencesTab() {
 
   // Local state (fileTtl only — theme and language are handled instantly)
   const [selectedFileTtl, setSelectedFileTtl] = useState<FileTTL | null>(null);
+  const [customFileTtlInput, setCustomFileTtlInput] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
 
   // Show skeleton while loading
@@ -124,20 +129,52 @@ export function PreferencesTab() {
 
   const normalizedPreferenceFileTtl = normalizeFileTtl(preferences.fileTtl);
   const currentFileTtl = selectedFileTtl ?? normalizedPreferenceFileTtl;
-  const hasInvalidLegacyTtl = preferences.fileTtl !== normalizedPreferenceFileTtl;
+  const isPresetFileTtl = FILE_TTL_OPTIONS.some(
+    (option) => option.value === currentFileTtl,
+  );
+  const showCustomFileTtlInput = customFileTtlInput !== "" || !isPresetFileTtl;
+  const hasInvalidLegacyTtl = false;
 
   const handleFileTtlChange = (value: FileTTL) => {
     setSelectedFileTtl(value);
+    setCustomFileTtlInput("");
     setHasChanges(true);
   };
 
+  const handleFileTtlSelectChange = (value: string) => {
+    if (value === "custom") {
+      setSelectedFileTtl(currentFileTtl);
+      setCustomFileTtlInput(String(currentFileTtl));
+      return;
+    }
+
+    handleFileTtlChange(Number(value));
+  };
+
+  const handleCustomFileTtlChange = (value: string) => {
+    const sanitizedValue = value.replace(/[^0-9]/g, "");
+
+    setCustomFileTtlInput(sanitizedValue);
+
+    if (!sanitizedValue) return;
+
+    const hours = Number(sanitizedValue);
+    if (hours > 0) {
+      setSelectedFileTtl(hours);
+      setHasChanges(true);
+    }
+  };
+
   const handleSave = () => {
-    updatePreferences({ fileTtl: currentFileTtl }, {
-      onSuccess: () => {
-        setHasChanges(false);
-        setSelectedFileTtl(null);
+    updatePreferences(
+      { fileTtl: currentFileTtl },
+      {
+        onSuccess: () => {
+          setHasChanges(false);
+          setSelectedFileTtl(null);
+        },
       },
-    });
+    );
   };
 
   const themeOptions = [
@@ -151,7 +188,10 @@ export function PreferencesTab() {
       {/* Display Settings */}
       <SettingsSection title={t("title")} description={t("description")}>
         <div className="space-y-1">
-          <SettingsRow label={t("language")} description={t("languageDescription")}>
+          <SettingsRow
+            label={t("language")}
+            description={t("languageDescription")}
+          >
             <div className="flex gap-1">
               {uiLanguageOptions.map((lang) => {
                 const isActive = locale === lang.value;
@@ -208,8 +248,8 @@ export function PreferencesTab() {
             description={t("fileTtlDescription")}
           >
             <Select
-              value={String(currentFileTtl)}
-              onValueChange={(v) => handleFileTtlChange(Number(v) as FileTTL)}
+              value={showCustomFileTtlInput ? "custom" : String(currentFileTtl)}
+              onValueChange={handleFileTtlSelectChange}
             >
               <SelectTrigger className="w-32">
                 <SelectValue />
@@ -220,8 +260,25 @@ export function PreferencesTab() {
                     {t("hours", { count: option.hours })}
                   </SelectItem>
                 ))}
+                <SelectItem value="custom">{t("custom")}</SelectItem>
               </SelectContent>
             </Select>
+            {showCustomFileTtlInput ? (
+              <div className="flex items-center mt-2 gap-2">
+                <Input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={customFileTtlInput || String(currentFileTtl)}
+                  onChange={(e) => handleCustomFileTtlChange(e.target.value)}
+                  className="w-32"
+                  placeholder={t("customHoursPlaceholder")}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {t("hourUnit")}
+                </span>
+              </div>
+            ) : null}
           </SettingsRow>
         </div>
       </SettingsSection>

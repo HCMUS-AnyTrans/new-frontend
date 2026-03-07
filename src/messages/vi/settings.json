@@ -42,7 +42,10 @@
       "fileTtl": "Thời gian lưu file",
       "fileTtlDescription": "File sẽ tự động xóa sau thời gian này",
       "days": "{count} ngày",
-      "hours": "{count} giờ"
+      "hours": "{count} giờ",
+      "hourUnit": "giờ",
+      "custom": "Tùy chỉnh",
+      "customHoursPlaceholder": "Nhập số giờ"
     },
     "security": {
       "title": "Bảo mật tài khoản",

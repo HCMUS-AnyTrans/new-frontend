@@ -28,6 +28,7 @@ export interface DomainOption {
  * Aligned with backend domain values and document translation domains.
  */
 export const glossaryDomains: DomainOption[] = [
+  { id: 'auto', name: 'Auto Detect', icon: FolderOpen },
   { id: 'general', name: 'Tổng quát', icon: Globe },
   { id: 'technology', name: 'Công nghệ', icon: Laptop },
   { id: 'medical', name: 'Y tế', icon: Stethoscope },
@@ -37,7 +38,6 @@ export const glossaryDomains: DomainOption[] = [
   { id: 'education', name: 'Giáo dục', icon: GraduationCap },
   { id: 'engineering', name: 'Kỹ thuật', icon: Cog },
   { id: 'science', name: 'Khoa học', icon: FlaskConical },
-  { id: 'other', name: 'Khác', icon: FolderOpen },
 ];
 
 // ============================================================================

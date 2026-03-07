@@ -27,6 +27,7 @@
     "updatedAt": "Cập nhật lần cuối",
     "backToList": "Quay lại danh sách",
     "domains": {
+      "auto": "Tự động nhận diện",
       "general": "Tổng quát",
       "technology": "Công nghệ",
       "medical": "Y tế",
@@ -35,8 +36,7 @@
       "marketing": "Marketing",
       "education": "Giáo dục",
       "engineering": "Kỹ thuật",
-      "science": "Khoa học",
-      "other": "Khác"
+      "science": "Khoa học"
     },
     "languages": {
       "en": "Tiếng Anh",

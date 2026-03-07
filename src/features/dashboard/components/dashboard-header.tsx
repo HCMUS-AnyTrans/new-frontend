@@ -49,7 +49,7 @@ export function DashboardHeader() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex h-[var(--dashboard-header-height)] items-center justify-between border-b border-border bg-background px-4 lg:px-6">
       <div className="flex min-w-0 items-center gap-6">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <div className="relative h-8 w-8 shrink-0">
             <Image
               src="/logo.svg"
@@ -59,7 +59,9 @@ export function DashboardHeader() {
               priority
             />
           </div>
-          <span className="text-lg font-bold tracking-tight text-primary">AnyTrans</span>
+          <span className="text-lg font-bold tracking-tight text-primary">
+            AnyTrans
+          </span>
         </Link>
       </div>
 
@@ -67,8 +69,8 @@ export function DashboardHeader() {
         <div className="relative mx-auto w-full max-w-md">
           <input
             type="text"
-            placeholder="Search..."
-            className="h-10 w-full rounded-full border border-input bg-background pl-4 pr-10 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+            placeholder="Search"
+            className="h-9 w-full rounded-full border border-input bg-background pl-4 pr-10 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
           <Search className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         </div>
@@ -82,13 +84,13 @@ export function DashboardHeader() {
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="hidden items-center gap-2 rounded-full border border-input px-3 py-1.5 text-sm md:flex"
+                className="hidden h-9 items-center gap-2 rounded-full border border-input px-3 text-sm md:flex"
                 title="Credits"
               >
                 <Coins className="size-4 text-primary" />
                 <span className="font-semibold text-foreground tabular-nums">
                   {(wallet?.balance ?? 0).toLocaleString(
-                    locale === "vi" ? "vi-VN" : "en-US"
+                    locale === "vi" ? "vi-VN" : "en-US",
                   )}
                 </span>
                 <ChevronDown className="size-3.5 text-muted-foreground" />
@@ -115,7 +117,7 @@ export function DashboardHeader() {
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="flex items-center gap-1 rounded-full border border-input bg-background p-1 transition-colors hover:bg-muted"
+              className="flex h-9 items-center gap-1 rounded-full border border-input bg-background pl-1 pr-2 transition-colors hover:bg-muted"
             >
               <Avatar className="h-8 w-8">
                 {user?.avatarUrl && (
