@@ -49,6 +49,7 @@ export {
 // Hooks
 export {
   useUploadAndTranslate,
+  useTranslationJobSocket,
   useTranslationJob,
   useEstimateCredits,
   useDownloadFile,

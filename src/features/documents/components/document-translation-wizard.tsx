@@ -16,6 +16,7 @@ import {
 import { defaultConfig } from "../data"
 import {
   useUploadAndTranslate,
+  useTranslationJobSocket,
   useTranslationJob,
   useDownloadFile,
   useEstimateCredits,
@@ -51,8 +52,13 @@ export function DocumentTranslationWizard() {
     reset: resetFlow,
   } = useUploadAndTranslate()
 
+  const { connectionState: jobSocketState } = useTranslationJobSocket(jobId, {
+    enabled: flowStatus === "translating",
+  })
+
   const { data: jobData } = useTranslationJob(jobId, {
     enabled: flowStatus === "translating",
+    pollInterval: jobSocketState === "connected" ? false : 3000,
   })
 
   const { download, isDownloading } = useDownloadFile()
