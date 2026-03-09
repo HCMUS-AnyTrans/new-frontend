@@ -291,9 +291,8 @@ export function StepUpload({
             {isBusy && (
               <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-4">
                 {pipelineStatus === "uploading" && (
-                  <div className="mb-3 space-y-1.5">
+                  <div className="mb-3">
                     <Progress value={uploadProgress} className="h-1.5" />
-                    <p className="text-right text-xs font-medium text-primary">{uploadProgress}%</p>
                   </div>
                 )}
 
