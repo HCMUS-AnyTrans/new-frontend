@@ -14,6 +14,11 @@ export type {
 } from "./section-background"
 export { BannerCTA } from "./banner-cta"
 export type { BannerCTAProps } from "./banner-cta"
+export { CreditPackageCard } from "./credit-package-card"
+export type {
+  CreditPackageCardProps,
+  CreditPackageCardBadge,
+} from "./credit-package-card"
 
 // UI Controls
 export { LanguageSwitcher } from "./language-switcher"

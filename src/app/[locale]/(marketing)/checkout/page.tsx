@@ -11,12 +11,16 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { ProtectedRoute } from "@/features/auth"
 import { useCreditPackages, useCreateVnpayPayment } from "@/features/settings"
 import { trackEvent } from "@/lib/analytics"
-import { normalizePercentage } from "@/lib/percentage"
+import {
+  createCreditPackageFormatter,
+  createCreditPackageViewModel,
+} from "@/lib/credit-package"
 
 function CheckoutContent() {
   const t = useTranslations("marketing.checkout")
   const tPricing = useTranslations("marketing.pricingPage")
   const locale = useLocale()
+  const { formatCredits, formatAmount } = createCreditPackageFormatter(locale)
   const searchParams = useSearchParams()
   const packageId = searchParams.get("packageId")
   const source = searchParams.get("source")
@@ -33,26 +37,9 @@ function CheckoutContent() {
     if (!packageId) return null
     return packages?.find((pkg) => pkg.id === packageId) ?? null
   }, [packages, packageId])
-  const discountPercent = normalizePercentage(selectedPackage?.discount)
-  const bonusPercent = normalizePercentage(selectedPackage?.bonus)
-
-  const numberFormatter = new Intl.NumberFormat(
-    locale === "vi" ? "vi-VN" : "en-US",
-    { maximumFractionDigits: 2 }
-  )
-
-  const formatCredits = (value: number) =>
-    new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US").format(value)
-
-  const formatAmount = (value: number, currency: string) => {
-    const symbol =
-      currency === "VND"
-        ? "đ"
-        : currency === "USD"
-          ? "$"
-          : currency
-    return `${numberFormatter.format(value)} ${symbol}`
-  }
+  const packageView = selectedPackage
+    ? createCreditPackageViewModel(selectedPackage)
+    : null
 
   const handlePay = async () => {
     if (!selectedPackage) return
@@ -172,22 +159,22 @@ function CheckoutContent() {
                   </span>
                   <span className="text-sm font-medium text-primary">
                     ~{formatAmount(
-                      selectedPackage.price / Math.max(selectedPackage.credits, 1),
+                      packageView?.unitPrice ?? 0,
                       selectedPackage.currency
                     )}
                   </span>
                 </div>
               </div>
 
-              {discountPercent ? (
+              {packageView?.discountPercent ? (
                 <div className="rounded-lg border border-success/20 bg-success/10 px-4 py-3 text-sm text-success">
-                  {t("discount", { percent: discountPercent })}
+                  {t("discount", { percent: packageView.discountPercent })}
                 </div>
               ) : null}
 
-              {bonusPercent ? (
+              {packageView?.bonusPercent ? (
                 <div className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-primary">
-                  {t("bonus", { percent: bonusPercent })}
+                  {t("bonus", { percent: packageView.bonusPercent })}
                 </div>
               ) : null}
 

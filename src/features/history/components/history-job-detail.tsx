@@ -19,8 +19,10 @@ import {
   Coins,
   ArrowRight,
   AlertCircle,
+  Download,
 } from 'lucide-react';
 import { jobStatusConfig } from '@/features/dashboard/data';
+import { useDownloadFile } from '@/features/documents';
 import { formatFileSize } from '../data';
 import type { HistoryJobDetailProps } from '../types';
 
@@ -52,6 +54,7 @@ export function HistoryJobDetail({
 }: HistoryJobDetailProps) {
   const t = useTranslations('dashboard.history');
   const tStatus = useTranslations('dashboard.status');
+  const { download, isDownloading } = useDownloadFile();
 
   if (!job) return null;
 
@@ -131,21 +134,37 @@ export function HistoryJobDetail({
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {t('detail.inputFile')}
                 </p>
-                <div className="flex items-start gap-2">
-                  {getFileIcon(job.input_file.name)}
-                  <div className="min-w-0 flex-1">
-                    <p className="wrap-break-word text-sm font-medium text-foreground">
-                      {job.input_file.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatFileSize(job.input_file.size_bytes)}
-                    </p>
-                    {job.input_file.is_expired && (
-                      <Badge variant="outline" className="mt-1 text-xs border-muted text-muted-foreground">
-                        {t('detail.fileExpired')}
-                      </Badge>
-                    )}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-2">
+                    {getFileIcon(job.input_file.name)}
+                    <div className="min-w-0 flex-1">
+                      <p className="wrap-break-word text-sm font-medium text-foreground">
+                        {job.input_file.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatFileSize(job.input_file.size_bytes)}
+                      </p>
+                      {job.input_file.is_expired && (
+                        <Badge
+                          variant="outline"
+                          className="mt-1 text-xs border-muted text-muted-foreground"
+                        >
+                          {t('detail.fileExpired')}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
+                  {!job.input_file.is_expired && (
+                    <button
+                      type="button"
+                      onClick={() => download(job.input_file!.id, job.input_file!.name)}
+                      disabled={isDownloading}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-foreground shadow-sm hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <Download className="size-3.5" />
+                      {t('download.original')}
+                    </button>
+                  )}
                 </div>
               </div>
               <Separator />
@@ -159,21 +178,37 @@ export function HistoryJobDetail({
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {t('detail.outputFile')}
                 </p>
-                <div className="flex items-start gap-2">
-                  {getFileIcon(job.output_file.name)}
-                  <div className="min-w-0 flex-1">
-                    <p className="wrap-break-word text-sm font-medium text-foreground">
-                      {job.output_file.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatFileSize(job.output_file.size_bytes)}
-                    </p>
-                    {job.output_file.is_expired && (
-                      <Badge variant="outline" className="mt-1 text-xs border-muted text-muted-foreground">
-                        {t('detail.fileExpired')}
-                      </Badge>
-                    )}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-2">
+                    {getFileIcon(job.output_file.name)}
+                    <div className="min-w-0 flex-1">
+                      <p className="wrap-break-word text-sm font-medium text-foreground">
+                        {job.output_file.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatFileSize(job.output_file.size_bytes)}
+                      </p>
+                      {job.output_file.is_expired && (
+                        <Badge
+                          variant="outline"
+                          className="mt-1 text-xs border-muted text-muted-foreground"
+                        >
+                          {t('detail.fileExpired')}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
+                  {!job.output_file.is_expired && (
+                    <button
+                      type="button"
+                      onClick={() => download(job.output_file!.id, job.output_file!.name)}
+                      disabled={isDownloading}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-foreground shadow-sm hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <Download className="size-3.5" />
+                      {t('download.translated')}
+                    </button>
+                  )}
                 </div>
               </div>
               <Separator />

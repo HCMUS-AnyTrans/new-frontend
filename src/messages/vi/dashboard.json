@@ -52,6 +52,8 @@
       "title": "Mua thêm credits",
       "description": "Số dư hiện tại: {balance} credits. Chọn gói để tiếp tục thanh toán.",
       "bestValue": "Giá trị tốt nhất",
+      "popular": "Phổ biến",
+      "bonusCredits": "+{credits} credits thưởng",
       "credits": "credits",
       "perCredit": "credit",
       "cancel": "Hủy",

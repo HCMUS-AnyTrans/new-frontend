@@ -8,7 +8,6 @@ import { useQueryClient } from "@tanstack/react-query"
 import {
   Wallet,
   Plus,
-  Star,
   ArrowUpRight,
   ArrowDownLeft,
   Loader2,
@@ -21,6 +20,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { CreditPackageCard } from "@/components/shared"
 import { SettingsSection, SettingsDivider } from "./settings-section"
 import { Pagination } from "@/components/ui/pagination"
 import {
@@ -32,7 +32,10 @@ import {
 } from "../hooks/use-billing"
 import type { LedgerType, PaymentStatus } from "../types"
 import { cn } from "@/lib/utils"
-import { normalizePercentage } from "@/lib/percentage"
+import {
+  createCreditPackageFormatter,
+  createCreditPackageViewModels,
+} from "@/lib/credit-package"
 import { walletKeys, billingKeys } from "@/lib/query-client"
 import { trackEvent } from "@/lib/analytics"
 
@@ -130,6 +133,7 @@ function BillingTabSkeleton() {
 export function BillingTab() {
   const t = useTranslations("settings.billing")
   const locale = useLocale()
+  const { formatCredits, formatAmount, formatPerCredit } = createCreditPackageFormatter(locale)
   const searchParams = useSearchParams()
   const queryClient = useQueryClient()
 
@@ -255,7 +259,7 @@ export function BillingTab() {
     creditPackagesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
   }
 
-  const packageList = packages ?? []
+  const packageList = createCreditPackageViewModels(packages)
   const ledgerList = ledger ?? []
   const paymentList = payments ?? []
 
@@ -317,7 +321,7 @@ export function BillingTab() {
             </div>
             <div>
               <p className="text-3xl font-bold text-foreground">
-                {(wallet?.balance ?? 0).toLocaleString(locale === "vi" ? "vi-VN" : "en-US")}
+                {formatCredits(wallet?.balance ?? 0)}
               </p>
               <p className="text-sm text-muted-foreground">{t("credits")}</p>
             </div>
@@ -340,94 +344,53 @@ export function BillingTab() {
         >
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {packageList.map((pkg) => {
-              const isBestValue = pkg.tags.includes("best-value")
-              const isPopular = pkg.tags.includes("popular")
-              const bonusPercent = normalizePercentage(pkg.bonus)
-              const discountPercent = normalizePercentage(pkg.discount)
-              const discountedPrice = discountPercent
-                ? Math.round(pkg.price * (1 - discountPercent / 100))
-                : pkg.price
-              const bonusCredits = bonusPercent
-                ? Math.round((pkg.credits * bonusPercent) / 100)
-                : 0
-              const unitPrice = pkg.credits > 0 ? discountedPrice / pkg.credits : 0
-
               return (
-                <div
+                <CreditPackageCard
                   key={pkg.id}
-                  className={cn(
-                    "relative flex flex-col rounded-xl border-2 p-4 text-left transition-all",
-                    isBestValue
-                      ? "border-primary bg-primary/5"
-                      : "border-border bg-card"
-                  )}
-                >
-                  {isBestValue && (
-                    <Badge className="absolute -top-2 gap-1 bg-warning text-warning-foreground">
-                      <Star className="size-3" />
-                      {t("bestValue")}
-                    </Badge>
-                  )}
-                  {isPopular && !isBestValue && (
-                    <Badge className="absolute -top-2" variant="secondary">
-                      {t("popular")}
-                    </Badge>
-                  )}
-
-                  <p className="mt-2 text-2xl font-bold text-foreground">
-                    {pkg.credits.toLocaleString(locale === "vi" ? "vi-VN" : "en-US")}
-                  </p>
-                  <p className="text-sm text-muted-foreground">{t("credits")}</p>
-
-                  <div className="mt-4 space-y-2">
-                    {discountPercent ? (
-                      <div className="space-y-1">
-                        <p className="text-sm text-muted-foreground line-through decoration-2">
-                          {formatCurrency(pkg.price, pkg.currency)}
-                        </p>
-                        <p className="text-lg font-semibold text-foreground">
-                          {formatCurrency(discountedPrice, pkg.currency)}
-                        </p>
-                      </div>
-                    ) : (
-                      <p className="text-lg font-semibold text-foreground">
-                        {formatCurrency(pkg.price, pkg.currency)}
-                      </p>
-                    )}
-
-                    <p className="text-xs font-medium text-primary">
-                      ~{formatCurrency(unitPrice, pkg.currency)}/{t("perCredit")}
-                    </p>
-
-                    {(discountPercent || bonusPercent) && (
-                      <div className="flex flex-wrap items-center gap-2">
-                        {discountPercent ? (
+                  title={pkg.name}
+                  creditsText={formatCredits(pkg.credits)}
+                  creditsLabel={t("credits")}
+                  originalPriceText={pkg.discountPercent ? formatAmount(pkg.price, pkg.currency) : undefined}
+                  priceText={formatAmount(pkg.discountedPrice, pkg.currency)}
+                  perCreditText={formatPerCredit(pkg.unitPrice, pkg.currency, t("perCredit"))}
+                  topBadge={
+                    pkg.isBestValue
+                      ? { label: t("bestValue"), tone: "warning", placement: "top-right" }
+                      : pkg.isPopular
+                        ? { label: t("popular"), tone: "secondary", placement: "top-right" }
+                        : undefined
+                  }
+                  metaBadges={
+                    pkg.discountPercent || pkg.bonusCredits ? (
+                      <>
+                        {pkg.discountPercent ? (
                           <Badge className="border border-success/20 bg-success/10 text-success hover:bg-success/10">
-                            {t("save", { percent: discountPercent })}
+                            {t("save", { percent: pkg.discountPercent })}
                           </Badge>
                         ) : null}
-                        {bonusPercent ? (
+                        {pkg.bonusCredits ? (
                           <Badge className="border border-primary/20 bg-primary/10 text-primary hover:bg-primary/10">
-                            {t("bonusCredits", { credits: bonusCredits })}
+                            {t("bonusCredits", { credits: pkg.bonusCredits })}
                           </Badge>
                         ) : null}
-                      </div>
-                    )}
-                  </div>
-
-                  <Button
-                    size="sm"
-                    className="mt-4 w-full"
-                    variant={isBestValue ? "default" : "outline"}
-                    onClick={() => handlePurchase(pkg.id)}
-                    disabled={isCreating}
-                  >
-                    {isCreating ? (
-                      <Loader2 className="mr-2 size-4 animate-spin" />
-                    ) : null}
-                    {t("buyNow")}
-                  </Button>
-                </div>
+                      </>
+                    ) : null
+                  }
+                  action={
+                    <Button
+                      size="sm"
+                      className="w-full"
+                      variant={pkg.isBestValue ? "default" : "outline"}
+                      onClick={() => handlePurchase(pkg.id)}
+                      disabled={isCreating}
+                    >
+                      {isCreating ? (
+                        <Loader2 className="mr-2 size-4 animate-spin" />
+                      ) : null}
+                      {t("buyNow")}
+                    </Button>
+                  }
+                />
               )
             })}
           </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -31,6 +32,8 @@ import { BuyCreditsDialog } from "./buy-credits-dialog";
 import { useWallet } from "../hooks";
 
 export function DashboardHeader() {
+  const [creditsMenuOpen, setCreditsMenuOpen] = useState(false);
+  const [buyCreditsDialogOpen, setBuyCreditsDialogOpen] = useState(false);
   const locale = useLocale();
   const tSidebar = useTranslations("dashboard.sidebar");
   const tHeaderMenu = useTranslations("dashboard.headerMenu");
@@ -82,7 +85,7 @@ export function DashboardHeader() {
         {walletLoading ? (
           <Skeleton className="hidden h-9 w-28 rounded-full md:block" />
         ) : (
-          <DropdownMenu>
+          <DropdownMenu open={creditsMenuOpen} onOpenChange={setCreditsMenuOpen}>
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
@@ -99,12 +102,15 @@ export function DashboardHeader() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <BuyCreditsDialog>
-                <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
-                  <Coins className="mr-2 size-4 text-primary" />
-                  {tHeaderMenu("buyMoreCredits")}
-                </DropdownMenuItem>
-              </BuyCreditsDialog>
+              <DropdownMenuItem
+                onClick={() => {
+                  setCreditsMenuOpen(false);
+                  setBuyCreditsDialogOpen(true);
+                }}
+              >
+                <Coins className="mr-2 size-4 text-primary" />
+                {tHeaderMenu("buyMoreCredits")}
+              </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/settings?tab=billing">
                   <CreditCard className="mr-2 size-4" />
@@ -114,6 +120,11 @@ export function DashboardHeader() {
             </DropdownMenuContent>
           </DropdownMenu>
         )}
+
+        <BuyCreditsDialog
+          open={buyCreditsDialogOpen}
+          onOpenChange={setBuyCreditsDialogOpen}
+        />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

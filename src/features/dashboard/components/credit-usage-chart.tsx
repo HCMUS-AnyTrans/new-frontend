@@ -40,10 +40,7 @@ function CreditUsageChartSkeleton() {
   );
 }
 
-const FILL_COLORS = [
-  "var(--color-chart-1)",
-  "var(--color-chart-3)",
-];
+const FILL_COLORS = ["var(--color-chart-1)", "var(--color-chart-3)"];
 
 export function CreditUsageChart() {
   const t = useTranslations("dashboard.charts");
@@ -89,9 +86,7 @@ export function CreditUsageChart() {
         {!hasUsage ? (
           <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
             <Info className="size-8 text-muted-foreground/50" />
-            <p className="text-sm text-muted-foreground">
-              {t("noUsageInfo")}
-            </p>
+            <p className="text-sm text-muted-foreground">{t("noUsageInfo")}</p>
           </div>
         ) : (
           <>
@@ -104,8 +99,8 @@ export function CreditUsageChart() {
                   content={
                     <ChartTooltipContent
                       formatter={(value, name) => [
-                        value?.toLocaleString(locale === "vi" ? "vi-VN" : "en-US"),
-                        name,
+                        `${value?.toLocaleString(locale === "vi" ? "vi-VN" : "en-US")} ${name}`,
+                        "",
                       ]}
                     />
                   }
@@ -143,11 +138,12 @@ export function CreditUsageChart() {
                   <div className="flex items-center gap-2">
                     <span className="font-medium text-foreground tabular-nums">
                       {item.value.toLocaleString(
-                        locale === "vi" ? "vi-VN" : "en-US"
+                        locale === "vi" ? "vi-VN" : "en-US",
                       )}
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      ({total > 0 ? Math.round((item.value / total) * 100) : 0}%)
+                      ({total > 0 ? Math.round((item.value / total) * 100) : 0}
+                      %)
                     </span>
                   </div>
                 </div>
