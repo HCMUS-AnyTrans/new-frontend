@@ -2,25 +2,25 @@
 
 import { useRef, useCallback } from "react"
 import {
-  Upload,
   FileText,
   File,
   X,
   Check,
   AlertCircle,
   Presentation,
-  FileUp,
+  Upload,
   HardDrive,
   ShieldCheck,
   Loader2,
   CheckCircle2,
   CloudUpload,
   ScanSearch,
+  ArrowRight,
 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { AppCard, AppCardContent } from "@/components/ui/app-card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { ALLOWED_EXTENSIONS, type UploadedFile } from "../types"
 
@@ -34,7 +34,6 @@ interface StepUploadProps {
   onFileRemove: () => void
   onDragChange: (dragging: boolean) => void
   onNext: () => void
-  /** Current pipeline status for the upload flow */
   pipelineStatus?: UploadPipelineStatus
   uploadProgress?: number
   uploadError?: string | null
@@ -46,18 +45,20 @@ function formatFileSize(bytes: number): string {
   return (bytes / (1024 * 1024)).toFixed(1) + " MB"
 }
 
-function getFileIcon(fileName: string) {
+function getFileIcon(fileName: string, size: "sm" | "md" | "lg" = "md") {
   const ext = fileName.split(".").pop()?.toLowerCase()
-  if (ext === "pdf") return <FileText className="size-12 text-destructive" />
-  if (ext === "pptx" || ext === "ppt") return <Presentation className="size-12 text-warning" />
-  return <File className="size-12 text-primary" />
+  const sizeClass = size === "sm" ? "size-8" : size === "lg" ? "size-14" : "size-10"
+  if (ext === "pdf") return <FileText className={cn(sizeClass, "text-destructive")} />
+  if (ext === "pptx" || ext === "ppt") return <Presentation className={cn(sizeClass, "text-warning")} />
+  return <File className={cn(sizeClass, "text-primary")} />
 }
 
-// Pipeline step definitions for the progress indicator
+const FILE_TYPES = ["PDF", "DOCX", "DOC", "PPTX", "PPT"]
+
 const PIPELINE_STEPS = [
-  { key: "uploading", icon: CloudUpload },
-  { key: "confirming", icon: CheckCircle2 },
-  { key: "analyzing", icon: ScanSearch },
+  { key: "uploading", icon: CloudUpload, label: "pipelineUploading" },
+  { key: "confirming", icon: CheckCircle2, label: "pipelineConfirming" },
+  { key: "analyzing", icon: ScanSearch, label: "pipelineAnalyzing" },
 ] as const
 
 type PipelineStepKey = (typeof PIPELINE_STEPS)[number]["key"]
@@ -69,8 +70,7 @@ function getPipelineStepState(
   const order: PipelineStepKey[] = ["uploading", "confirming", "analyzing"]
   const currentIdx = order.indexOf(currentStatus as PipelineStepKey)
   const stepIdx = order.indexOf(stepKey)
-
-  if (currentIdx < 0) return "pending" // idle or failed
+  if (currentIdx < 0) return "pending"
   if (stepIdx < currentIdx) return "done"
   if (stepIdx === currentIdx) return "active"
   return "pending"
@@ -104,25 +104,9 @@ export function StepUpload({
     [isBusy, onFileSelect, onDragChange]
   )
 
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault()
-  }, [])
-
-  const handleDragEnter = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault()
-      onDragChange(true)
-    },
-    [onDragChange]
-  )
-
-  const handleDragLeave = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault()
-      onDragChange(false)
-    },
-    [onDragChange]
-  )
+  const handleDragOver = useCallback((e: React.DragEvent) => { e.preventDefault() }, [])
+  const handleDragEnter = useCallback((e: React.DragEvent) => { e.preventDefault(); onDragChange(true) }, [onDragChange])
+  const handleDragLeave = useCallback((e: React.DragEvent) => { e.preventDefault(); onDragChange(false) }, [onDragChange])
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,215 +132,236 @@ export function StepUpload({
 
   const handleDropzoneKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault()
-        openPicker()
-      }
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openPicker() }
     },
     [openPicker]
   )
 
-  // Pipeline step labels
-  const pipelineLabels: Record<PipelineStepKey, string> = {
-    uploading: t("pipelineUploading", { defaultMessage: "Uploading" }),
-    confirming: t("pipelineConfirming", { defaultMessage: "Confirming" }),
-    analyzing: t("pipelineAnalyzing", { defaultMessage: "Analyzing" }),
-  }
-
   return (
-    <div className="mx-auto max-w-3xl">
-      <AppCard
+    <div className="mx-auto max-w-2xl">
+      {/* ── Dropzone / File Preview ── */}
+      <div
         className={cn(
-          "overflow-hidden border-2 border-dashed transition-all duration-200",
+          "relative overflow-hidden rounded-2xl border-2 transition-all duration-200",
           isDragging
-            ? "border-primary bg-primary/10 shadow-[0_0_0_4px_hsl(var(--primary)/0.12)]"
-            : "border-border"
+            ? "border-primary bg-primary/5 shadow-[0_0_0_4px_hsl(var(--primary)/0.12)]"
+            : file
+              ? "border-border bg-card"
+              : "border-dashed border-border bg-card hover:border-primary/50 hover:bg-primary/2"
         )}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
       >
-        <AppCardContent padding="none" className="p-0">
-          {/* Dropzone area */}
-          {!file ? (
-            <div
-                role="button"
-                tabIndex={isBusy ? -1 : 0}
-                onClick={openPicker}
-                onKeyDown={handleDropzoneKeyDown}
+        {/* Background gradient (only when no file) */}
+        {!file && (
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,hsl(var(--primary)/0.08),transparent)]" />
+        )}
+
+        {!file ? (
+          /* ── Empty dropzone ── */
+          <div
+            role="button"
+            tabIndex={isBusy ? -1 : 0}
+            onClick={openPicker}
+            onKeyDown={handleDropzoneKeyDown}
+            className={cn(
+              "relative flex flex-col items-center px-6 py-10 text-center outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:py-14",
+              isBusy ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+            )}
+            aria-disabled={isBusy}
+          >
+            {/* Upload icon */}
+            <div className="relative mb-5">
+              <div
                 className={cn(
-                  "relative p-8 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:p-10",
-                  isBusy ? "cursor-not-allowed opacity-80" : "cursor-pointer"
+                  "absolute -inset-2.5 rounded-2xl border-2 border-dashed transition-all duration-300",
+                  isDragging ? "border-primary opacity-70 scale-110" : "border-primary/20 opacity-60"
                 )}
-                aria-disabled={isBusy}
-              >
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.10),transparent_55%)]" />
-              <div className="relative flex flex-col items-center text-center">
-                <div className="mb-5 flex size-16 items-center justify-center rounded-2xl border border-primary/25 bg-primary/10 text-primary">
-                  <FileUp className="size-8" />
-                </div>
-                <h3 className="text-xl font-semibold text-foreground">{t("dropzone")}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {t("supportedFormats", { extensions: ALLOWED_EXTENSIONS.join(", ") })}
-                </p>
+              />
+              <div className="relative flex size-16 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary shadow-sm sm:size-20">
+                <Upload className="size-7 sm:size-9" />
+              </div>
+            </div>
 
-                <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-                  <span className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground">
-                    PDF
-                  </span>
-                  <span className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground">
-                    DOCX
-                  </span>
-                  <span className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground">
-                    DOC
-                  </span>
-                  <span className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground">
-                    PPTX
-                  </span>
-                  <span className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground">
-                    PPT
-                  </span>
+            <h3 className="text-base font-semibold text-foreground sm:text-xl">
+              {t("dropzone")}
+            </h3>
+            <p className="mt-1.5 max-w-xs text-sm text-muted-foreground">
+              {t("dragHint")}
+            </p>
+
+            {/* File type badges */}
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5">
+              {FILE_TYPES.map((ext) => (
+                <span
+                  key={ext}
+                  className="rounded-md border border-border bg-muted/60 px-2 py-0.5 text-xs font-medium text-muted-foreground"
+                >
+                  {ext}
+                </span>
+              ))}
+            </div>
+
+            {/* CTA button */}
+            <Button
+              type="button"
+              size="lg"
+              className="mt-6 gap-2 shadow-sm"
+              onClick={(e) => { e.stopPropagation(); openPicker() }}
+              disabled={isBusy}
+            >
+              <Upload className="size-4" />
+              {t("browse")}
+            </Button>
+
+            {/* Info row */}
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <HardDrive className="size-3.5 shrink-0" />
+                {t("maxSize")}
+              </span>
+              <span className="hidden sm:block text-border">•</span>
+              <span className="flex items-center gap-1.5">
+                <ShieldCheck className="size-3.5 shrink-0" />
+                {t("secureHint")}
+              </span>
+            </div>
+          </div>
+        ) : (
+          /* ── File selected ── */
+          <div className="p-4 sm:p-6">
+            {/* File info row */}
+            <div className="flex items-start gap-3 sm:gap-4">
+              {/* File type icon */}
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/40 sm:h-16 sm:w-16">
+                {getFileIcon(file.name, "sm")}
+              </div>
+
+              <div className="min-w-0 flex-1 pt-0.5">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <h4 className="truncate text-sm font-semibold text-foreground sm:text-base">
+                      {file.name}
+                    </h4>
+                    <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
+                      {formatFileSize(file.size)}
+                    </p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleRemove}
+                    disabled={isBusy}
+                    className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="size-4" />
+                  </Button>
                 </div>
 
-                <div className="mt-6 flex items-center gap-3">
+                {/* Ready badge */}
+                {!error && pipelineStatus === "idle" && (
+                  <div className="mt-2">
+                    <Badge variant="outline" className="gap-1.5 border-success/30 bg-success/10 text-success text-xs">
+                      <Check className="size-3" />
+                      {t("fileReady")}
+                    </Badge>
+                  </div>
+                )}
+
+                {/* Replace button */}
+                <div className="mt-3">
                   <Button
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      openPicker()
-                    }}
+                    variant="outline"
+                    size="sm"
+                    onClick={openPicker}
                     disabled={isBusy}
+                    className="h-8 gap-1.5 text-xs"
                   >
-                    <Upload className="size-4" />
-                    {t("browse")}
+                    <Upload className="size-3" />
+                    {t("replaceFile")}
                   </Button>
-                  <span className="text-sm text-muted-foreground">{t("dragHint")}</span>
-                </div>
-
-                <div className="mt-6 grid w-full max-w-xl gap-2 sm:grid-cols-2">
-                  <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2 text-left text-xs text-muted-foreground">
-                    <HardDrive className="size-3.5 shrink-0" />
-                    {t("maxSize")}
-                  </div>
-                  <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2 text-left text-xs text-muted-foreground">
-                    <ShieldCheck className="size-3.5 shrink-0" />
-                    {t("secureHint")}
-                  </div>
                 </div>
               </div>
             </div>
-          ) : (
-            <div className="space-y-4 p-5 sm:p-6">
-              {/* File preview */}
-              <div className="flex items-start gap-4 rounded-xl border border-border bg-muted/30 p-4 sm:p-5">
-                <div className="shrink-0 rounded-lg bg-background p-2">{getFileIcon(file.name)}</div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0 flex-1">
-                      <h4 className="truncate text-sm font-semibold text-foreground sm:text-base">
-                        {file.name}
-                      </h4>
-                      <p className="text-sm text-muted-foreground">{formatFileSize(file.size)}</p>
-                    </div>
-                     <Button
-                       variant="ghost"
-                       size="icon-sm"
-                       onClick={handleRemove}
-                       disabled={isBusy}
-                       className="shrink-0 text-muted-foreground hover:text-destructive"
-                     >
-                       <X className="size-4" />
-                    </Button>
-                  </div>
-                  {!error && pipelineStatus === "idle" && (
-                    <div className="mt-2 flex items-center gap-2 text-success">
-                      <Check className="size-4" />
-                      <span className="text-sm font-medium">{t("fileReady")}</span>
-                    </div>
-                  )}
 
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <Button type="button" variant="secondary" size="sm" onClick={openPicker} disabled={isBusy}>
-                      <Upload className="size-3.5" />
-                      {t("replaceFile")}
-                    </Button>
+            {/* Pipeline progress */}
+            {isBusy && (
+              <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-4">
+                {pipelineStatus === "uploading" && (
+                  <div className="mb-3 space-y-1.5">
+                    <Progress value={uploadProgress} className="h-1.5" />
+                    <p className="text-right text-xs font-medium text-primary">{uploadProgress}%</p>
                   </div>
+                )}
 
-                  {/* Pipeline progress indicator */}
-                  {isBusy && (
-                    <div className="mt-4 space-y-3 rounded-lg border border-primary/20 bg-primary/5 p-4">
-                      {/* Upload progress bar (only during uploading phase) */}
-                      {pipelineStatus === "uploading" && (
-                        <div className="space-y-1.5">
-                          <Progress value={uploadProgress} className="h-2" />
-                          <p className="text-right text-xs text-muted-foreground">{uploadProgress}%</p>
+                {/* Steps */}
+                <div className="flex items-center gap-1 sm:gap-2">
+                  {PIPELINE_STEPS.map((step, idx) => {
+                    const state = getPipelineStepState(step.key, pipelineStatus)
+                    const Icon = step.icon
+                    return (
+                      <div key={step.key} className="flex items-center gap-1 sm:gap-2">
+                        {idx > 0 && (
+                          <div className={cn("h-px w-3 sm:w-6 shrink-0", state === "pending" ? "bg-border" : "bg-primary/40")} />
+                        )}
+                        <div
+                          className={cn(
+                            "flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-all",
+                            state === "done" && "bg-primary/15 text-primary",
+                            state === "active" && "bg-primary/20 text-primary ring-2 ring-primary/20",
+                            state === "pending" && "bg-muted text-muted-foreground"
+                          )}
+                        >
+                          {state === "done" ? (
+                            <CheckCircle2 className="size-3.5 shrink-0" />
+                          ) : state === "active" ? (
+                            <Loader2 className="size-3.5 shrink-0 animate-spin" />
+                          ) : (
+                            <Icon className="size-3.5 shrink-0" />
+                          )}
+                          <span className="hidden sm:inline">
+                            {t(step.label, { defaultMessage: step.key })}
+                          </span>
                         </div>
-                      )}
-
-                      {/* Pipeline steps */}
-                      <div className="flex items-center gap-1">
-                        {PIPELINE_STEPS.map((step, idx) => {
-                          const stepState = getPipelineStepState(step.key, pipelineStatus)
-                          const Icon = step.icon
-                          return (
-                            <div key={step.key} className="flex items-center gap-1">
-                              {idx > 0 && (
-                                <div
-                                  className={cn(
-                                    "h-px w-4 sm:w-6",
-                                    stepState === "pending" ? "bg-border" : "bg-primary/40"
-                                  )}
-                                />
-                              )}
-                              <div
-                                className={cn(
-                                  "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
-                                  stepState === "done" && "bg-primary/10 text-primary",
-                                  stepState === "active" && "bg-primary/15 text-primary",
-                                  stepState === "pending" && "bg-muted text-muted-foreground"
-                                )}
-                              >
-                                {stepState === "done" ? (
-                                  <CheckCircle2 className="size-3.5" />
-                                ) : stepState === "active" ? (
-                                  <Loader2 className="size-3.5 animate-spin" />
-                                ) : (
-                                  <Icon className="size-3.5" />
-                                )}
-                                <span className="hidden sm:inline">{pipelineLabels[step.key]}</span>
-                              </div>
-                            </div>
-                          )
-                        })}
                       </div>
-                    </div>
-                  )}
+                    )
+                  })}
                 </div>
               </div>
-            </div>
-          )}
-        </AppCardContent>
-      </AppCard>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Error message */}
       {displayError && (
-        <div className="mt-4 flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-destructive">
-          <AlertCircle className="size-5 shrink-0" />
+        <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-destructive/30 bg-destructive/8 p-3.5 text-destructive sm:mt-4">
+          <AlertCircle className="mt-0.5 size-4 shrink-0" />
           <span className="text-sm font-medium">{displayError}</span>
         </div>
       )}
 
       {/* Next button */}
-      <div className="mt-8 flex justify-end">
-        <Button onClick={onNext} disabled={!isValid || isBusy} size="lg">
+      <div className="mt-6 flex justify-end sm:mt-8">
+        <Button
+          onClick={onNext}
+          disabled={!isValid || isBusy}
+          size="lg"
+          className="w-full gap-2 sm:w-auto"
+        >
           {isBusy ? (
             <>
               <Loader2 className="size-4 animate-spin" />
               {t("next")}
             </>
           ) : (
-            t("next")
+            <>
+              {t("next")}
+              <ArrowRight className="size-4" />
+            </>
           )}
         </Button>
       </div>

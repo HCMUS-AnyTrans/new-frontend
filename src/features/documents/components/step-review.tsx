@@ -60,17 +60,15 @@ function getFileIcon(fileName: string) {
 
 function UploadingCard({ progress, t }: { progress: number; t: (key: string) => string }) {
   return (
-    <Card className="mx-auto max-w-lg">
-      <CardContent className="p-8">
-        <div className="space-y-6 text-center">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
-            <Upload className="size-8 text-primary" />
+    <Card className="mx-auto max-w-sm sm:max-w-lg">
+      <CardContent className="p-6 sm:p-8">
+        <div className="space-y-5 text-center sm:space-y-6">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary/10 sm:size-16">
+            <Upload className="size-7 text-primary sm:size-8" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-foreground">{t("uploading")}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {t("uploadingHint")}
-            </p>
+            <h3 className="text-base font-semibold text-foreground sm:text-lg">{t("uploading")}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{t("uploadingHint")}</p>
           </div>
           <div className="space-y-2">
             <Progress value={progress} className="h-2" />
@@ -86,17 +84,15 @@ function UploadingCard({ progress, t }: { progress: number; t: (key: string) => 
 
 function PreparingCard({ t }: { t: (key: string) => string }) {
   return (
-    <Card className="mx-auto max-w-lg">
-      <CardContent className="p-8">
-        <div className="space-y-6 text-center">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
-            <Loader2 className="size-8 animate-spin text-primary" />
+    <Card className="mx-auto max-w-sm sm:max-w-lg">
+      <CardContent className="p-6 sm:p-8">
+        <div className="space-y-5 text-center sm:space-y-6">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary/10 sm:size-16">
+            <Loader2 className="size-7 animate-spin text-primary sm:size-8" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-foreground">{t("preparing")}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {t("preparingHint")}
-            </p>
+            <h3 className="text-base font-semibold text-foreground sm:text-lg">{t("preparing")}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{t("preparingHint")}</p>
           </div>
         </div>
       </CardContent>
@@ -108,20 +104,17 @@ function PreparingCard({ t }: { t: (key: string) => string }) {
 
 function TranslatingCard({ t }: { t: (key: string) => string }) {
   return (
-    <Card className="mx-auto max-w-lg">
-      <CardContent className="p-8">
-        <div className="space-y-6 text-center">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
-            <Loader2 className="size-8 animate-spin text-primary" />
+    <Card className="mx-auto max-w-sm sm:max-w-lg">
+      <CardContent className="p-6 sm:p-8">
+        <div className="space-y-5 text-center sm:space-y-6">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary/10 sm:size-16">
+            <Loader2 className="size-7 animate-spin text-primary sm:size-8" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-foreground">{t("translating")}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {t("translatingHint")}
-            </p>
+            <h3 className="text-base font-semibold text-foreground sm:text-lg">{t("translating")}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{t("translatingHint")}</p>
           </div>
-          {/* Indeterminate progress bar */}
-          <div className="relative h-2 overflow-hidden rounded-full bg-muted">
+          <div className="relative h-1.5 overflow-hidden rounded-full bg-muted sm:h-2">
             <div className="absolute inset-y-0 w-1/3 animate-[indeterminate_1.5s_ease-in-out_infinite] rounded-full bg-primary" />
           </div>
         </div>
@@ -149,18 +142,16 @@ function SuccessCard({ file, jobData, srcLang, tgtLang, onDownload, isDownloadin
   const outputFileSize = outputFile?.size_bytes
 
   return (
-    <Card className="mx-auto max-w-lg">
-      <CardContent className="p-8">
-        <div className="space-y-6">
+    <Card className="mx-auto max-w-sm sm:max-w-lg">
+      <CardContent className="p-5 sm:p-8">
+        <div className="space-y-5 sm:space-y-6">
           {/* Success header */}
           <div className="text-center">
-            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-success/10">
-              <CheckCircle2 className="size-8 text-success" />
+            <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-full bg-success/10 sm:mb-4 sm:size-16">
+              <CheckCircle2 className="size-7 text-success sm:size-8" />
             </div>
-            <h3 className="text-lg font-semibold text-foreground">{t("success")}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {t("successHint")}
-            </p>
+            <h3 className="text-base font-semibold text-foreground sm:text-lg">{t("success")}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{t("successHint")}</p>
           </div>
 
           {/* Translation info */}
@@ -171,12 +162,12 @@ function SuccessCard({ file, jobData, srcLang, tgtLang, onDownload, isDownloadin
           </div>
 
           {/* Output file card */}
-          <div className="flex items-center gap-4 rounded-xl border border-border bg-muted/30 p-4">
-            <div className="shrink-0">{getFileIcon(outputFileName)}</div>
+          <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 p-3 sm:gap-4 sm:p-4">
+            <div className="shrink-0">{getFileIcon(outputFileName, "sm")}</div>
             <div className="min-w-0 flex-1">
-              <h4 className="truncate font-semibold text-foreground">{outputFileName}</h4>
+              <h4 className="truncate text-sm font-semibold text-foreground sm:text-base">{outputFileName}</h4>
               {outputFileSize && (
-                <p className="text-sm text-muted-foreground">{formatFileSize(outputFileSize)}</p>
+                <p className="text-xs text-muted-foreground sm:text-sm">{formatFileSize(outputFileSize)}</p>
               )}
             </div>
           </div>
@@ -213,14 +204,14 @@ function FailedCard({ error, jobError, t }: FailedCardProps) {
   const errorMessage = error || jobError || t("unknownError")
 
   return (
-    <Card className="mx-auto max-w-lg">
-      <CardContent className="p-8">
-        <div className="space-y-6 text-center">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-destructive/10">
-            <XCircle className="size-8 text-destructive" />
+    <Card className="mx-auto max-w-sm sm:max-w-lg">
+      <CardContent className="p-5 sm:p-8">
+        <div className="space-y-5 text-center sm:space-y-6">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-destructive/10 sm:size-16">
+            <XCircle className="size-7 text-destructive sm:size-8" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-foreground">{t("failed")}</h3>
+            <h3 className="text-base font-semibold text-foreground sm:text-lg">{t("failed")}</h3>
             <div className="mt-3 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-left">
               <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
               <p className="text-sm text-destructive">{errorMessage}</p>
@@ -249,8 +240,8 @@ function BottomBar({ flowStatus, jobStatus, onReset, t }: BottomBarProps) {
     jobStatus === "failed"
 
   return (
-    <div className="mt-8 flex justify-center">
-      <Button variant="outline" onClick={onReset} disabled={!isFinished}>
+    <div className="mt-6 flex justify-center sm:mt-8">
+      <Button variant="outline" onClick={onReset} disabled={!isFinished} className="w-full sm:w-auto">
         <RefreshCcw className="size-4" />
         {t("newTranslation")}
       </Button>

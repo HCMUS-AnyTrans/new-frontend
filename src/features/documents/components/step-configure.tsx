@@ -8,6 +8,7 @@ import { LanguageSelector } from "./language-selector"
 import { DomainSelector } from "./domain-selector"
 import { ToneSelector } from "./tone-selector"
 import { GlossarySection } from "./glossary-section"
+import { cn } from "@/lib/utils"
 import type { TranslationConfig, LanguageCode } from "../types"
 import type { Glossary, Term } from "@/features/glossary"
 import type { CreditEstimateResponse } from "../types"
@@ -77,8 +78,9 @@ export function StepConfigure({
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-5">
+    <div className="mx-auto max-w-6xl space-y-5 pb-24 xl:pb-0">
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
+        {/* Left: config sections */}
         <div className="space-y-4">
           <LanguageSelector
             srcLang={config.srcLang}
@@ -111,7 +113,8 @@ export function StepConfigure({
           />
         </div>
 
-        <div className="space-y-4 xl:sticky xl:top-4 xl:self-start">
+        {/* Right: estimate + actions (sticky on xl, shown inline below config on mobile) */}
+        <div className="hidden space-y-4 xl:block xl:sticky xl:top-4 xl:self-start">
           <AppCard>
             <AppCardHeader>
               <CardTitle className="text-base">{t("estimate.title")}</CardTitle>
@@ -130,20 +133,10 @@ export function StepConfigure({
                         : "rounded-lg border bg-muted/30 p-3"
                     }
                   >
-                    <p
-                      className={
-                        isInsufficientCredits ? "text-sm text-destructive" : "text-sm text-muted-foreground"
-                      }
-                    >
+                    <p className={isInsufficientCredits ? "text-sm text-destructive" : "text-sm text-muted-foreground"}>
                       {t("estimate.total")}
                     </p>
-                    <p
-                      className={
-                        isInsufficientCredits
-                          ? "text-xl font-semibold text-destructive"
-                          : "text-xl font-semibold text-foreground"
-                      }
-                    >
+                    <p className={isInsufficientCredits ? "text-xl font-semibold text-destructive" : "text-xl font-semibold text-foreground"}>
                       {estimate.totalCredits.toLocaleString()} {t("estimate.credits")}
                     </p>
                   </div>
@@ -161,19 +154,14 @@ export function StepConfigure({
                     </p>
                     {isInsufficientCredits ? (
                       <p className="text-xs font-medium text-destructive">
-                        {t("estimate.insufficientCredits", {
-                          missing: missingCredits.toLocaleString(),
-                        })}
+                        {t("estimate.insufficientCredits", { missing: missingCredits.toLocaleString() })}
                       </p>
                     ) : null}
                   </div>
 
                   <div className="space-y-2">
                     {estimate.breakdown.map((item) => (
-                      <div
-                        key={item.code}
-                        className="flex items-center justify-between text-sm text-muted-foreground"
-                      >
+                      <div key={item.code} className="flex items-center justify-between text-sm text-muted-foreground">
                         <span className="pr-2">{item.name}</span>
                         <span className="whitespace-nowrap font-medium text-foreground">
                           {item.credits.toLocaleString()} {t("estimate.credits")}
@@ -196,11 +184,11 @@ export function StepConfigure({
               <Button variant="outline" onClick={onBack} className="w-full">
                 {t("back")}
               </Button>
-                <Button
-                  onClick={onStart}
-                  disabled={isSameLang || isLoading || isEstimatePending || isInsufficientCredits}
-                  className="w-full"
-                >
+              <Button
+                onClick={onStart}
+                disabled={isSameLang || isLoading || isEstimatePending || isInsufficientCredits}
+                className="w-full"
+              >
                 {isLoading ? t("processing") : t("startTranslation")}
               </Button>
               {isInsufficientCredits ? (
@@ -209,6 +197,51 @@ export function StepConfigure({
             </AppCardContent>
           </AppCard>
         </div>
+      </div>
+
+      {/* ── Mobile/tablet: estimate summary inline ── */}
+      {!isEstimating && estimate && (
+        <AppCard className="xl:hidden">
+          <AppCardContent className="space-y-2 pt-4">
+            <div className={cn(
+              "flex items-center justify-between rounded-lg border p-3",
+              isInsufficientCredits ? "border-destructive/40 bg-destructive/5" : "bg-muted/30"
+            )}>
+              <p className={cn("text-sm", isInsufficientCredits ? "text-destructive" : "text-muted-foreground")}>
+                {t("estimate.total")}
+              </p>
+              <p className={cn("text-lg font-semibold", isInsufficientCredits ? "text-destructive" : "text-foreground")}>
+                {estimate.totalCredits.toLocaleString()} {t("estimate.credits")}
+              </p>
+            </div>
+            {isInsufficientCredits ? (
+              <p className="text-xs font-medium text-destructive">
+                {t("estimate.insufficientCredits", { missing: missingCredits.toLocaleString() })}
+              </p>
+            ) : null}
+          </AppCardContent>
+        </AppCard>
+      )}
+
+      {/* ── Mobile sticky action bar ── */}
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 px-4 py-3 backdrop-blur-sm xl:hidden">
+        <div className="mx-auto flex max-w-6xl items-center gap-3">
+          <Button variant="outline" onClick={onBack} className="flex-1 sm:flex-none sm:w-28">
+            {t("back")}
+          </Button>
+          <Button
+            onClick={onStart}
+            disabled={isSameLang || isLoading || isEstimatePending || isInsufficientCredits}
+            className="flex-1"
+          >
+            {isLoading ? t("processing") : t("startTranslation")}
+          </Button>
+        </div>
+        {isInsufficientCredits && (
+          <p className="mx-auto mt-1 max-w-6xl text-center text-xs text-destructive">
+            {t("estimate.insufficientActionHint")}
+          </p>
+        )}
       </div>
     </div>
   )
