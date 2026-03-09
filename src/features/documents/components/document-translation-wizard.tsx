@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useCallback, useMemo } from "react"
+import { useState, useCallback, useMemo, useEffect } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { TranslationStepper } from "./translation-stepper"
 import { StepUpload } from "./step-upload"
@@ -22,11 +23,13 @@ import {
 } from "../hooks"
 import { useGlossaries, useTerms } from "@/features/glossary"
 import { useWallet } from "@/features/dashboard/hooks"
+import { translationKeys } from "@/lib/query-client"
 
 // =============== MAIN COMPONENT ===============
 
 export function DocumentTranslationWizard() {
   const t = useTranslations("documents.upload")
+  const queryClient = useQueryClient()
 
   // Step state
   const [step, setStep] = useState<TranslationStep>(1)
@@ -109,6 +112,14 @@ export function DocumentTranslationWizard() {
       : jobData?.status === "failed"
         ? "failed"
         : flowStatus
+
+  // When job reaches a terminal state, refresh history / recent jobs lists
+  useEffect(() => {
+    if (!jobData) return
+    if (jobData.status === "succeeded" || jobData.status === "failed") {
+      queryClient.invalidateQueries({ queryKey: translationKeys.all })
+    }
+  }, [jobData, queryClient])
 
   // =============== FILE HANDLERS ===============
 

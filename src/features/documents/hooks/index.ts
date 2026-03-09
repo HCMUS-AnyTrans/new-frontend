@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { io, type Socket } from 'socket.io-client';
-import { translationKeys } from '@/lib/query-client';
-import { getAccessToken } from '@/features/auth/store';
+import { useState, useCallback, useRef, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { io, type Socket } from "socket.io-client";
+import { translationKeys } from "@/lib/query-client";
+import { getAccessToken } from "@/features/auth/store";
 import {
   requestDocUploadUrl,
   uploadFileToPresignedUrl,
@@ -13,21 +13,26 @@ import {
   getTranslationJob,
   getFileDownloadUrl,
   estimateTranslationCredits,
-} from '../api/documents.api';
+} from "../api/documents.api";
 import type {
   TranslationFlowStatus,
   TranslationJobResponse,
   CreateTranslationJobDto,
   TranslationConfig,
   CreditEstimateResponse,
-} from '../types';
-import { LANGUAGE_CODE_TO_API_NAME } from '../types';
+} from "../types";
+import { LANGUAGE_CODE_TO_API_NAME } from "../types";
 
-type SocketConnectionState = 'idle' | 'connecting' | 'connected' | 'disconnected' | 'error';
+type SocketConnectionState =
+  | "idle"
+  | "connecting"
+  | "connected"
+  | "disconnected"
+  | "error";
 
 interface JobStatusSocketEvent {
   jobId: string;
-  status: TranslationJobResponse['status'];
+  status: TranslationJobResponse["status"];
   error?: string;
   resultFileId?: string;
   outputFileName?: string;
@@ -40,7 +45,7 @@ interface UseTranslationJobSocketResult {
   socketError: string | null;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 // ============================================================================
 // useUploadAndTranslate — orchestrates upload first, then create job
@@ -75,14 +80,14 @@ interface UseUploadAndTranslateReturn extends UploadAndTranslateState {
    */
   startTranslation: (
     config: TranslationConfig,
-    glossaryTerms?: Array<{ srcTerm: string; tgtTerm: string }>
+    glossaryTerms?: Array<{ srcTerm: string; tgtTerm: string }>,
   ) => Promise<void>;
   /** Reset the flow state back to idle */
   reset: () => void;
 }
 
 const initialState: UploadAndTranslateState = {
-  flowStatus: 'idle',
+  flowStatus: "idle",
   uploadProgress: 0,
   fileId: null,
   estimate: null,
@@ -90,8 +95,8 @@ const initialState: UploadAndTranslateState = {
   error: null,
 };
 
-const ESTIMATE_POLL_INTERVAL = 3000;
-const ESTIMATE_MAX_ATTEMPTS = 40; // ~2 minutes
+const ESTIMATE_POLL_INTERVAL = 5000;
+const ESTIMATE_MAX_ATTEMPTS = 20; // ~2 minutes
 
 /**
  * Poll estimate-credits until the backend has finished parsing the file and
@@ -104,12 +109,12 @@ async function pollEstimateCredits(
 ): Promise<CreditEstimateResponse> {
   for (let attempt = 0; attempt < ESTIMATE_MAX_ATTEMPTS; attempt++) {
     if (abortRef.current) {
-      throw new Error('Aborted');
+      throw new Error("Aborted");
     }
 
     try {
       const result = await estimateTranslationCredits({
-        job_type: 'doc-trans',
+        job_type: "doc-trans",
         file_id: fileId,
       });
       // Success — backend has parsed metadata and returned a valid estimate
@@ -117,13 +122,15 @@ async function pollEstimateCredits(
     } catch {
       // Backend is not ready yet (file still parsing). Wait and retry.
       if (attempt < ESTIMATE_MAX_ATTEMPTS - 1) {
-        await new Promise((resolve) => setTimeout(resolve, ESTIMATE_POLL_INTERVAL));
+        await new Promise((resolve) =>
+          setTimeout(resolve, ESTIMATE_POLL_INTERVAL),
+        );
       }
     }
   }
 
   throw new Error(
-    'Document analysis timed out. Please try again or upload a different file.',
+    "Document analysis timed out. Please try again or upload a different file.",
   );
 }
 
@@ -134,14 +141,15 @@ async function pollEstimateCredits(
 function buildJobDto(
   fileId: string,
   config: TranslationConfig,
-  glossaryTerms: Array<{ srcTerm: string; tgtTerm: string }> = []
+  glossaryTerms: Array<{ srcTerm: string; tgtTerm: string }> = [],
 ): CreateTranslationJobDto {
   const dto: CreateTranslationJobDto = {
     file_id: fileId,
     src_lang: LANGUAGE_CODE_TO_API_NAME[config.srcLang],
     tgt_lang: LANGUAGE_CODE_TO_API_NAME[config.tgtLang],
     doc_tone: config.tone || undefined,
-    doc_domain: config.domain === 'auto' ? undefined : config.domain || undefined,
+    doc_domain:
+      config.domain === "auto" ? undefined : config.domain || undefined,
   };
 
   // Merge selected glossary terms + manual terms and remove duplicate source terms.
@@ -188,7 +196,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
     try {
       setState((prev) => ({
         ...prev,
-        flowStatus: 'uploading',
+        flowStatus: "uploading",
         uploadProgress: 0,
         fileId: null,
         estimate: null,
@@ -201,7 +209,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
         file_name: file.name,
         mime_type: file.type,
         file_size: file.size,
-        file_type: 'doc',
+        file_type: "doc",
       });
 
       uploadFileId = uploadResponse.file_id;
@@ -209,19 +217,23 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
       if (abortRef.current) return null;
 
       // --- Phase 2: upload to storage ---
-      await uploadFileToPresignedUrl(uploadResponse.upload_url, file, (percent) => {
-        if (!abortRef.current) {
-          setState((prev) => ({ ...prev, uploadProgress: percent }));
-        }
-      });
+      await uploadFileToPresignedUrl(
+        uploadResponse.upload_url,
+        file,
+        (percent) => {
+          if (!abortRef.current) {
+            setState((prev) => ({ ...prev, uploadProgress: percent }));
+          }
+        },
+      );
 
       if (abortRef.current) return null;
 
       // --- Phase 3: confirm upload ---
-      setState((prev) => ({ ...prev, flowStatus: 'confirming' }));
+      setState((prev) => ({ ...prev, flowStatus: "confirming" }));
 
       await confirmFileUpload(uploadResponse.file_id, {
-        status: 'uploaded',
+        status: "uploaded",
       });
 
       if (abortRef.current) return null;
@@ -229,7 +241,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
       // --- Phase 4: poll estimate credits until backend has parsed metadata ---
       setState((prev) => ({
         ...prev,
-        flowStatus: 'analyzing',
+        flowStatus: "analyzing",
         uploadProgress: 100,
         fileId: uploadResponse.file_id,
       }));
@@ -243,7 +255,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
 
       setState((prev) => ({
         ...prev,
-        flowStatus: 'idle',
+        flowStatus: "idle",
         estimate: estimateResult,
         error: null,
       }));
@@ -254,7 +266,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
 
       if (uploadFileId) {
         try {
-          await confirmFileUpload(uploadFileId, { status: 'failed' });
+          await confirmFileUpload(uploadFileId, { status: "failed" });
         } catch {
           // Ignore cleanup failure and preserve the original upload error.
         }
@@ -264,7 +276,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
 
       setState((prev) => ({
         ...prev,
-        flowStatus: 'failed',
+        flowStatus: "failed",
         uploadProgress: 0,
         fileId: null,
         estimate: null,
@@ -278,15 +290,16 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
   const startTranslation = useCallback(
     async (
       config: TranslationConfig,
-      glossaryTerms: Array<{ srcTerm: string; tgtTerm: string }> = []
+      glossaryTerms: Array<{ srcTerm: string; tgtTerm: string }> = [],
     ) => {
       abortRef.current = false;
 
       if (!state.fileId) {
-        const errorMessage = 'Please upload a document before starting translation';
+        const errorMessage =
+          "Please upload a document before starting translation";
         setState((prev) => ({
           ...prev,
-          flowStatus: 'failed',
+          flowStatus: "failed",
           error: errorMessage,
         }));
         throw new Error(errorMessage);
@@ -294,7 +307,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
 
       try {
         // Step 1: Create translation job for the uploaded file
-        setState((prev) => ({ ...prev, flowStatus: 'creating' }));
+        setState((prev) => ({ ...prev, flowStatus: "creating" }));
 
         const jobDto = buildJobDto(state.fileId, config, glossaryTerms);
         const idempotencyKey = `doc-${state.fileId}-${Date.now()}`;
@@ -305,7 +318,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
         // Step 2: Job created — transition to "translating" (polling handled by useTranslationJob)
         setState((prev) => ({
           ...prev,
-          flowStatus: 'translating',
+          flowStatus: "translating",
           jobId: jobResponse.job_id,
           error: null,
         }));
@@ -316,12 +329,12 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
 
         setState((prev) => ({
           ...prev,
-          flowStatus: 'failed',
+          flowStatus: "failed",
           error: errorMessage,
         }));
       }
     },
-    [state.fileId]
+    [state.fileId],
   );
 
   return {
@@ -338,11 +351,12 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
 
 export function useTranslationJobSocket(
   jobId: string | null,
-  options: { enabled?: boolean } = {}
+  options: { enabled?: boolean } = {},
 ): UseTranslationJobSocketResult {
   const { enabled = true } = options;
   const queryClient = useQueryClient();
-  const [connectionState, setConnectionState] = useState<SocketConnectionState>('idle');
+  const [connectionState, setConnectionState] =
+    useState<SocketConnectionState>("idle");
   const [socketError, setSocketError] = useState<string | null>(null);
   const accessToken = enabled && jobId ? getAccessToken() : null;
 
@@ -356,28 +370,28 @@ export function useTranslationJobSocket(
     }
 
     const socket: Socket = io(API_BASE_URL, {
-      path: '/ws',
-      transports: ['websocket'],
+      path: "/ws",
+      transports: ["websocket"],
       autoConnect: true,
       auth: { token: accessToken },
     });
 
     const handleConnect = () => {
-      setConnectionState('connected');
+      setConnectionState("connected");
       setSocketError(null);
-      socket.emit('translation:watch', { jobId });
+      socket.emit("translation:watch", { jobId });
       void queryClient.invalidateQueries({
         queryKey: translationKeys.detail(jobId),
       });
     };
 
     const handleDisconnect = () => {
-      setConnectionState('disconnected');
+      setConnectionState("disconnected");
     };
 
     const handleConnectError = (error: Error) => {
-      setConnectionState('error');
-      setSocketError(error.message || 'Socket connection failed');
+      setConnectionState("error");
+      setSocketError(error.message || "Socket connection failed");
     };
 
     const handleJobStatus = (event: JobStatusSocketEvent) => {
@@ -385,39 +399,37 @@ export function useTranslationJobSocket(
         return;
       }
 
-      queryClient.setQueryData(
-        translationKeys.detail(jobId),
-        event.job,
-      );
+      queryClient.setQueryData(translationKeys.detail(jobId), event.job);
     };
 
-    socket.on('connect', handleConnect);
-    socket.on('disconnect', handleDisconnect);
-    socket.on('connect_error', handleConnectError);
-    socket.on('job:status', handleJobStatus);
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
+    socket.on("connect_error", handleConnectError);
+    socket.on("job:status", handleJobStatus);
 
     return () => {
-      socket.off('connect', handleConnect);
-      socket.off('disconnect', handleDisconnect);
-      socket.off('connect_error', handleConnectError);
-      socket.off('job:status', handleJobStatus);
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
+      socket.off("connect_error", handleConnectError);
+      socket.off("job:status", handleJobStatus);
       socket.disconnect();
     };
   }, [accessToken, enabled, jobId, queryClient]);
 
   if (!enabled || !jobId) {
-    return { connectionState: 'idle', socketError: null };
+    return { connectionState: "idle", socketError: null };
   }
 
   if (!accessToken) {
     return {
-      connectionState: 'error',
-      socketError: 'Missing access token for live translation updates',
+      connectionState: "error",
+      socketError: "Missing access token for live translation updates",
     };
   }
 
   return {
-    connectionState: connectionState === 'idle' ? 'connecting' : connectionState,
+    connectionState:
+      connectionState === "idle" ? "connecting" : connectionState,
     socketError,
   };
 }
@@ -431,12 +443,12 @@ interface UseTranslationJobOptions {
 
 export function useTranslationJob(
   jobId: string | null,
-  options: UseTranslationJobOptions = {}
+  options: UseTranslationJobOptions = {},
 ) {
   const { pollInterval = 3000, enabled = true } = options;
 
   const query = useQuery<TranslationJobResponse>({
-    queryKey: translationKeys.detail(jobId ?? ''),
+    queryKey: translationKeys.detail(jobId ?? ""),
     queryFn: () => getTranslationJob(jobId!),
     enabled: enabled && jobId !== null,
     refetchInterval: (query) => {
@@ -446,7 +458,7 @@ export function useTranslationJob(
 
       const data = query.state.data;
       // Stop polling when job reaches terminal state
-      if (data?.status === 'succeeded' || data?.status === 'failed') {
+      if (data?.status === "succeeded" || data?.status === "failed") {
         return false;
       }
       return pollInterval;
@@ -480,50 +492,47 @@ export function useDownloadFile(): UseDownloadFileReturn {
     };
   }, []);
 
-  const download = useCallback(
-    async (fileId: string, fileName?: string) => {
-      setIsDownloading(true);
-      setError(null);
+  const download = useCallback(async (fileId: string, fileName?: string) => {
+    setIsDownloading(true);
+    setError(null);
 
-      try {
-        const { download_url } = await getFileDownloadUrl(fileId);
+    try {
+      const { download_url } = await getFileDownloadUrl(fileId);
 
-        // Trigger browser download via invisible anchor
-        const a = document.createElement('a');
-        a.href = download_url;
-        a.download = fileName || '';
-        // For cross-origin presigned URLs, we need target=_blank
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      } catch (err: unknown) {
-        if (!mountedRef.current) return;
-        const errorMessage = extractErrorMessage(err, 'Download failed');
-        setError(errorMessage);
-      } finally {
-        if (mountedRef.current) {
-          setIsDownloading(false);
-        }
+      // Trigger browser download via invisible anchor
+      const a = document.createElement("a");
+      a.href = download_url;
+      a.download = fileName || "";
+      // For cross-origin presigned URLs, we need target=_blank
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err: unknown) {
+      if (!mountedRef.current) return;
+      const errorMessage = extractErrorMessage(err, "Download failed");
+      setError(errorMessage);
+    } finally {
+      if (mountedRef.current) {
+        setIsDownloading(false);
       }
-    },
-    []
-  );
+    }
+  }, []);
 
   return { download, isDownloading, error };
 }
 
 function extractErrorMessage(
   err: unknown,
-  fallback = 'An unexpected error occurred'
+  fallback = "An unexpected error occurred",
 ): string {
-  if (!err || typeof err !== 'object') return fallback;
+  if (!err || typeof err !== "object") return fallback;
 
-  if ('message' in err) {
+  if ("message" in err) {
     const message = (err as { message?: string | string[] }).message;
-    if (Array.isArray(message)) return message.join(', ');
-    if (typeof message === 'string' && message.length > 0) return message;
+    if (Array.isArray(message)) return message.join(", ");
+    if (typeof message === "string" && message.length > 0) return message;
   }
 
   return fallback;

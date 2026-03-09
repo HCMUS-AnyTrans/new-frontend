@@ -204,10 +204,11 @@ export function BillingTab() {
     })
   }, [searchParams, queryClient, returnSource])
 
-  const isLoading = isLoadingWallet || isLoadingLedger || isLoadingPackages || isLoadingPayments
+  // Full-page skeleton only for wallet + packages (above-the-fold content).
+  // Ledger and payments pagination refetch only their own section.
+  const isInitialLoading = isLoadingWallet || isLoadingPackages
 
-  // Show skeleton while loading
-  if (isLoading) {
+  if (isInitialLoading) {
     return <BillingTabSkeleton />
   }
 
@@ -402,7 +403,22 @@ export function BillingTab() {
         title={t("transactionHistory")}
         description={t("recentTransactions")}
       >
-        {ledgerList.length === 0 ? (
+        {isLoadingLedger ? (
+          <div className="space-y-1">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex items-center justify-between py-2">
+                <div className="flex items-center gap-3">
+                  <Skeleton className="size-9 rounded-lg" />
+                  <div className="space-y-1">
+                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="h-3 w-28" />
+                  </div>
+                </div>
+                <Skeleton className="h-4 w-16" />
+              </div>
+            ))}
+          </div>
+        ) : ledgerList.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
             <Wallet className="mb-2 size-8" />
             <p>{t("noTransactions")}</p>
@@ -459,7 +475,25 @@ export function BillingTab() {
         title={t("paymentHistory")}
         description={t("paymentHistoryDescription")}
       >
-        {paymentList.length === 0 ? (
+        {isLoadingPayments ? (
+          <div className="space-y-1">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex items-center justify-between py-2">
+                <div className="flex items-center gap-3">
+                  <Skeleton className="size-9 rounded-lg" />
+                  <div className="space-y-1">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                </div>
+                <div className="space-y-1 text-right">
+                  <Skeleton className="ml-auto h-4 w-20" />
+                  <Skeleton className="ml-auto h-5 w-16" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : paymentList.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
             <CreditCard className="mb-2 size-8" />
             <p>{t("noPayments")}</p>
