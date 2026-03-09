@@ -48,6 +48,7 @@ export function StepConfigure({
   const t = useTranslations("documents.configure")
   const isSameLang = config.srcLang === config.tgtLang
   const hasEstimate = !isEstimating && !!estimate
+  const isEstimatePending = isEstimating || !estimate
   const isInsufficientCredits =
     hasEstimate && typeof currentBalance === "number" && currentBalance < estimate.totalCredits
   const missingCredits =
@@ -195,11 +196,11 @@ export function StepConfigure({
               <Button variant="outline" onClick={onBack} className="w-full">
                 {t("back")}
               </Button>
-              <Button
-                onClick={onStart}
-                disabled={isSameLang || isLoading || isInsufficientCredits}
-                className="w-full"
-              >
+                <Button
+                  onClick={onStart}
+                  disabled={isSameLang || isLoading || isEstimatePending || isInsufficientCredits}
+                  className="w-full"
+                >
                 {isLoading ? t("processing") : t("startTranslation")}
               </Button>
               {isInsufficientCredits ? (

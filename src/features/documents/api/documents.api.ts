@@ -18,13 +18,13 @@ import type {
 
 /**
  * Request a presigned upload URL for a document file.
- * POST /files/upload/request
+ * POST /files/upload/doc
  */
 export async function requestDocUploadUrl(
   dto: RequestUploadUrlDto
 ): Promise<UploadUrlResponse> {
   const response = await apiClient.post<UploadUrlResponse>(
-    '/files/upload/request',
+    '/files/upload/doc',
     dto
   );
   return response.data;

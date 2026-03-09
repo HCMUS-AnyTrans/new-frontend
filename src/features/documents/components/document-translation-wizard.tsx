@@ -43,8 +43,10 @@ export function DocumentTranslationWizard() {
   const {
     flowStatus,
     uploadProgress,
+    fileId,
     jobId,
     error: flowError,
+    startUpload,
     startTranslation,
     reset: resetFlow,
   } = useUploadAndTranslate()
@@ -90,11 +92,13 @@ export function DocumentTranslationWizard() {
 
   const {
     data: estimate,
-    isLoading: isEstimating,
+    isLoading: isEstimateLoading,
+    isFetching: isEstimateFetching,
     error: estimateError,
-  } = useEstimateCredits(file?.charCount ?? 0, file?.type === "application/pdf", {
-    enabled: step === 2 && !!file,
+  } = useEstimateCredits(fileId, {
+    enabled: step === 2 && !!fileId,
   })
+  const isEstimating = !!fileId && (isEstimateLoading || isEstimateFetching || !estimate)
 
   // Update flow status when job polling returns a terminal state
   // The wizard tracks "succeeded" / "failed" based on job polling data
@@ -119,6 +123,8 @@ export function DocumentTranslationWizard() {
 
   const handleFileSelect = useCallback(
     (f: File) => {
+      resetFlow()
+
       const error = validateFile(f)
       if (error) {
         setFileError(error)
@@ -135,13 +141,14 @@ export function DocumentTranslationWizard() {
       })
       setFileError(null)
     },
-    [validateFile]
+    [resetFlow, validateFile]
   )
 
   const handleFileRemove = useCallback(() => {
+    resetFlow()
     setFile(null)
     setFileError(null)
-  }, [])
+  }, [resetFlow])
 
   // =============== CONFIG HANDLERS ===============
 
@@ -155,11 +162,18 @@ export function DocumentTranslationWizard() {
     setStep(newStep)
   }, [])
 
-  const handleUploadNext = useCallback(() => {
-    if (file && !fileError) {
-      goToStep(2)
+  const handleUploadNext = useCallback(async () => {
+    if (!file || fileError) return
+
+    try {
+      const uploadedFileId = await startUpload(file.file)
+      if (uploadedFileId) {
+        goToStep(2)
+      }
+    } catch {
+      // Upload errors are already captured in the flow state.
     }
-  }, [file, fileError, goToStep])
+  }, [file, fileError, goToStep, startUpload])
 
   const handleConfigBack = useCallback(() => {
     goToStep(1)
@@ -168,16 +182,16 @@ export function DocumentTranslationWizard() {
   // =============== TRANSLATION FLOW ===============
 
   const handleStartTranslation = useCallback(() => {
-    if (!file) return
+    if (!file || !fileId) return
 
     // Move to step 3 immediately to show upload progress
     goToStep(3)
 
     const usableGlossaryTerms = activeSelectedGlossaryId ? selectedGlossaryTerms : []
 
-    // Start the real upload → confirm → create job flow
-    startTranslation(file.file, config, usableGlossaryTerms)
-  }, [file, config, activeSelectedGlossaryId, selectedGlossaryTerms, goToStep, startTranslation])
+    // Start the translation job for the already-uploaded file
+    startTranslation(config, usableGlossaryTerms)
+  }, [file, fileId, config, activeSelectedGlossaryId, selectedGlossaryTerms, goToStep, startTranslation])
 
   // =============== RESULT HANDLERS ===============
 
@@ -216,6 +230,9 @@ export function DocumentTranslationWizard() {
             onFileRemove={handleFileRemove}
             onDragChange={setIsDragging}
             onNext={handleUploadNext}
+            isUploading={flowStatus === "uploading" || flowStatus === "confirming"}
+            uploadProgress={uploadProgress}
+            uploadError={flowError}
           />
         )}
 
@@ -230,7 +247,7 @@ export function DocumentTranslationWizard() {
             estimate={estimate}
             isEstimating={isEstimating}
             estimateError={
-              estimateError && typeof estimateError === "object" && "message" in estimateError
+              !isEstimating && estimateError && typeof estimateError === "object" && "message" in estimateError
                 ? String(estimateError.message)
                 : null
             }
@@ -238,7 +255,7 @@ export function DocumentTranslationWizard() {
             isLoadingBalance={isLoadingWallet}
             onBack={handleConfigBack}
             onStart={handleStartTranslation}
-            isLoading={flowStatus !== "idle" && flowStatus !== "failed"}
+            isLoading={flowStatus === "creating" || flowStatus === "translating"}
           />
         )}
 

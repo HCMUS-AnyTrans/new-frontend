@@ -22,14 +22,16 @@ import type {
 import { LANGUAGE_CODE_TO_API_NAME } from '../types';
 
 // ============================================================================
-// useUploadAndTranslate — orchestrates upload → confirm → create job
+// useUploadAndTranslate — orchestrates upload first, then create job
 // ============================================================================
 
 interface UploadAndTranslateState {
-  /** Current step in the multi-step flow */
+  /** Current async state in the document flow */
   flowStatus: TranslationFlowStatus;
-  /** Upload progress percentage (0-100) during the "uploading" phase */
+  /** Upload progress percentage (0-100) during the upload phase */
   uploadProgress: number;
+  /** The uploaded backend file ID returned after confirming upload */
+  fileId: string | null;
   /** The job ID returned after creating the translation job */
   jobId: string | null;
   /** Error message if any step fails */
@@ -38,11 +40,15 @@ interface UploadAndTranslateState {
 
 interface UseUploadAndTranslateReturn extends UploadAndTranslateState {
   /**
-   * Start the full flow: request presigned URL → upload file → confirm → create job.
+   * Start the upload flow: request presigned URL → upload file → confirm upload.
+   * Called when user clicks "Continue" in Step 1.
+   */
+  startUpload: (file: File) => Promise<string | null>;
+  /**
+   * Create the translation job for an already-uploaded file.
    * Called when user clicks "Start Translation" in Step 2.
    */
   startTranslation: (
-    file: File,
     config: TranslationConfig,
     glossaryTerms?: Array<{ srcTerm: string; tgtTerm: string }>
   ) => Promise<void>;
@@ -53,6 +59,7 @@ interface UseUploadAndTranslateReturn extends UploadAndTranslateState {
 const initialState: UploadAndTranslateState = {
   flowStatus: 'idle',
   uploadProgress: 0,
+  fileId: null,
   jobId: null,
   error: null,
 };
@@ -110,73 +117,124 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
     setState(initialState);
   }, []);
 
+  const startUpload = useCallback(async (file: File) => {
+    abortRef.current = false;
+
+    let uploadFileId: string | null = null;
+
+    try {
+      setState((prev) => ({
+        ...prev,
+        flowStatus: 'uploading',
+        uploadProgress: 0,
+        fileId: null,
+        jobId: null,
+        error: null,
+      }));
+
+      const uploadResponse = await requestDocUploadUrl({
+        file_name: file.name,
+        mime_type: file.type,
+        file_size: file.size,
+        file_type: 'doc',
+      });
+
+      uploadFileId = uploadResponse.file_id;
+
+      if (abortRef.current) {
+        return null;
+      }
+
+      await uploadFileToPresignedUrl(uploadResponse.upload_url, file, (percent) => {
+        if (!abortRef.current) {
+          setState((prev) => ({ ...prev, uploadProgress: percent }));
+        }
+      });
+
+      if (abortRef.current) {
+        return null;
+      }
+
+      setState((prev) => ({ ...prev, flowStatus: 'confirming' }));
+
+      await confirmFileUpload(uploadResponse.file_id, {
+        status: 'uploaded',
+      });
+
+      if (abortRef.current) {
+        return null;
+      }
+
+      setState((prev) => ({
+        ...prev,
+        flowStatus: 'idle',
+        uploadProgress: 100,
+        fileId: uploadResponse.file_id,
+        error: null,
+      }));
+
+      return uploadResponse.file_id;
+    } catch (err: unknown) {
+      if (abortRef.current) {
+        return null;
+      }
+
+      if (uploadFileId) {
+        try {
+          await confirmFileUpload(uploadFileId, { status: 'failed' });
+        } catch {
+          // Ignore cleanup failure and preserve the original upload error.
+        }
+      }
+
+      const errorMessage = extractErrorMessage(err);
+
+      setState((prev) => ({
+        ...prev,
+        flowStatus: 'failed',
+        uploadProgress: 0,
+        fileId: null,
+        error: errorMessage,
+      }));
+
+      throw err;
+    }
+  }, []);
+
   const startTranslation = useCallback(
     async (
-      file: File,
       config: TranslationConfig,
       glossaryTerms: Array<{ srcTerm: string; tgtTerm: string }> = []
     ) => {
       abortRef.current = false;
 
+      if (!state.fileId) {
+        const errorMessage = 'Please upload a document before starting translation';
+        setState((prev) => ({
+          ...prev,
+          flowStatus: 'failed',
+          error: errorMessage,
+        }));
+        throw new Error(errorMessage);
+      }
+
       try {
-        // Step 1: Request presigned upload URL
-        setState({
-          flowStatus: 'uploading',
-          uploadProgress: 0,
-          jobId: null,
-          error: null,
-        });
-
-        const uploadResponse = await requestDocUploadUrl({
-          file_name: file.name,
-          mime_type: file.type,
-          file_size: file.size,
-          file_type: 'doc',
-          metadata: {
-            charCount: Math.max(1, Math.round(file.size / 4)),
-          },
-        });
-
-        if (abortRef.current) return;
-
-        // Step 2: Upload file to presigned URL
-        await uploadFileToPresignedUrl(
-          uploadResponse.upload_url,
-          file,
-          (percent) => {
-            if (!abortRef.current) {
-              setState((prev) => ({ ...prev, uploadProgress: percent }));
-            }
-          }
-        );
-
-        if (abortRef.current) return;
-
-        // Step 3: Confirm upload
-        setState((prev) => ({ ...prev, flowStatus: 'confirming' }));
-
-        await confirmFileUpload(uploadResponse.file_id, {
-          status: 'uploaded',
-        });
-
-        if (abortRef.current) return;
-
-        // Step 4: Create translation job
+        // Step 1: Create translation job for the uploaded file
         setState((prev) => ({ ...prev, flowStatus: 'creating' }));
 
-        const jobDto = buildJobDto(uploadResponse.file_id, config, glossaryTerms);
-        const idempotencyKey = `doc-${uploadResponse.file_id}-${Date.now()}`;
+        const jobDto = buildJobDto(state.fileId, config, glossaryTerms);
+        const idempotencyKey = `doc-${state.fileId}-${Date.now()}`;
         const jobResponse = await createTranslationJob(jobDto, idempotencyKey);
 
         if (abortRef.current) return;
 
-        // Step 5: Job created — transition to "translating" (polling handled by useTranslationJob)
-        setState({
+        // Step 2: Job created — transition to "translating" (polling handled by useTranslationJob)
+        setState((prev) => ({
+          ...prev,
           flowStatus: 'translating',
-          uploadProgress: 100,
           jobId: jobResponse.job_id,
           error: null,
-        });
+        }));
       } catch (err: unknown) {
         if (abortRef.current) return;
 
@@ -189,11 +247,12 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
         }));
       }
     },
-    []
+    [state.fileId]
   );
 
   return {
     ...state,
+    startUpload,
     startTranslation,
     reset,
   };
@@ -240,21 +299,26 @@ interface UseEstimateCreditsOptions {
 }
 
 export function useEstimateCredits(
-  charCount: number,
-  isPdf: boolean,
+  fileId: string | null,
   options: UseEstimateCreditsOptions = {}
 ) {
   const { enabled = true } = options;
 
   return useQuery<CreditEstimateResponse>({
-    queryKey: ['translations', 'estimate-credits', charCount, isPdf],
+    queryKey: ['translations', 'estimate-credits', fileId],
     queryFn: () =>
       estimateTranslationCredits({
         job_type: 'doc-trans',
-        is_pdf: isPdf,
-        char_count: charCount,
+        file_id: fileId!,
       }),
-    enabled: enabled && charCount > 0,
+    enabled: enabled && fileId !== null,
+    retry: false,
+    refetchInterval: (query) => {
+      if (query.state.data) {
+        return false;
+      }
+      return 3000;
+    },
     staleTime: 30 * 1000,
   });
 }

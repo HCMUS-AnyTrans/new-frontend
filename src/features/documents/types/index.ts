@@ -95,20 +95,16 @@ export type JobStatus = "pending" | "processing" | "succeeded" | "failed"
 
 // =============== API REQUEST/RESPONSE TYPES ===============
 
-/** POST /files/upload/request — request body */
+/** POST /files/upload/doc — request body */
 export interface RequestUploadUrlDto {
   file_name: string
   mime_type: string
   file_size: number
   file_type: "doc" | "sub"
   sha256?: string
-  metadata: {
-    charCount: number
-    language?: string
-  }
 }
 
-/** POST /files/upload/request — response */
+/** POST /files/upload/doc — response */
 export interface UploadUrlResponse {
   upload_url: string
   file_id: string
@@ -141,8 +137,7 @@ export interface FileResponse {
 
 export interface CreditEstimateDto {
   job_type: "doc-trans" | "sub-trans"
-  is_pdf: boolean
-  char_count: number
+  file_id: string
 }
 
 export interface CreditEstimateItem {

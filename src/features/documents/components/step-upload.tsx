@@ -12,10 +12,12 @@ import {
   FileUp,
   HardDrive,
   ShieldCheck,
+  Loader2,
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { AppCard, AppCardContent } from "@/components/ui/app-card"
 import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
 import { ALLOWED_EXTENSIONS, type UploadedFile } from "../types"
 
@@ -27,6 +29,9 @@ interface StepUploadProps {
   onFileRemove: () => void
   onDragChange: (dragging: boolean) => void
   onNext: () => void
+  isUploading?: boolean
+  uploadProgress?: number
+  uploadError?: string | null
 }
 
 function formatFileSize(bytes: number): string {
@@ -50,6 +55,9 @@ export function StepUpload({
   onFileRemove,
   onDragChange,
   onNext,
+  isUploading = false,
+  uploadProgress = 0,
+  uploadError,
 }: StepUploadProps) {
   const t = useTranslations("documents.upload")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -57,11 +65,12 @@ export function StepUpload({
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault()
+      if (isUploading) return
       onDragChange(false)
       const droppedFile = e.dataTransfer.files[0]
       if (droppedFile) onFileSelect(droppedFile)
     },
-    [onFileSelect, onDragChange]
+    [isUploading, onFileSelect, onDragChange]
   )
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -86,10 +95,11 @@ export function StepUpload({
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (isUploading) return
       const selectedFile = e.target.files?.[0]
       if (selectedFile) onFileSelect(selectedFile)
     },
-    [onFileSelect]
+    [isUploading, onFileSelect]
   )
 
   const handleRemove = useCallback(() => {
@@ -98,10 +108,12 @@ export function StepUpload({
   }, [onFileRemove])
 
   const isValid = file !== null && error === null
+  const displayError = error || uploadError
 
   const openPicker = useCallback(() => {
+    if (isUploading) return
     inputRef.current?.click()
-  }, [])
+  }, [isUploading])
 
   const handleDropzoneKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -131,12 +143,16 @@ export function StepUpload({
           {/* Dropzone area */}
           {!file ? (
             <div
-              role="button"
-              tabIndex={0}
-              onClick={openPicker}
-              onKeyDown={handleDropzoneKeyDown}
-              className="relative cursor-pointer p-8 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:p-10"
-            >
+                role="button"
+                tabIndex={isUploading ? -1 : 0}
+                onClick={openPicker}
+                onKeyDown={handleDropzoneKeyDown}
+                className={cn(
+                  "relative p-8 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:p-10",
+                  isUploading ? "cursor-not-allowed opacity-80" : "cursor-pointer"
+                )}
+                aria-disabled={isUploading}
+              >
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.10),transparent_55%)]" />
               <div className="relative flex flex-col items-center text-center">
                 <div className="mb-5 flex size-16 items-center justify-center rounded-2xl border border-primary/25 bg-primary/10 text-primary">
@@ -172,6 +188,7 @@ export function StepUpload({
                       e.stopPropagation()
                       openPicker()
                     }}
+                    disabled={isUploading}
                   >
                     <Upload className="size-4" />
                     {t("browse")}
@@ -204,13 +221,14 @@ export function StepUpload({
                       </h4>
                       <p className="text-sm text-muted-foreground">{formatFileSize(file.size)}</p>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      onClick={handleRemove}
-                      className="shrink-0 text-muted-foreground hover:text-destructive"
-                    >
-                      <X className="size-4" />
+                     <Button
+                       variant="ghost"
+                       size="icon-sm"
+                       onClick={handleRemove}
+                       disabled={isUploading}
+                       className="shrink-0 text-muted-foreground hover:text-destructive"
+                     >
+                       <X className="size-4" />
                     </Button>
                   </div>
                   {!error && (
@@ -221,11 +239,22 @@ export function StepUpload({
                   )}
 
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Button type="button" variant="secondary" size="sm" onClick={openPicker}>
+                    <Button type="button" variant="secondary" size="sm" onClick={openPicker} disabled={isUploading}>
                       <Upload className="size-3.5" />
                       {t("replaceFile")}
                     </Button>
                   </div>
+
+                  {isUploading ? (
+                    <div className="mt-4 space-y-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+                      <div className="flex items-center gap-2 text-sm font-medium text-primary">
+                        <Loader2 className="size-4 animate-spin" />
+                        <span>{t("next")}</span>
+                      </div>
+                      <Progress value={uploadProgress} className="h-2" />
+                      <p className="text-xs text-muted-foreground">{uploadProgress}%</p>
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -234,17 +263,24 @@ export function StepUpload({
       </AppCard>
 
       {/* Error message */}
-      {error && (
+      {displayError && (
         <div className="mt-4 flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-destructive">
           <AlertCircle className="size-5 shrink-0" />
-          <span className="text-sm font-medium">{error}</span>
+          <span className="text-sm font-medium">{displayError}</span>
         </div>
       )}
 
       {/* Next button */}
       <div className="mt-8 flex justify-end">
-        <Button onClick={onNext} disabled={!isValid} size="lg">
-          {t("next")}
+        <Button onClick={onNext} disabled={!isValid || isUploading} size="lg">
+              {isUploading ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  {t("next")}
+                </>
+              ) : (
+            t("next")
+          )}
         </Button>
       </div>
 
@@ -254,6 +290,7 @@ export function StepUpload({
         type="file"
         accept={ALLOWED_EXTENSIONS.join(",")}
         onChange={handleInputChange}
+        disabled={isUploading}
         className="hidden"
       />
     </div>
