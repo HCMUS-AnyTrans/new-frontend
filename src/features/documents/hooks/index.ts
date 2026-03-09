@@ -4,7 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { io, type Socket } from "socket.io-client";
 import { translationKeys } from "@/lib/query-client";
-import { getAccessToken } from "@/features/auth/store";
+import { useAccessToken } from "@/features/auth/store";
 import {
   requestDocUploadUrl,
   uploadFileToPresignedUrl,
@@ -358,14 +358,13 @@ export function useTranslationJobSocket(
   const [connectionState, setConnectionState] =
     useState<SocketConnectionState>("idle");
   const [socketError, setSocketError] = useState<string | null>(null);
-  const accessToken = enabled && jobId ? getAccessToken() : null;
+
+  // Subscribe reactively so the effect re-runs when the token is refreshed.
+  const accessToken = useAccessToken();
+  const activeToken = enabled && jobId ? accessToken : null;
 
   useEffect(() => {
-    if (!enabled || !jobId) {
-      return;
-    }
-
-    if (!accessToken) {
+    if (!enabled || !jobId || !activeToken) {
       return;
     }
 
@@ -373,7 +372,7 @@ export function useTranslationJobSocket(
       path: "/ws",
       transports: ["websocket"],
       autoConnect: true,
-      auth: { token: accessToken },
+      auth: { token: activeToken },
     });
 
     const handleConnect = () => {
@@ -398,7 +397,6 @@ export function useTranslationJobSocket(
       if (event.jobId !== jobId) {
         return;
       }
-
       queryClient.setQueryData(translationKeys.detail(jobId), event.job);
     };
 
@@ -414,13 +412,13 @@ export function useTranslationJobSocket(
       socket.off("job:status", handleJobStatus);
       socket.disconnect();
     };
-  }, [accessToken, enabled, jobId, queryClient]);
+  }, [activeToken, enabled, jobId, queryClient]);
 
   if (!enabled || !jobId) {
     return { connectionState: "idle", socketError: null };
   }
 
-  if (!accessToken) {
+  if (!activeToken) {
     return {
       connectionState: "error",
       socketError: "Missing access token for live translation updates",
