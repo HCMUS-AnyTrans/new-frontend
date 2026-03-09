@@ -21,7 +21,10 @@
       "fileReady": "File is ready",
       "next": "Continue",
       "errorUnsupported": "Unsupported file format. Please select a PDF, DOCX, DOC, PPTX, or PPT file.",
-      "errorTooLarge": "File is too large. Maximum size is 10MB."
+      "errorTooLarge": "File is too large. Maximum size is 10MB.",
+      "pipelineUploading": "Uploading",
+      "pipelineConfirming": "Confirming",
+      "pipelineAnalyzing": "Analyzing"
     },
     "configure": {
       "title": "Translation Configuration",

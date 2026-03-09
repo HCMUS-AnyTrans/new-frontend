@@ -19,7 +19,6 @@ import {
   useTranslationJobSocket,
   useTranslationJob,
   useDownloadFile,
-  useEstimateCredits,
 } from "../hooks"
 import { useGlossaries, useTerms } from "@/features/glossary"
 import { useWallet } from "@/features/dashboard/hooks"
@@ -45,6 +44,7 @@ export function DocumentTranslationWizard() {
     flowStatus,
     uploadProgress,
     fileId,
+    estimate,
     jobId,
     error: flowError,
     startUpload,
@@ -96,15 +96,10 @@ export function DocumentTranslationWizard() {
     sortOrder: "asc",
   })
 
-  const {
-    data: estimate,
-    isLoading: isEstimateLoading,
-    isFetching: isEstimateFetching,
-    error: estimateError,
-  } = useEstimateCredits(fileId, {
-    enabled: step === 2 && !!fileId,
-  })
-  const isEstimating = !!fileId && (isEstimateLoading || isEstimateFetching || !estimate)
+  // Estimate is now provided by the upload hook (polled during Step 1 analyzing phase).
+  // It is already available by the time the user reaches Step 2.
+  const isEstimating = false
+  const estimateError = null
 
   // Update flow status when job polling returns a terminal state
   // The wizard tracks "succeeded" / "failed" based on job polling data
@@ -236,7 +231,17 @@ export function DocumentTranslationWizard() {
             onFileRemove={handleFileRemove}
             onDragChange={setIsDragging}
             onNext={handleUploadNext}
-            isUploading={flowStatus === "uploading" || flowStatus === "confirming"}
+            pipelineStatus={
+              flowStatus === "uploading"
+                ? "uploading"
+                : flowStatus === "confirming"
+                  ? "confirming"
+                  : flowStatus === "analyzing"
+                    ? "analyzing"
+                    : flowStatus === "failed"
+                      ? "failed"
+                      : "idle"
+            }
             uploadProgress={uploadProgress}
             uploadError={flowError}
           />
@@ -250,13 +255,9 @@ export function DocumentTranslationWizard() {
             selectedGlossaryTerms={selectedGlossaryTerms}
             isLoadingGlossaries={isLoadingGlossaries || isFetchingGlossaries}
             isLoadingGlossaryTerms={isLoadingGlossaryTerms || isFetchingGlossaryTerms}
-            estimate={estimate}
+            estimate={estimate ?? undefined}
             isEstimating={isEstimating}
-            estimateError={
-              !isEstimating && estimateError && typeof estimateError === "object" && "message" in estimateError
-                ? String(estimateError.message)
-                : null
-            }
+            estimateError={null}
             currentBalance={wallet?.balance}
             isLoadingBalance={isLoadingWallet}
             onBack={handleConfigBack}

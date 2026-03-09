@@ -53,6 +53,8 @@ interface UploadAndTranslateState {
   uploadProgress: number;
   /** The uploaded backend file ID returned after confirming upload */
   fileId: string | null;
+  /** Credit estimate once the file has been analyzed */
+  estimate: CreditEstimateResponse | null;
   /** The job ID returned after creating the translation job */
   jobId: string | null;
   /** Error message if any step fails */
@@ -61,8 +63,10 @@ interface UploadAndTranslateState {
 
 interface UseUploadAndTranslateReturn extends UploadAndTranslateState {
   /**
-   * Start the upload flow: request presigned URL → upload file → confirm upload.
+   * Start the full upload + analyze flow:
+   *   request presigned URL → upload file → confirm → poll estimate credits.
    * Called when user clicks "Continue" in Step 1.
+   * Resolves with the file ID once the estimate is ready (or null on abort).
    */
   startUpload: (file: File) => Promise<string | null>;
   /**
@@ -81,9 +85,47 @@ const initialState: UploadAndTranslateState = {
   flowStatus: 'idle',
   uploadProgress: 0,
   fileId: null,
+  estimate: null,
   jobId: null,
   error: null,
 };
+
+const ESTIMATE_POLL_INTERVAL = 3000;
+const ESTIMATE_MAX_ATTEMPTS = 40; // ~2 minutes
+
+/**
+ * Poll estimate-credits until the backend has finished parsing the file and
+ * can return a valid estimate. Retries on any error (backend returns 400/500
+ * while the file is still in "parsing" state) up to MAX_ATTEMPTS.
+ */
+async function pollEstimateCredits(
+  fileId: string,
+  abortRef: React.RefObject<boolean>,
+): Promise<CreditEstimateResponse> {
+  for (let attempt = 0; attempt < ESTIMATE_MAX_ATTEMPTS; attempt++) {
+    if (abortRef.current) {
+      throw new Error('Aborted');
+    }
+
+    try {
+      const result = await estimateTranslationCredits({
+        job_type: 'doc-trans',
+        file_id: fileId,
+      });
+      // Success — backend has parsed metadata and returned a valid estimate
+      return result;
+    } catch {
+      // Backend is not ready yet (file still parsing). Wait and retry.
+      if (attempt < ESTIMATE_MAX_ATTEMPTS - 1) {
+        await new Promise((resolve) => setTimeout(resolve, ESTIMATE_POLL_INTERVAL));
+      }
+    }
+  }
+
+  throw new Error(
+    'Document analysis timed out. Please try again or upload a different file.',
+  );
+}
 
 /**
  * Build the CreateTranslationJobDto from frontend config + fileId.
@@ -149,10 +191,12 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
         flowStatus: 'uploading',
         uploadProgress: 0,
         fileId: null,
+        estimate: null,
         jobId: null,
         error: null,
       }));
 
+      // --- Phase 1: request presigned URL ---
       const uploadResponse = await requestDocUploadUrl({
         file_name: file.name,
         mime_type: file.type,
@@ -162,43 +206,51 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
 
       uploadFileId = uploadResponse.file_id;
 
-      if (abortRef.current) {
-        return null;
-      }
+      if (abortRef.current) return null;
 
+      // --- Phase 2: upload to storage ---
       await uploadFileToPresignedUrl(uploadResponse.upload_url, file, (percent) => {
         if (!abortRef.current) {
           setState((prev) => ({ ...prev, uploadProgress: percent }));
         }
       });
 
-      if (abortRef.current) {
-        return null;
-      }
+      if (abortRef.current) return null;
 
+      // --- Phase 3: confirm upload ---
       setState((prev) => ({ ...prev, flowStatus: 'confirming' }));
 
       await confirmFileUpload(uploadResponse.file_id, {
         status: 'uploaded',
       });
 
-      if (abortRef.current) {
-        return null;
-      }
+      if (abortRef.current) return null;
+
+      // --- Phase 4: poll estimate credits until backend has parsed metadata ---
+      setState((prev) => ({
+        ...prev,
+        flowStatus: 'analyzing',
+        uploadProgress: 100,
+        fileId: uploadResponse.file_id,
+      }));
+
+      const estimateResult = await pollEstimateCredits(
+        uploadResponse.file_id,
+        abortRef,
+      );
+
+      if (abortRef.current) return null;
 
       setState((prev) => ({
         ...prev,
         flowStatus: 'idle',
-        uploadProgress: 100,
-        fileId: uploadResponse.file_id,
+        estimate: estimateResult,
         error: null,
       }));
 
       return uploadResponse.file_id;
     } catch (err: unknown) {
-      if (abortRef.current) {
-        return null;
-      }
+      if (abortRef.current) return null;
 
       if (uploadFileId) {
         try {
@@ -215,6 +267,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
         flowStatus: 'failed',
         uploadProgress: 0,
         fileId: null,
+        estimate: null,
         error: errorMessage,
       }));
 
@@ -403,35 +456,6 @@ export function useTranslationJob(
   });
 
   return query;
-}
-
-interface UseEstimateCreditsOptions {
-  enabled?: boolean;
-}
-
-export function useEstimateCredits(
-  fileId: string | null,
-  options: UseEstimateCreditsOptions = {}
-) {
-  const { enabled = true } = options;
-
-  return useQuery<CreditEstimateResponse>({
-    queryKey: ['translations', 'estimate-credits', fileId],
-    queryFn: () =>
-      estimateTranslationCredits({
-        job_type: 'doc-trans',
-        file_id: fileId!,
-      }),
-    enabled: enabled && fileId !== null,
-    retry: false,
-    refetchInterval: (query) => {
-      if (query.state.data) {
-        return false;
-      }
-      return 3000;
-    },
-    staleTime: 30 * 1000,
-  });
 }
 
 // ============================================================================

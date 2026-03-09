@@ -21,7 +21,10 @@
       "fileReady": "Tệp đã sẵn sàng",
       "next": "Tiếp tục",
       "errorUnsupported": "Định dạng file không được hỗ trợ. Vui lòng chọn file PDF, DOCX, DOC, PPTX hoặc PPT.",
-      "errorTooLarge": "File quá lớn. Kích thước tối đa là 10MB."
+      "errorTooLarge": "File quá lớn. Kích thước tối đa là 10MB.",
+      "pipelineUploading": "Đang tải lên",
+      "pipelineConfirming": "Đang xác nhận",
+      "pipelineAnalyzing": "Đang phân tích"
     },
     "configure": {
       "title": "Cấu hình dịch thuật",

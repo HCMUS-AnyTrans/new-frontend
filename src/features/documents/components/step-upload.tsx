@@ -13,6 +13,9 @@ import {
   HardDrive,
   ShieldCheck,
   Loader2,
+  CheckCircle2,
+  CloudUpload,
+  ScanSearch,
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { AppCard, AppCardContent } from "@/components/ui/app-card"
@@ -20,6 +23,8 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
 import { ALLOWED_EXTENSIONS, type UploadedFile } from "../types"
+
+type UploadPipelineStatus = "idle" | "uploading" | "confirming" | "analyzing" | "failed"
 
 interface StepUploadProps {
   file: UploadedFile | null
@@ -29,7 +34,8 @@ interface StepUploadProps {
   onFileRemove: () => void
   onDragChange: (dragging: boolean) => void
   onNext: () => void
-  isUploading?: boolean
+  /** Current pipeline status for the upload flow */
+  pipelineStatus?: UploadPipelineStatus
   uploadProgress?: number
   uploadError?: string | null
 }
@@ -47,6 +53,29 @@ function getFileIcon(fileName: string) {
   return <File className="size-12 text-primary" />
 }
 
+// Pipeline step definitions for the progress indicator
+const PIPELINE_STEPS = [
+  { key: "uploading", icon: CloudUpload },
+  { key: "confirming", icon: CheckCircle2 },
+  { key: "analyzing", icon: ScanSearch },
+] as const
+
+type PipelineStepKey = (typeof PIPELINE_STEPS)[number]["key"]
+
+function getPipelineStepState(
+  stepKey: PipelineStepKey,
+  currentStatus: UploadPipelineStatus
+): "pending" | "active" | "done" {
+  const order: PipelineStepKey[] = ["uploading", "confirming", "analyzing"]
+  const currentIdx = order.indexOf(currentStatus as PipelineStepKey)
+  const stepIdx = order.indexOf(stepKey)
+
+  if (currentIdx < 0) return "pending" // idle or failed
+  if (stepIdx < currentIdx) return "done"
+  if (stepIdx === currentIdx) return "active"
+  return "pending"
+}
+
 export function StepUpload({
   file,
   error,
@@ -55,22 +84,24 @@ export function StepUpload({
   onFileRemove,
   onDragChange,
   onNext,
-  isUploading = false,
+  pipelineStatus = "idle",
   uploadProgress = 0,
   uploadError,
 }: StepUploadProps) {
   const t = useTranslations("documents.upload")
   const inputRef = useRef<HTMLInputElement>(null)
 
+  const isBusy = pipelineStatus !== "idle" && pipelineStatus !== "failed"
+
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault()
-      if (isUploading) return
+      if (isBusy) return
       onDragChange(false)
       const droppedFile = e.dataTransfer.files[0]
       if (droppedFile) onFileSelect(droppedFile)
     },
-    [isUploading, onFileSelect, onDragChange]
+    [isBusy, onFileSelect, onDragChange]
   )
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -95,11 +126,11 @@ export function StepUpload({
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (isUploading) return
+      if (isBusy) return
       const selectedFile = e.target.files?.[0]
       if (selectedFile) onFileSelect(selectedFile)
     },
-    [isUploading, onFileSelect]
+    [isBusy, onFileSelect]
   )
 
   const handleRemove = useCallback(() => {
@@ -111,9 +142,9 @@ export function StepUpload({
   const displayError = error || uploadError
 
   const openPicker = useCallback(() => {
-    if (isUploading) return
+    if (isBusy) return
     inputRef.current?.click()
-  }, [isUploading])
+  }, [isBusy])
 
   const handleDropzoneKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -124,6 +155,13 @@ export function StepUpload({
     },
     [openPicker]
   )
+
+  // Pipeline step labels
+  const pipelineLabels: Record<PipelineStepKey, string> = {
+    uploading: t("pipelineUploading", { defaultMessage: "Uploading" }),
+    confirming: t("pipelineConfirming", { defaultMessage: "Confirming" }),
+    analyzing: t("pipelineAnalyzing", { defaultMessage: "Analyzing" }),
+  }
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -144,14 +182,14 @@ export function StepUpload({
           {!file ? (
             <div
                 role="button"
-                tabIndex={isUploading ? -1 : 0}
+                tabIndex={isBusy ? -1 : 0}
                 onClick={openPicker}
                 onKeyDown={handleDropzoneKeyDown}
                 className={cn(
                   "relative p-8 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:p-10",
-                  isUploading ? "cursor-not-allowed opacity-80" : "cursor-pointer"
+                  isBusy ? "cursor-not-allowed opacity-80" : "cursor-pointer"
                 )}
-                aria-disabled={isUploading}
+                aria-disabled={isBusy}
               >
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.10),transparent_55%)]" />
               <div className="relative flex flex-col items-center text-center">
@@ -188,7 +226,7 @@ export function StepUpload({
                       e.stopPropagation()
                       openPicker()
                     }}
-                    disabled={isUploading}
+                    disabled={isBusy}
                   >
                     <Upload className="size-4" />
                     {t("browse")}
@@ -225,13 +263,13 @@ export function StepUpload({
                        variant="ghost"
                        size="icon-sm"
                        onClick={handleRemove}
-                       disabled={isUploading}
+                       disabled={isBusy}
                        className="shrink-0 text-muted-foreground hover:text-destructive"
                      >
                        <X className="size-4" />
                     </Button>
                   </div>
-                  {!error && (
+                  {!error && pipelineStatus === "idle" && (
                     <div className="mt-2 flex items-center gap-2 text-success">
                       <Check className="size-4" />
                       <span className="text-sm font-medium">{t("fileReady")}</span>
@@ -239,22 +277,61 @@ export function StepUpload({
                   )}
 
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Button type="button" variant="secondary" size="sm" onClick={openPicker} disabled={isUploading}>
+                    <Button type="button" variant="secondary" size="sm" onClick={openPicker} disabled={isBusy}>
                       <Upload className="size-3.5" />
                       {t("replaceFile")}
                     </Button>
                   </div>
 
-                  {isUploading ? (
-                    <div className="mt-4 space-y-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
-                      <div className="flex items-center gap-2 text-sm font-medium text-primary">
-                        <Loader2 className="size-4 animate-spin" />
-                        <span>{t("next")}</span>
+                  {/* Pipeline progress indicator */}
+                  {isBusy && (
+                    <div className="mt-4 space-y-3 rounded-lg border border-primary/20 bg-primary/5 p-4">
+                      {/* Upload progress bar (only during uploading phase) */}
+                      {pipelineStatus === "uploading" && (
+                        <div className="space-y-1.5">
+                          <Progress value={uploadProgress} className="h-2" />
+                          <p className="text-right text-xs text-muted-foreground">{uploadProgress}%</p>
+                        </div>
+                      )}
+
+                      {/* Pipeline steps */}
+                      <div className="flex items-center gap-1">
+                        {PIPELINE_STEPS.map((step, idx) => {
+                          const stepState = getPipelineStepState(step.key, pipelineStatus)
+                          const Icon = step.icon
+                          return (
+                            <div key={step.key} className="flex items-center gap-1">
+                              {idx > 0 && (
+                                <div
+                                  className={cn(
+                                    "h-px w-4 sm:w-6",
+                                    stepState === "pending" ? "bg-border" : "bg-primary/40"
+                                  )}
+                                />
+                              )}
+                              <div
+                                className={cn(
+                                  "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
+                                  stepState === "done" && "bg-primary/10 text-primary",
+                                  stepState === "active" && "bg-primary/15 text-primary",
+                                  stepState === "pending" && "bg-muted text-muted-foreground"
+                                )}
+                              >
+                                {stepState === "done" ? (
+                                  <CheckCircle2 className="size-3.5" />
+                                ) : stepState === "active" ? (
+                                  <Loader2 className="size-3.5 animate-spin" />
+                                ) : (
+                                  <Icon className="size-3.5" />
+                                )}
+                                <span className="hidden sm:inline">{pipelineLabels[step.key]}</span>
+                              </div>
+                            </div>
+                          )
+                        })}
                       </div>
-                      <Progress value={uploadProgress} className="h-2" />
-                      <p className="text-xs text-muted-foreground">{uploadProgress}%</p>
                     </div>
-                  ) : null}
+                  )}
                 </div>
               </div>
             </div>
@@ -272,13 +349,13 @@ export function StepUpload({
 
       {/* Next button */}
       <div className="mt-8 flex justify-end">
-        <Button onClick={onNext} disabled={!isValid || isUploading} size="lg">
-              {isUploading ? (
-                <>
-                  <Loader2 className="size-4 animate-spin" />
-                  {t("next")}
-                </>
-              ) : (
+        <Button onClick={onNext} disabled={!isValid || isBusy} size="lg">
+          {isBusy ? (
+            <>
+              <Loader2 className="size-4 animate-spin" />
+              {t("next")}
+            </>
+          ) : (
             t("next")
           )}
         </Button>
@@ -290,7 +367,7 @@ export function StepUpload({
         type="file"
         accept={ALLOWED_EXTENSIONS.join(",")}
         onChange={handleInputChange}
-        disabled={isUploading}
+        disabled={isBusy}
         className="hidden"
       />
     </div>

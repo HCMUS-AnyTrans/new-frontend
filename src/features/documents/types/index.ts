@@ -190,12 +190,16 @@ export interface FileDownloadUrlResponse {
 
 /**
  * Tracks the multi-step upload + translation flow:
- * idle → uploading → confirming → creating → translating → succeeded/failed
+ * idle → uploading → confirming → analyzing → creating → translating → succeeded/failed
+ *
+ * "analyzing" means the file was uploaded and confirmed; the backend is now
+ * parsing metadata and we are polling estimate-credits until it succeeds.
  */
 export type TranslationFlowStatus =
   | "idle"
   | "uploading"
   | "confirming"
+  | "analyzing"
   | "creating"
   | "translating"
   | "succeeded"
