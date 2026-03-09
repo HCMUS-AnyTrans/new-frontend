@@ -23,7 +23,7 @@ import {
 } from "../hooks"
 import { useGlossaries, useTerms } from "@/features/glossary"
 import { useWallet } from "@/features/dashboard/hooks"
-import { translationKeys } from "@/lib/query-client"
+import { translationKeys, walletKeys } from "@/lib/query-client"
 
 // =============== MAIN COMPONENT ===============
 
@@ -113,11 +113,12 @@ export function DocumentTranslationWizard() {
         ? "failed"
         : flowStatus
 
-  // When job reaches a terminal state, refresh history / recent jobs lists
+  // When job reaches a terminal state, refresh history / recent jobs lists + wallet credits
   useEffect(() => {
     if (!jobData) return
     if (jobData.status === "succeeded" || jobData.status === "failed") {
       queryClient.invalidateQueries({ queryKey: translationKeys.all })
+      queryClient.invalidateQueries({ queryKey: walletKeys.all })
     }
   }, [jobData, queryClient])
 
