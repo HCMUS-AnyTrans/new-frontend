@@ -1,22 +1,22 @@
-import type { LucideIcon } from "lucide-react"
+import type { LucideIcon } from 'lucide-react';
 
 // =============== LANGUAGE TYPES ===============
 
 export type LanguageCode =
-  | "en"
-  | "vi"
-  | "ja"
-  | "ko"
-  | "zh"
-  | "fr"
-  | "de"
-  | "es"
+  | 'en'
+  | 'vi'
+  | 'ja'
+  | 'ko'
+  | 'zh'
+  | 'fr'
+  | 'de'
+  | 'es';
 
 export interface Language {
-  code: LanguageCode
-  name: string
+  code: LanguageCode;
+  name: string;
   /** Full language name used by the backend API (e.g. "English", "Vietnamese") */
-  apiName: string
+  apiName: string;
 }
 
 /**
@@ -24,66 +24,66 @@ export interface Language {
  * Backend uses full names like "English", "Vietnamese" — NOT codes like "en", "vi".
  */
 export const LANGUAGE_CODE_TO_API_NAME: Record<LanguageCode, string> = {
-  en: "English",
-  vi: "Vietnamese",
-  ja: "Japanese",
-  ko: "Korean",
-  zh: "Chinese",
-  fr: "French",
-  de: "German",
-  es: "Spanish",
-}
+  en: 'English',
+  vi: 'Vietnamese',
+  ja: 'Japanese',
+  ko: 'Korean',
+  zh: 'Chinese',
+  fr: 'French',
+  de: 'German',
+  es: 'Spanish',
+};
 
 // =============== DOMAIN TYPES ===============
 
 export interface Domain {
-  id: string
-  name: string
-  icon: LucideIcon
+  id: string;
+  name: string;
+  icon: LucideIcon;
 }
 
 // =============== TONE TYPES ===============
 
 export interface Tone {
-  id: string
-  name: string
-  description: string
+  id: string;
+  name: string;
+  description: string;
 }
 
 // =============== GLOSSARY TYPES ===============
 
 export interface GlossaryTerm {
-  src: string
-  tgt: string
+  src: string;
+  tgt: string;
 }
 
 export interface ManualTerm {
-  id: string
-  src: string
-  tgt: string
+  id: string;
+  src: string;
+  tgt: string;
 }
 
 // =============== FILE TYPES ===============
 
 export interface UploadedFile {
-  name: string
-  size: number
-  type: string
-  charCount: number
-  file: File
+  name: string;
+  size: number;
+  type: string;
+  charCount: number;
+  file: File;
 }
 
 export const ALLOWED_FILE_TYPES = [
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.ms-powerpoint",
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-] as const
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+] as const;
 
-export const ALLOWED_EXTENSIONS = [".pdf", ".docx", ".doc", ".pptx", ".ppt"]
+export const ALLOWED_EXTENSIONS = ['.pdf', '.docx', '.doc', '.pptx', '.ppt'];
 
-export const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
+export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 // =============== JOB TYPES ===============
 
@@ -91,99 +91,99 @@ export const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
  * Job status values aligned with backend.
  * Backend uses: "pending" | "processing" | "succeeded" | "failed"
  */
-export type JobStatus = "pending" | "processing" | "succeeded" | "failed"
+export type JobStatus = 'pending' | 'processing' | 'succeeded' | 'failed';
 
 // =============== API REQUEST/RESPONSE TYPES ===============
 
 /** POST /files/upload/doc — request body */
 export interface RequestUploadUrlDto {
-  file_name: string
-  mime_type: string
-  file_size: number
-  file_type: "doc" | "sub"
-  sha256?: string
+  file_name: string;
+  mime_type: string;
+  file_size: number;
+  file_type: 'doc' | 'sub';
+  sha256?: string;
 }
 
 /** POST /files/upload/doc — response */
 export interface UploadUrlResponse {
-  upload_url: string
-  file_id: string
-  storage_key: string
-  expires_in: number
+  upload_url: string;
+  file_id: string;
+  storage_key: string;
+  expires_in: number;
 }
 
 /** PATCH /files/:file_id/status — request body */
 export interface UpdateFileStatusDto {
-  status: "uploaded" | "failed"
+  status: 'uploaded' | 'failed';
 }
 
 /** File metadata from backend */
 export interface FileResponse {
-  id: string
-  name: string
-  mime: string
-  size_bytes: number
-  sha256: string | null
-  status: string
-  type: string
-  created_at: string
-  store_until: string
+  id: string;
+  name: string;
+  mime: string;
+  size_bytes: number;
+  sha256: string | null;
+  status: string;
+  type: string;
+  created_at: string;
+  store_until: string;
   metadata?: {
-    charCount: number
-    language?: string
-  } | null
-  is_expired: boolean
+    charCount: number;
+    language?: string;
+  } | null;
+  is_expired: boolean;
 }
 
 export interface CreditEstimateDto {
-  job_type: "doc-trans" | "sub-trans"
-  file_id: string
+  job_type: 'doc-trans' | 'sub-trans';
+  file_id: string;
 }
 
 export interface CreditEstimateItem {
-  code: string
-  name: string
-  unit: string
-  quantity: number
-  price: number
-  credits: number
+  code: string;
+  name: string;
+  unit: string;
+  quantity: number;
+  price: number;
+  credits: number;
 }
 
 export interface CreditEstimateResponse {
-  totalCredits: number
-  breakdown: CreditEstimateItem[]
+  totalCredits: number;
+  breakdown: CreditEstimateItem[];
 }
 
 /** POST /translations/doc — request body */
 export interface CreateTranslationJobDto {
-  file_id: string
-  src_lang: string
-  tgt_lang: string
-  doc_tone?: string
-  doc_domain?: string
-  user_glossary?: { src_lang: string; tgt_lang: string }[]
-  keep_original_font_size?: boolean
-  keep_original_fonts?: boolean
-  pdf_output_format?: "docx" | "pptx"
+  file_id: string;
+  src_lang: string;
+  tgt_lang: string;
+  doc_tone?: string;
+  doc_domain?: string;
+  user_glossary?: { src_lang: string; tgt_lang: string }[];
+  keep_original_font_size?: boolean;
+  keep_original_fonts?: boolean;
+  pdf_output_format?: 'docx' | 'pptx';
 }
 
 /** GET /translations/:job_id — response */
 export interface TranslationJobResponse {
-  job_id: string
-  job_type: string
-  status: JobStatus
-  input_file?: FileResponse
-  output_file?: FileResponse
-  src_lang?: string
-  tgt_lang?: string
-  error?: string
-  created_at?: string
-  completed_at?: string
+  job_id: string;
+  job_type: string;
+  status: JobStatus;
+  input_file?: FileResponse;
+  output_file?: FileResponse;
+  src_lang?: string;
+  tgt_lang?: string;
+  error?: string;
+  created_at?: string;
+  completed_at?: string;
 }
 
 /** GET /files/:file_id/download — response */
 export interface FileDownloadUrlResponse {
-  download_url: string
+  download_url: string;
 }
 
 // =============== UPLOAD FLOW STATE ===============
@@ -196,26 +196,26 @@ export interface FileDownloadUrlResponse {
  * parsing metadata and we are polling estimate-credits until it succeeds.
  */
 export type TranslationFlowStatus =
-  | "idle"
-  | "uploading"
-  | "confirming"
-  | "analyzing"
-  | "creating"
-  | "translating"
-  | "succeeded"
-  | "failed"
+  | 'idle'
+  | 'uploading'
+  | 'confirming'
+  | 'analyzing'
+  | 'creating'
+  | 'translating'
+  | 'succeeded'
+  | 'failed';
 
 // =============== CONFIG TYPES ===============
 
 export interface TranslationConfig {
-  srcLang: LanguageCode
-  tgtLang: LanguageCode
-  domain: string
-  tone: string
-  selectedGlossaryId: string | null
-  manualTerms: ManualTerm[]
+  srcLang: LanguageCode;
+  tgtLang: LanguageCode;
+  domain: string;
+  tone: string;
+  selectedGlossaryId: string | null;
+  manualTerms: ManualTerm[];
 }
 
 // =============== STEP TYPES ===============
 
-export type TranslationStep = 1 | 2 | 3
+export type TranslationStep = 1 | 2 | 3;

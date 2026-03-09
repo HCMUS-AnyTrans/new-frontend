@@ -23,7 +23,12 @@ import type {
 } from '../types';
 import { LANGUAGE_CODE_TO_API_NAME } from '../types';
 
-type SocketConnectionState = 'idle' | 'connecting' | 'connected' | 'disconnected' | 'error';
+type SocketConnectionState =
+  | 'idle'
+  | 'connecting'
+  | 'connected'
+  | 'disconnected'
+  | 'error';
 
 interface JobStatusSocketEvent {
   jobId: string;
@@ -75,7 +80,7 @@ interface UseUploadAndTranslateReturn extends UploadAndTranslateState {
    */
   startTranslation: (
     config: TranslationConfig,
-    glossaryTerms?: Array<{ srcTerm: string; tgtTerm: string }>
+    glossaryTerms?: Array<{ srcTerm: string; tgtTerm: string }>,
   ) => Promise<void>;
   /** Reset the flow state back to idle */
   reset: () => void;
@@ -117,7 +122,9 @@ async function pollEstimateCredits(
     } catch {
       // Backend is not ready yet (file still parsing). Wait and retry.
       if (attempt < ESTIMATE_MAX_ATTEMPTS - 1) {
-        await new Promise((resolve) => setTimeout(resolve, ESTIMATE_POLL_INTERVAL));
+        await new Promise((resolve) =>
+          setTimeout(resolve, ESTIMATE_POLL_INTERVAL),
+        );
       }
     }
   }
@@ -134,14 +141,15 @@ async function pollEstimateCredits(
 function buildJobDto(
   fileId: string,
   config: TranslationConfig,
-  glossaryTerms: Array<{ srcTerm: string; tgtTerm: string }> = []
+  glossaryTerms: Array<{ srcTerm: string; tgtTerm: string }> = [],
 ): CreateTranslationJobDto {
   const dto: CreateTranslationJobDto = {
     file_id: fileId,
     src_lang: LANGUAGE_CODE_TO_API_NAME[config.srcLang],
     tgt_lang: LANGUAGE_CODE_TO_API_NAME[config.tgtLang],
     doc_tone: config.tone || undefined,
-    doc_domain: config.domain === 'auto' ? undefined : config.domain || undefined,
+    doc_domain:
+      config.domain === 'auto' ? undefined : config.domain || undefined,
   };
 
   // Merge selected glossary terms + manual terms and remove duplicate source terms.
@@ -209,11 +217,15 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
       if (abortRef.current) return null;
 
       // --- Phase 2: upload to storage ---
-      await uploadFileToPresignedUrl(uploadResponse.upload_url, file, (percent) => {
-        if (!abortRef.current) {
-          setState((prev) => ({ ...prev, uploadProgress: percent }));
-        }
-      });
+      await uploadFileToPresignedUrl(
+        uploadResponse.upload_url,
+        file,
+        (percent) => {
+          if (!abortRef.current) {
+            setState((prev) => ({ ...prev, uploadProgress: percent }));
+          }
+        },
+      );
 
       if (abortRef.current) return null;
 
@@ -278,12 +290,13 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
   const startTranslation = useCallback(
     async (
       config: TranslationConfig,
-      glossaryTerms: Array<{ srcTerm: string; tgtTerm: string }> = []
+      glossaryTerms: Array<{ srcTerm: string; tgtTerm: string }> = [],
     ) => {
       abortRef.current = false;
 
       if (!state.fileId) {
-        const errorMessage = 'Please upload a document before starting translation';
+        const errorMessage =
+          'Please upload a document before starting translation';
         setState((prev) => ({
           ...prev,
           flowStatus: 'failed',
@@ -321,7 +334,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
         }));
       }
     },
-    [state.fileId]
+    [state.fileId],
   );
 
   return {
@@ -338,11 +351,12 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
 
 export function useTranslationJobSocket(
   jobId: string | null,
-  options: { enabled?: boolean } = {}
+  options: { enabled?: boolean } = {},
 ): UseTranslationJobSocketResult {
   const { enabled = true } = options;
   const queryClient = useQueryClient();
-  const [connectionState, setConnectionState] = useState<SocketConnectionState>('idle');
+  const [connectionState, setConnectionState] =
+    useState<SocketConnectionState>('idle');
   const [socketError, setSocketError] = useState<string | null>(null);
   const accessToken = enabled && jobId ? getAccessToken() : null;
 
@@ -385,10 +399,7 @@ export function useTranslationJobSocket(
         return;
       }
 
-      queryClient.setQueryData(
-        translationKeys.detail(jobId),
-        event.job,
-      );
+      queryClient.setQueryData(translationKeys.detail(jobId), event.job);
     };
 
     socket.on('connect', handleConnect);
@@ -417,7 +428,8 @@ export function useTranslationJobSocket(
   }
 
   return {
-    connectionState: connectionState === 'idle' ? 'connecting' : connectionState,
+    connectionState:
+      connectionState === 'idle' ? 'connecting' : connectionState,
     socketError,
   };
 }
@@ -431,7 +443,7 @@ interface UseTranslationJobOptions {
 
 export function useTranslationJob(
   jobId: string | null,
-  options: UseTranslationJobOptions = {}
+  options: UseTranslationJobOptions = {},
 ) {
   const { pollInterval = 3000, enabled = true } = options;
 
@@ -480,43 +492,40 @@ export function useDownloadFile(): UseDownloadFileReturn {
     };
   }, []);
 
-  const download = useCallback(
-    async (fileId: string, fileName?: string) => {
-      setIsDownloading(true);
-      setError(null);
+  const download = useCallback(async (fileId: string, fileName?: string) => {
+    setIsDownloading(true);
+    setError(null);
 
-      try {
-        const { download_url } = await getFileDownloadUrl(fileId);
+    try {
+      const { download_url } = await getFileDownloadUrl(fileId);
 
-        // Trigger browser download via invisible anchor
-        const a = document.createElement('a');
-        a.href = download_url;
-        a.download = fileName || '';
-        // For cross-origin presigned URLs, we need target=_blank
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      } catch (err: unknown) {
-        if (!mountedRef.current) return;
-        const errorMessage = extractErrorMessage(err, 'Download failed');
-        setError(errorMessage);
-      } finally {
-        if (mountedRef.current) {
-          setIsDownloading(false);
-        }
+      // Trigger browser download via invisible anchor
+      const a = document.createElement('a');
+      a.href = download_url;
+      a.download = fileName || '';
+      // For cross-origin presigned URLs, we need target=_blank
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err: unknown) {
+      if (!mountedRef.current) return;
+      const errorMessage = extractErrorMessage(err, 'Download failed');
+      setError(errorMessage);
+    } finally {
+      if (mountedRef.current) {
+        setIsDownloading(false);
       }
-    },
-    []
-  );
+    }
+  }, []);
 
   return { download, isDownloading, error };
 }
 
 function extractErrorMessage(
   err: unknown,
-  fallback = 'An unexpected error occurred'
+  fallback = 'An unexpected error occurred',
 ): string {
   if (!err || typeof err !== 'object') return fallback;
 

@@ -63,7 +63,8 @@ export function useUnlinkIdentity() {
  * The frontend must build the full URL using the API base URL and navigate via window.location.href.
  */
 export function useLinkIdentity() {
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
   const mutation = useMutation({
     mutationFn: (provider: string) =>

@@ -7,7 +7,7 @@ export {
   StepConfigure,
   StepReview,
   DocumentTranslationWizard,
-} from "./components"
+} from './components';
 
 // Types
 export type {
@@ -32,9 +32,9 @@ export type {
   CreateTranslationJobDto,
   TranslationJobResponse,
   FileDownloadUrlResponse,
-} from "./types"
+} from './types';
 
-export { LANGUAGE_CODE_TO_API_NAME } from "./types"
+export { LANGUAGE_CODE_TO_API_NAME } from './types';
 
 // Data
 export {
@@ -44,7 +44,7 @@ export {
   domains,
   tones,
   defaultConfig,
-} from "./data"
+} from './data';
 
 // Hooks
 export {
@@ -52,4 +52,4 @@ export {
   useTranslationJobSocket,
   useTranslationJob,
   useDownloadFile,
-} from "./hooks"
+} from './hooks';

@@ -68,27 +68,29 @@ export const glossaryLanguages: LanguageOption[] = [
 // VALIDATION SCHEMAS — Glossary
 // ============================================================================
 
-export const createGlossarySchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Vui lòng nhập tên bảng thuật ngữ')
-    .max(200, 'Tên không được vượt quá 200 ký tự'),
-  domain: z
-    .string()
-    .min(1, 'Vui lòng chọn lĩnh vực')
-    .max(100, 'Lĩnh vực không được vượt quá 100 ký tự'),
-  srcLang: z
-    .string()
-    .min(1, 'Vui lòng chọn ngôn ngữ nguồn')
-    .max(10, 'Mã ngôn ngữ không hợp lệ'),
-  tgtLang: z
-    .string()
-    .min(1, 'Vui lòng chọn ngôn ngữ đích')
-    .max(10, 'Mã ngôn ngữ không hợp lệ'),
-}).refine((data) => data.srcLang !== data.tgtLang, {
-  message: 'Ngôn ngữ nguồn và ngôn ngữ đích phải khác nhau',
-  path: ['tgtLang'],
-});
+export const createGlossarySchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, 'Vui lòng nhập tên bảng thuật ngữ')
+      .max(200, 'Tên không được vượt quá 200 ký tự'),
+    domain: z
+      .string()
+      .min(1, 'Vui lòng chọn lĩnh vực')
+      .max(100, 'Lĩnh vực không được vượt quá 100 ký tự'),
+    srcLang: z
+      .string()
+      .min(1, 'Vui lòng chọn ngôn ngữ nguồn')
+      .max(10, 'Mã ngôn ngữ không hợp lệ'),
+    tgtLang: z
+      .string()
+      .min(1, 'Vui lòng chọn ngôn ngữ đích')
+      .max(10, 'Mã ngôn ngữ không hợp lệ'),
+  })
+  .refine((data) => data.srcLang !== data.tgtLang, {
+    message: 'Ngôn ngữ nguồn và ngôn ngữ đích phải khác nhau',
+    path: ['tgtLang'],
+  });
 
 export type CreateGlossaryFormValues = z.infer<typeof createGlossarySchema>;
 

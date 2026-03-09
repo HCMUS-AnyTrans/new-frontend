@@ -1,6 +1,6 @@
-import { defineRouting } from "next-intl/routing";
+import { defineRouting } from 'next-intl/routing';
 
-export const locales = ["vi", "en"] as const;
+export const locales = ['vi', 'en'] as const;
 export type Locale = (typeof locales)[number];
 
 export const routing = defineRouting({
@@ -8,9 +8,9 @@ export const routing = defineRouting({
   locales,
 
   // Used when no locale matches
-  defaultLocale: "vi",
+  defaultLocale: 'vi',
 
   // Locale prefix strategy: 'always' | 'as-needed' | 'never'
   // 'as-needed' - default locale doesn't have prefix, others do
-  localePrefix: "as-needed",
+  localePrefix: 'as-needed',
 });

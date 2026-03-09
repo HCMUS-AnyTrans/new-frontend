@@ -46,7 +46,8 @@ export function useHistoryJobs() {
 
   const jobs = jobsData?.data ?? [];
   const meta = jobsData?.meta;
-  const hasFilters = !!search || statusFilter !== 'all' || domainFilter !== 'all';
+  const hasFilters =
+    !!search || statusFilter !== 'all' || domainFilter !== 'all';
 
   return {
     // Data
