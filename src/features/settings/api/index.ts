@@ -30,6 +30,7 @@ export {
   getFilesApi,
   getFileDownloadApi,
   deleteFileApi,
+  deleteFilesByJobApi,
   getStorageUsageApi,
   // Activity
   getActivityApi,

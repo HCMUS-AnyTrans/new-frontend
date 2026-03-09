@@ -5,9 +5,10 @@ import {
   getFilesApi,
   getFileDownloadApi,
   deleteFileApi,
+  deleteFilesByJobApi,
   getStorageUsageApi,
 } from '../api/settings.api';
-import { fileKeys, dashboardKeys } from '@/lib/query-client';
+import { fileKeys, dashboardKeys, translationKeys } from '@/lib/query-client';
 import { useAuthStore } from '@/features/auth';
 import type { FilesQuery } from '../types';
 
@@ -72,6 +73,28 @@ export function useDeleteFile() {
 
   return {
     deleteFile: mutation.mutate,
+    isDeleting: mutation.isPending,
+    isError: mutation.isError,
+    error: mutation.error,
+  };
+}
+
+/**
+ * Hook to delete all files (source + result) associated with a translation job
+ */
+export function useDeleteFilesByJob() {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (jobId: string) => deleteFilesByJobApi(jobId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: translationKeys.all });
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.storage() });
+    },
+  });
+
+  return {
+    deleteFilesByJob: mutation.mutate,
     isDeleting: mutation.isPending,
     isError: mutation.isError,
     error: mutation.error,

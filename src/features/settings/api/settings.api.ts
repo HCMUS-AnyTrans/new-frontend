@@ -365,6 +365,14 @@ export async function deleteFileApi(fileId: string): Promise<void> {
 }
 
 /**
+ * Delete both source and result files for a translation job
+ * DELETE /files/by-job/:jobId
+ */
+export async function deleteFilesByJobApi(jobId: string): Promise<void> {
+  await apiClient.delete(`/files/by-job/${jobId}`);
+}
+
+/**
  * Get storage usage
  * GET /dashboard/storage
  */
