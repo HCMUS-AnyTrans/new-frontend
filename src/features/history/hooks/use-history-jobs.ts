@@ -7,12 +7,13 @@ import { ITEMS_PER_PAGE } from '../data';
 
 /**
  * Encapsulates all history page state: search (debounced), status filter,
- * pagination, and the underlying data-fetching via useRecentJobs.
+ * job type filter, pagination, and the underlying data-fetching via useRecentJobs.
  */
 export function useHistoryJobs() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [domainFilter, setDomainFilter] = useState<string>('all');
   const deferredSearch = useDeferredValue(search);
 
   const handleSearchChange = useCallback((value: string) => {
@@ -25,6 +26,11 @@ export function useHistoryJobs() {
     setPage(1);
   }, []);
 
+  const handleDomainChange = useCallback((value: string) => {
+    setDomainFilter(value);
+    setPage(1);
+  }, []);
+
   // Build query params
   const queryParams: RecentJobsQuery = {
     page,
@@ -33,13 +39,14 @@ export function useHistoryJobs() {
     sortOrder: 'desc',
     ...(deferredSearch ? { search: deferredSearch } : {}),
     ...(statusFilter !== 'all' ? { status: statusFilter } : {}),
+    ...(domainFilter !== 'all' ? { domain: domainFilter } : {}),
   };
 
   const { jobsData, isLoading, isError } = useRecentJobs(queryParams);
 
   const jobs = jobsData?.data ?? [];
   const meta = jobsData?.meta;
-  const hasFilters = !!search || statusFilter !== 'all';
+  const hasFilters = !!search || statusFilter !== 'all' || domainFilter !== 'all';
 
   return {
     // Data
@@ -50,10 +57,12 @@ export function useHistoryJobs() {
     // Filter state
     search,
     statusFilter,
+    domainFilter,
     hasFilters,
     // Actions
     handleSearchChange,
     handleStatusChange,
+    handleDomainChange,
     setPage,
   };
 }

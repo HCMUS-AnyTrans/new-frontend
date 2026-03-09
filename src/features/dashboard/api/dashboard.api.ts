@@ -82,12 +82,21 @@ export interface TranslationJobFile {
   name: string;
   mime: string;
   size_bytes: number;
-  sha256: string;
+  sha256: string | null;
   status: string;
   type: string;
   created_at: string;
   store_until: string;
   is_expired: boolean;
+}
+
+export interface PricingBreakdownItem {
+  code: string;
+  name: string;
+  unit: string;
+  price: number;
+  credits: number;
+  quantity: number;
 }
 
 export interface TranslationJobResponse {
@@ -101,6 +110,9 @@ export interface TranslationJobResponse {
   error?: string;
   created_at: string;
   completed_at?: string;
+  cost_credits?: number;
+  pricing_breakdown?: PricingBreakdownItem[];
+  domain?: string;
 }
 
 export interface TranslationJobsListResponse {
@@ -118,8 +130,9 @@ export interface TranslationJobsListResponse {
 export interface RecentJobsQuery {
   page?: number;
   limit?: number;
-  job_type?: string;
+  job_type?: 'document' | 'subtitle';
   status?: string;
+  domain?: string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   search?: string;

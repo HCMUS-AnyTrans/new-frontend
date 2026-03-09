@@ -20,7 +20,8 @@ export function HistoryTableSkeleton({ showFilters = true }: HistoryTableSkeleto
       {showFilters && (
         <div className="mb-6 flex flex-col gap-3 sm:flex-row">
           <Skeleton className="h-10 flex-1" />
-          <Skeleton className="h-10 w-[180px]" />
+          <Skeleton className="h-10 w-[160px]" />
+          <Skeleton className="h-10 w-[160px]" />
         </div>
       )}
 
@@ -30,7 +31,7 @@ export function HistoryTableSkeleton({ showFilters = true }: HistoryTableSkeleto
           <Table>
             <TableHeader className="bg-muted/40">
               <TableRow className="hover:bg-transparent">
-                {Array.from({ length: 7 }).map((_, i) => (
+                {Array.from({ length: 6 }).map((_, i) => (
                   <TableHead key={i}>
                     <Skeleton className="h-4 w-16" />
                   </TableHead>
@@ -40,7 +41,7 @@ export function HistoryTableSkeleton({ showFilters = true }: HistoryTableSkeleto
             <TableBody>
               {Array.from({ length: 5 }).map((_, i) => (
                 <TableRow key={i}>
-                  {Array.from({ length: 7 }).map((_, j) => (
+                  {Array.from({ length: 6 }).map((_, j) => (
                     <TableCell key={j}>
                       <Skeleton className="h-4 w-full" />
                     </TableCell>

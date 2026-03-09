@@ -9,11 +9,14 @@ export interface HistoryFiltersProps {
   onSearchChange: (value: string) => void;
   statusFilter: string;
   onStatusChange: (value: string) => void;
+  domainFilter: string;
+  onDomainChange: (value: string) => void;
 }
 
 export interface HistoryTableProps {
   jobs: TranslationJobResponse[];
   locale: string;
+  onViewDetails: (job: TranslationJobResponse) => void;
 }
 
 export interface HistoryPaginationProps {
@@ -30,4 +33,11 @@ export interface HistoryPaginationProps {
 
 export interface HistoryEmptyStateProps {
   hasFilters: boolean;
+}
+
+export interface HistoryJobDetailProps {
+  job: TranslationJobResponse | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  locale: string;
 }

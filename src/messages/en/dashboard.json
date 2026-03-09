@@ -112,12 +112,39 @@
       "searchPlaceholder": "Search by file name...",
       "filterStatus": "Status",
       "allStatuses": "All statuses",
+      "filterDomain": "Domain",
+      "allDomains": "All domains",
       "noJobs": "No translation jobs found",
       "noJobsDescription": "Your translation history will appear here once you start translating documents.",
       "noResults": "No results found",
       "noResultsDescription": "Try adjusting your search or filter criteria.",
       "totalJobs": "{count} jobs total",
-      "pageInfo": "Page {page} of {totalPages}"
+      "pageInfo": "Page {page} of {totalPages}",
+      "fileExpired": "File expired",
+      "download": {
+        "label": "Download",
+        "original": "Original file",
+        "translated": "Translated file"
+      },
+      "columns": {
+        "credits": "Credits"
+      },
+      "detail": {
+        "title": "Job Details",
+        "timing": "Timeline",
+        "createdAt": "Created",
+        "completedAt": "Completed",
+        "inputFile": "Source File",
+        "outputFile": "Translated File",
+        "fileExpired": "File expired",
+        "creditCost": "Credit Cost",
+        "breakdown": {
+          "service": "Service",
+          "quantity": "Qty",
+          "credits": "Credits",
+          "total": "Total"
+        }
+      }
     }
   }
 }
