@@ -90,7 +90,9 @@
       "bulkImportParseError": "Không thể phân tích CSV. Đảm bảo mỗi dòng có hai giá trị phân cách bằng dấu phẩy.",
       "bulkImportMaxExceeded": "Tối đa {max} thuật ngữ mỗi lần nhập. Bạn có {count} thuật ngữ.",
       "bulkImportNoData": "Không tìm thấy thuật ngữ hợp lệ. Vui lòng dán hoặc tải lên dữ liệu CSV.",
-      "bulkImportClear": "Xóa"
+      "bulkImportClear": "Xóa",
+      "bulkImportCreated": "Thuật ngữ đã thêm",
+      "bulkImportSkipped": "Bỏ qua"
     }
   }
 }

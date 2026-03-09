@@ -90,7 +90,9 @@
       "bulkImportParseError": "Could not parse CSV. Ensure each line has two comma-separated values.",
       "bulkImportMaxExceeded": "Maximum {max} terms per import. You have {count} terms.",
       "bulkImportNoData": "No valid terms found. Please paste or upload CSV data.",
-      "bulkImportClear": "Clear"
+      "bulkImportClear": "Clear",
+      "bulkImportCreated": "Terms added",
+      "bulkImportSkipped": "Skipped"
     }
   }
 }

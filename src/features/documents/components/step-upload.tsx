@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useRef, useCallback } from "react"
+import { useRef, useCallback } from "react";
 import {
   FileText,
   File,
@@ -16,64 +16,72 @@ import {
   CloudUpload,
   ScanSearch,
   ArrowRight,
-} from "lucide-react"
-import { useTranslations } from "next-intl"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import { ALLOWED_EXTENSIONS, type UploadedFile } from "../types"
+} from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { ALLOWED_EXTENSIONS, type UploadedFile } from "../types";
 
-type UploadPipelineStatus = "idle" | "uploading" | "confirming" | "analyzing" | "failed"
+type UploadPipelineStatus =
+  | "idle"
+  | "uploading"
+  | "confirming"
+  | "analyzing"
+  | "failed";
 
 interface StepUploadProps {
-  file: UploadedFile | null
-  error: string | null
-  isDragging: boolean
-  onFileSelect: (file: File) => void
-  onFileRemove: () => void
-  onDragChange: (dragging: boolean) => void
-  onNext: () => void
-  pipelineStatus?: UploadPipelineStatus
-  uploadProgress?: number
-  uploadError?: string | null
+  file: UploadedFile | null;
+  error: string | null;
+  isDragging: boolean;
+  onFileSelect: (file: File) => void;
+  onFileRemove: () => void;
+  onDragChange: (dragging: boolean) => void;
+  onNext: () => void;
+  pipelineStatus?: UploadPipelineStatus;
+  uploadProgress?: number;
+  uploadError?: string | null;
 }
 
 function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return bytes + " B"
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB"
-  return (bytes / (1024 * 1024)).toFixed(1) + " MB"
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 
 function getFileIcon(fileName: string, size: "sm" | "md" | "lg" = "md") {
-  const ext = fileName.split(".").pop()?.toLowerCase()
-  const sizeClass = size === "sm" ? "size-8" : size === "lg" ? "size-14" : "size-10"
-  if (ext === "pdf") return <FileText className={cn(sizeClass, "text-destructive")} />
-  if (ext === "pptx" || ext === "ppt") return <Presentation className={cn(sizeClass, "text-warning")} />
-  return <File className={cn(sizeClass, "text-primary")} />
+  const ext = fileName.split(".").pop()?.toLowerCase();
+  const sizeClass =
+    size === "sm" ? "size-8" : size === "lg" ? "size-14" : "size-10";
+  if (ext === "pdf")
+    return <FileText className={cn(sizeClass, "text-destructive")} />;
+  if (ext === "pptx" || ext === "ppt")
+    return <Presentation className={cn(sizeClass, "text-warning")} />;
+  return <File className={cn(sizeClass, "text-primary")} />;
 }
 
-const FILE_TYPES = ["PDF", "DOCX", "DOC", "PPTX", "PPT"]
+const FILE_TYPES = ["PDF", "DOCX", "DOC", "PPTX", "PPT"];
 
 const PIPELINE_STEPS = [
   { key: "uploading", icon: CloudUpload, label: "pipelineUploading" },
   { key: "confirming", icon: CheckCircle2, label: "pipelineConfirming" },
   { key: "analyzing", icon: ScanSearch, label: "pipelineAnalyzing" },
-] as const
+] as const;
 
-type PipelineStepKey = (typeof PIPELINE_STEPS)[number]["key"]
+type PipelineStepKey = (typeof PIPELINE_STEPS)[number]["key"];
 
 function getPipelineStepState(
   stepKey: PipelineStepKey,
-  currentStatus: UploadPipelineStatus
+  currentStatus: UploadPipelineStatus,
 ): "pending" | "active" | "done" {
-  const order: PipelineStepKey[] = ["uploading", "confirming", "analyzing"]
-  const currentIdx = order.indexOf(currentStatus as PipelineStepKey)
-  const stepIdx = order.indexOf(stepKey)
-  if (currentIdx < 0) return "pending"
-  if (stepIdx < currentIdx) return "done"
-  if (stepIdx === currentIdx) return "active"
-  return "pending"
+  const order: PipelineStepKey[] = ["uploading", "confirming", "analyzing"];
+  const currentIdx = order.indexOf(currentStatus as PipelineStepKey);
+  const stepIdx = order.indexOf(stepKey);
+  if (currentIdx < 0) return "pending";
+  if (stepIdx < currentIdx) return "done";
+  if (stepIdx === currentIdx) return "active";
+  return "pending";
 }
 
 export function StepUpload({
@@ -88,54 +96,71 @@ export function StepUpload({
   uploadProgress = 0,
   uploadError,
 }: StepUploadProps) {
-  const t = useTranslations("documents.upload")
-  const inputRef = useRef<HTMLInputElement>(null)
+  const t = useTranslations("documents.upload");
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const isBusy = pipelineStatus !== "idle" && pipelineStatus !== "failed"
+  const isBusy = pipelineStatus !== "idle" && pipelineStatus !== "failed";
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
-      e.preventDefault()
-      if (isBusy) return
-      onDragChange(false)
-      const droppedFile = e.dataTransfer.files[0]
-      if (droppedFile) onFileSelect(droppedFile)
+      e.preventDefault();
+      if (isBusy) return;
+      onDragChange(false);
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile) onFileSelect(droppedFile);
     },
-    [isBusy, onFileSelect, onDragChange]
-  )
+    [isBusy, onFileSelect, onDragChange],
+  );
 
-  const handleDragOver = useCallback((e: React.DragEvent) => { e.preventDefault() }, [])
-  const handleDragEnter = useCallback((e: React.DragEvent) => { e.preventDefault(); onDragChange(true) }, [onDragChange])
-  const handleDragLeave = useCallback((e: React.DragEvent) => { e.preventDefault(); onDragChange(false) }, [onDragChange])
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+  }, []);
+  const handleDragEnter = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      onDragChange(true);
+    },
+    [onDragChange],
+  );
+  const handleDragLeave = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      onDragChange(false);
+    },
+    [onDragChange],
+  );
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (isBusy) return
-      const selectedFile = e.target.files?.[0]
-      if (selectedFile) onFileSelect(selectedFile)
+      if (isBusy) return;
+      const selectedFile = e.target.files?.[0];
+      if (selectedFile) onFileSelect(selectedFile);
     },
-    [isBusy, onFileSelect]
-  )
+    [isBusy, onFileSelect],
+  );
 
   const handleRemove = useCallback(() => {
-    onFileRemove()
-    if (inputRef.current) inputRef.current.value = ""
-  }, [onFileRemove])
+    onFileRemove();
+    if (inputRef.current) inputRef.current.value = "";
+  }, [onFileRemove]);
 
-  const isValid = file !== null && error === null
-  const displayError = error || uploadError
+  const isValid = file !== null && error === null;
+  const displayError = error || uploadError;
 
   const openPicker = useCallback(() => {
-    if (isBusy) return
-    inputRef.current?.click()
-  }, [isBusy])
+    if (isBusy) return;
+    inputRef.current?.click();
+  }, [isBusy]);
 
   const handleDropzoneKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openPicker() }
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openPicker();
+      }
     },
-    [openPicker]
-  )
+    [openPicker],
+  );
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -147,7 +172,7 @@ export function StepUpload({
             ? "border-primary bg-primary/5 shadow-[0_0_0_4px_hsl(var(--primary)/0.12)]"
             : file
               ? "border-border bg-card"
-              : "border-dashed border-border bg-card hover:border-primary/50 hover:bg-primary/2"
+              : "border-dashed border-border bg-card hover:border-primary/50 hover:bg-primary/2",
         )}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -168,7 +193,7 @@ export function StepUpload({
             onKeyDown={handleDropzoneKeyDown}
             className={cn(
               "relative flex flex-col items-center px-6 py-10 text-center outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:py-14",
-              isBusy ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+              isBusy ? "cursor-not-allowed opacity-60" : "cursor-pointer",
             )}
             aria-disabled={isBusy}
           >
@@ -177,7 +202,9 @@ export function StepUpload({
               <div
                 className={cn(
                   "absolute -inset-2.5 rounded-2xl border-2 border-dashed transition-all duration-300",
-                  isDragging ? "border-primary opacity-70 scale-110" : "border-primary/20 opacity-60"
+                  isDragging
+                    ? "border-primary opacity-70 scale-110"
+                    : "border-primary/20 opacity-60",
                 )}
               />
               <div className="relative flex size-16 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary shadow-sm sm:size-20">
@@ -209,7 +236,10 @@ export function StepUpload({
               type="button"
               size="lg"
               className="mt-6 gap-2 shadow-sm"
-              onClick={(e) => { e.stopPropagation(); openPicker() }}
+              onClick={(e) => {
+                e.stopPropagation();
+                openPicker();
+              }}
               disabled={isBusy}
             >
               <Upload className="size-4" />
@@ -263,7 +293,10 @@ export function StepUpload({
                 {/* Ready badge */}
                 {!error && pipelineStatus === "idle" && (
                   <div className="mt-2">
-                    <Badge variant="outline" className="gap-1.5 border-success/30 bg-success/10 text-success text-xs">
+                    <Badge
+                      variant="outline"
+                      className="gap-1.5 border-success/30 bg-success/10 text-success text-xs"
+                    >
                       <Check className="size-3" />
                       {t("fileReady")}
                     </Badge>
@@ -290,28 +323,37 @@ export function StepUpload({
             {/* Pipeline progress */}
             {isBusy && (
               <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-4">
-                {pipelineStatus === "uploading" && (
-                  <div className="mb-3">
-                    <Progress value={uploadProgress} className="h-1.5" />
-                  </div>
-                )}
-
                 {/* Steps */}
-                <div className="flex items-center gap-1 sm:gap-2">
+                <div className="flex items-center justify-around gap-1 sm:gap-2">
                   {PIPELINE_STEPS.map((step, idx) => {
-                    const state = getPipelineStepState(step.key, pipelineStatus)
-                    const Icon = step.icon
+                    const state = getPipelineStepState(
+                      step.key,
+                      pipelineStatus,
+                    );
+                    const Icon = step.icon;
                     return (
-                      <div key={step.key} className="flex items-center gap-1 sm:gap-2">
+                      <div
+                        key={step.key}
+                        className="flex items-center gap-1 sm:gap-2"
+                      >
                         {idx > 0 && (
-                          <div className={cn("h-px w-3 sm:w-6 shrink-0", state === "pending" ? "bg-border" : "bg-primary/40")} />
+                          <div
+                            className={cn(
+                              "h-px w-8 sm:w-12 md:w-24 shrink-0",
+                              state === "pending"
+                                ? "bg-border"
+                                : "bg-primary/40",
+                            )}
+                          />
                         )}
                         <div
                           className={cn(
                             "flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-all",
                             state === "done" && "bg-primary/15 text-primary",
-                            state === "active" && "bg-primary/20 text-primary ring-2 ring-primary/20",
-                            state === "pending" && "bg-muted text-muted-foreground"
+                            state === "active" &&
+                              "bg-primary/20 text-primary ring-2 ring-primary/20",
+                            state === "pending" &&
+                              "bg-muted text-muted-foreground",
                           )}
                         >
                           {state === "done" ? (
@@ -326,7 +368,7 @@ export function StepUpload({
                           </span>
                         </div>
                       </div>
-                    )
+                    );
                   })}
                 </div>
               </div>
@@ -375,5 +417,5 @@ export function StepUpload({
         className="hidden"
       />
     </div>
-  )
+  );
 }

@@ -46,8 +46,7 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
   const [selectedTerm, setSelectedTerm] = useState<Term | null>(null);
 
   // ─── Data fetching ──────────────────────────────────────────────────
-  const { glossary, isLoading: isLoadingDetail } =
-    useGlossaryDetail(glossaryId);
+  const { glossary, isLoading: isLoadingDetail } = useGlossaryDetail(glossaryId);
 
   const termQueryParams: TermQueryParams = {
     page: termPage,
@@ -70,7 +69,7 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
       setTermSearch(e.target.value);
       setTermPage(1);
     },
-    []
+    [],
   );
 
   const handleEditTerm = useCallback((term: Term) => {
@@ -104,7 +103,7 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
           variant="ghost"
           size="sm"
           onClick={() => router.push(`/${locale}/glossary`)}
-          className="gap-1 text-muted-foreground hover:text-foreground -ml-2"
+          className="-ml-2 gap-1 text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
           {t('backToList')}
@@ -112,16 +111,16 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
       </div>
 
       {/* Glossary header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-muted border flex items-center justify-center text-muted-foreground shrink-0">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border bg-muted text-muted-foreground">
             {DomainIcon && <DomainIcon className="size-5" />}
           </div>
-          <div>
-            <h2 className="text-2xl font-bold leading-tight">
+          <div className="min-w-0">
+            <h2 className="text-xl font-bold leading-tight sm:text-2xl">
               {glossary.name}
             </h2>
-            <div className="flex items-center gap-1.5 mt-1 text-sm text-muted-foreground">
+            <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-sm text-muted-foreground">
               <span>{t(`domains.${glossary.domain}`)}</span>
               <span>·</span>
               <span>{t(`languages.${glossary.srcLang}`)}</span>
@@ -135,6 +134,7 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
         <Button
           variant="outline"
           size="sm"
+          className="w-full shrink-0 sm:w-auto"
           onClick={() => setBulkImportOpen(true)}
         >
           <Upload className="size-4" />
@@ -142,10 +142,10 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
         </Button>
       </div>
 
-      {/* Inline add term form */}
+      {/* Inline add-term form */}
       <AddTermForm glossaryId={glossaryId} />
 
-      {/* Search + Table card */}
+      {/* Search + Term table card */}
       <AppCard className="overflow-hidden">
         {/* Search header */}
         <div className="border-b bg-muted/40 px-4 py-3 lg:px-6">
@@ -160,7 +160,7 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
           </div>
         </div>
 
-        {/* Table body */}
+        {/* Table / empty state */}
         {isLoadingTerms ? (
           <TermTableSkeleton showControls={false} />
         ) : !terms || terms.length === 0 ? (
@@ -175,7 +175,10 @@ export function GlossaryDetail({ glossaryId }: GlossaryDetailProps) {
 
         {/* Pagination footer */}
         {termPagination && termPagination.totalPages > 1 && (
-          <AppCardContent padding="none" className="border-t bg-muted/40 px-4 py-3 lg:px-6">
+          <AppCardContent
+            padding="none"
+            className="border-t bg-muted/40 px-4 py-3 lg:px-6"
+          >
             <Pagination
               page={termPagination.page}
               totalPages={termPagination.totalPages}

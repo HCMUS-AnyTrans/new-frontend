@@ -36,11 +36,9 @@ export function GlossaryContent() {
   const [createOpen, setCreateOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedGlossary, setSelectedGlossary] = useState<Glossary | null>(
-    null
-  );
+  const [selectedGlossary, setSelectedGlossary] = useState<Glossary | null>(null);
 
-  // ─── Build query params ─────────────────────────────────────────────
+  // ─── Build Query Params ─────────────────────────────────────────────
   const queryParams: GlossaryQueryParams = {
     page,
     limit: 20,
@@ -51,16 +49,13 @@ export function GlossaryContent() {
     ...(srcLangFilter !== 'all' && { srcLang: srcLangFilter }),
   };
 
-  const {
-    glossaries,
-    pagination,
-    isLoading,
-    isError,
-    isFetching,
-  } = useGlossaries(queryParams);
+  const { glossaries, pagination, isLoading, isError, isFetching } =
+    useGlossaries(queryParams);
 
   const hasFilters =
     search !== '' || domainFilter !== 'all' || srcLangFilter !== 'all';
+
+  const isEmpty = !glossaries || glossaries.length === 0;
 
   // ─── Handlers ───────────────────────────────────────────────────────
   const handleSearchChange = useCallback((value: string) => {
@@ -78,9 +73,12 @@ export function GlossaryContent() {
     setPage(1);
   }, []);
 
-  const handleGlossaryClick = useCallback((glossary: Glossary) => {
-    router.push(`/${locale}/glossary/${glossary.id}`);
-  }, [router, locale]);
+  const handleGlossaryClick = useCallback(
+    (glossary: Glossary) => {
+      router.push(`/${locale}/glossary/${glossary.id}`);
+    },
+    [router, locale],
+  );
 
   const handleEdit = useCallback((glossary: Glossary) => {
     setSelectedGlossary(glossary);
@@ -92,10 +90,13 @@ export function GlossaryContent() {
     setDeleteOpen(true);
   }, []);
 
-  // ─── List View ──────────────────────────────────────────────────────
+  const handleCreateOpen = useCallback(() => setCreateOpen(true), []);
+
+  // ─── Render ─────────────────────────────────────────────────────────
   return (
     <>
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+      {/* Toolbar: filters + create button */}
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row">
         <GlossaryFilters
           search={search}
           onSearchChange={handleSearchChange}
@@ -104,24 +105,17 @@ export function GlossaryContent() {
           srcLangFilter={srcLangFilter}
           onSrcLangChange={handleSrcLangChange}
         />
-        <Button size="sm" className="shrink-0" onClick={() => setCreateOpen(true)}>
+        <Button size="sm" className="w-full shrink-0 sm:w-auto" onClick={handleCreateOpen}>
           <Plus className="size-4" />
           {t('createGlossary')}
         </Button>
       </div>
 
+      {/* Content */}
       {isLoading && !glossaries ? (
         <GlossarySkeleton showFilters={false} />
-      ) : isError && !glossaries ? (
-        <GlossaryEmptyState
-          hasFilters={hasFilters}
-          onCreateClick={() => setCreateOpen(true)}
-        />
-      ) : !glossaries || glossaries.length === 0 ? (
-        <GlossaryEmptyState
-          hasFilters={hasFilters}
-          onCreateClick={() => setCreateOpen(true)}
-        />
+      ) : isError || isEmpty ? (
+        <GlossaryEmptyState hasFilters={hasFilters} onCreateClick={handleCreateOpen} />
       ) : (
         <>
           <GlossaryList
@@ -145,10 +139,7 @@ export function GlossaryContent() {
       )}
 
       {/* Dialogs */}
-      <CreateGlossaryDialog
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-      />
+      <CreateGlossaryDialog open={createOpen} onOpenChange={setCreateOpen} />
       <EditGlossaryDialog
         open={editOpen}
         onOpenChange={setEditOpen}
