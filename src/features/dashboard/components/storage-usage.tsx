@@ -53,8 +53,8 @@ export function StorageUsage() {
       </DashboardCardHeader>
       <DashboardCardContent>
         <div className="flex flex-col gap-3">
-          <div className="flex items-end justify-between">
-            <div>
+          <div className="flex min-w-0 items-end justify-between gap-2">
+            <div className="min-w-0">
               <span className="text-2xl font-bold text-foreground tabular-nums">
                 {storage.used} {storage.unit}
               </span>
@@ -63,7 +63,7 @@ export function StorageUsage() {
                 / {storage.total} {storage.unit}
               </span>
             </div>
-            <span className="text-sm font-medium text-muted-foreground tabular-nums">
+            <span className="shrink-0 text-sm font-medium text-muted-foreground tabular-nums">
               {percentage}%
             </span>
           </div>

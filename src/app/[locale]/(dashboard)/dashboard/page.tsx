@@ -18,7 +18,7 @@ export default async function DashboardPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="flex w-full flex-col gap-6 py-4 md:py-6 lg:py-8">
+    <div className="flex w-full flex-col gap-4 overflow-x-hidden py-4 sm:gap-6 md:py-6 lg:py-8">
       {/* Welcome + Quick Actions */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-2">
         <DashboardGreeting />

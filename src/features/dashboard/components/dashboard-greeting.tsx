@@ -9,7 +9,7 @@ export function DashboardGreeting() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold tracking-tight text-foreground">
+      <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
         {t("greeting", { name: user?.fullName || "" })}
       </h2>
       <p className="text-sm text-muted-foreground">{t("description")}</p>

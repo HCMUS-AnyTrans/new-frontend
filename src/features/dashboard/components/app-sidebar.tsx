@@ -44,7 +44,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar
-      collapsible="none"
+      collapsible="offcanvas"
       className="h-svh border-r border-sidebar-border bg-sidebar pt-[var(--dashboard-header-height)]"
     >
       {/* Main Navigation */}

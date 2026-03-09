@@ -25,6 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useAuthStore, useLogout } from "@/features/auth";
 import { BuyCreditsDialog } from "./buy-credits-dialog";
 import { useWallet } from "../hooks";
@@ -48,7 +49,8 @@ export function DashboardHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex h-[var(--dashboard-header-height)] items-center justify-between border-b border-border bg-background px-4 lg:px-6">
-      <div className="flex min-w-0 items-center gap-6">
+      <div className="flex min-w-0 items-center gap-2 md:gap-6">
+        <SidebarTrigger className="md:hidden" />
         <Link href="/" className="flex items-center gap-2">
           <div className="relative h-8 w-8 shrink-0">
             <Image

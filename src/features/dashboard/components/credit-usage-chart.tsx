@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/chart";
 import { Pie, PieChart, Cell } from "recharts";
 import { Info } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useCreditsChart } from "../hooks";
 import {
   DashboardCard,
@@ -25,7 +26,7 @@ function CreditUsageChartSkeleton() {
         <Skeleton className="h-5 w-36" />
       </DashboardCardHeader>
       <DashboardCardContent>
-        <Skeleton className="mx-auto h-[200px] w-[200px] rounded-full" />
+        <Skeleton className="mx-auto h-[140px] w-[140px] rounded-full sm:h-[200px] sm:w-[200px]" />
         <div className="mt-2 flex flex-col gap-2">
           {Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="flex items-center justify-between">
@@ -47,6 +48,7 @@ const FILL_COLORS = [
 export function CreditUsageChart() {
   const t = useTranslations("dashboard.charts");
   const locale = useLocale();
+  const isMobile = useIsMobile();
   const { creditsData, isLoading, isError } = useCreditsChart();
 
   const chartConfig = {
@@ -95,7 +97,7 @@ export function CreditUsageChart() {
           <>
             <ChartContainer
               config={chartConfig}
-              className="mx-auto h-[200px] w-full"
+              className="mx-auto h-[140px] w-full sm:h-[200px]"
             >
               <PieChart>
                 <ChartTooltip
@@ -114,8 +116,8 @@ export function CreditUsageChart() {
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
+                  innerRadius={isMobile ? 32 : 50}
+                  outerRadius={isMobile ? 55 : 80}
                   strokeWidth={2}
                   stroke="hsl(var(--background))"
                 >

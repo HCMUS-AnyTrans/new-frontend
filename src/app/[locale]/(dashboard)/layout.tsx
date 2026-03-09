@@ -11,12 +11,12 @@ export default function DashboardLayout({
 }) {
   return (
     <ProtectedRoute>
-      <DashboardHeader />
       <SidebarProvider>
+        <DashboardHeader />
         <AppSidebar />
         <SidebarInset className="h-svh overflow-hidden bg-muted/30">
           <main className="flex-1 overflow-y-auto bg-muted/30 pt-[var(--dashboard-header-height)] [scrollbar-gutter:stable]">
-            <div className="px-[var(--dashboard-content-margin)]">
+            <div className="px-4 md:px-(--dashboard-content-margin)">
               {children}
             </div>
           </main>

@@ -61,7 +61,7 @@ export function PaymentStatusBanner() {
     return (
       <Alert className="border-success bg-success/10 text-success [&>svg]:text-success">
         <CheckCircle className="size-4" />
-        <AlertDescription className="flex items-center gap-3">
+        <AlertDescription className="flex flex-wrap items-center gap-3">
           <span>{t("success")}</span>
           <Button variant="outline" size="sm" onClick={dismiss}>
             {t("dismiss")}
@@ -75,7 +75,7 @@ export function PaymentStatusBanner() {
     return (
       <Alert className="border-yellow-500 bg-yellow-50 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400 [&>svg]:text-yellow-600">
         <Clock className="size-4" />
-        <AlertDescription className="flex items-center gap-3">
+        <AlertDescription className="flex flex-wrap items-center gap-3">
           <span>{t("pending")}</span>
           <Button variant="outline" size="sm" onClick={dismiss}>
             {t("dismiss")}
@@ -88,7 +88,7 @@ export function PaymentStatusBanner() {
   return (
     <Alert variant="destructive">
       <XCircle className="size-4" />
-      <AlertDescription className="flex items-center gap-3">
+      <AlertDescription className="flex flex-wrap items-center gap-3">
         <span>{t("error")}</span>
         <Button variant="outline" size="sm" onClick={dismiss}>
           {t("dismiss")}
