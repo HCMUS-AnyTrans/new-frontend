@@ -1,16 +1,16 @@
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from 'lucide-react';
 
 // =============== LANGUAGE TYPES ===============
 
 export type LanguageCode =
-  | "en"
-  | "vi"
-  | "ja"
-  | "ko"
-  | "zh"
-  | "fr"
-  | "de"
-  | "es";
+  | 'en'
+  | 'vi'
+  | 'ja'
+  | 'ko'
+  | 'zh'
+  | 'fr'
+  | 'de'
+  | 'es';
 
 export interface Language {
   code: LanguageCode;
@@ -24,14 +24,14 @@ export interface Language {
  * Backend uses full names like "English", "Vietnamese" — NOT codes like "en", "vi".
  */
 export const LANGUAGE_CODE_TO_API_NAME: Record<LanguageCode, string> = {
-  en: "English",
-  vi: "Vietnamese",
-  ja: "Japanese",
-  ko: "Korean",
-  zh: "Chinese",
-  fr: "French",
-  de: "German",
-  es: "Spanish",
+  en: 'English',
+  vi: 'Vietnamese',
+  ja: 'Japanese',
+  ko: 'Korean',
+  zh: 'Chinese',
+  fr: 'French',
+  de: 'German',
+  es: 'Spanish',
 };
 
 // =============== DOMAIN TYPES ===============
@@ -74,14 +74,14 @@ export interface UploadedFile {
 }
 
 export const ALLOWED_FILE_TYPES = [
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.ms-powerpoint",
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
 ] as const;
 
-export const ALLOWED_EXTENSIONS = [".pdf", ".docx", ".doc", ".pptx", ".ppt"];
+export const ALLOWED_EXTENSIONS = ['.pdf', '.docx', '.doc', '.pptx', '.ppt'];
 
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -91,7 +91,7 @@ export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
  * Job status values aligned with backend.
  * Backend uses: "pending" | "processing" | "succeeded" | "failed"
  */
-export type JobStatus = "pending" | "processing" | "succeeded" | "failed";
+export type JobStatus = 'pending' | 'processing' | 'succeeded' | 'failed';
 
 // =============== API REQUEST/RESPONSE TYPES ===============
 
@@ -100,7 +100,7 @@ export interface RequestUploadUrlDto {
   file_name: string;
   mime_type: string;
   file_size: number;
-  file_type: "doc" | "sub";
+  file_type: 'doc' | 'sub';
   sha256?: string;
 }
 
@@ -114,7 +114,7 @@ export interface UploadUrlResponse {
 
 /** PATCH /files/:file_id/status — request body */
 export interface UpdateFileStatusDto {
-  status: "uploaded" | "failed";
+  status: 'uploaded' | 'failed';
 }
 
 /** File metadata from backend */
@@ -136,7 +136,7 @@ export interface FileResponse {
 }
 
 export interface CreditEstimateDto {
-  job_type: "doc-trans" | "sub-trans";
+  job_type: 'doc-trans' | 'sub-trans';
   file_id: string;
 }
 
@@ -164,7 +164,7 @@ export interface CreateTranslationJobDto {
   user_glossary?: { src_lang: string; tgt_lang: string }[];
   keep_original_font_size?: boolean;
   keep_original_fonts?: boolean;
-  pdf_output_format?: "docx" | "pptx";
+  pdf_output_format?: 'docx' | 'pptx';
 }
 
 /** GET /translations/:job_id — response */
@@ -196,14 +196,14 @@ export interface FileDownloadUrlResponse {
  * parsing metadata and we are polling estimate-credits until it succeeds.
  */
 export type TranslationFlowStatus =
-  | "idle"
-  | "uploading"
-  | "confirming"
-  | "analyzing"
-  | "creating"
-  | "translating"
-  | "succeeded"
-  | "failed";
+  | 'idle'
+  | 'uploading'
+  | 'confirming'
+  | 'analyzing'
+  | 'creating'
+  | 'translating'
+  | 'succeeded'
+  | 'failed';
 
 // =============== CONFIG TYPES ===============
 

@@ -69,8 +69,8 @@ export interface GeneralUploadResponse {
 
 // =============== PREFERENCES ===============
 
-export type UILanguage = "vi" | "en";
-export type Theme = "light" | "dark" | "system";
+export type UILanguage = 'vi' | 'en';
+export type Theme = 'light' | 'dark' | 'system';
 // fileTtl is stored in hours and supports both presets and custom values.
 export type FileTTL = number;
 
@@ -88,7 +88,7 @@ export interface UpdatePreferencesDto {
 
 // =============== SECURITY ===============
 
-export type AuthProvider = "google" | "credentials";
+export type AuthProvider = 'google' | 'credentials';
 
 export interface AuthIdentity {
   id: string;
@@ -107,12 +107,12 @@ export interface ChangePasswordDto {
 // =============== NOTIFICATIONS ===============
 
 export type NotificationType =
-  | "translation_complete"
-  | "credit_purchase"
-  | "file_expiring"
-  | "security_alert"
-  | "promotion"
-  | "system";
+  | 'translation_complete'
+  | 'credit_purchase'
+  | 'file_expiring'
+  | 'security_alert'
+  | 'promotion'
+  | 'system';
 
 export interface Notification {
   id: string;
@@ -149,7 +149,7 @@ export interface Wallet {
   updatedAt: string;
 }
 
-export type LedgerType = "topup" | "spend" | "refund";
+export type LedgerType = 'topup' | 'spend' | 'refund';
 
 export interface WalletLedger {
   id: string;
@@ -172,7 +172,7 @@ export interface WalletLedgerResponse extends PaginatedResponse<WalletLedger> {
   summary: LedgerSummary;
 }
 
-export type PaymentStatus = "pending" | "succeeded" | "failed" | "cancelled";
+export type PaymentStatus = 'pending' | 'succeeded' | 'failed' | 'cancelled';
 
 export interface PaymentPackage {
   id: string;
@@ -192,7 +192,7 @@ export interface Payment {
   package: PaymentPackage;
 }
 
-export type CreditPackageType = "personal" | "business";
+export type CreditPackageType = 'personal' | 'business';
 
 export interface CreditPackage {
   id: string;
@@ -221,8 +221,8 @@ export interface CreateVnpayPaymentResponse {
 
 // =============== FILES ===============
 
-export type FileStatus = "pending" | "uploaded" | "parsed" | "failed";
-export type FileType = "doc" | "sub" | "doc-result" | "sub-result";
+export type FileStatus = 'pending' | 'uploaded' | 'parsed' | 'failed';
+export type FileType = 'doc' | 'sub' | 'doc-result' | 'sub-result';
 
 export interface UserFile {
   id: string;
@@ -264,19 +264,19 @@ export interface StorageUsage {
 // =============== ACTIVITY & AUDIT ===============
 
 export type AuditAction =
-  | "login"
-  | "logout"
-  | "password_change"
-  | "profile_update"
-  | "provider_link"
-  | "provider_unlink"
-  | "session_revoke"
-  | "file_upload"
-  | "file_delete"
-  | "translation_start"
-  | "translation_complete"
-  | "credit_purchase"
-  | "settings_change";
+  | 'login'
+  | 'logout'
+  | 'password_change'
+  | 'profile_update'
+  | 'provider_link'
+  | 'provider_unlink'
+  | 'session_revoke'
+  | 'file_upload'
+  | 'file_delete'
+  | 'translation_start'
+  | 'translation_complete'
+  | 'credit_purchase'
+  | 'settings_change';
 
 export interface AuditLog {
   id: string;
@@ -294,13 +294,13 @@ export interface AuditLog {
 // =============== SETTINGS TAB ===============
 
 export type SettingsTab =
-  | "profile"
-  | "preferences"
-  | "security"
-  | "notifications"
-  | "billing"
-  | "files"
-  | "activity";
+  | 'profile'
+  | 'preferences'
+  | 'security'
+  | 'notifications'
+  | 'billing'
+  | 'files'
+  | 'activity';
 
 // =============== QUERY PARAMS ===============
 
@@ -332,7 +332,7 @@ export interface FilesQuery {
   status?: FileStatus;
   search?: string;
   sortBy?: string;
-  sortOrder?: "asc" | "desc";
+  sortOrder?: 'asc' | 'desc';
 }
 
 export interface ActivityQuery {

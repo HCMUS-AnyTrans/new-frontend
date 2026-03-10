@@ -1,115 +1,115 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { useQueryClient } from "@tanstack/react-query"
-import { io, type Socket } from "socket.io-client"
-import { translationKeys } from "@/lib/query-client"
-import { useAccessToken } from "@/features/auth/store"
-import type { TranslationJobResponse } from "../types"
+import { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { io, type Socket } from 'socket.io-client';
+import { translationKeys } from '@/lib/query-client';
+import { useAccessToken } from '@/features/auth/store';
+import type { TranslationJobResponse } from '../types';
 
 type SocketConnectionState =
-  | "idle"
-  | "connecting"
-  | "connected"
-  | "disconnected"
-  | "error"
+  | 'idle'
+  | 'connecting'
+  | 'connected'
+  | 'disconnected'
+  | 'error';
 
 interface JobStatusSocketEvent {
-  jobId: string
-  status: TranslationJobResponse["status"]
-  error?: string
-  resultFileId?: string
-  outputFileName?: string
-  finishedAt?: string
-  job: TranslationJobResponse
+  jobId: string;
+  status: TranslationJobResponse['status'];
+  error?: string;
+  resultFileId?: string;
+  outputFileName?: string;
+  finishedAt?: string;
+  job: TranslationJobResponse;
 }
 
 interface UseTranslationJobSocketResult {
-  connectionState: SocketConnectionState
-  socketError: string | null
+  connectionState: SocketConnectionState;
+  socketError: string | null;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 export function useTranslationJobSocket(
   jobId: string | null,
   options: { enabled?: boolean } = {},
 ): UseTranslationJobSocketResult {
-  const { enabled = true } = options
-  const queryClient = useQueryClient()
+  const { enabled = true } = options;
+  const queryClient = useQueryClient();
   const [connectionState, setConnectionState] =
-    useState<SocketConnectionState>("idle")
-  const [socketError, setSocketError] = useState<string | null>(null)
+    useState<SocketConnectionState>('idle');
+  const [socketError, setSocketError] = useState<string | null>(null);
 
-  const accessToken = useAccessToken()
-  const activeToken = enabled && jobId ? accessToken : null
+  const accessToken = useAccessToken();
+  const activeToken = enabled && jobId ? accessToken : null;
 
   useEffect(() => {
     if (!enabled || !jobId || !activeToken) {
-      return
+      return;
     }
 
     const socket: Socket = io(API_BASE_URL, {
-      path: "/ws",
-      transports: ["websocket"],
+      path: '/ws',
+      transports: ['websocket'],
       autoConnect: true,
       auth: { token: activeToken },
-    })
+    });
 
     const handleConnect = () => {
-      setConnectionState("connected")
-      setSocketError(null)
-      socket.emit("translation:watch", { jobId })
+      setConnectionState('connected');
+      setSocketError(null);
+      socket.emit('translation:watch', { jobId });
       void queryClient.invalidateQueries({
         queryKey: translationKeys.detail(jobId),
-      })
-    }
+      });
+    };
 
     const handleDisconnect = () => {
-      setConnectionState("disconnected")
-    }
+      setConnectionState('disconnected');
+    };
 
     const handleConnectError = (error: Error) => {
-      setConnectionState("error")
-      setSocketError(error.message || "Socket connection failed")
-    }
+      setConnectionState('error');
+      setSocketError(error.message || 'Socket connection failed');
+    };
 
     const handleJobStatus = (event: JobStatusSocketEvent) => {
       if (event.jobId !== jobId) {
-        return
+        return;
       }
 
-      queryClient.setQueryData(translationKeys.detail(jobId), event.job)
-    }
+      queryClient.setQueryData(translationKeys.detail(jobId), event.job);
+    };
 
-    socket.on("connect", handleConnect)
-    socket.on("disconnect", handleDisconnect)
-    socket.on("connect_error", handleConnectError)
-    socket.on("job:status", handleJobStatus)
+    socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
+    socket.on('connect_error', handleConnectError);
+    socket.on('job:status', handleJobStatus);
 
     return () => {
-      socket.off("connect", handleConnect)
-      socket.off("disconnect", handleDisconnect)
-      socket.off("connect_error", handleConnectError)
-      socket.off("job:status", handleJobStatus)
-      socket.disconnect()
-    }
-  }, [activeToken, enabled, jobId, queryClient])
+      socket.off('connect', handleConnect);
+      socket.off('disconnect', handleDisconnect);
+      socket.off('connect_error', handleConnectError);
+      socket.off('job:status', handleJobStatus);
+      socket.disconnect();
+    };
+  }, [activeToken, enabled, jobId, queryClient]);
 
   if (!enabled || !jobId) {
-    return { connectionState: "idle", socketError: null }
+    return { connectionState: 'idle', socketError: null };
   }
 
   if (!activeToken) {
     return {
-      connectionState: "error",
-      socketError: "Missing access token for live translation updates",
-    }
+      connectionState: 'error',
+      socketError: 'Missing access token for live translation updates',
+    };
   }
 
   return {
     connectionState:
-      connectionState === "idle" ? "connecting" : connectionState,
+      connectionState === 'idle' ? 'connecting' : connectionState,
     socketError,
-  }
+  };
 }

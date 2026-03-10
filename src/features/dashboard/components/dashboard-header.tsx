@@ -77,7 +77,7 @@ export function DashboardHeader() {
     : "??";
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex h-[var(--dashboard-header-height)] items-center justify-between border-b border-border bg-background px-4 lg:px-6">
+    <header className="fixed inset-x-0 top-0 z-50 flex h-(--dashboard-header-height) items-center justify-between border-b border-border bg-background px-4 lg:px-6">
       {/* ── Logo ── */}
       <div className="flex min-w-0 items-center gap-2 md:gap-6">
         <SidebarTrigger className="md:hidden" />
