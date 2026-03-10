@@ -3,9 +3,14 @@
 import { useTranslations, useLocale } from "next-intl"
 import { Link } from "@/i18n/navigation"
 import { Check, Star, ArrowRight } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { CreditPackageCard } from "@/components/shared"
+import {
+  createCreditPackageFormatter,
+  createCreditPackageViewModel,
+} from "@/lib/credit-package"
 import { cn } from "@/lib/utils"
-import { normalizePercentage } from "@/lib/percentage"
 import type { Plan } from "../data"
 
 export interface PricingCardProps {
@@ -21,36 +26,19 @@ export function PricingCard({
 }: PricingCardProps) {
   const t = useTranslations("marketing.pricingPage")
   const locale = useLocale()
+  const { formatCredits, formatAmount, formatPerCredit } = createCreditPackageFormatter(locale)
+  const packageView = createCreditPackageViewModel({
+    id: plan.id,
+    name: plan.name,
+    credits: plan.credits,
+    price: plan.price,
+    currency: plan.currency,
+    discount: plan.discount ?? null,
+    bonus: plan.bonus ?? null,
+    tags: plan.popular ? ["popular"] : [],
+  })
 
-  const numberFormatter = new Intl.NumberFormat(
-    locale === "vi" ? "vi-VN" : "en-US",
-    {
-      maximumFractionDigits: 2,
-    }
-  )
-
-  const creditsLabel = new Intl.NumberFormat(
-    locale === "vi" ? "vi-VN" : "en-US"
-  ).format(plan.credits)
-
-  const currencySymbol =
-    plan.currency === "VND"
-      ? "đ"
-      : plan.currency === "USD"
-        ? "$"
-        : plan.currency
-  const discountPercent = normalizePercentage(plan.discount)
-  const bonusPercent = normalizePercentage(plan.bonus)
-  const discountedPrice = discountPercent
-    ? Math.round(plan.price * (1 - discountPercent / 100))
-    : plan.price
-  const originalPriceLabel = numberFormatter.format(plan.price)
-  const discountedPriceLabel = numberFormatter.format(discountedPrice)
-  const unitPrice = plan.credits > 0 ? discountedPrice / plan.credits : 0
-  const unitPriceLabel = numberFormatter.format(unitPrice)
-  const bonusCredits = bonusPercent
-    ? Math.round((plan.credits * bonusPercent) / 100)
-    : 0
+  const creditsLabel = formatCredits(packageView.credits)
 
   return (
     <div
@@ -60,114 +48,62 @@ export function PricingCard({
         className
       )}
     >
-      {/* Card with hover effect */}
-      <div
-        className={cn(
-          "relative h-full bg-card rounded-2xl border p-8 transition-colors duration-300 cursor-pointer",
-          "hover:shadow-xl",
-          plan.popular
-            ? "border-primary shadow-xl shadow-primary/10 pt-12"
-            : "border-border shadow-lg"
-        )}
-      >
-        {/* Popular Badge */}
-        {plan.popular && (
-          <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold shadow-lg">
-              <Star className="w-4 h-4 fill-current" />
-              {t("popular")}
-            </span>
-          </div>
-        )}
-
-        {/* Plan Header */}
-        <div className="mb-6">
-          <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
-          <p className="text-2xl font-extrabold text-primary mt-2">
-            {creditsLabel}{" "}
-            <span className="text-base font-medium text-muted-foreground">
-              {t("credits")}
-            </span>
-          </p>
-        </div>
-
-        {/* Price */}
-        <div className="mb-6">
-          {discountPercent ? (
-            <div className="space-y-1.5">
-              <div className="flex items-baseline gap-1 text-muted-foreground">
-                <span className="text-lg font-semibold line-through decoration-2">
-                  {originalPriceLabel}
-                </span>
-                <span className="text-sm line-through decoration-2">{currencySymbol}</span>
-              </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold text-foreground">
-                  {discountedPriceLabel}
-                </span>
-                <span className="text-muted-foreground">{currencySymbol}</span>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-baseline gap-1">
-              <span className="text-4xl font-extrabold text-foreground">
-                {originalPriceLabel}
-              </span>
-              <span className="text-muted-foreground">{currencySymbol}</span>
-            </div>
-          )}
-          <div className="mt-2 flex items-center gap-2">
-            <span className="text-sm font-medium text-primary">
-              ~{unitPriceLabel}
-              {currencySymbol}/{t("perCredit")}
-            </span>
-          </div>
-          {discountPercent || bonusPercent ? (
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              {discountPercent ? (
-                <span className="inline-block rounded-full border border-success/20 bg-success/10 px-3 py-1 text-xs font-semibold text-success">
-                  {t("savePercent", { percent: discountPercent })}
-                </span>
+      <CreditPackageCard
+        layout="marketing"
+        highlighted={plan.popular}
+        title={plan.name}
+        creditsText={creditsLabel}
+        creditsLabel={t("credits")}
+        originalPriceText={packageView.discountPercent ? formatAmount(packageView.price, packageView.currency) : undefined}
+        priceText={formatAmount(packageView.discountedPrice, packageView.currency)}
+        perCreditText={formatPerCredit(packageView.unitPrice, packageView.currency, t("perCredit"))}
+        topBadge={plan.popular ? {
+          label: t("popular"),
+          icon: <Star className="size-4 fill-current" />,
+          tone: "primary",
+          placement: "top-center",
+        } : undefined}
+        metaBadges={
+          packageView.discountPercent || packageView.bonusPercent ? (
+            <>
+              {packageView.discountPercent ? (
+                <Badge className="border border-success/20 bg-success/10 text-success hover:bg-success/10">
+                  {t("savePercent", { percent: packageView.discountPercent })}
+                </Badge>
               ) : null}
-              {bonusPercent ? (
-                <span className="inline-block rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                  {t("bonusCredits", { percent: bonusPercent, credits: bonusCredits })}
-                </span>
+              {packageView.bonusPercent ? (
+                <Badge className="border border-primary/20 bg-primary/10 text-primary hover:bg-primary/10">
+                  {t("bonusCredits", { credits: packageView.bonusCredits })}
+                </Badge>
               ) : null}
-            </div>
-          ) : null}
-        </div>
-
-        {/* Features */}
-        <ul className="space-y-3 mb-8">
-          {features.map((feature) => (
-            <li key={feature} className="flex items-start gap-3">
-              <div className="w-5 h-5 rounded-full bg-success flex items-center justify-center shrink-0 mt-0.5">
-                <Check className="w-3 h-3 text-white" strokeWidth={3} />
-              </div>
-              <span className="text-sm text-muted-foreground">{feature}</span>
-            </li>
-          ))}
-        </ul>
-
-        {/* CTA Button */}
-        <Button
-          className={cn(
-            "w-full h-12 group",
-            plan.popular && "shadow-lg shadow-primary/20"
-          )}
-          variant={plan.popular ? "default" : "outline"}
-          asChild
-        >
-          <Link
-            href={plan.checkoutUrl}
-            className="flex items-center justify-center gap-2"
+            </>
+          ) : null
+        }
+        details={
+          <ul className="space-y-3">
+            {features.map((feature) => (
+              <li key={feature} className="flex items-start gap-3">
+                <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success">
+                  <Check className="h-3 w-3 text-white" strokeWidth={3} />
+                </div>
+                <span className="text-sm text-muted-foreground">{feature}</span>
+              </li>
+            ))}
+          </ul>
+        }
+        action={
+          <Button
+            className={cn("group h-12 w-full", plan.popular && "shadow-lg shadow-primary/20")}
+            variant={plan.popular ? "default" : "outline"}
+            asChild
           >
-            {t("buyNow")}
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </Button>
-      </div>
+            <Link href={plan.checkoutUrl} className="flex items-center justify-center gap-2">
+              {t("buyNow")}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </Button>
+        }
+      />
     </div>
   )
 }

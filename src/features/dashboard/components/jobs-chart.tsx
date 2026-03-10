@@ -9,7 +9,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useJobsChart } from "../hooks";
 import {
@@ -25,7 +25,7 @@ function JobsChartSkeleton() {
         <Skeleton className="h-5 w-40" />
       </DashboardCardHeader>
       <DashboardCardContent>
-        <Skeleton className="h-[180px] w-full rounded-md sm:h-[220px] md:h-[280px]" />
+        <Skeleton className="h-[140px] w-full rounded-md sm:h-[160px] md:h-[180px]" />
         <div className="mt-3 flex items-center justify-center gap-6">
           <Skeleton className="h-4 w-20" />
           <Skeleton className="h-4 w-20" />
@@ -58,8 +58,16 @@ export function JobsChart() {
         </CardTitle>
       </DashboardCardHeader>
       <DashboardCardContent>
-        <ChartContainer config={chartConfig} className="h-[180px] w-full sm:h-[220px] md:h-[280px]">
-          <BarChart data={chartData} barGap={4} margin={{ left: isMobile ? -20 : 0, right: 4, top: 4 }}>
+        <ChartContainer config={chartConfig} className="h-[140px] w-full sm:h-[160px] md:h-[180px]">
+          <AreaChart
+            data={chartData}
+            margin={{
+              left: 12,
+              right: 12,
+              top: 4,
+              bottom: 0,
+            }}
+          >
             <CartesianGrid
               vertical={false}
               strokeDasharray="3 3"
@@ -69,7 +77,7 @@ export function JobsChart() {
               dataKey="day"
               tickLine={false}
               axisLine={false}
-              tickMargin={6}
+              tickMargin={8}
               className="text-xs"
               interval={isMobile ? 1 : 0}
               tick={{ fontSize: isMobile ? 10 : 12 }}
@@ -79,22 +87,27 @@ export function JobsChart() {
               axisLine={false}
               tickMargin={4}
               className="text-xs"
-              width={isMobile ? 28 : 40}
+              width={isMobile ? 24 : 40}
               tick={{ fontSize: isMobile ? 10 : 12 }}
-              tickCount={isMobile ? 4 : 6}
+              tickCount={isMobile ? 3 : 6}
             />
             <ChartTooltip
+              cursor={false}
               content={
-                <ChartTooltipContent labelFormatter={(value) => `${value}`} />
+                <ChartTooltipContent
+                  indicator="line"
+                  labelFormatter={(value) => `${value}`}
+                />
               }
             />
-            <Bar
+            <Area
               dataKey="document"
+              type="linear"
               fill="var(--color-document)"
-              radius={[4, 4, 0, 0]}
-              maxBarSize={isMobile ? 20 : 32}
+              fillOpacity={0.4}
+              stroke="var(--color-document)"
             />
-          </BarChart>
+          </AreaChart>
         </ChartContainer>
         <div className="mt-2 flex items-center justify-center gap-6 sm:mt-3">
           <div className="flex items-center gap-2">

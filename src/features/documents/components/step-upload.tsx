@@ -323,6 +323,16 @@ export function StepUpload({
             {/* Pipeline progress */}
             {isBusy && (
               <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-4">
+                {pipelineStatus === "uploading" && (
+                  <div className="mb-4 space-y-2">
+                    <div className="flex items-center justify-between text-xs font-medium text-primary sm:text-sm">
+                      <span>{t("pipelineUploading")}</span>
+                      <span>{uploadProgress}%</span>
+                    </div>
+                    <Progress value={uploadProgress} className="h-2" />
+                  </div>
+                )}
+
                 {/* Steps */}
                 <div className="flex items-center justify-around gap-1 sm:gap-2">
                   {PIPELINE_STEPS.map((step, idx) => {

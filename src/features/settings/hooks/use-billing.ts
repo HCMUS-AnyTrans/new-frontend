@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import {
   getWalletApi,
   getWalletLedgerApi,
@@ -52,6 +52,7 @@ export function useWalletLedger(query?: LedgerQuery) {
     enabled: isAuthenticated && !!accessToken,
     staleTime: 30 * 1000,
     gcTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 
   return {
@@ -99,6 +100,7 @@ export function usePayments(query?: PaymentsQuery) {
     enabled: isAuthenticated && !!accessToken,
     staleTime: 30 * 1000,
     gcTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 
   return {

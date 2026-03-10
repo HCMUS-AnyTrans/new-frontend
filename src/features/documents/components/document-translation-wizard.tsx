@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useCallback, useMemo } from "react"
+import { useState, useCallback, useMemo, useEffect } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { TranslationStepper } from "./translation-stepper"
 import { StepUpload } from "./step-upload"
@@ -22,11 +23,13 @@ import {
 } from "../hooks"
 import { useGlossaries, useTerms } from "@/features/glossary"
 import { useWallet } from "@/features/dashboard/hooks"
+import { translationKeys, walletKeys } from "@/lib/query-client"
 
 // =============== MAIN COMPONENT ===============
 
 export function DocumentTranslationWizard() {
   const t = useTranslations("documents.upload")
+  const queryClient = useQueryClient()
 
   // Step state
   const [step, setStep] = useState<TranslationStep>(1)
@@ -99,7 +102,6 @@ export function DocumentTranslationWizard() {
   // Estimate is now provided by the upload hook (polled during Step 1 analyzing phase).
   // It is already available by the time the user reaches Step 2.
   const isEstimating = false
-  const estimateError = null
 
   // Update flow status when job polling returns a terminal state
   // The wizard tracks "succeeded" / "failed" based on job polling data
@@ -109,6 +111,15 @@ export function DocumentTranslationWizard() {
       : jobData?.status === "failed"
         ? "failed"
         : flowStatus
+
+  // When job reaches a terminal state, refresh history / recent jobs lists + wallet credits
+  useEffect(() => {
+    if (!jobData) return
+    if (jobData.status === "succeeded" || jobData.status === "failed") {
+      queryClient.invalidateQueries({ queryKey: translationKeys.all })
+      queryClient.invalidateQueries({ queryKey: walletKeys.all })
+    }
+  }, [jobData, queryClient])
 
   // =============== FILE HANDLERS ===============
 

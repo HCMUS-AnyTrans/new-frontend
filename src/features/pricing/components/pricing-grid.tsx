@@ -5,6 +5,7 @@ import { PricingCard } from "./pricing-card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useCreditPackages } from "@/features/settings"
+import { sortActiveCreditPackages } from "@/lib/credit-package"
 import { cn } from "@/lib/utils"
 import type { Plan } from "../data"
 
@@ -22,9 +23,7 @@ export function PricingGrid({ className }: PricingGridProps) {
     refetch,
   } = useCreditPackages()
 
-  const packageList = (packages ?? [])
-    .filter((pkg) => pkg.active)
-    .sort((a, b) => a.credits - b.credits)
+  const packageList = sortActiveCreditPackages(packages)
 
   const plans: Plan[] = packageList.map((pkg) => {
     const isPopular = pkg.tags.includes("best-value") || pkg.tags.includes("popular")

@@ -17,6 +17,10 @@ export interface HistoryTableProps {
   jobs: TranslationJobResponse[];
   locale: string;
   onViewDetails: (job: TranslationJobResponse) => void;
+  /** When true, show File Name, Languages, Status, Credits, Actions (hide Created At) */
+  compact?: boolean;
+  /** When true, hide the Actions column (Download, View details) */
+  hideActions?: boolean;
 }
 
 export interface HistoryPaginationProps {

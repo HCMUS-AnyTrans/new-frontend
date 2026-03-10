@@ -3,23 +3,20 @@
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  DashboardCard,
-  DashboardCardContent,
-} from "./dashboard-card";
-import {
-  TrendingUp,
-  TrendingDown,
-} from "lucide-react";
+import { DashboardCard, DashboardCardContent } from "./dashboard-card";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import { useDashboardStats } from "../hooks";
 
 function StatsCardsSkeleton() {
   return (
-    <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4 md:gap-6">
       {Array.from({ length: 4 }).map((_, i) => {
         return (
           <DashboardCard key={i}>
-            <DashboardCardContent padding="all" className="flex flex-col gap-2 p-3 sm:gap-3 sm:p-4 md:gap-4 md:p-6">
+            <DashboardCardContent
+              padding="all"
+              className="flex flex-col gap-2 p-3 sm:gap-3 sm:p-4 md:gap-4 md:p-6"
+            >
               <div className="flex items-center justify-between">
                 <Skeleton className="h-9 w-9 rounded-xl sm:h-12 sm:w-12" />
                 <Skeleton className="h-5 w-12 rounded-full sm:h-6 sm:w-16" />
@@ -49,7 +46,7 @@ export function StatsCards() {
     {
       title: t("totalCredits"),
       value: stats.totalCredits.toLocaleString(
-        locale === "vi" ? "vi-VN" : "en-US"
+        locale === "vi" ? "vi-VN" : "en-US",
       ),
       change: stats.creditsChange,
       trend: stats.creditsTrend,
@@ -87,10 +84,13 @@ export function StatsCards() {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4 md:gap-6">
       {statCards.map((stat) => (
         <DashboardCard key={stat.title} interactive>
-          <DashboardCardContent padding="all" className="flex flex-col gap-2 p-3 sm:gap-3 sm:p-4 md:gap-4 md:p-6">
+          <DashboardCardContent
+            padding="all"
+            className="flex flex-col gap-1.5 p-3 sm:gap-3 sm:p-4 md:gap-4 md:p-6"
+          >
             <div className="flex items-start justify-between">
               <div
                 className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg sm:h-12 sm:w-12 sm:rounded-xl ${stat.iconBg}`}
@@ -128,7 +128,7 @@ export function StatsCards() {
               <p className="truncate text-xs font-medium text-muted-foreground sm:text-sm">
                 {stat.title}
               </p>
-              <p className="mt-0.5 text-xl font-bold tracking-tight text-foreground tabular-nums sm:mt-1 sm:text-2xl md:text-3xl">
+              <p className="mt-0.5 text-lg font-bold tracking-tight text-foreground tabular-nums sm:mt-1 sm:text-xl md:text-2xl lg:text-3xl">
                 {stat.value}
               </p>
             </div>

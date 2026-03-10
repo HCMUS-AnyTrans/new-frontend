@@ -1,10 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { useState, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -14,229 +12,135 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Download, Eye, ArrowRight, FileText } from "lucide-react";
-import { languageCodeMap } from "../data";
+import { Link } from "@/i18n/navigation";
 import { useRecentJobs } from "../hooks";
 import {
   DashboardCard,
   DashboardCardContent,
   DashboardCardHeader,
 } from "./dashboard-card";
+import { HistoryTable, HistoryJobDetail } from "@/features/history";
+import type { TranslationJobResponse } from "../api/dashboard.api";
 
 function RecentJobsTableSkeleton() {
   return (
-    <DashboardCard>
-      <DashboardCardHeader className="flex flex-row items-center justify-between">
-        <Skeleton className="h-5 w-32" />
-        <Skeleton className="h-8 w-24" />
-      </DashboardCardHeader>
-      <DashboardCardContent padding="none">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                {Array.from({ length: 7 }).map((_, i) => (
-                  <TableHead key={i}>
-                    <Skeleton className="h-4 w-16" />
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={i}>
-                  {Array.from({ length: 7 }).map((_, j) => (
-                    <TableCell key={j}>
-                      <Skeleton className="h-4 w-full" />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </DashboardCardContent>
-    </DashboardCard>
+    <div className="overflow-x-auto">
+      <Table>
+        <TableHeader className="bg-muted/40">
+          <TableRow className="hover:bg-transparent">
+            <TableHead className="h-11 px-4 lg:px-6">
+              <Skeleton className="h-4 w-20" />
+            </TableHead>
+            <TableHead className="hidden h-11 px-4 sm:table-cell lg:px-6">
+              <Skeleton className="h-4 w-20" />
+            </TableHead>
+            <TableHead className="h-11 px-4 lg:px-6">
+              <Skeleton className="h-4 w-14" />
+            </TableHead>
+            <TableHead className="hidden h-11 px-4 sm:table-cell lg:px-6">
+              <Skeleton className="ml-auto h-4 w-14" />
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <TableRow key={i}>
+              <TableCell className="px-4 py-3.5 lg:px-6">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="size-4 shrink-0 rounded" />
+                  <Skeleton className="h-4 w-32 sm:w-44" />
+                </div>
+              </TableCell>
+              <TableCell className="hidden px-4 py-3.5 sm:table-cell lg:px-6">
+                <div className="flex items-center gap-1">
+                  <Skeleton className="h-4 w-6" />
+                  <Skeleton className="size-3 rounded-full" />
+                  <Skeleton className="h-4 w-6" />
+                </div>
+              </TableCell>
+              <TableCell className="px-4 py-3.5 lg:px-6">
+                <Skeleton className="h-5 w-20 rounded-full" />
+              </TableCell>
+              <TableCell className="hidden px-4 py-3.5 sm:table-cell lg:px-6">
+                <div className="flex items-center justify-end gap-1">
+                  <Skeleton className="size-3.5 rounded" />
+                  <Skeleton className="h-4 w-8" />
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
 
 export function RecentJobsTable() {
   const t = useTranslations("dashboard.recentJobs");
-  const tStatus = useTranslations("dashboard.status");
   const locale = useLocale();
   const { jobsData, isLoading, isError } = useRecentJobs({
-    limit: 7,
+    limit: 5,
+    page: 1,
     sortBy: "createdAt",
     sortOrder: "desc",
   });
 
-  const statusConfig: Record<string, string> = {
-    pending: "bg-warning/10 text-warning border-warning/20",
-    processing: "bg-info/10 text-info border-info/20",
-    succeeded: "bg-success/10 text-success border-success/20",
-    failed: "bg-destructive/10 text-destructive border-destructive/20",
-  };
+  const [selectedJob, setSelectedJob] = useState<TranslationJobResponse | null>(
+    null,
+  );
+  const [detailOpen, setDetailOpen] = useState(false);
 
-  if (isLoading) return <RecentJobsTableSkeleton />;
-  if (isError || !jobsData) return <RecentJobsTableSkeleton />;
+  const handleViewDetails = useCallback((job: TranslationJobResponse) => {
+    setSelectedJob(job);
+    setDetailOpen(true);
+  }, []);
 
-  const jobs = jobsData.data;
+  const jobs = jobsData?.data ?? [];
+  const isEmpty = jobs.length === 0;
 
   return (
-    <DashboardCard>
-      <DashboardCardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-base font-semibold text-foreground">
-          {t("title")}
-        </CardTitle>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1 text-sm text-muted-foreground hover:text-foreground"
-          asChild
-        >
-          <Link href="/history">
+    <>
+      <DashboardCard className="overflow-hidden">
+        <DashboardCardHeader className="flex flex-row items-center justify-between gap-4 px-4 pb-4 sm:px-6">
+          <CardTitle className="text-base font-semibold text-foreground">
+            {t("title")}
+          </CardTitle>
+          <Link
+            href="/history"
+            className="text-sm font-medium text-primary hover:underline"
+          >
             {t("viewAll")}
-            <ArrowRight className="size-3.5" />
           </Link>
-        </Button>
-      </DashboardCardHeader>
-      <DashboardCardContent padding="none">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="text-xs font-medium text-muted-foreground">
-                  {t("fileName")}
-                </TableHead>
-                <TableHead className="text-xs font-medium text-muted-foreground">
-                  {t("type")}
-                </TableHead>
-                <TableHead className="text-xs font-medium text-muted-foreground">
-                  {t("languages")}
-                </TableHead>
-                <TableHead className="text-xs font-medium text-muted-foreground">
-                  {t("status")}
-                </TableHead>
-                <TableHead className="text-right text-xs font-medium text-muted-foreground">
-                  {t("credits")}
-                </TableHead>
-                <TableHead className="text-xs font-medium text-muted-foreground">
-                  {t("createdAt")}
-                </TableHead>
-                <TableHead className="text-right text-xs font-medium text-muted-foreground">
-                  {t("actions")}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {jobs.length === 0 ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={7}
-                    className="h-24 text-center text-sm text-muted-foreground"
-                  >
-                    {t("noJobs")}
-                  </TableCell>
-                </TableRow>
-              ) : (
-                jobs.map((job) => {
-                  const fileName = job.input_file?.name || job.job_id;
-                  const srcLang = job.src_lang;
-                  const tgtLang = job.tgt_lang;
-                  const status = job.status;
-                  const createdAt = new Date(job.created_at).toLocaleString(
-                    locale === "vi" ? "vi-VN" : "en-US",
-                    {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }
-                  );
+        </DashboardCardHeader>
+        <DashboardCardContent padding="none" className="px-0 pb-6">
+          {isLoading ? (
+            <div className="px-4 sm:px-6">
+              <RecentJobsTableSkeleton />
+            </div>
+          ) : isError || isEmpty ? (
+            <div className="flex items-center justify-center px-4 py-12 sm:px-6">
+              <p className="text-sm text-muted-foreground">{t("noJobs")}</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <HistoryTable
+                jobs={jobs}
+                locale={locale}
+                onViewDetails={handleViewDetails}
+                compact
+                hideActions
+              />
+            </div>
+          )}
+        </DashboardCardContent>
+      </DashboardCard>
 
-                  return (
-                    <TableRow key={job.job_id} className="group">
-                      <TableCell className="max-w-[200px]">
-                        <div className="flex items-center gap-2">
-                          <FileText className="size-4 shrink-0 text-primary" />
-                          <span className="truncate text-sm font-medium text-foreground">
-                            {fileName}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant="outline"
-                          className="text-xs border-primary/20 bg-primary/10 text-primary"
-                        >
-                          {t("document")}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1 text-sm text-foreground">
-                          <span className="font-mono text-xs font-medium">
-                            {languageCodeMap[srcLang] || srcLang.toUpperCase()}
-                          </span>
-                          <span className="text-muted-foreground">{"\u2192"}</span>
-                          <span className="font-mono text-xs font-medium">
-                            {languageCodeMap[tgtLang] || tgtLang.toUpperCase()}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant="outline"
-                          className={`text-xs ${statusConfig[status] || ""}`}
-                        >
-                          {tStatus(status)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <span className="text-sm tabular-nums text-foreground">
-                          {job.input_file
-                            ? job.input_file.size_bytes > 0
-                              ? job.input_file.size_bytes.toLocaleString(
-                                  locale === "vi" ? "vi-VN" : "en-US"
-                                )
-                              : "\u2014"
-                            : "\u2014"}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {createdAt}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          {status === "succeeded" && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-7 w-7"
-                            >
-                              <Download className="size-3.5 text-muted-foreground" />
-                              <span className="sr-only">{t("download")}</span>
-                            </Button>
-                          )}
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7"
-                          >
-                            <Eye className="size-3.5 text-muted-foreground" />
-                            <span className="sr-only">{t("viewDetails")}</span>
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                }))}
-            </TableBody>
-          </Table>
-        </div>
-      </DashboardCardContent>
-    </DashboardCard>
+      <HistoryJobDetail
+        job={selectedJob}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+        locale={locale}
+      />
+    </>
   );
 }

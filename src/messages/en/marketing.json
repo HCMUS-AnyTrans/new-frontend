@@ -23,22 +23,38 @@
         "format": {
           "title": "Preserve original formatting",
           "description": "Tables, images, headers/footers are perfectly preserved. Export files in the original format.",
-          "highlights": ["Preserve tables", "Maintain images", "PDF/Word format"]
+          "highlights": [
+            "Preserve tables",
+            "Maintain images",
+            "PDF/Word format"
+          ]
         },
         "glossary": {
           "title": "Smart Glossary",
           "description": "Create and manage specialized term dictionaries. Ensure consistent terminology throughout the document.",
-          "highlights": ["Specialized dictionary", "Consistent terminology", "Auto-apply"]
+          "highlights": [
+            "Specialized dictionary",
+            "Consistent terminology",
+            "Auto-apply"
+          ]
         },
         "speed": {
           "title": "10x Faster",
           "description": "Process 50-page documents in just minutes. Save hours of work every day.",
-          "highlights": ["50 pages/2 min", "Batch processing", "Real-time progress"]
+          "highlights": [
+            "50 pages/2 min",
+            "Batch processing",
+            "Real-time progress"
+          ]
         },
         "review": {
           "title": "Bilingual Review",
           "description": "Two-column interface for comparing original and translated versions. Easy inline editing.",
-          "highlights": ["Side-by-side comparison", "Edit inline", "Track changes"]
+          "highlights": [
+            "Side-by-side comparison",
+            "Edit inline",
+            "Track changes"
+          ]
         },
         "ocr": {
           "title": "Image OCR",
@@ -52,9 +68,18 @@
         }
       },
       "glossaryTerms": {
-        "machineLearning": { "en": "Machine Learning", "translated": "Machine Learning" },
-        "neuralNetwork": { "en": "Neural Network", "translated": "Neural Network" },
-        "deepLearning": { "en": "Deep Learning", "translated": "Deep Learning" },
+        "machineLearning": {
+          "en": "Machine Learning",
+          "translated": "Machine Learning"
+        },
+        "neuralNetwork": {
+          "en": "Neural Network",
+          "translated": "Neural Network"
+        },
+        "deepLearning": {
+          "en": "Deep Learning",
+          "translated": "Deep Learning"
+        },
         "ai": { "en": "Artificial Intelligence", "translated": "AI" }
       },
       "reviewMockup": {
@@ -345,7 +370,7 @@
       }
     },
     "nav": {
-      "features": "Features",
+      "homepage": "Home",
       "pricing": "Pricing",
       "about": "About",
       "contact": "Contact",
