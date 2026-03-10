@@ -26,12 +26,18 @@ function CreditUsageChartSkeleton() {
         <Skeleton className="h-5 w-36" />
       </DashboardCardHeader>
       <DashboardCardContent>
-        <Skeleton className="mx-auto h-[140px] w-[140px] rounded-full sm:h-[200px] sm:w-[200px]" />
+        <Skeleton className="mx-auto h-[140px] w-full rounded-lg sm:h-[200px]" />
         <div className="mt-2 flex flex-col gap-2">
           {Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="flex items-center justify-between">
-              <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-4 w-16" />
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-2.5 w-2.5 shrink-0 rounded-sm" />
+                <Skeleton className="h-4 w-20" />
+              </div>
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-4 w-12" />
+                <Skeleton className="h-3 w-8" />
+              </div>
             </div>
           ))}
         </div>

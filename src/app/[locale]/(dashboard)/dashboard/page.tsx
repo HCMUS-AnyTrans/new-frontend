@@ -7,6 +7,7 @@ import {
   DashboardGreeting,
   StorageUsage,
   PaymentStatusBanner,
+  RecentJobsTable,
 } from "@/features/dashboard";
 
 type Props = {
@@ -46,6 +47,11 @@ export default async function DashboardPage({ params }: Props) {
           <CreditUsageChart />
           <StorageUsage />
         </div>
+      </div>
+
+      {/* Recent Jobs */}
+      <div className="w-full">
+        <RecentJobsTable />
       </div>
     </div>
   );
