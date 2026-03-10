@@ -1,14 +1,14 @@
-"use client"
+'use client';
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react';
 
 interface UseCountUpOptions {
-  start?: number
-  end: number
-  duration?: number
-  delay?: number
-  enabled?: boolean
-  decimals?: number
+  start?: number;
+  end: number;
+  duration?: number;
+  delay?: number;
+  enabled?: boolean;
+  decimals?: number;
 }
 
 /**
@@ -24,45 +24,45 @@ export function useCountUp({
   decimals = 0,
 }: UseCountUpOptions): number {
   // Initialize with start value, or end value if not enabled
-  const initialValue = enabled ? start : end
-  const [count, setCount] = useState(initialValue)
+  const initialValue = enabled ? start : end;
+  const [count, setCount] = useState(initialValue);
 
   useEffect(() => {
     if (!enabled) {
-      return
+      return;
     }
 
-    let startTime: number
-    let animationFrame: number
+    let startTime: number;
+    let animationFrame: number;
 
     const animate = (currentTime: number) => {
-      if (!startTime) startTime = currentTime
-      const elapsed = currentTime - startTime
-      const progress = Math.min(elapsed / duration, 1)
+      if (!startTime) startTime = currentTime;
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
 
       // Easing function: easeOutExpo
       const easedProgress =
-        progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
+        progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
 
-      const currentValue = start + (end - start) * easedProgress
-      setCount(Number(currentValue.toFixed(decimals)))
+      const currentValue = start + (end - start) * easedProgress;
+      setCount(Number(currentValue.toFixed(decimals)));
 
       if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate)
+        animationFrame = requestAnimationFrame(animate);
       }
-    }
+    };
 
     const timeoutId = setTimeout(() => {
-      animationFrame = requestAnimationFrame(animate)
-    }, delay)
+      animationFrame = requestAnimationFrame(animate);
+    }, delay);
 
     return () => {
-      clearTimeout(timeoutId)
+      clearTimeout(timeoutId);
       if (animationFrame) {
-        cancelAnimationFrame(animationFrame)
+        cancelAnimationFrame(animationFrame);
       }
-    }
-  }, [start, end, duration, delay, enabled, decimals])
+    };
+  }, [start, end, duration, delay, enabled, decimals]);
 
-  return count
+  return count;
 }

@@ -5,50 +5,54 @@
 /**
  * Job status matching TranslationJob.status in backend
  */
-export type JobStatus = "pending" | "processing" | "succeeded" | "failed"
+export type JobStatus = 'pending' | 'processing' | 'succeeded' | 'failed';
 
 /**
  * Job type matching TranslationJob.jobType in backend
  */
-export type JobType = "document"
+export type JobType = 'document';
 
 /**
  * Supported language codes (ISO 639-1)
  */
-export type LanguageCode = "vi" | "en" | "ja" | "ko" | "zh" | "fr" | "de"
+export type LanguageCode = 'vi' | 'en' | 'ja' | 'ko' | 'zh' | 'fr' | 'de';
 
 /**
  * Activity/notification types
  */
-export type ActivityType = "job_complete" | "job_failed" | "payment" | "warning"
+export type ActivityType =
+  | 'job_complete'
+  | 'job_failed'
+  | 'payment'
+  | 'warning';
 
 /**
  * Trend direction for stats
  */
-export type TrendDirection = "up" | "down" | "neutral"
+export type TrendDirection = 'up' | 'down' | 'neutral';
 
 // ============================================================================
 // Dashboard Stats
 // ============================================================================
 
 export interface DashboardStats {
-  totalCredits: number
-  creditsChange: string
-  creditsTrend: TrendDirection
+  totalCredits: number;
+  creditsChange: string;
+  creditsTrend: TrendDirection;
 
-  totalJobs: number
-  documentJobs: number
-  jobsChange: string
-  jobsTrend: TrendDirection
+  totalJobs: number;
+  documentJobs: number;
+  jobsChange: string;
+  jobsTrend: TrendDirection;
 
-  processingJobs: number
-  processingChange: string
-  processingTrend: TrendDirection
+  processingJobs: number;
+  processingChange: string;
+  processingTrend: TrendDirection;
 
-  completedThisMonth: number
-  completedChange: string
-  completedTrend: TrendDirection
-  successRate: number
+  completedThisMonth: number;
+  completedChange: string;
+  completedTrend: TrendDirection;
+  successRate: number;
 }
 
 // ============================================================================
@@ -56,14 +60,14 @@ export interface DashboardStats {
 // ============================================================================
 
 export interface RecentJob {
-  id: string
-  fileName: string
-  jobType: JobType
-  srcLang: string
-  tgtLang: string
-  status: JobStatus
-  costCredits: number
-  createdAt: string
+  id: string;
+  fileName: string;
+  jobType: JobType;
+  srcLang: string;
+  tgtLang: string;
+  status: JobStatus;
+  costCredits: number;
+  createdAt: string;
 }
 
 // ============================================================================
@@ -71,11 +75,11 @@ export interface RecentJob {
 // ============================================================================
 
 export interface ActivityItem {
-  id: string
-  type: ActivityType
-  title: string
-  description: string
-  createdAt: string
+  id: string;
+  type: ActivityType;
+  title: string;
+  description: string;
+  createdAt: string;
 }
 
 // ============================================================================
@@ -83,17 +87,17 @@ export interface ActivityItem {
 // ============================================================================
 
 export interface DashboardStatsQuery {
-  period?: "week" | "month" | "quarter" | "year"
-  timezone?: string
+  period?: 'week' | 'month' | 'quarter' | 'year';
+  timezone?: string;
 }
 
 export interface JobsChartQuery {
-  days?: 7 | 14 | 30
-  timezone?: string
+  days?: 7 | 14 | 30;
+  timezone?: string;
 }
 
 export interface CreditsChartQuery {
-  period?: "week" | "month" | "quarter" | "year"
+  period?: 'week' | 'month' | 'quarter' | 'year';
 }
 
 // ============================================================================
@@ -101,42 +105,42 @@ export interface CreditsChartQuery {
 // ============================================================================
 
 export interface JobsChartDataPoint {
-  day: string
-  document: number
+  day: string;
+  document: number;
 }
 
 /**
  * Extended chart data point with date from backend
  */
 export interface JobChartDataPoint {
-  date: string
-  day: string
-  document: number
+  date: string;
+  day: string;
+  document: number;
 }
 
 export interface CreditUsageDataPoint {
-  name: string
-  value: number
-  fill: string
+  name: string;
+  value: number;
+  fill: string;
 }
 
 /**
  * Credit breakdown from backend CreditsChartDto
  */
 export interface CreditBreakdown {
-  name: string
-  value: number
-  percentage: number
+  name: string;
+  value: number;
+  percentage: number;
 }
 
 export interface CreditUsage {
-  documentsUsed: number
+  documentsUsed: number;
 }
 
 export interface CreditsChartResponse {
-  totalCredits: number
-  breakdown: CreditBreakdown[]
-  usage: CreditUsage
+  totalCredits: number;
+  breakdown: CreditBreakdown[];
+  usage: CreditUsage;
 }
 
 // ============================================================================
@@ -144,24 +148,24 @@ export interface CreditsChartResponse {
 // ============================================================================
 
 export interface StorageInfo {
-  used: number // in MB
-  total: number // in MB
+  used: number; // in MB
+  total: number; // in MB
 }
 
 export interface StorageBreakdownItem {
-  count: number
-  size: number
+  count: number;
+  size: number;
 }
 
 export interface StorageResponse {
-  used: number
-  total: number
-  unit: string
-  percentage: number
-  fileCount: number
+  used: number;
+  total: number;
+  unit: string;
+  percentage: number;
+  fileCount: number;
   breakdown: {
-    documents: StorageBreakdownItem
-  }
+    documents: StorageBreakdownItem;
+  };
 }
 
 // ============================================================================
@@ -169,9 +173,9 @@ export interface StorageResponse {
 // ============================================================================
 
 export interface WalletResponse {
-  id: string
-  balance: number
-  updatedAt: string
+  id: string;
+  balance: number;
+  updatedAt: string;
 }
 
 // ============================================================================
@@ -179,13 +183,13 @@ export interface WalletResponse {
 // ============================================================================
 
 export interface UserInfo {
-  id: string
-  fullName: string
-  email: string
-  avatarUrl: string | null
-  initials: string
+  id: string;
+  fullName: string;
+  email: string;
+  avatarUrl: string | null;
+  initials: string;
 }
 
 export interface WalletInfo {
-  balance: number
+  balance: number;
 }

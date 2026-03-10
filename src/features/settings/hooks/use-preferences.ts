@@ -1,10 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  getPreferencesApi,
-  updatePreferencesApi,
-} from '../api/settings.api';
+import { getPreferencesApi, updatePreferencesApi } from '../api/settings.api';
 import { settingsKeys } from '@/lib/query-client';
 import { useAuthStore } from '@/features/auth';
 import type { UserPreferences, UpdatePreferencesDto } from '../types';

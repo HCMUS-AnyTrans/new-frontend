@@ -5,12 +5,17 @@
 // =============== LANGUAGE OPTIONS ===============
 
 export const uiLanguageOptions = [
-  { value: "vi", label: "Tiếng Việt", flag: "🇻🇳" },
-  { value: "en", label: "English", flag: "🇺🇸" },
-] as const
+  { value: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
+  { value: 'en', label: 'English', flag: '🇺🇸' },
+] as const;
 
 // =============== PROVIDER OPTIONS ===============
 
 export const authProviderOptions = [
-  { id: "google", name: "Google", icon: "/authen/google.svg", color: "#EA4335" },
-] as const
+  {
+    id: 'google',
+    name: 'Google',
+    icon: '/authen/google.svg',
+    color: '#EA4335',
+  },
+] as const;

@@ -1,4 +1,8 @@
-import { getAccessToken, setAccessToken, clearAuthState } from '../store/auth.store';
+import {
+  getAccessToken,
+  setAccessToken,
+  clearAuthState,
+} from '../store/auth.store';
 
 /**
  * Token utility functions for use outside React components
@@ -34,7 +38,7 @@ export function isTokenExpired(token: string): boolean {
     const payload = JSON.parse(atob(token.split('.')[1]));
     const exp = payload.exp;
     if (!exp) return true;
-    
+
     // Check if token expires in the next 30 seconds
     const bufferTime = 30;
     return Date.now() >= (exp - bufferTime) * 1000;

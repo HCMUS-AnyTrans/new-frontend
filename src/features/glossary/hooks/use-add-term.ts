@@ -4,7 +4,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addTermApi } from '../api/glossary.api';
 import { glossaryKeys } from '@/lib/query-client';
 import { getErrorMessage } from '@/lib/api-error';
-import type { CreateTermDto, Term, TermListResponse, GlossaryDetail } from '../types';
+import type {
+  CreateTermDto,
+  Term,
+  TermListResponse,
+  GlossaryDetail,
+} from '../types';
 
 interface AddTermParams {
   glossaryId: string;
@@ -39,11 +44,13 @@ export function useAddTerm(options?: UseAddTermOptions) {
       });
 
       // 2. Snapshot previous data for rollback
-      const previousTermsQueries = queryClient.getQueriesData<TermListResponse>({
-        queryKey: glossaryKeys.terms(glossaryId),
-      });
+      const previousTermsQueries = queryClient.getQueriesData<TermListResponse>(
+        {
+          queryKey: glossaryKeys.terms(glossaryId),
+        },
+      );
       const previousDetail = queryClient.getQueryData<GlossaryDetail>(
-        glossaryKeys.detail(glossaryId)
+        glossaryKeys.detail(glossaryId),
       );
 
       // 3. Create optimistic term
@@ -62,7 +69,7 @@ export function useAddTerm(options?: UseAddTermOptions) {
           // Insert at correct alphabetical position (matching server sort: srcTerm ASC)
           const newItems = [...old.items];
           const insertIndex = newItems.findIndex(
-            (t) => t.srcTerm.localeCompare(optimisticTerm.srcTerm) > 0
+            (t) => t.srcTerm.localeCompare(optimisticTerm.srcTerm) > 0,
           );
           if (insertIndex === -1) {
             newItems.push(optimisticTerm);
@@ -77,7 +84,7 @@ export function useAddTerm(options?: UseAddTermOptions) {
               total: old.pagination.total + 1,
             },
           };
-        }
+        },
       );
 
       // 5. Optimistically update termCount in glossary detail
@@ -87,7 +94,7 @@ export function useAddTerm(options?: UseAddTermOptions) {
           {
             ...previousDetail,
             termCount: previousDetail.termCount + 1,
-          }
+          },
         );
       }
 
@@ -105,7 +112,7 @@ export function useAddTerm(options?: UseAddTermOptions) {
       if (context?.previousDetail) {
         queryClient.setQueryData(
           glossaryKeys.detail(variables.glossaryId),
-          context.previousDetail
+          context.previousDetail,
         );
       }
 

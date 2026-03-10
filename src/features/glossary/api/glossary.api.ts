@@ -25,7 +25,7 @@ import type { MessageResponse } from '@/types/api.types';
  * POST /glossaries
  */
 export async function createGlossaryApi(
-  dto: CreateGlossaryDto
+  dto: CreateGlossaryDto,
 ): Promise<Glossary> {
   const response = await apiClient.post<Glossary>('/glossaries', dto);
   return response.data;
@@ -36,7 +36,7 @@ export async function createGlossaryApi(
  * GET /glossaries
  */
 export async function listGlossariesApi(
-  params?: GlossaryQueryParams
+  params?: GlossaryQueryParams,
 ): Promise<GlossaryListResponse> {
   const response = await apiClient.get<GlossaryListResponse>('/glossaries', {
     params,
@@ -49,10 +49,10 @@ export async function listGlossariesApi(
  * GET /glossaries/:glossaryId
  */
 export async function getGlossaryApi(
-  glossaryId: string
+  glossaryId: string,
 ): Promise<GlossaryDetail> {
   const response = await apiClient.get<GlossaryDetail>(
-    `/glossaries/${glossaryId}`
+    `/glossaries/${glossaryId}`,
   );
   return response.data;
 }
@@ -63,11 +63,11 @@ export async function getGlossaryApi(
  */
 export async function updateGlossaryApi(
   glossaryId: string,
-  dto: UpdateGlossaryDto
+  dto: UpdateGlossaryDto,
 ): Promise<Glossary> {
   const response = await apiClient.patch<Glossary>(
     `/glossaries/${glossaryId}`,
-    dto
+    dto,
   );
   return response.data;
 }
@@ -77,10 +77,10 @@ export async function updateGlossaryApi(
  * DELETE /glossaries/:glossaryId
  */
 export async function deleteGlossaryApi(
-  glossaryId: string
+  glossaryId: string,
 ): Promise<MessageResponse> {
   const response = await apiClient.delete<MessageResponse>(
-    `/glossaries/${glossaryId}`
+    `/glossaries/${glossaryId}`,
   );
   return response.data;
 }
@@ -95,11 +95,11 @@ export async function deleteGlossaryApi(
  */
 export async function addTermApi(
   glossaryId: string,
-  dto: CreateTermDto
+  dto: CreateTermDto,
 ): Promise<Term> {
   const response = await apiClient.post<Term>(
     `/glossaries/${glossaryId}/terms`,
-    dto
+    dto,
   );
   return response.data;
 }
@@ -110,11 +110,11 @@ export async function addTermApi(
  */
 export async function listTermsApi(
   glossaryId: string,
-  params?: TermQueryParams
+  params?: TermQueryParams,
 ): Promise<TermListResponse> {
   const response = await apiClient.get<TermListResponse>(
     `/glossaries/${glossaryId}/terms`,
-    { params }
+    { params },
   );
   return response.data;
 }
@@ -125,11 +125,11 @@ export async function listTermsApi(
  */
 export async function bulkImportTermsApi(
   glossaryId: string,
-  dto: BulkCreateTermsDto
+  dto: BulkCreateTermsDto,
 ): Promise<BulkImportResult> {
   const response = await apiClient.post<BulkImportResult>(
     `/glossaries/${glossaryId}/terms/bulk`,
-    dto
+    dto,
   );
   return response.data;
 }
@@ -141,11 +141,11 @@ export async function bulkImportTermsApi(
 export async function updateTermApi(
   glossaryId: string,
   termId: string,
-  dto: UpdateTermDto
+  dto: UpdateTermDto,
 ): Promise<Term> {
   const response = await apiClient.patch<Term>(
     `/glossaries/${glossaryId}/terms/${termId}`,
-    dto
+    dto,
   );
   return response.data;
 }
@@ -156,10 +156,10 @@ export async function updateTermApi(
  */
 export async function deleteTermApi(
   glossaryId: string,
-  termId: string
+  termId: string,
 ): Promise<MessageResponse> {
   const response = await apiClient.delete<MessageResponse>(
-    `/glossaries/${glossaryId}/terms/${termId}`
+    `/glossaries/${glossaryId}/terms/${termId}`,
   );
   return response.data;
 }

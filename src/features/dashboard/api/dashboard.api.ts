@@ -19,7 +19,7 @@ import type {
  * GET /dashboard/stats
  */
 export async function getDashboardStatsApi(
-  query?: DashboardStatsQuery
+  query?: DashboardStatsQuery,
 ): Promise<DashboardStats> {
   const response = await apiClient.get<DashboardStats>('/dashboard/stats', {
     params: query,
@@ -32,11 +32,11 @@ export async function getDashboardStatsApi(
  * GET /dashboard/charts/jobs
  */
 export async function getJobsChartApi(
-  query?: JobsChartQuery
+  query?: JobsChartQuery,
 ): Promise<JobChartDataPoint[]> {
   const response = await apiClient.get<JobChartDataPoint[]>(
     '/dashboard/charts/jobs',
-    { params: query }
+    { params: query },
   );
   return response.data;
 }
@@ -46,11 +46,11 @@ export async function getJobsChartApi(
  * GET /dashboard/charts/credits
  */
 export async function getCreditsChartApi(
-  query?: CreditsChartQuery
+  query?: CreditsChartQuery,
 ): Promise<CreditsChartResponse> {
   const response = await apiClient.get<CreditsChartResponse>(
     '/dashboard/charts/credits',
-    { params: query }
+    { params: query },
   );
   return response.data;
 }
@@ -143,11 +143,11 @@ export interface RecentJobsQuery {
  * GET /translations
  */
 export async function getRecentJobsApi(
-  params?: RecentJobsQuery
+  params?: RecentJobsQuery,
 ): Promise<TranslationJobsListResponse> {
   const response = await apiClient.get<TranslationJobsListResponse>(
     '/translations',
-    { params }
+    { params },
   );
   return response.data;
 }

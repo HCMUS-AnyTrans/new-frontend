@@ -103,7 +103,7 @@ apiClient.interceptors.request.use(
     if (IS_DEV) {
       console.log(
         `[API Request] ${config.method?.toUpperCase()} ${config.url}`,
-        config.data ? { data: config.data } : ''
+        config.data ? { data: config.data } : '',
       );
     }
 
@@ -114,7 +114,7 @@ apiClient.interceptors.request.use(
       console.error('[API Request Error]', error);
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 // Type for auth refresh response
@@ -132,7 +132,7 @@ apiClient.interceptors.response.use(
     if (IS_DEV) {
       console.log(
         `[API Response] ${response.config.method?.toUpperCase()} ${response.config.url}`,
-        { status: response.status, data: response.data }
+        { status: response.status, data: response.data },
       );
     }
     return response;
@@ -153,7 +153,7 @@ apiClient.interceptors.response.use(
         {
           status: error.response?.status,
           data: error.response?.data,
-        }
+        },
       );
     }
 
@@ -209,7 +209,8 @@ apiClient.interceptors.response.use(
 
       try {
         // Attempt to refresh the token
-        const response = await apiClient.post<AuthRefreshResponse>('/auth/refresh');
+        const response =
+          await apiClient.post<AuthRefreshResponse>('/auth/refresh');
         const { accessToken } = response.data;
 
         // Update the store with new token
@@ -256,7 +257,7 @@ apiClient.interceptors.response.use(
     };
 
     return Promise.reject(apiError);
-  }
+  },
 );
 
 export default apiClient;

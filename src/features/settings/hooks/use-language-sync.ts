@@ -27,11 +27,12 @@ export function useLanguageSync() {
   const navigateToLocale = useCallback(
     (newLocale: UILanguage) => {
       const pathnameWithoutLocale = pathname.replace(/^\/(vi|en)/, '');
-      const search = typeof window !== 'undefined' ? window.location.search : '';
+      const search =
+        typeof window !== 'undefined' ? window.location.search : '';
       const newPath = `/${newLocale}${pathnameWithoutLocale || ''}${search}`;
       router.push(newPath);
     },
-    [pathname, router]
+    [pathname, router],
   );
 
   // Sync backend → URL locale on first load (once)
@@ -47,7 +48,7 @@ export function useLanguageSync() {
   const changeLanguage = useCallback(
     (newLanguage: UILanguage) => {
       const previousPreferences = queryClient.getQueryData<UserPreferences>(
-        settingsKeys.preferences()
+        settingsKeys.preferences(),
       );
 
       queryClient.setQueryData<UserPreferences | undefined>(
@@ -55,7 +56,7 @@ export function useLanguageSync() {
         (current) => {
           if (!current) return current;
           return { ...current, uiLanguage: newLanguage };
-        }
+        },
       );
 
       navigateToLocale(newLanguage);
@@ -67,14 +68,14 @@ export function useLanguageSync() {
             if (previousPreferences) {
               queryClient.setQueryData(
                 settingsKeys.preferences(),
-                previousPreferences
+                previousPreferences,
               );
             }
           },
-        }
+        },
       );
     },
-    [navigateToLocale, queryClient, updatePreferences]
+    [navigateToLocale, queryClient, updatePreferences],
   );
 
   const toggleLanguage = useCallback(() => {

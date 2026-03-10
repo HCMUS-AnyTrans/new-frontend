@@ -13,7 +13,7 @@ import type { TermQueryParams } from '../types';
  */
 export function useTerms(
   glossaryId: string | null | undefined,
-  params?: TermQueryParams
+  params?: TermQueryParams,
 ) {
   const { isAuthenticated, accessToken } = useAuthStore();
 
