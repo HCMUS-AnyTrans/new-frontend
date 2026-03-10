@@ -74,7 +74,6 @@ export function AppSidebar() {
           })}
         </SidebarMenu>
       </SidebarContent>
-
     </Sidebar>
   );
 }

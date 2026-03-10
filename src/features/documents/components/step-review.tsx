@@ -49,11 +49,12 @@ function formatFileSize(bytes: number): string {
   return (bytes / (1024 * 1024)).toFixed(1) + " MB"
 }
 
-function getFileIcon(fileName: string) {
+function getFileIcon(fileName: string, size: "sm" | "md" = "md") {
   const ext = fileName.split(".").pop()?.toLowerCase()
-  if (ext === "pdf") return <FileText className="size-10 text-destructive" />
-  if (ext === "pptx") return <Presentation className="size-10 text-warning" />
-  return <File className="size-10 text-primary" />
+  const sizeClass = size === "sm" ? "size-8" : "size-10"
+  if (ext === "pdf") return <FileText className={`${sizeClass} text-destructive`} />
+  if (ext === "pptx") return <Presentation className={`${sizeClass} text-warning`} />
+  return <File className={`${sizeClass} text-primary`} />
 }
 
 // =============== UPLOADING STATE ===============

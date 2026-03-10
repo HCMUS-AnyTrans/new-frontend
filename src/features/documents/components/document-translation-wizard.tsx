@@ -102,7 +102,6 @@ export function DocumentTranslationWizard() {
   // Estimate is now provided by the upload hook (polled during Step 1 analyzing phase).
   // It is already available by the time the user reaches Step 2.
   const isEstimating = false
-  const estimateError = null
 
   // Update flow status when job polling returns a terminal state
   // The wizard tracks "succeeded" / "failed" based on job polling data
