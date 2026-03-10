@@ -1,6 +1,4 @@
 "use client";
-
-import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -60,14 +58,11 @@ export function SettingsLayout({
 
   // Read ?tab= from URL to support deep-linking (e.g. /settings?tab=security)
   const tabFromUrl = searchParams.get("tab") as SettingsTab | null;
-  const initialTab =
+  const activeTab =
     tabFromUrl && validTabs.includes(tabFromUrl) ? tabFromUrl : defaultTab;
-
-  const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab);
 
   const handleTabChange = (value: string) => {
     const tab = value as SettingsTab;
-    setActiveTab(tab);
     onTabChange?.(tab);
 
     // Sync URL search params so the tab is preserved on refresh / shareable
@@ -81,7 +76,7 @@ export function SettingsLayout({
   };
 
   return (
-    <div className="mx-auto w-full max-w-5xl">
+    <div className="w-full">
       {/* Tabs Navigation */}
       <Tabs
         value={activeTab}

@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
 import { useSearchParams } from "next/navigation"
@@ -106,17 +107,15 @@ export function SecurityTab() {
   })
 
   // Handle ?linked=google callback after OAuth redirect
-  const [linkSuccess, setLinkSuccess] = useState<string | null>(null)
+  const linkSuccess = searchParams.get("linked")
   useEffect(() => {
-    const linked = searchParams.get("linked")
-    if (linked) {
-      setLinkSuccess(linked)
+    if (linkSuccess) {
       // Clean up the URL query param without a full page reload
       const url = new URL(window.location.href)
       url.searchParams.delete("linked")
       window.history.replaceState({}, "", url.toString())
     }
-  }, [searchParams])
+  }, [linkSuccess])
 
   const isLoading = isLoadingIdentities
 
@@ -265,9 +264,13 @@ export function SecurityTab() {
                       className="flex size-10 items-center justify-center rounded-lg"
                       style={{ backgroundColor: `${provider.color}15` }}
                     >
-                      <span className="text-lg font-bold" style={{ color: provider.color }}>
-                        {provider.name[0]}
-                      </span>
+                      <Image
+                        src={provider.icon}
+                        alt={`${provider.name} icon`}
+                        width={20}
+                        height={20}
+                        className="h-5 w-5 object-contain"
+                      />
                     </div>
                     <div>
                       <p className="font-medium text-foreground">{provider.name}</p>

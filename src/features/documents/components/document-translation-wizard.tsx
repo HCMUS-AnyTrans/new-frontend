@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useMemo, useEffect } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { TranslationStepper } from "./translation-stepper"
 import { StepUpload } from "./step-upload"
@@ -16,14 +17,19 @@ import {
 import { defaultConfig } from "../data"
 import {
   useUploadAndTranslate,
+  useTranslationJobSocket,
   useTranslationJob,
   useDownloadFile,
 } from "../hooks"
+import { useGlossaries, useTerms } from "@/features/glossary"
+import { useWallet } from "@/features/dashboard/hooks"
+import { translationKeys, walletKeys } from "@/lib/query-client"
 
 // =============== MAIN COMPONENT ===============
 
 export function DocumentTranslationWizard() {
   const t = useTranslations("documents.upload")
+  const queryClient = useQueryClient()
 
   // Step state
   const [step, setStep] = useState<TranslationStep>(1)
@@ -40,17 +46,62 @@ export function DocumentTranslationWizard() {
   const {
     flowStatus,
     uploadProgress,
+    fileId,
+    estimate,
     jobId,
     error: flowError,
+    startUpload,
     startTranslation,
     reset: resetFlow,
   } = useUploadAndTranslate()
 
-  const { data: jobData } = useTranslationJob(jobId, {
+  const { connectionState: jobSocketState } = useTranslationJobSocket(jobId, {
     enabled: flowStatus === "translating",
   })
 
+  const { data: jobData } = useTranslationJob(jobId, {
+    enabled: flowStatus === "translating",
+    pollInterval: jobSocketState === "connected" ? false : 3000,
+  })
+
   const { download, isDownloading } = useDownloadFile()
+  const { wallet, isLoading: isLoadingWallet } = useWallet()
+
+  const glossaryFilters = useMemo(
+    () => ({
+      page: 1,
+      limit: 100,
+      srcLang: config.srcLang,
+      tgtLang: config.tgtLang,
+    }),
+    [config.srcLang, config.tgtLang]
+  )
+
+  const {
+    glossaries = [],
+    isLoading: isLoadingGlossaries,
+    isFetching: isFetchingGlossaries,
+  } = useGlossaries(glossaryFilters)
+
+  const activeSelectedGlossaryId =
+    config.selectedGlossaryId && glossaries.some((item) => item.id === config.selectedGlossaryId)
+      ? config.selectedGlossaryId
+      : null
+
+  const {
+    terms: selectedGlossaryTerms = [],
+    isLoading: isLoadingGlossaryTerms,
+    isFetching: isFetchingGlossaryTerms,
+  } = useTerms(activeSelectedGlossaryId, {
+    page: 1,
+    limit: 100,
+    sortBy: "srcTerm",
+    sortOrder: "asc",
+  })
+
+  // Estimate is now provided by the upload hook (polled during Step 1 analyzing phase).
+  // It is already available by the time the user reaches Step 2.
+  const isEstimating = false
 
   // Update flow status when job polling returns a terminal state
   // The wizard tracks "succeeded" / "failed" based on job polling data
@@ -60,6 +111,15 @@ export function DocumentTranslationWizard() {
       : jobData?.status === "failed"
         ? "failed"
         : flowStatus
+
+  // When job reaches a terminal state, refresh history / recent jobs lists + wallet credits
+  useEffect(() => {
+    if (!jobData) return
+    if (jobData.status === "succeeded" || jobData.status === "failed") {
+      queryClient.invalidateQueries({ queryKey: translationKeys.all })
+      queryClient.invalidateQueries({ queryKey: walletKeys.all })
+    }
+  }, [jobData, queryClient])
 
   // =============== FILE HANDLERS ===============
 
@@ -75,6 +135,8 @@ export function DocumentTranslationWizard() {
 
   const handleFileSelect = useCallback(
     (f: File) => {
+      resetFlow()
+
       const error = validateFile(f)
       if (error) {
         setFileError(error)
@@ -86,17 +148,19 @@ export function DocumentTranslationWizard() {
         name: f.name,
         size: f.size,
         type: f.type,
+        charCount: Math.max(1, Math.round(f.size / 4)),
         file: f,
       })
       setFileError(null)
     },
-    [validateFile]
+    [resetFlow, validateFile]
   )
 
   const handleFileRemove = useCallback(() => {
+    resetFlow()
     setFile(null)
     setFileError(null)
-  }, [])
+  }, [resetFlow])
 
   // =============== CONFIG HANDLERS ===============
 
@@ -110,11 +174,18 @@ export function DocumentTranslationWizard() {
     setStep(newStep)
   }, [])
 
-  const handleUploadNext = useCallback(() => {
-    if (file && !fileError) {
-      goToStep(2)
+  const handleUploadNext = useCallback(async () => {
+    if (!file || fileError) return
+
+    try {
+      const uploadedFileId = await startUpload(file.file)
+      if (uploadedFileId) {
+        goToStep(2)
+      }
+    } catch {
+      // Upload errors are already captured in the flow state.
     }
-  }, [file, fileError, goToStep])
+  }, [file, fileError, goToStep, startUpload])
 
   const handleConfigBack = useCallback(() => {
     goToStep(1)
@@ -123,14 +194,16 @@ export function DocumentTranslationWizard() {
   // =============== TRANSLATION FLOW ===============
 
   const handleStartTranslation = useCallback(() => {
-    if (!file) return
+    if (!file || !fileId) return
 
     // Move to step 3 immediately to show upload progress
     goToStep(3)
 
-    // Start the real upload → confirm → create job flow
-    startTranslation(file.file, config)
-  }, [file, config, goToStep, startTranslation])
+    const usableGlossaryTerms = activeSelectedGlossaryId ? selectedGlossaryTerms : []
+
+    // Start the translation job for the already-uploaded file
+    startTranslation(config, usableGlossaryTerms)
+  }, [file, fileId, config, activeSelectedGlossaryId, selectedGlossaryTerms, goToStep, startTranslation])
 
   // =============== RESULT HANDLERS ===============
 
@@ -169,16 +242,38 @@ export function DocumentTranslationWizard() {
             onFileRemove={handleFileRemove}
             onDragChange={setIsDragging}
             onNext={handleUploadNext}
+            pipelineStatus={
+              flowStatus === "uploading"
+                ? "uploading"
+                : flowStatus === "confirming"
+                  ? "confirming"
+                  : flowStatus === "analyzing"
+                    ? "analyzing"
+                    : flowStatus === "failed"
+                      ? "failed"
+                      : "idle"
+            }
+            uploadProgress={uploadProgress}
+            uploadError={flowError}
           />
         )}
 
         {step === 2 && (
           <StepConfigure
-            config={config}
+            config={{ ...config, selectedGlossaryId: activeSelectedGlossaryId }}
             onConfigChange={handleConfigChange}
+            glossaries={glossaries}
+            selectedGlossaryTerms={selectedGlossaryTerms}
+            isLoadingGlossaries={isLoadingGlossaries || isFetchingGlossaries}
+            isLoadingGlossaryTerms={isLoadingGlossaryTerms || isFetchingGlossaryTerms}
+            estimate={estimate ?? undefined}
+            isEstimating={isEstimating}
+            estimateError={null}
+            currentBalance={wallet?.balance}
+            isLoadingBalance={isLoadingWallet}
             onBack={handleConfigBack}
             onStart={handleStartTranslation}
-            isLoading={flowStatus !== "idle" && flowStatus !== "failed"}
+            isLoading={flowStatus === "creating" || flowStatus === "translating"}
           />
         )}
 

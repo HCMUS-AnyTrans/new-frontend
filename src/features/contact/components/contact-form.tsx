@@ -36,7 +36,8 @@ export function ContactForm() {
     },
   })
 
-  function onSubmit(_data: ContactFormValues) {
+  function onSubmit(data: ContactFormValues) {
+    void data
     setIsSubmitting(true)
     // TODO: integrate with real contact API
     setTimeout(() => {
@@ -50,7 +51,7 @@ export function ContactForm() {
   const labelClass = "text-muted-foreground font-medium text-xs uppercase tracking-wide"
 
   return (
-    <div className="p-10 bg-background h-full flex flex-col justify-center">
+    <div className="flex h-full flex-col justify-center bg-background p-10 dark:bg-card">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
           

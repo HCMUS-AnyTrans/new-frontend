@@ -41,7 +41,11 @@
       "emailResultsDescription": "Tự động gửi email khi dịch hoàn tất",
       "fileTtl": "Thời gian lưu file",
       "fileTtlDescription": "File sẽ tự động xóa sau thời gian này",
-      "days": "{count} ngày"
+      "days": "{count} ngày",
+      "hours": "{count} giờ",
+      "hourUnit": "giờ",
+      "custom": "Tùy chỉnh",
+      "customHoursPlaceholder": "Nhập số giờ"
     },
     "security": {
       "title": "Bảo mật tài khoản",
@@ -115,6 +119,8 @@
       "save": "Tiết kiệm {percent}%",
       "buyNow": "Mua ngay",
       "bonusPercent": "+{percent}% thưởng",
+      "bonusCredits": "+{credits} credits thưởng",
+      "perCredit": "credit",
       "transactionHistory": "Lịch sử giao dịch",
       "recentTransactions": "Các giao dịch credits gần đây",
       "noTransactions": "Chưa có giao dịch nào",
@@ -136,20 +142,32 @@
       "package": "Gói",
       "vnpaySuccess": "Thanh toán thành công! Credits đã được cộng vào tài khoản của bạn.",
       "vnpayError": "Thanh toán không thành công. Vui lòng thử lại.",
-      "vnpayPending": "Thanh toán đang được xử lý. Vui lòng đợi trong giây lát."
+      "vnpayPending": "Thanh toán đang được xử lý. Vui lòng đợi trong giây lát.",
+      "backToDashboard": "Quay lại dashboard"
     },
     "files": {
       "title": "Quản lý tệp",
-      "description": "Xem và quản lý các file đã tải lên",
+      "description": "Xem và quản lý các tệp dịch thuật của bạn",
       "storageUsage": "Dung lượng sử dụng",
       "filesStored": "{count} tệp đang được lưu trữ",
       "yourFiles": "Tệp của bạn",
-      "yourFilesDescription": "Quản lý các tệp đã tải lên và đã dịch",
+      "yourFilesDescription": "Tải xuống hoặc xóa tệp từ các bản dịch của bạn",
       "noFiles": "Chưa có tệp nào",
+      "noTranslationFiles": "Chưa có tệp dịch nào",
+      "noTranslationFilesDescription": "Các tài liệu đã dịch sẽ hiển thị ở đây khi bạn bắt đầu dịch.",
+      "startTranslating": "Bắt đầu dịch",
       "daysRemaining": "Còn {count} ngày",
       "expiresOn": "Hết hạn {date}",
+      "fileExpired": "Tệp đã hết hạn",
+      "originalFile": "Gốc",
+      "translatedFile": "Đã dịch",
+      "download": "Tải xuống",
+      "downloadOriginal": "File gốc",
+      "downloadTranslated": "File đã dịch",
       "confirmDelete": "Xác nhận xóa",
-      "confirmDeleteMessage": "Bạn có chắc chắn muốn xóa tệp \"{name}\"? Hành động này không thể hoàn tác."
+      "confirmDeleteMessage": "Bạn có chắc chắn muốn xóa tệp \"{name}\"? Hành động này không thể hoàn tác.",
+      "confirmDeleteJob": "Xóa tệp dịch thuật",
+      "confirmDeleteJobMessage": "Bạn có chắc chắn muốn xóa tệp gốc và tệp đã dịch của \"{name}\"? Hành động này không thể hoàn tác."
     },
     "activity": {
       "title": "Nhật ký hoạt động",

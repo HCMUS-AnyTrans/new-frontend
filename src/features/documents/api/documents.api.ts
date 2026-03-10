@@ -5,6 +5,8 @@ import type {
   UploadUrlResponse,
   UpdateFileStatusDto,
   FileResponse,
+  CreditEstimateDto,
+  CreditEstimateResponse,
   CreateTranslationJobDto,
   TranslationJobResponse,
   FileDownloadUrlResponse,
@@ -16,14 +18,14 @@ import type {
 
 /**
  * Request a presigned upload URL for a document file.
- * POST /files/upload/request
+ * POST /files/upload/doc
  */
 export async function requestDocUploadUrl(
-  dto: RequestUploadUrlDto
+  dto: RequestUploadUrlDto,
 ): Promise<UploadUrlResponse> {
   const response = await apiClient.post<UploadUrlResponse>(
-    '/files/upload/request',
-    dto
+    '/files/upload/doc',
+    dto,
   );
   return response.data;
 }
@@ -36,7 +38,7 @@ export async function requestDocUploadUrl(
 export async function uploadFileToPresignedUrl(
   uploadUrl: string,
   file: File,
-  onProgress?: (percent: number) => void
+  onProgress?: (percent: number) => void,
 ): Promise<void> {
   await axios.put(uploadUrl, file, {
     headers: {
@@ -45,7 +47,7 @@ export async function uploadFileToPresignedUrl(
     onUploadProgress: (progressEvent) => {
       if (onProgress && progressEvent.total) {
         const percent = Math.round(
-          (progressEvent.loaded * 100) / progressEvent.total
+          (progressEvent.loaded * 100) / progressEvent.total,
         );
         onProgress(percent);
       }
@@ -59,11 +61,11 @@ export async function uploadFileToPresignedUrl(
  */
 export async function confirmFileUpload(
   fileId: string,
-  dto: UpdateFileStatusDto
+  dto: UpdateFileStatusDto,
 ): Promise<FileResponse> {
   const response = await apiClient.patch<FileResponse>(
     `/files/${fileId}/status`,
-    dto
+    dto,
   );
   return response.data;
 }
@@ -79,7 +81,7 @@ export async function confirmFileUpload(
  */
 export async function createTranslationJob(
   dto: CreateTranslationJobDto,
-  idempotencyKey?: string
+  idempotencyKey?: string,
 ): Promise<TranslationJobResponse> {
   const headers: Record<string, string> = {};
   if (idempotencyKey) {
@@ -88,7 +90,21 @@ export async function createTranslationJob(
   const response = await apiClient.post<TranslationJobResponse>(
     '/translations/doc',
     dto,
-    { headers }
+    { headers },
+  );
+  return response.data;
+}
+
+/**
+ * Estimate required credits for a translation request.
+ * POST /translations/estimate-credits
+ */
+export async function estimateTranslationCredits(
+  dto: CreditEstimateDto,
+): Promise<CreditEstimateResponse> {
+  const response = await apiClient.post<CreditEstimateResponse>(
+    '/translations/estimate-credits',
+    dto,
   );
   return response.data;
 }
@@ -98,10 +114,10 @@ export async function createTranslationJob(
  * GET /translations/:job_id
  */
 export async function getTranslationJob(
-  jobId: string
+  jobId: string,
 ): Promise<TranslationJobResponse> {
   const response = await apiClient.get<TranslationJobResponse>(
-    `/translations/${jobId}`
+    `/translations/${jobId}`,
   );
   return response.data;
 }
@@ -115,10 +131,10 @@ export async function getTranslationJob(
  * GET /files/:file_id/download
  */
 export async function getFileDownloadUrl(
-  fileId: string
+  fileId: string,
 ): Promise<FileDownloadUrlResponse> {
   const response = await apiClient.get<FileDownloadUrlResponse>(
-    `/files/${fileId}/download`
+    `/files/${fileId}/download`,
   );
   return response.data;
 }

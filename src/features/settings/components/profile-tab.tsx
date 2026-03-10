@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { formatPhoneNumberIntl } from "react-phone-number-input";
 import { Camera, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -106,16 +107,6 @@ export function ProfileTab() {
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Sync form data when profile loads
-  useEffect(() => {
-    if (profile) {
-      setFormData({
-        fullName: profile.fullName,
-        phone: profile.phone || "",
-      });
-    }
-  }, [profile]);
-
   // Show skeleton while loading
   if (isLoading || !profile) {
     return <ProfileTabSkeleton />;
@@ -128,6 +119,12 @@ export function ProfileTab() {
       .join("")
       .toUpperCase()
       .slice(0, 2);
+  };
+
+  const formatPhoneNumber = (phone: string | null | undefined) => {
+    if (!phone) return null;
+
+    return formatPhoneNumberIntl(phone) ?? phone;
   };
 
   const handleSave = () => {
@@ -150,6 +147,14 @@ export function ProfileTab() {
       phone: profile.phone || "",
     });
     setIsEditing(false);
+  };
+
+  const handleStartEdit = () => {
+    setFormData({
+      fullName: profile.fullName,
+      phone: profile.phone || "",
+    });
+    setIsEditing(true);
   };
 
   const handleAvatarClick = () => {
@@ -273,7 +278,7 @@ export function ProfileTab() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setIsEditing(true)}
+              onClick={handleStartEdit}
             >
               {tCommon("edit")}
             </Button>
@@ -322,7 +327,7 @@ export function ProfileTab() {
               </div>
             ) : (
               <span className="text-sm text-foreground">
-                {profile.phone || (
+                {formatPhoneNumber(profile.phone) || (
                   <span className="text-muted-foreground">&mdash;</span>
                 )}
               </span>

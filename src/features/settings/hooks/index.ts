@@ -44,6 +44,7 @@ export {
   useFiles,
   useFileDownload,
   useDeleteFile,
+  useDeleteFilesByJob,
   useStorageUsage,
 } from './use-files';
 

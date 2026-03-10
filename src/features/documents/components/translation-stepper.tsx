@@ -20,7 +20,7 @@ export function TranslationStepper({ currentStep, className }: TranslationSteppe
   ]
 
   return (
-    <div className={cn("flex items-center justify-center py-6", className)}>
+    <div className={cn("flex items-center justify-center py-4 sm:py-6", className)}>
       {steps.map((step, idx) => {
         const isCompleted = currentStep > step.number
         const isCurrent = currentStep === step.number
@@ -29,22 +29,23 @@ export function TranslationStepper({ currentStep, className }: TranslationSteppe
         return (
           <div key={step.number} className="flex items-center">
             {/* Step indicator */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div
                 className={cn(
-                  "flex size-10 items-center justify-center rounded-full text-sm font-semibold shadow-sm transition-all",
+                  "flex size-8 items-center justify-center rounded-full text-sm font-semibold shadow-sm transition-all sm:size-10",
                   isCompleted && "bg-primary text-primary-foreground",
                   isCurrent && "border-2 border-primary bg-primary/10 text-primary",
                   isPending && "border-2 border-border bg-card text-muted-foreground"
                 )}
               >
-                {isCompleted ? <Check className="size-5" /> : step.number}
+                {isCompleted ? <Check className="size-4 sm:size-5" /> : step.number}
               </div>
+              {/* Label: always show current step on mobile, all on sm+ */}
               <span
                 className={cn(
-                  "font-medium transition-colors",
-                  (isCompleted || isCurrent) && "text-foreground",
-                  isPending && "text-muted-foreground"
+                  "text-xs font-medium transition-colors sm:text-sm",
+                  isCurrent ? "block" : "hidden sm:block",
+                  (isCompleted || isCurrent) ? "text-foreground" : "text-muted-foreground"
                 )}
               >
                 {step.label}
@@ -55,7 +56,8 @@ export function TranslationStepper({ currentStep, className }: TranslationSteppe
             {idx < steps.length - 1 && (
               <div
                 className={cn(
-                  "mx-4 hidden h-1 w-16 rounded-full transition-colors sm:block md:w-24 lg:w-32",
+                  "mx-2 h-px rounded-full transition-colors sm:mx-4 sm:w-16 md:w-24 lg:w-32",
+                  "w-8",
                   isCompleted ? "bg-primary" : "bg-border"
                 )}
               />

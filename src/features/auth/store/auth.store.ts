@@ -4,7 +4,7 @@ import type { AuthStore, User } from '../types';
 
 /**
  * Zustand store for authentication state
- * 
+ *
  * Security notes:
  * - Access token is stored in memory only (not persisted)
  * - User data is persisted to localStorage for better UX
@@ -73,8 +73,8 @@ export const useAuthStore = create<AuthStore>()(
       onRehydrateStorage: () => () => {
         // no-op: AuthProvider calls setInitialized(true) after refresh attempt
       },
-    }
-  )
+    },
+  ),
 );
 
 /**
@@ -82,8 +82,10 @@ export const useAuthStore = create<AuthStore>()(
  */
 export const useUser = () => useAuthStore((state) => state.user);
 export const useAccessToken = () => useAuthStore((state) => state.accessToken);
-export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated);
-export const useIsInitialized = () => useAuthStore((state) => state.isInitialized);
+export const useIsAuthenticated = () =>
+  useAuthStore((state) => state.isAuthenticated);
+export const useIsInitialized = () =>
+  useAuthStore((state) => state.isInitialized);
 
 /**
  * Non-reactive getters for use outside React components
@@ -91,5 +93,6 @@ export const useIsInitialized = () => useAuthStore((state) => state.isInitialize
  */
 export const getAuthState = () => useAuthStore.getState();
 export const getAccessToken = () => useAuthStore.getState().accessToken;
-export const setAccessToken = (token: string) => useAuthStore.getState().setAccessToken(token);
+export const setAccessToken = (token: string) =>
+  useAuthStore.getState().setAccessToken(token);
 export const clearAuthState = () => useAuthStore.getState().clearAuth();

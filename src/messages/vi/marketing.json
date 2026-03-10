@@ -23,12 +23,20 @@
         "format": {
           "title": "Giữ nguyên format gốc",
           "description": "Bảng biểu, hình ảnh, header/footer được bảo toàn hoàn hảo. Xuất file đúng định dạng ban đầu.",
-          "highlights": ["Giữ nguyên bảng biểu", "Bảo toàn hình ảnh", "Định dạng PDF/Word"]
+          "highlights": [
+            "Giữ nguyên bảng biểu",
+            "Bảo toàn hình ảnh",
+            "Định dạng PDF/Word"
+          ]
         },
         "glossary": {
           "title": "Glossary thông minh",
           "description": "Tạo và quản lý bộ từ điển chuyên ngành. Đảm bảo thuật ngữ nhất quán trong toàn bộ tài liệu.",
-          "highlights": ["Từ điển chuyên ngành", "Thuật ngữ nhất quán", "Tự động áp dụng"]
+          "highlights": [
+            "Từ điển chuyên ngành",
+            "Thuật ngữ nhất quán",
+            "Tự động áp dụng"
+          ]
         },
         "speed": {
           "title": "Nhanh gấp 10 lần",
@@ -43,19 +51,36 @@
         "ocr": {
           "title": "OCR hình ảnh",
           "description": "Nhận diện và dịch văn bản trong hình ảnh. Hỗ trợ scan tài liệu chất lượng cao.",
-          "highlights": ["Nhận diện chữ in", "Scan tài liệu", "Độ chính xác 99%"]
+          "highlights": [
+            "Nhận diện chữ in",
+            "Scan tài liệu",
+            "Độ chính xác 99%"
+          ]
         },
         "savings": {
           "title": "Tiết kiệm 80% chi phí",
           "description": "Chi phí chỉ bằng 1/5 so với thuê dịch giả. ROI rõ ràng ngay từ tháng đầu tiên.",
-          "highlights": ["Giá từ 0.001$/từ", "Không phí ẩn", "Hoàn tiền 30 ngày"]
+          "highlights": [
+            "Giá từ 0.001$/từ",
+            "Không phí ẩn",
+            "Hoàn tiền 30 ngày"
+          ]
         }
       },
       "glossaryTerms": {
-        "machineLearning": { "en": "Machine Learning", "translated": "Học máy" },
-        "neuralNetwork": { "en": "Neural Network", "translated": "Mạng nơ-ron" },
+        "machineLearning": {
+          "en": "Machine Learning",
+          "translated": "Học máy"
+        },
+        "neuralNetwork": {
+          "en": "Neural Network",
+          "translated": "Mạng nơ-ron"
+        },
         "deepLearning": { "en": "Deep Learning", "translated": "Học sâu" },
-        "ai": { "en": "Artificial Intelligence", "translated": "Trí tuệ nhân tạo" }
+        "ai": {
+          "en": "Artificial Intelligence",
+          "translated": "Trí tuệ nhân tạo"
+        }
       },
       "reviewMockup": {
         "originalTitle": "Annual Report 2024",
@@ -215,7 +240,14 @@
       "ctaSecondary": "Xem demo",
       "popular": "Phổ biến nhất",
       "credits": "credits",
+      "perCredit": "credit",
       "buyNow": "Mua ngay",
+      "savePercent": "Tiết kiệm {percent}%",
+      "bonusPercent": "Tặng +{percent}% credits",
+      "bonusCredits": "+{credits} credits thưởng",
+      "packagesError": "Không thể tải gói credit lúc này.",
+      "packagesEmpty": "Hiện chưa có gói credit khả dụng.",
+      "retry": "Thử lại",
       "usageSection": {
         "title": "Sử dụng credits trong thực tế"
       },
@@ -280,6 +312,23 @@
         "Tích hợp tùy chỉnh"
       ]
     },
+    "checkout": {
+      "eyebrow": "Thanh toán an toàn",
+      "title": "Xác nhận gói credit",
+      "subtitle": "Hoàn tất thanh toán VNPay để nạp credit ngay.",
+      "total": "Tổng cộng",
+      "perCredit": "Ước tính mỗi credit",
+      "discount": "Tiết kiệm {percent}% cho gói này",
+      "bonus": "Tặng thêm {percent}% credit",
+      "payNow": "Thanh toán VNPay",
+      "processing": "Đang chuyển đến VNPay...",
+      "paymentError": "Không thể tạo thanh toán. Vui lòng thử lại.",
+      "packageNotFound": "Không tìm thấy gói hoặc gói đã ngừng bán.",
+      "backToPricing": "Quay lại bảng giá",
+      "backToDashboard": "Quay lại dashboard",
+      "packagesError": "Không thể tải gói credit lúc này.",
+      "retry": "Thử lại"
+    },
     "testimonials": {
       "title": "Khách hàng nói gì",
       "subtitle": "Hàng ngàn khách hàng tin tưởng sử dụng"
@@ -321,7 +370,7 @@
       }
     },
     "nav": {
-      "features": "Tính năng",
+      "homepage": "Trang chủ",
       "pricing": "Bảng giá",
       "about": "Về chúng tôi",
       "contact": "Liên hệ",

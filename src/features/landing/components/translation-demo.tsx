@@ -94,7 +94,7 @@ export function TranslationDemo({
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1 }}
-            className="p-4 bg-primary-50 dark:bg-primary-900 rounded-xl border border-primary-200 dark:border-primary-800"
+            className="rounded-xl border border-primary/20 bg-primary/8 p-4 dark:border-primary/25 dark:bg-primary/12"
           >
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-semibold text-primary uppercase tracking-wide">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData } from '@tanstack/react-query';
 import { getRecentJobsApi } from '../api/dashboard.api';
 import type { RecentJobsQuery } from '../api/dashboard.api';
 import { translationKeys } from '@/lib/query-client';
@@ -18,6 +19,7 @@ export function useRecentJobs(params?: RecentJobsQuery) {
     enabled: isAuthenticated && !!accessToken,
     staleTime: 30 * 1000, // 30 seconds
     gcTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 
   return {

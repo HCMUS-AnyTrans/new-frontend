@@ -1,28 +1,34 @@
-'use client';
+"use client";
 
-import { useTranslations, useLocale } from 'next-intl';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
-import { History } from 'lucide-react';
-import { useHistoryJobs } from '../hooks';
-import { HistoryFilters } from './history-filters';
-import { HistoryTable } from './history-table';
-import { HistoryPagination } from './history-pagination';
-import { HistoryEmptyState } from './history-empty-state';
-import { HistoryTableSkeleton } from './history-table-skeleton';
+import { useState, useCallback } from "react";
+import { useLocale } from "next-intl";
+import { AppCard, AppCardContent } from "@/components/ui/app-card";
+import type { TranslationJobResponse } from "@/features/dashboard/api/dashboard.api";
+import { useHistoryJobs } from "../hooks";
+import { HistoryFilters } from "./history-filters";
+import { HistoryTable } from "./history-table";
+import { HistoryPagination } from "./history-pagination";
+import { HistoryEmptyState } from "./history-empty-state";
+import { HistoryTableSkeleton } from "./history-table-skeleton";
+import { HistoryJobDetail } from "./history-job-detail";
 
 /**
- * Top-level orchestrator for the history page.
- * Wires the useHistoryJobs hook to all presentational sub-components.
+ * Orchestrator for the history page.
+ * Connects useHistoryJobs to all presentational sub-components
+ * and manages the job-detail slide-over state.
  */
 export function HistoryContent() {
-  const t = useTranslations('dashboard.history');
   const locale = useLocale();
+
+  const [selectedJob, setSelectedJob] = useState<TranslationJobResponse | null>(
+    null,
+  );
+  const [detailOpen, setDetailOpen] = useState(false);
+
+  const handleViewDetails = useCallback((job: TranslationJobResponse) => {
+    setSelectedJob(job);
+    setDetailOpen(true);
+  }, []);
 
   const {
     jobs,
@@ -31,44 +37,61 @@ export function HistoryContent() {
     isError,
     search,
     statusFilter,
+    domainFilter,
     hasFilters,
     handleSearchChange,
     handleStatusChange,
+    handleDomainChange,
     setPage,
   } = useHistoryJobs();
 
-  if (isLoading || isError) {
-    return <HistoryTableSkeleton />;
-  }
+  const isEmpty = jobs.length === 0;
 
   return (
-    <Card className="border border-border shadow-sm">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <History className="size-5 text-primary" />
-          {t('title')}
-        </CardTitle>
-        <CardDescription>{t('description')}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <HistoryFilters
-          search={search}
-          onSearchChange={handleSearchChange}
-          statusFilter={statusFilter}
-          onStatusChange={handleStatusChange}
-        />
+    <>
+      {/* Filter bar */}
+      <HistoryFilters
+        search={search}
+        onSearchChange={handleSearchChange}
+        statusFilter={statusFilter}
+        onStatusChange={handleStatusChange}
+        domainFilter={domainFilter}
+        onDomainChange={handleDomainChange}
+      />
 
-        {jobs.length === 0 ? (
+      {/* Content */}
+      {isLoading && isEmpty ? (
+        <HistoryTableSkeleton showFilters={false} />
+      ) : isError || isEmpty ? (
+        <AppCard>
           <HistoryEmptyState hasFilters={hasFilters} />
-        ) : (
-          <>
-            <HistoryTable jobs={jobs} locale={locale} />
-            {meta && (
+        </AppCard>
+      ) : (
+        <AppCard className="overflow-hidden">
+          <HistoryTable
+            jobs={jobs}
+            locale={locale}
+            onViewDetails={handleViewDetails}
+          />
+
+          {meta && meta.totalPages > 1 && (
+            <AppCardContent
+              padding="none"
+              className="border-t px-4 py-3 lg:px-6"
+            >
               <HistoryPagination meta={meta} onPageChange={setPage} />
-            )}
-          </>
-        )}
-      </CardContent>
-    </Card>
+            </AppCardContent>
+          )}
+        </AppCard>
+      )}
+
+      {/* Job detail slide-over */}
+      <HistoryJobDetail
+        job={selectedJob}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+        locale={locale}
+      />
+    </>
   );
 }

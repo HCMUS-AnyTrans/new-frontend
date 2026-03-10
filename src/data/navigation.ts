@@ -3,74 +3,74 @@
 // ============================================================================
 
 export interface NavItem {
-  label: string
-  href: string
+  label: string;
+  href: string;
 }
 
 export interface FooterSection {
-  title: string
-  links: NavItem[]
+  title: string;
+  links: NavItem[];
 }
 
 export interface NavConfig {
-  mainNav: NavItem[]
-  footerNav: Record<string, FooterSection>
+  mainNav: NavItem[];
+  footerNav: Record<string, FooterSection>;
 }
 
 // Main navigation links
 export const mainNavItems: NavItem[] = [
-  { label: "Tính năng", href: "#features" },
-  { label: "Bảng giá", href: "/pricing" },
-  { label: "Về chúng tôi", href: "/about" },
-  { label: "Liên hệ", href: "/contact" },
-]
+  { label: 'Tính năng', href: '#features' },
+  { label: 'Bảng giá', href: '/pricing' },
+  { label: 'Về chúng tôi', href: '/about' },
+  { label: 'Liên hệ', href: '/contact' },
+];
 
 // Footer navigation sections
 export const footerNavSections: Record<string, FooterSection> = {
   product: {
-    title: "Sản phẩm",
+    title: 'Sản phẩm',
     links: [
-      { label: "Tính năng", href: "#features" },
-      { label: "Bảng giá", href: "/pricing" },
-      { label: "API", href: "/api" },
-      { label: "Integrations", href: "/integrations" },
-      { label: "Changelog", href: "/changelog" },
+      { label: 'Tính năng', href: '#features' },
+      { label: 'Bảng giá', href: '/pricing' },
+      { label: 'API', href: '/api' },
+      { label: 'Integrations', href: '/integrations' },
+      { label: 'Changelog', href: '/changelog' },
     ],
   },
   company: {
-    title: "Công ty",
+    title: 'Công ty',
     links: [
-      { label: "Về chúng tôi", href: "/about" },
-      { label: "Blog", href: "/blog" },
-      { label: "Tuyển dụng", href: "/careers" },
-      { label: "Liên hệ", href: "/contact" },
-      { label: "Đối tác", href: "/partners" },
+      { label: 'Về chúng tôi', href: '/about' },
+      { label: 'Blog', href: '/blog' },
+      { label: 'Tuyển dụng', href: '/careers' },
+      { label: 'Liên hệ', href: '/contact' },
+      { label: 'Đối tác', href: '/partners' },
     ],
   },
   resources: {
-    title: "Tài nguyên",
+    title: 'Tài nguyên',
     links: [
-      { label: "Documentation", href: "/docs" },
-      { label: "Hướng dẫn", href: "/guides" },
-      { label: "Video tutorials", href: "/tutorials" },
-      { label: "Case studies", href: "/case-studies" },
-      { label: "Hỗ trợ", href: "/support" },
+      { label: 'Documentation', href: '/docs' },
+      { label: 'Hướng dẫn', href: '/guides' },
+      { label: 'Video tutorials', href: '/tutorials' },
+      { label: 'Case studies', href: '/case-studies' },
+      { label: 'Hỗ trợ', href: '/support' },
     ],
   },
   legal: {
-    title: "Pháp lý",
+    title: 'Pháp lý',
     links: [
-      { label: "Điều khoản", href: "/terms" },
-      { label: "Bảo mật", href: "/privacy" },
-      { label: "Cookie", href: "/cookies" },
-      { label: "DMCA", href: "/dmca" },
+      { label: 'Điều khoản', href: '/terms' },
+      { label: 'Bảo mật', href: '/privacy' },
+      { label: 'Cookie', href: '/cookies' },
+      { label: 'DMCA', href: '/dmca' },
     ],
   },
-}
+};
 
 // Bottom footer links
 export const bottomLinks: NavItem[] = [
-  { label: "Terms", href: "/terms" },
-  { label: "Privacy", href: "/privacy" },
-  { label: "Cookies", href: "/cookies" },
-]
+  { label: 'Terms', href: '/terms' },
+  { label: 'Privacy', href: '/privacy' },
+  { label: 'Cookies', href: '/cookies' },
+];

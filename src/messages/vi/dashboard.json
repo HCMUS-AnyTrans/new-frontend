@@ -4,8 +4,8 @@
       "mainMenu": "Menu chính",
       "other": "Khác",
       "dashboard": "Tổng quan",
-      "documents": "Dịch tài liệu",
-      "glossary": "Từ điển thuật ngữ",
+      "documents": "Dịch",
+      "glossary": "Thuật ngữ",
       "history": "Lịch sử",
       "settings": "Cài đặt",
       "help": "Trợ giúp",
@@ -14,7 +14,7 @@
     },
     "pages": {
       "dashboard": "Tổng quan",
-      "documents": "Dịch tài liệu",
+      "documents": "Dịch",
       "glossary": "Thuật ngữ",
       "history": "Lịch sử",
       "settings": "Cài đặt",
@@ -38,6 +38,58 @@
       "uploadDocument": "Tải lên tài liệu",
       "buyCredits": "Mua thêm credits"
     },
+    "commandPalette": {
+      "placeholder": "Tìm kiếm chức năng, bản dịch, thuật ngữ...",
+      "features": "Chức năng",
+      "jobs": "Bản dịch",
+      "glossaries": "Bộ thuật ngữ",
+      "noResults": "Không tìm thấy kết quả",
+      "noResultsHint": "Thử từ khóa khác",
+      "noJobResults": "Không tìm thấy bản dịch phù hợp",
+      "noGlossaryResults": "Không tìm thấy bộ thuật ngữ phù hợp",
+      "unknownFile": "File không xác định",
+      "typeToSearch": "Nhập từ khóa để tìm kiếm",
+      "hint": "Tìm chức năng, bản dịch và bộ thuật ngữ",
+      "navigate": "để điều hướng",
+      "select": "để chọn",
+      "close": "để đóng",
+      "dashboardDesc": "Tổng quan hoạt động dịch thuật",
+      "documentsDesc": "Dịch tài liệu và phụ đề",
+      "glossaryDesc": "Quản lý bộ từ điển thuật ngữ",
+      "historyDesc": "Xem tất cả bản dịch của bạn",
+      "settingsDesc": "Tài khoản, tùy chọn và bảo mật",
+      "helpDesc": "Tài liệu hướng dẫn và hỗ trợ"
+    },
+    "headerMenu": {
+      "buyMoreCredits": "Mua thêm credits",
+      "paymentHistory": "Lịch sử thanh toán",
+      "payment": "Thanh toán",
+      "notifications": "Thông báo",
+      "references": "Tùy chọn",
+      "security": "Bảo mật",
+      "files": "Tệp tin",
+      "activity": "Hoạt động"
+    },
+    "buyCreditsDialog": {
+      "title": "Mua thêm credits",
+      "description": "Số dư hiện tại: {balance} credits. Chọn gói để tiếp tục thanh toán.",
+      "bestValue": "Giá trị tốt nhất",
+      "popular": "Phổ biến",
+      "bonusCredits": "+{credits} credits thưởng",
+      "credits": "credits",
+      "perCredit": "credit",
+      "cancel": "Hủy",
+      "viewPricing": "Xem trang bảng giá",
+      "loadError": "Không thể tải gói credit lúc này.",
+      "retry": "Thử lại",
+      "empty": "Hiện chưa có gói credit khả dụng."
+    },
+    "paymentBanner": {
+      "success": "Thanh toán thành công. Số dư credits đã được cập nhật.",
+      "error": "Thanh toán thất bại hoặc đã bị hủy. Vui lòng thử lại.",
+      "pending": "Thanh toán đang được xử lý. Vui lòng kiểm tra lại sau ít phút.",
+      "dismiss": "Đóng"
+    },
     "activity": {
       "title": "Hoạt động gần đây",
       "viewAll": "Xem tất cả"
@@ -59,14 +111,14 @@
     },
     "storage": {
       "title": "Lưu trữ",
-      "remaining": "Còn lại {value} GB dung lượng",
+      "remaining": "Còn lại {value} MB dung lượng",
       "creditUsageTitle": "Credit đã sử dụng",
       "noUsageInfo": "Chưa có thông tin sử dụng credit",
       "documents": "Tài liệu",
       "ofTotal": "tổng credit"
     },
     "charts": {
-      "jobsByDay": "Bản dịch theo ngày (7 ngày gần nhất)",
+      "jobsByDay": "Tổng quan hoạt động",
       "creditAllocation": "Phân bổ credits",
       "noUsageInfo": "Chưa có thông tin sử dụng credit",
       "documents": "Tài liệu",
@@ -84,12 +136,39 @@
       "searchPlaceholder": "Tìm kiếm theo tên file...",
       "filterStatus": "Trạng thái",
       "allStatuses": "Tất cả trạng thái",
+      "filterDomain": "Lĩnh vực",
+      "allDomains": "Tất cả lĩnh vực",
       "noJobs": "Chưa có bản dịch nào",
       "noJobsDescription": "Lịch sử dịch thuật sẽ hiển thị ở đây khi bạn bắt đầu dịch tài liệu.",
       "noResults": "Không tìm thấy kết quả",
       "noResultsDescription": "Hãy thử điều chỉnh từ khóa tìm kiếm hoặc bộ lọc.",
       "totalJobs": "{count} bản dịch",
-      "pageInfo": "Trang {page}/{totalPages}"
+      "pageInfo": "Trang {page}/{totalPages}",
+      "fileExpired": "File đã hết hạn",
+      "download": {
+        "label": "Tải xuống",
+        "original": "File gốc",
+        "translated": "File đã dịch"
+      },
+      "columns": {
+        "credits": "Credits"
+      },
+      "detail": {
+        "title": "Chi tiết bản dịch",
+        "timing": "Thời gian",
+        "createdAt": "Tạo lúc",
+        "completedAt": "Hoàn thành lúc",
+        "inputFile": "File gốc",
+        "outputFile": "File đã dịch",
+        "fileExpired": "File đã hết hạn",
+        "creditCost": "Chi phí Credits",
+        "breakdown": {
+          "service": "Dịch vụ",
+          "quantity": "Số lượng",
+          "credits": "Credits",
+          "total": "Tổng"
+        }
+      }
     }
   }
 }

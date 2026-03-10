@@ -1,64 +1,68 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useTranslations } from "next-intl"
-import { Link } from "@/i18n/navigation"
-import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, ChevronRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ModeToggle, LanguageSwitcher } from "@/components/shared"
-import { siteConfig } from "@/data/site"
+import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ModeToggle, LanguageSwitcher } from "@/components/shared";
+import { siteConfig } from "@/data/site";
 
 export interface NavItem {
-  label: string
-  href: string
-  labelKey?: string
+  label: string;
+  href: string;
+  labelKey?: string;
 }
 
 export interface HeaderProps {
   logo?: {
-    text: string
-    icon?: string
-    href?: string
-  }
-  navItems?: NavItem[]
+    text: string;
+    icon?: string;
+    href?: string;
+  };
+  navItems?: NavItem[];
   ctaButton?: {
-    label: string
-    href: string
-    showIcon?: boolean
-  }
+    label: string;
+    href: string;
+    showIcon?: boolean;
+  };
   loginButton?: {
-    label: string
-    href: string
-  }
+    label: string;
+    href: string;
+  };
 }
 
 export function Header({
   logo = { text: siteConfig.name, icon: "A", href: "/" },
 }: HeaderProps) {
-  const t = useTranslations("marketing.nav")
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const t = useTranslations("marketing.nav");
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Build nav items with translations
   const navItems: NavItem[] = [
-    { label: t("features"), href: "#features" },
+    { label: t("homepage"), href: "/" },
     { label: t("pricing"), href: "/pricing" },
     { label: t("about"), href: "/about" },
     { label: t("contact"), href: "/contact" },
-  ]
+  ];
 
-  const ctaButton = { label: t("getStarted"), href: "/register", showIcon: true }
-  const loginButton = { label: t("login"), href: "/login" }
+  const ctaButton = {
+    label: t("getStarted"),
+    href: "/register",
+    showIcon: true,
+  };
+  const loginButton = { label: t("login"), href: "/login" };
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
@@ -74,10 +78,11 @@ export function Header({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
-            <Link href={logo.href || "/"} className="flex items-center gap-2 group">
-              <div
-                className="relative w-10 h-10"
-              >
+            <Link
+              href={logo.href || "/"}
+              className="flex items-center gap-2 group"
+            >
+              <div className="relative w-10 h-10">
                 <Image
                   src="/logo.svg"
                   alt={logo.text}
@@ -112,9 +117,15 @@ export function Header({
               <Button variant="ghost" asChild>
                 <Link href={loginButton.href}>{loginButton.label}</Link>
               </Button>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
                 <Button asChild>
-                  <Link href={ctaButton.href} className="flex items-center gap-1">
+                  <Link
+                    href={ctaButton.href}
+                    className="flex items-center gap-1"
+                  >
                     {ctaButton.label}
                     {ctaButton.showIcon && <ChevronRight className="w-4 h-4" />}
                   </Link>
@@ -128,7 +139,11 @@ export function Header({
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="md:hidden p-2 rounded-lg text-foreground hover:bg-primary-50 dark:hover:bg-primary-900"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </motion.button>
           </div>
         </div>
@@ -170,9 +185,14 @@ export function Header({
                     <Link href={loginButton.href}>{loginButton.label}</Link>
                   </Button>
                   <Button asChild>
-                    <Link href={ctaButton.href} className="flex items-center justify-center gap-1">
+                    <Link
+                      href={ctaButton.href}
+                      className="flex items-center justify-center gap-1"
+                    >
                       {ctaButton.label}
-                      {ctaButton.showIcon && <ChevronRight className="w-4 h-4" />}
+                      {ctaButton.showIcon && (
+                        <ChevronRight className="w-4 h-4" />
+                      )}
                     </Link>
                   </Button>
                 </div>
@@ -182,5 +202,5 @@ export function Header({
         )}
       </AnimatePresence>
     </>
-  )
+  );
 }

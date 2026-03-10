@@ -4,7 +4,7 @@
       "mainMenu": "Main Menu",
       "other": "Other",
       "dashboard": "Dashboard",
-      "documents": "Document Translation",
+      "documents": "Translate",
       "glossary": "Glossary",
       "history": "History",
       "settings": "Settings",
@@ -14,7 +14,7 @@
     },
     "pages": {
       "dashboard": "Dashboard",
-      "documents": "Document Translation",
+      "documents": "Translate",
       "glossary": "Glossary",
       "history": "History",
       "settings": "Settings",
@@ -38,6 +38,58 @@
       "uploadDocument": "Upload Document",
       "buyCredits": "Buy Credits"
     },
+    "commandPalette": {
+      "placeholder": "Search features, jobs, glossaries...",
+      "features": "Features",
+      "jobs": "Translation Jobs",
+      "glossaries": "Glossaries",
+      "noResults": "No results found",
+      "noResultsHint": "Try a different keyword",
+      "noJobResults": "No matching jobs",
+      "noGlossaryResults": "No matching glossaries",
+      "unknownFile": "Unknown file",
+      "typeToSearch": "Type to search",
+      "hint": "Search features, translation jobs, and glossaries",
+      "navigate": "to navigate",
+      "select": "to select",
+      "close": "to close",
+      "dashboardDesc": "Overview of your translation activity",
+      "documentsDesc": "Translate documents and subtitles",
+      "glossaryDesc": "Manage your terminology dictionaries",
+      "historyDesc": "View all your translation jobs",
+      "settingsDesc": "Account, preferences and security",
+      "helpDesc": "Documentation and support"
+    },
+    "headerMenu": {
+      "buyMoreCredits": "Buy more credits",
+      "paymentHistory": "Payment history",
+      "payment": "Payment",
+      "notifications": "Notifications",
+      "references": "References",
+      "security": "Security",
+      "files": "Files",
+      "activity": "Activity"
+    },
+    "buyCreditsDialog": {
+      "title": "Buy Credits",
+      "description": "Current balance: {balance} credits. Select a package to continue checkout.",
+      "bestValue": "Best value",
+      "popular": "Popular",
+      "bonusCredits": "+{credits} bonus credits",
+      "credits": "credits",
+      "perCredit": "credit",
+      "cancel": "Cancel",
+      "viewPricing": "View pricing page",
+      "loadError": "Unable to load credit packages right now.",
+      "retry": "Try again",
+      "empty": "No credit packages are currently available."
+    },
+    "paymentBanner": {
+      "success": "Payment successful. Your credit balance has been updated.",
+      "error": "Payment failed or was cancelled. Please try again.",
+      "pending": "Payment is being processed. Please check again shortly.",
+      "dismiss": "Dismiss"
+    },
     "activity": {
       "title": "Recent Activity",
       "viewAll": "View all"
@@ -59,14 +111,14 @@
     },
     "storage": {
       "title": "Storage",
-      "remaining": "{value} GB remaining",
+      "remaining": "{value} MB remaining",
       "creditUsageTitle": "Credit Usage",
       "noUsageInfo": "No credit usage information yet",
       "documents": "Documents",
       "ofTotal": "of total"
     },
     "charts": {
-      "jobsByDay": "Jobs by Day (Last 7 Days)",
+      "jobsByDay": "Activity Overview",
       "creditAllocation": "Credit Allocation",
       "noUsageInfo": "No credit usage information yet",
       "documents": "Documents",
@@ -84,12 +136,39 @@
       "searchPlaceholder": "Search by file name...",
       "filterStatus": "Status",
       "allStatuses": "All statuses",
+      "filterDomain": "Domain",
+      "allDomains": "All domains",
       "noJobs": "No translation jobs found",
       "noJobsDescription": "Your translation history will appear here once you start translating documents.",
       "noResults": "No results found",
       "noResultsDescription": "Try adjusting your search or filter criteria.",
       "totalJobs": "{count} jobs total",
-      "pageInfo": "Page {page} of {totalPages}"
+      "pageInfo": "Page {page} of {totalPages}",
+      "fileExpired": "File expired",
+      "download": {
+        "label": "Download",
+        "original": "Original file",
+        "translated": "Translated file"
+      },
+      "columns": {
+        "credits": "Credits"
+      },
+      "detail": {
+        "title": "Job Details",
+        "timing": "Timeline",
+        "createdAt": "Created",
+        "completedAt": "Completed",
+        "inputFile": "Source File",
+        "outputFile": "Translated File",
+        "fileExpired": "File expired",
+        "creditCost": "Credit Cost",
+        "breakdown": {
+          "service": "Service",
+          "quantity": "Qty",
+          "credits": "Credits",
+          "total": "Total"
+        }
+      }
     }
   }
 }

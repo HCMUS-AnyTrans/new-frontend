@@ -61,8 +61,7 @@ export const authKeys = {
 // Dashboard-related query keys
 export const dashboardKeys = {
   all: ['dashboard'] as const,
-  stats: (query?: unknown) =>
-    [...dashboardKeys.all, 'stats', query] as const,
+  stats: (query?: unknown) => [...dashboardKeys.all, 'stats', query] as const,
   jobsChart: (query?: unknown) =>
     [...dashboardKeys.all, 'jobs-chart', query] as const,
   creditsChart: (query?: unknown) =>
@@ -79,10 +78,8 @@ export const walletKeys = {
 // Translation-related query keys
 export const translationKeys = {
   all: ['translations'] as const,
-  list: (params?: unknown) =>
-    [...translationKeys.all, 'list', params] as const,
-  detail: (id: string) =>
-    [...translationKeys.all, 'detail', id] as const,
+  list: (params?: unknown) => [...translationKeys.all, 'list', params] as const,
+  detail: (id: string) => [...translationKeys.all, 'detail', id] as const,
 };
 
 // Settings-related query keys
@@ -107,10 +104,8 @@ export const notificationKeys = {
 // Billing-related query keys
 export const billingKeys = {
   all: ['billing'] as const,
-  ledger: (params?: unknown) =>
-    [...billingKeys.all, 'ledger', params] as const,
-  creditPackages: () =>
-    [...billingKeys.all, 'credit-packages'] as const,
+  ledger: (params?: unknown) => [...billingKeys.all, 'ledger', params] as const,
+  creditPackages: () => [...billingKeys.all, 'credit-packages'] as const,
   payments: (params?: unknown) =>
     [...billingKeys.all, 'payments', params] as const,
 };
@@ -118,7 +113,20 @@ export const billingKeys = {
 // File-related query keys
 export const fileKeys = {
   all: ['files'] as const,
-  list: (params?: unknown) =>
-    [...fileKeys.all, 'list', params] as const,
+  list: (params?: unknown) => [...fileKeys.all, 'list', params] as const,
   storage: () => [...fileKeys.all, 'storage'] as const,
+};
+
+// Glossary-related query keys
+export const glossaryKeys = {
+  all: ['glossaries'] as const,
+  list: (params?: unknown) =>
+    params !== undefined
+      ? ([...glossaryKeys.all, 'list', params] as const)
+      : ([...glossaryKeys.all, 'list'] as const),
+  detail: (id: string) => [...glossaryKeys.all, 'detail', id] as const,
+  terms: (glossaryId: string, params?: unknown) =>
+    params !== undefined
+      ? ([...glossaryKeys.all, 'terms', glossaryId, params] as const)
+      : ([...glossaryKeys.all, 'terms', glossaryId] as const),
 };

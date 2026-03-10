@@ -20,7 +20,10 @@ import type {
  * Login with email and password
  */
 export async function loginApi(credentials: LoginDto): Promise<AuthResponse> {
-  const response = await apiClient.post<AuthResponse>('/auth/login', credentials);
+  const response = await apiClient.post<AuthResponse>(
+    '/auth/login',
+    credentials,
+  );
   return response.data;
 }
 
@@ -60,11 +63,11 @@ export async function getCurrentUserApi(): Promise<User> {
  * Request password reset email
  */
 export async function forgotPasswordApi(
-  data: ForgotPasswordDto
+  data: ForgotPasswordDto,
 ): Promise<MessageResponse> {
   const response = await apiClient.post<MessageResponse>(
     '/auth/forgot-password',
-    data
+    data,
   );
   return response.data;
 }
@@ -73,11 +76,11 @@ export async function forgotPasswordApi(
  * Reset password using token from email
  */
 export async function resetPasswordApi(
-  data: ResetPasswordDto
+  data: ResetPasswordDto,
 ): Promise<MessageResponse> {
   const response = await apiClient.post<MessageResponse>(
     '/auth/reset-password',
-    data
+    data,
   );
   return response.data;
 }
@@ -86,11 +89,11 @@ export async function resetPasswordApi(
  * Change password (for authenticated users)
  */
 export async function changePasswordApi(
-  data: ChangePasswordDto
+  data: ChangePasswordDto,
 ): Promise<MessageResponse> {
   const response = await apiClient.post<MessageResponse>(
     '/auth/change-password',
-    data
+    data,
   );
   return response.data;
 }
@@ -99,11 +102,11 @@ export async function changePasswordApi(
  * Verify email address using token from email
  */
 export async function verifyEmailApi(
-  data: VerifyEmailDto
+  data: VerifyEmailDto,
 ): Promise<MessageResponse> {
   const response = await apiClient.post<MessageResponse>(
     '/auth/verify-email',
-    data
+    data,
   );
   return response.data;
 }
@@ -112,11 +115,11 @@ export async function verifyEmailApi(
  * Resend verification or password reset email
  */
 export async function resendEmailApi(
-  data: ResendEmailDto
+  data: ResendEmailDto,
 ): Promise<MessageResponse> {
   const response = await apiClient.post<MessageResponse>(
     '/auth/resend-email',
-    data
+    data,
   );
   return response.data;
 }

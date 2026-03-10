@@ -1,43 +1,72 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useTranslations, useLocale } from "next-intl";
-import { Bell, Coins } from "lucide-react";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { useState, useEffect, useCallback, useRef } from "react";
+import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
+import {
+  Search,
+  ChevronDown,
+  Coins,
+  LogOut,
+  User,
+  CreditCard,
+  Bell,
+  SlidersHorizontal,
+  Shield,
+  FolderOpen,
+  History,
+  X,
+} from "lucide-react";
+import {
+  SearchDropdown,
+  type SearchDropdownHandle,
+} from "./command-palette";
+import { Link } from "@/i18n/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ModeToggle, LanguageSwitcher } from "@/components/shared";
-import { useAuthStore } from "@/features/auth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useAuthStore, useLogout } from "@/features/auth";
+import { BuyCreditsDialog } from "./buy-credits-dialog";
 import { useWallet } from "../hooks";
 
-// Map pathname to translation key
-const pageKeyMap: Record<string, string> = {
-  "/dashboard": "dashboard",
-  "/documents": "documents",
-  "/glossary": "glossary",
-  "/history": "history",
-  "/settings": "settings",
-  "/help": "help",
-};
-
 export function DashboardHeader() {
-  const pathname = usePathname();
+  const [creditsMenuOpen, setCreditsMenuOpen] = useState(false);
+  const [buyCreditsDialogOpen, setBuyCreditsDialogOpen] = useState(false);
+  const [mobileSearchActive, setMobileSearchActive] = useState(false);
   const locale = useLocale();
-  const t = useTranslations("dashboard.pages");
+  const tSidebar = useTranslations("dashboard.sidebar");
+  const tHeaderMenu = useTranslations("dashboard.headerMenu");
   const user = useAuthStore((s) => s.user);
+  const { logout } = useLogout();
   const { wallet, isLoading: walletLoading } = useWallet();
 
-  // Remove locale prefix from pathname
-  const pathnameWithoutLocale = pathname.replace(/^\/(vi|en)/, "");
+  // Ref to focus the desktop search bar programmatically
+  const desktopSearchRef = useRef<SearchDropdownHandle>(null);
 
-  // Get page title translation key
-  const pageKey = pageKeyMap[pathnameWithoutLocale] || "dashboard";
-  const pageTitle = t(pageKey);
+  // Cmd+K / Ctrl+K: focus desktop search or show mobile search
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      e.preventDefault();
+      if (window.matchMedia("(min-width: 1024px)").matches) {
+        desktopSearchRef.current?.focus();
+      } else {
+        setMobileSearchActive(true);
+      }
+    }
+  }, []);
 
-  // Generate user initials from fullName
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
+
   const initials = user?.fullName
     ? user.fullName
         .split(" ")
@@ -48,61 +77,180 @@ export function DashboardHeader() {
     : "??";
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b border-border bg-background/95 backdrop-blur-sm px-4 lg:px-6">
-      {/* Sidebar Toggle */}
-      <SidebarTrigger className="-ml-1" />
-      <Separator orientation="vertical" className="h-6" />
-
-      {/* Page Title */}
-      <div className="flex flex-1 items-center gap-4">
-        <h1 className="text-lg font-semibold text-foreground">{pageTitle}</h1>
+    <header className="fixed inset-x-0 top-0 z-50 flex h-[var(--dashboard-header-height)] items-center justify-between border-b border-border bg-background px-4 lg:px-6">
+      {/* ── Logo ── */}
+      <div className="flex min-w-0 items-center gap-2 md:gap-6">
+        <SidebarTrigger className="md:hidden" />
+        <Link href="/" className="flex items-center gap-2">
+          <div className="relative h-8 w-8 shrink-0">
+            <Image
+              src="/logo.svg"
+              alt="AnyTrans Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+          <span className="text-lg font-bold tracking-tight text-primary">
+            AnyTrans
+          </span>
+        </Link>
       </div>
 
-      {/* Right Actions */}
-      <div className="flex items-center gap-2">
-        {/* Language Switcher */}
-        <LanguageSwitcher />
+      {/* ── Desktop search dropdown ── */}
+      <div className="hidden flex-1 px-6 lg:block">
+        <div className="mx-auto w-full max-w-md">
+          <SearchDropdown ref={desktopSearchRef} />
+        </div>
+      </div>
 
-        {/* Theme Toggle */}
-        <ModeToggle />
+      {/* ── Mobile search overlay (below header) ── */}
+      {mobileSearchActive && (
+        <div className="absolute inset-x-0 top-full z-40 border-b border-border bg-background px-4 py-2 lg:hidden">
+          <SearchDropdown
+            autoFocus
+            onClose={() => setMobileSearchActive(false)}
+          />
+        </div>
+      )}
 
-        {/* Notification Bell */}
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="size-5 text-muted-foreground" />
-          {/* Notification badge */}
-          <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-destructive-foreground">
-            3
-          </span>
-          <span className="sr-only">Notifications</span>
-        </Button>
-
-        {/* Credits Badge - Hidden on mobile */}
-        {walletLoading ? (
-          <Skeleton className="hidden h-6 w-24 sm:block" />
-        ) : (
-          <Badge
-            variant="secondary"
-            className="hidden gap-1.5 bg-secondary/20 text-foreground sm:flex"
+      {/* ── Right section ── */}
+      <div className="flex items-center gap-2 md:gap-3">
+        {/* Mobile search icon */}
+        {mobileSearchActive ? (
+          <button
+            type="button"
+            onClick={() => setMobileSearchActive(false)}
+            className="flex size-9 items-center justify-center rounded-full border border-input bg-background transition-colors hover:bg-muted lg:hidden"
           >
-            <Coins className="size-3.5 text-secondary" />
-            <span className="tabular-nums">
-              {(wallet?.balance ?? 0).toLocaleString(
-                locale === "vi" ? "vi-VN" : "en-US"
-              )}
-            </span>
-            <span className="text-muted-foreground">credits</span>
-          </Badge>
+            <X className="size-4 text-muted-foreground" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setMobileSearchActive(true)}
+            className="flex size-9 items-center justify-center rounded-full border border-input bg-background transition-colors hover:bg-muted lg:hidden"
+          >
+            <Search className="size-4 text-muted-foreground" />
+          </button>
         )}
 
-        {/* User Avatar */}
-        <Avatar className="h-8 w-8">
-          {user?.avatarUrl && (
-            <AvatarImage src={user.avatarUrl} alt={user.fullName} />
-          )}
-          <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
+        {/* Credits balance */}
+        {walletLoading ? (
+          <Skeleton className="hidden h-9 w-28 rounded-full md:block" />
+        ) : (
+          <DropdownMenu open={creditsMenuOpen} onOpenChange={setCreditsMenuOpen}>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="hidden h-9 items-center gap-2 rounded-full border border-input px-3 text-sm md:flex"
+                title="Credits"
+              >
+                <Coins className="size-4 text-primary" />
+                <span className="font-semibold text-foreground tabular-nums">
+                  {(wallet?.balance ?? 0).toLocaleString(
+                    locale === "vi" ? "vi-VN" : "en-US",
+                  )}
+                </span>
+                <ChevronDown className="size-3.5 text-muted-foreground" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem
+                onClick={() => {
+                  setCreditsMenuOpen(false);
+                  setBuyCreditsDialogOpen(true);
+                }}
+              >
+                <Coins className="mr-2 size-4 text-primary" />
+                {tHeaderMenu("buyMoreCredits")}
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/settings?tab=billing">
+                  <CreditCard className="mr-2 size-4" />
+                  {tHeaderMenu("paymentHistory")}
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+
+        <BuyCreditsDialog
+          open={buyCreditsDialogOpen}
+          onOpenChange={setBuyCreditsDialogOpen}
+        />
+
+        {/* User avatar menu */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className="flex h-9 items-center gap-1 rounded-full border border-input bg-background pl-1 pr-2 transition-colors hover:bg-muted"
+            >
+              <Avatar className="h-8 w-8">
+                {user?.avatarUrl && (
+                  <AvatarImage src={user.avatarUrl} alt={user.fullName} />
+                )}
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <ChevronDown className="mr-1 hidden size-3.5 text-muted-foreground sm:block" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-52">
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=profile">
+                <User className="mr-2 size-4" />
+                {tSidebar("profile")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=billing">
+                <CreditCard className="mr-2 size-4" />
+                {tHeaderMenu("payment")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=notifications">
+                <Bell className="mr-2 size-4" />
+                {tHeaderMenu("notifications")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=preferences">
+                <SlidersHorizontal className="mr-2 size-4" />
+                {tHeaderMenu("references")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=security">
+                <Shield className="mr-2 size-4" />
+                {tHeaderMenu("security")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=files">
+                <FolderOpen className="mr-2 size-4" />
+                {tHeaderMenu("files")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings?tab=activity">
+                <History className="mr-2 size-4" />
+                {tHeaderMenu("activity")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => logout()}
+              className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+            >
+              <LogOut className="mr-2 size-4 text-destructive" />
+              {tSidebar("logout")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

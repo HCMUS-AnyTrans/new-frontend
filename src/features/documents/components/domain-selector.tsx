@@ -16,23 +16,26 @@ export function DomainSelector({ value, onChange }: DomainSelectorProps) {
   return (
     <div>
       <Label className="mb-2 block">{t("configure.domainLabel")}</Label>
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-        {domains.map((domain) => (
-          <button
-            key={domain.id}
-            type="button"
-            onClick={() => onChange(domain.id)}
-            className={cn(
-              "flex flex-col items-center gap-1 rounded-lg border p-2 text-center transition-all",
-              value === domain.id
-                ? "border-primary bg-primary/5 text-primary"
-                : "border-border bg-card text-foreground hover:bg-muted/50"
-            )}
-          >
-            <span className="text-lg">{domain.icon}</span>
-            <span className="text-xs font-medium">{t(`domains.${domain.id}`)}</span>
-          </button>
-        ))}
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+        {domains.map((domain) => {
+          const Icon = domain.icon
+          return (
+            <button
+              key={domain.id}
+              type="button"
+              onClick={() => onChange(domain.id)}
+              className={cn(
+                "flex min-h-20 flex-col items-center justify-center gap-1 rounded-lg border p-2 text-center transition-all",
+                value === domain.id
+                  ? "border-primary bg-primary/5 text-primary"
+                  : "border-border bg-card text-foreground hover:bg-muted/50"
+              )}
+            >
+              <Icon className="size-4" />
+              <span className="text-xs font-medium">{t(`domains.${domain.id}`)}</span>
+            </button>
+          )
+        })}
       </div>
     </div>
   )
