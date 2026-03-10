@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useDeferredValue } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useRecentJobs } from '@/features/dashboard/hooks';
 import type { RecentJobsQuery } from '@/features/dashboard/api/dashboard.api';
 import { ITEMS_PER_PAGE } from '../data';
@@ -8,10 +9,13 @@ import { ITEMS_PER_PAGE } from '../data';
 /**
  * Encapsulates all history page state: search (debounced), status filter,
  * job type filter, pagination, and the underlying data-fetching via useRecentJobs.
+ * Reads the initial `search` value from the URL `?search=` query param so that
+ * navigating from the command palette pre-fills the search field.
  */
 export function useHistoryJobs() {
+  const searchParams = useSearchParams();
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(() => searchParams.get('search') ?? '');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [domainFilter, setDomainFilter] = useState<string>('all');
   const deferredSearch = useDeferredValue(search);

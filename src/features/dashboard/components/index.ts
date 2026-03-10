@@ -22,3 +22,4 @@ export { RecentJobsTable } from "./recent-jobs-table";
 export { QuickActions } from "./quick-actions";
 export { BuyCreditsDialog } from "./buy-credits-dialog";
 export { PaymentStatusBanner } from "./payment-status-banner";
+export { CommandPalette } from "./command-palette";

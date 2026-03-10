@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -15,7 +15,12 @@ import {
   Shield,
   FolderOpen,
   History,
+  X,
 } from "lucide-react";
+import {
+  SearchDropdown,
+  type SearchDropdownHandle,
+} from "./command-palette";
 import { Link } from "@/i18n/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,12 +39,33 @@ import { useWallet } from "../hooks";
 export function DashboardHeader() {
   const [creditsMenuOpen, setCreditsMenuOpen] = useState(false);
   const [buyCreditsDialogOpen, setBuyCreditsDialogOpen] = useState(false);
+  const [mobileSearchActive, setMobileSearchActive] = useState(false);
   const locale = useLocale();
   const tSidebar = useTranslations("dashboard.sidebar");
   const tHeaderMenu = useTranslations("dashboard.headerMenu");
   const user = useAuthStore((s) => s.user);
   const { logout } = useLogout();
   const { wallet, isLoading: walletLoading } = useWallet();
+
+  // Ref to focus the desktop search bar programmatically
+  const desktopSearchRef = useRef<SearchDropdownHandle>(null);
+
+  // Cmd+K / Ctrl+K: focus desktop search or show mobile search
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      e.preventDefault();
+      if (window.matchMedia("(min-width: 1024px)").matches) {
+        desktopSearchRef.current?.focus();
+      } else {
+        setMobileSearchActive(true);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
 
   const initials = user?.fullName
     ? user.fullName
@@ -52,6 +78,7 @@ export function DashboardHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex h-[var(--dashboard-header-height)] items-center justify-between border-b border-border bg-background px-4 lg:px-6">
+      {/* ── Logo ── */}
       <div className="flex min-w-0 items-center gap-2 md:gap-6">
         <SidebarTrigger className="md:hidden" />
         <Link href="/" className="flex items-center gap-2">
@@ -70,18 +97,45 @@ export function DashboardHeader() {
         </Link>
       </div>
 
+      {/* ── Desktop search dropdown ── */}
       <div className="hidden flex-1 px-6 lg:block">
-        <div className="relative mx-auto w-full max-w-md">
-          <input
-            type="text"
-            placeholder="Search"
-            className="h-9 w-full rounded-full border border-input bg-background pl-4 pr-10 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
-          />
-          <Search className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <div className="mx-auto w-full max-w-md">
+          <SearchDropdown ref={desktopSearchRef} />
         </div>
       </div>
 
+      {/* ── Mobile search overlay (below header) ── */}
+      {mobileSearchActive && (
+        <div className="absolute inset-x-0 top-full z-40 border-b border-border bg-background px-4 py-2 lg:hidden">
+          <SearchDropdown
+            autoFocus
+            onClose={() => setMobileSearchActive(false)}
+          />
+        </div>
+      )}
+
+      {/* ── Right section ── */}
       <div className="flex items-center gap-2 md:gap-3">
+        {/* Mobile search icon */}
+        {mobileSearchActive ? (
+          <button
+            type="button"
+            onClick={() => setMobileSearchActive(false)}
+            className="flex size-9 items-center justify-center rounded-full border border-input bg-background transition-colors hover:bg-muted lg:hidden"
+          >
+            <X className="size-4 text-muted-foreground" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setMobileSearchActive(true)}
+            className="flex size-9 items-center justify-center rounded-full border border-input bg-background transition-colors hover:bg-muted lg:hidden"
+          >
+            <Search className="size-4 text-muted-foreground" />
+          </button>
+        )}
+
+        {/* Credits balance */}
         {walletLoading ? (
           <Skeleton className="hidden h-9 w-28 rounded-full md:block" />
         ) : (
@@ -126,6 +180,7 @@ export function DashboardHeader() {
           onOpenChange={setBuyCreditsDialogOpen}
         />
 
+        {/* User avatar menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button

@@ -38,6 +38,28 @@
       "uploadDocument": "Tải lên tài liệu",
       "buyCredits": "Mua thêm credits"
     },
+    "commandPalette": {
+      "placeholder": "Tìm kiếm chức năng, bản dịch, thuật ngữ...",
+      "features": "Chức năng",
+      "jobs": "Bản dịch",
+      "glossaries": "Bộ thuật ngữ",
+      "noResults": "Không tìm thấy kết quả",
+      "noResultsHint": "Thử từ khóa khác",
+      "noJobResults": "Không tìm thấy bản dịch phù hợp",
+      "noGlossaryResults": "Không tìm thấy bộ thuật ngữ phù hợp",
+      "unknownFile": "File không xác định",
+      "typeToSearch": "Nhập từ khóa để tìm kiếm",
+      "hint": "Tìm chức năng, bản dịch và bộ thuật ngữ",
+      "navigate": "để điều hướng",
+      "select": "để chọn",
+      "close": "để đóng",
+      "dashboardDesc": "Tổng quan hoạt động dịch thuật",
+      "documentsDesc": "Dịch tài liệu và phụ đề",
+      "glossaryDesc": "Quản lý bộ từ điển thuật ngữ",
+      "historyDesc": "Xem tất cả bản dịch của bạn",
+      "settingsDesc": "Tài khoản, tùy chọn và bảo mật",
+      "helpDesc": "Tài liệu hướng dẫn và hỗ trợ"
+    },
     "headerMenu": {
       "buyMoreCredits": "Mua thêm credits",
       "paymentHistory": "Lịch sử thanh toán",
