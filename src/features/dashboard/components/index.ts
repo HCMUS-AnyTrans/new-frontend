@@ -13,6 +13,7 @@ export { StatsCards } from "./stats-cards";
 export { CreditUsageChart } from "./credit-usage-chart";
 export { JobsChart } from "./jobs-chart";
 export { StorageUsage } from "./storage-usage";
+export { UsagePanel } from "./usage-panel";
 
 // Tables
 export { RecentJobsTable } from "./recent-jobs-table";

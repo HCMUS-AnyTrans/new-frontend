@@ -3,11 +3,10 @@ import {
   StatsCards,
   QuickActions,
   JobsChart,
-  CreditUsageChart,
   DashboardGreeting,
-  StorageUsage,
   PaymentStatusBanner,
   RecentJobsTable,
+  UsagePanel,
 } from "@/features/dashboard";
 
 type Props = {
@@ -20,8 +19,8 @@ export default async function DashboardPage({ params }: Props) {
 
   return (
     <div className="flex w-full flex-col gap-4 overflow-x-hidden py-4 sm:gap-6 md:py-6 lg:py-8">
-      {/* Welcome + Quick Actions */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-2">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <DashboardGreeting />
         <div className="shrink-0">
           <QuickActions />
@@ -30,28 +29,22 @@ export default async function DashboardPage({ params }: Props) {
 
       <PaymentStatusBanner />
 
-      {/* KPI Stats Cards */}
-      <div className="w-full">
-        <StatsCards />
-      </div>
+      {/* KPI Stats */}
+      <StatsCards />
 
-      {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-3 xl:grid-cols-4">
-        {/* Main Chart */}
-        <div className="lg:col-span-2 xl:col-span-3">
-          <JobsChart />
+      {/* Main operational area: Recent Jobs + Usage panel */}
+      <div className="grid gap-6 lg:grid-cols-12">
+        <div className="lg:col-span-8">
+          <RecentJobsTable />
         </div>
-
-        {/* Right Sidebar (Usage & Storage) */}
-        <div className="flex flex-col gap-6 lg:col-span-1 xl:col-span-1">
-          <CreditUsageChart />
-          <StorageUsage />
+        <div className="lg:col-span-4">
+          <UsagePanel />
         </div>
       </div>
 
-      {/* Recent Jobs */}
+      {/* Analytics: Activity chart (full width) */}
       <div className="w-full">
-        <RecentJobsTable />
+        <JobsChart />
       </div>
     </div>
   );

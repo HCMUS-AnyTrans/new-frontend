@@ -59,7 +59,7 @@ export function PaymentStatusBanner() {
 
   if (status === "success") {
     return (
-      <Alert className="border-success bg-success/10 text-success [&>svg]:text-success">
+      <Alert className="border-success bg-success/10 px-3 py-2 text-success sm:px-4 sm:py-3 [&>svg]:text-success">
         <CheckCircle className="size-4" />
         <AlertDescription className="flex flex-wrap items-center gap-3">
           <span>{t("success")}</span>
@@ -73,7 +73,7 @@ export function PaymentStatusBanner() {
 
   if (status === "pending") {
     return (
-      <Alert className="border-yellow-500 bg-yellow-50 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400 [&>svg]:text-yellow-600">
+      <Alert className="border-yellow-500 bg-yellow-50 px-3 py-2 text-yellow-800 sm:px-4 sm:py-3 dark:bg-yellow-900/20 dark:text-yellow-400 [&>svg]:text-yellow-600">
         <Clock className="size-4" />
         <AlertDescription className="flex flex-wrap items-center gap-3">
           <span>{t("pending")}</span>
@@ -86,7 +86,7 @@ export function PaymentStatusBanner() {
   }
 
   return (
-    <Alert variant="destructive">
+    <Alert variant="destructive" className="px-3 py-2 sm:px-4 sm:py-3">
       <XCircle className="size-4" />
       <AlertDescription className="flex flex-wrap items-center gap-3">
         <span>{t("error")}</span>

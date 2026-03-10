@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useState, useCallback } from 'react';
-import { useLocale } from 'next-intl';
-import { AppCard, AppCardContent } from '@/components/ui/app-card';
-import type { TranslationJobResponse } from '@/features/dashboard/api/dashboard.api';
-import { useHistoryJobs } from '../hooks';
-import { HistoryFilters } from './history-filters';
-import { HistoryTable } from './history-table';
-import { HistoryPagination } from './history-pagination';
-import { HistoryEmptyState } from './history-empty-state';
-import { HistoryTableSkeleton } from './history-table-skeleton';
-import { HistoryJobDetail } from './history-job-detail';
+import { useState, useCallback } from "react";
+import { useLocale } from "next-intl";
+import { AppCard, AppCardContent } from "@/components/ui/app-card";
+import type { TranslationJobResponse } from "@/features/dashboard/api/dashboard.api";
+import { useHistoryJobs } from "../hooks";
+import { HistoryFilters } from "./history-filters";
+import { HistoryTable } from "./history-table";
+import { HistoryPagination } from "./history-pagination";
+import { HistoryEmptyState } from "./history-empty-state";
+import { HistoryTableSkeleton } from "./history-table-skeleton";
+import { HistoryJobDetail } from "./history-job-detail";
 
 /**
  * Orchestrator for the history page.
@@ -20,7 +20,9 @@ import { HistoryJobDetail } from './history-job-detail';
 export function HistoryContent() {
   const locale = useLocale();
 
-  const [selectedJob, setSelectedJob] = useState<TranslationJobResponse | null>(null);
+  const [selectedJob, setSelectedJob] = useState<TranslationJobResponse | null>(
+    null,
+  );
   const [detailOpen, setDetailOpen] = useState(false);
 
   const handleViewDetails = useCallback((job: TranslationJobResponse) => {
@@ -45,7 +47,6 @@ export function HistoryContent() {
 
   const isEmpty = jobs.length === 0;
 
-  // ─── Render ────────────────────────────────────────────────────────────────
   return (
     <>
       {/* Filter bar */}
@@ -67,10 +68,17 @@ export function HistoryContent() {
         </AppCard>
       ) : (
         <AppCard className="overflow-hidden">
-          <HistoryTable jobs={jobs} locale={locale} onViewDetails={handleViewDetails} />
+          <HistoryTable
+            jobs={jobs}
+            locale={locale}
+            onViewDetails={handleViewDetails}
+          />
 
           {meta && meta.totalPages > 1 && (
-            <AppCardContent padding="none" className="border-t px-4 py-3 lg:px-6">
+            <AppCardContent
+              padding="none"
+              className="border-t px-4 py-3 lg:px-6"
+            >
               <HistoryPagination meta={meta} onPageChange={setPage} />
             </AppCardContent>
           )}

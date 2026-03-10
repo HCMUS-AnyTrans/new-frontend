@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -19,13 +19,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from "@/components/ui/tooltip";
 import {
   ArrowRight,
   Coins,
@@ -37,48 +37,49 @@ import {
   FileText,
   Loader2,
   Presentation,
-} from 'lucide-react';
-import { jobStatusConfig } from '@/features/dashboard/data';
-import { getFileDownloadUrl } from '@/features/documents/api/documents.api';
-import type { TranslationJobResponse } from '@/features/dashboard/api/dashboard.api';
-import type { HistoryTableProps } from '../types';
+} from "lucide-react";
+import { jobStatusConfig } from "@/features/dashboard/data";
+import { getFileDownloadUrl } from "@/features/documents/api/documents.api";
+import type { TranslationJobResponse } from "@/features/dashboard/api/dashboard.api";
+import type { HistoryTableProps } from "../types";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function getFileIcon(name: string) {
-  const ext = name.split('.').pop()?.toLowerCase();
-  if (ext === 'pdf') return <FileText className="size-4 shrink-0 text-destructive" />;
-  if (ext === 'pptx' || ext === 'ppt')
+  const ext = name.split(".").pop()?.toLowerCase();
+  if (ext === "pdf")
+    return <FileText className="size-4 shrink-0 text-destructive" />;
+  if (ext === "pptx" || ext === "ppt")
     return <Presentation className="size-4 shrink-0 text-warning" />;
   return <File className="size-4 shrink-0 text-primary" />;
 }
 
 async function triggerDownload(fileId: string, fileName: string) {
   const { download_url } = await getFileDownloadUrl(fileId);
-  const anchor = document.createElement('a');
+  const anchor = document.createElement("a");
   anchor.href = download_url;
   anchor.download = fileName;
-  anchor.target = '_blank';
-  anchor.rel = 'noopener noreferrer';
+  anchor.target = "_blank";
+  anchor.rel = "noopener noreferrer";
   document.body.appendChild(anchor);
   anchor.click();
   document.body.removeChild(anchor);
 }
 
 function formatLocaleDate(dateStr: string, locale: string) {
-  return new Date(dateStr).toLocaleString(locale === 'vi' ? 'vi-VN' : 'en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
+  return new Date(dateStr).toLocaleString(locale === "vi" ? "vi-VN" : "en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 }
 
 // ─── DownloadButton ───────────────────────────────────────────────────────────
 
 function DownloadButton({ job }: { job: TranslationJobResponse }) {
-  const tHistory = useTranslations('dashboard.history');
+  const tHistory = useTranslations("dashboard.history");
   const [loadingOriginal, setLoadingOriginal] = useState(false);
   const [loadingTranslated, setLoadingTranslated] = useState(false);
 
@@ -113,89 +114,110 @@ function DownloadButton({ job }: { job: TranslationJobResponse }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="size-7" disabled={isLoading}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-7"
+          disabled={isLoading}
+        >
           {isLoading ? (
             <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
           ) : (
             <Download className="size-3.5 text-muted-foreground" />
           )}
-          <span className="sr-only">{tHistory('download.label')}</span>
+          <span className="sr-only">{tHistory("download.label")}</span>
         </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">
-          {tHistory('download.label')}
+          {tHistory("download.label")}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
         {/* Original file */}
-        {hasInput && (
-          inputExpired ? (
+        {hasInput &&
+          (inputExpired ? (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span>
-                    <DropdownMenuItem disabled className="cursor-not-allowed gap-2 opacity-50">
+                    <DropdownMenuItem
+                      disabled
+                      className="cursor-not-allowed gap-2 opacity-50"
+                    >
                       <FileInput className="size-4 shrink-0" />
                       <div className="flex flex-col">
-                        <span>{tHistory('download.original')}</span>
+                        <span>{tHistory("download.original")}</span>
                         <span className="text-xs text-muted-foreground">
-                          {tHistory('fileExpired')}
+                          {tHistory("fileExpired")}
                         </span>
                       </div>
                     </DropdownMenuItem>
                   </span>
                 </TooltipTrigger>
-                <TooltipContent side="left">{tHistory('fileExpired')}</TooltipContent>
+                <TooltipContent side="left">
+                  {tHistory("fileExpired")}
+                </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           ) : (
-            <DropdownMenuItem className="gap-2" onClick={handleDownloadOriginal} disabled={loadingOriginal}>
+            <DropdownMenuItem
+              className="gap-2"
+              onClick={handleDownloadOriginal}
+              disabled={loadingOriginal}
+            >
               <FileInput className="size-4 shrink-0 text-muted-foreground" />
               <div className="flex flex-col">
-                <span>{tHistory('download.original')}</span>
+                <span>{tHistory("download.original")}</span>
                 <span className="max-w-[150px] truncate text-xs text-muted-foreground">
                   {job.input_file!.name}
                 </span>
               </div>
             </DropdownMenuItem>
-          )
-        )}
+          ))}
 
         {/* Translated file */}
-        {hasOutput && (
-          outputExpired ? (
+        {hasOutput &&
+          (outputExpired ? (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span>
-                    <DropdownMenuItem disabled className="cursor-not-allowed gap-2 opacity-50">
+                    <DropdownMenuItem
+                      disabled
+                      className="cursor-not-allowed gap-2 opacity-50"
+                    >
                       <FileDown className="size-4 shrink-0" />
                       <div className="flex flex-col">
-                        <span>{tHistory('download.translated')}</span>
+                        <span>{tHistory("download.translated")}</span>
                         <span className="text-xs text-muted-foreground">
-                          {tHistory('fileExpired')}
+                          {tHistory("fileExpired")}
                         </span>
                       </div>
                     </DropdownMenuItem>
                   </span>
                 </TooltipTrigger>
-                <TooltipContent side="left">{tHistory('fileExpired')}</TooltipContent>
+                <TooltipContent side="left">
+                  {tHistory("fileExpired")}
+                </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           ) : (
-            <DropdownMenuItem className="gap-2" onClick={handleDownloadTranslated} disabled={loadingTranslated}>
+            <DropdownMenuItem
+              className="gap-2"
+              onClick={handleDownloadTranslated}
+              disabled={loadingTranslated}
+            >
               <FileDown className="size-4 shrink-0 text-primary" />
               <div className="flex flex-col">
-                <span>{tHistory('download.translated')}</span>
+                <span>{tHistory("download.translated")}</span>
                 <span className="max-w-[150px] truncate text-xs text-muted-foreground">
                   {job.output_file!.name}
                 </span>
               </div>
             </DropdownMenuItem>
-          )
-        )}
+          ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -203,40 +225,46 @@ function DownloadButton({ job }: { job: TranslationJobResponse }) {
 
 // ─── HistoryTable ─────────────────────────────────────────────────────────────
 
-export function HistoryTable({ jobs, locale, onViewDetails }: HistoryTableProps) {
-  const tJobs = useTranslations('dashboard.recentJobs');
-  const tStatus = useTranslations('dashboard.status');
-  const tHistory = useTranslations('dashboard.history');
+export function HistoryTable({
+  jobs,
+  locale,
+  onViewDetails,
+  compact = false,
+  hideActions = false,
+}: HistoryTableProps) {
+  const tJobs = useTranslations("dashboard.recentJobs");
+  const tStatus = useTranslations("dashboard.status");
+  const tHistory = useTranslations("dashboard.history");
 
   return (
     <div className="overflow-x-auto">
       <Table>
         <TableHeader className="bg-muted/40">
           <TableRow className="hover:bg-transparent">
-            {/* File Name — always visible */}
             <TableHead className="h-11 px-4 text-sm font-medium text-muted-foreground lg:px-6">
-              {tJobs('fileName')}
+              {tJobs("fileName")}
             </TableHead>
-            {/* Languages — sm+ */}
             <TableHead className="hidden h-11 px-4 text-sm font-medium text-muted-foreground sm:table-cell lg:px-6">
-              {tJobs('languages')}
+              {tJobs("languages")}
             </TableHead>
-            {/* Status — always visible */}
             <TableHead className="h-11 px-4 text-sm font-medium text-muted-foreground lg:px-6">
-              {tJobs('status')}
+              {tJobs("status")}
             </TableHead>
-            {/* Credits — md+ */}
-            <TableHead className="hidden h-11 px-4 text-right text-sm font-medium text-muted-foreground md:table-cell lg:px-6">
-              {tHistory('columns.credits')}
+            <TableHead
+              className={`h-11 px-4 text-right text-sm font-medium text-muted-foreground lg:px-6 ${compact ? "hidden sm:table-cell" : "hidden md:table-cell"}`}
+            >
+              {tHistory("columns.credits")}
             </TableHead>
-            {/* Created At — md+ */}
-            <TableHead className="hidden h-11 px-4 text-sm font-medium text-muted-foreground md:table-cell lg:px-6">
-              {tJobs('createdAt')}
-            </TableHead>
-            {/* Actions — always visible */}
-            <TableHead className="h-11 px-4 text-right text-sm font-medium text-muted-foreground lg:px-6">
-              {tJobs('actions')}
-            </TableHead>
+            {!compact && (
+              <TableHead className="hidden h-11 px-4 text-sm font-medium text-muted-foreground md:table-cell lg:px-6">
+                {tJobs("createdAt")}
+              </TableHead>
+            )}
+            {!hideActions && (
+              <TableHead className="h-11 px-4 text-right text-sm font-medium text-muted-foreground lg:px-6">
+                {tJobs("actions")}
+              </TableHead>
+            )}
           </TableRow>
         </TableHeader>
 
@@ -251,7 +279,6 @@ export function HistoryTable({ jobs, locale, onViewDetails }: HistoryTableProps)
                 className="group cursor-pointer hover:bg-muted/30"
                 onClick={() => onViewDetails(job)}
               >
-                {/* File Name */}
                 <TableCell className="max-w-[180px] px-4 py-3.5 sm:max-w-[220px] lg:px-6">
                   <div className="flex items-center gap-2">
                     {getFileIcon(fileName)}
@@ -261,24 +288,30 @@ export function HistoryTable({ jobs, locale, onViewDetails }: HistoryTableProps)
                   </div>
                 </TableCell>
 
-                {/* Languages — sm+ */}
                 <TableCell className="hidden px-4 py-3.5 sm:table-cell lg:px-6">
                   <div className="flex items-center gap-1 text-sm">
-                    <span className="text-xs font-medium text-foreground">{job.src_lang}</span>
+                    <span className="text-xs font-medium text-foreground">
+                      {job.src_lang}
+                    </span>
                     <ArrowRight className="size-3 shrink-0 text-muted-foreground" />
-                    <span className="text-xs font-medium text-foreground">{job.tgt_lang}</span>
+                    <span className="text-xs font-medium text-foreground">
+                      {job.tgt_lang}
+                    </span>
                   </div>
                 </TableCell>
 
-                {/* Status */}
                 <TableCell className="px-4 py-3.5 lg:px-6">
-                  <Badge variant="outline" className={`text-xs ${statusCfg?.className ?? ''}`}>
+                  <Badge
+                    variant="outline"
+                    className={`text-xs ${statusCfg?.className ?? ""}`}
+                  >
                     {tStatus(job.status)}
                   </Badge>
                 </TableCell>
 
-                {/* Credits — md+ */}
-                <TableCell className="hidden px-4 py-3.5 text-right md:table-cell lg:px-6">
+                <TableCell
+                  className={`px-4 py-3.5 text-right lg:px-6 ${compact ? "hidden sm:table-cell" : "hidden md:table-cell"}`}
+                >
                   {job.cost_credits !== undefined ? (
                     <div className="flex items-center justify-end gap-1">
                       <Coins className="size-3.5 text-warning" />
@@ -290,32 +323,33 @@ export function HistoryTable({ jobs, locale, onViewDetails }: HistoryTableProps)
                     <span className="text-sm text-muted-foreground">—</span>
                   )}
                 </TableCell>
+                {!compact && (
+                  <TableCell className="hidden px-4 py-3.5 md:table-cell lg:px-6">
+                    <span className="text-sm text-muted-foreground">
+                      {formatLocaleDate(job.created_at, locale)}
+                    </span>
+                  </TableCell>
+                )}
 
-                {/* Created At — md+ */}
-                <TableCell className="hidden px-4 py-3.5 md:table-cell lg:px-6">
-                  <span className="text-sm text-muted-foreground">
-                    {formatLocaleDate(job.created_at, locale)}
-                  </span>
-                </TableCell>
-
-                {/* Actions — stop propagation so row click doesn't interfere */}
-                <TableCell
-                  className="px-4 py-3.5 text-right lg:px-6"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="flex items-center justify-end gap-1">
-                    <DownloadButton job={job} />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-7"
-                      onClick={() => onViewDetails(job)}
-                    >
-                      <Eye className="size-3.5 text-muted-foreground" />
-                      <span className="sr-only">{tJobs('viewDetails')}</span>
-                    </Button>
-                  </div>
-                </TableCell>
+                {!hideActions && (
+                  <TableCell
+                    className="px-4 py-3.5 text-right lg:px-6"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex items-center justify-end gap-1">
+                      <DownloadButton job={job} />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-7"
+                        onClick={() => onViewDetails(job)}
+                      >
+                        <Eye className="size-3.5 text-muted-foreground" />
+                        <span className="sr-only">{tJobs("viewDetails")}</span>
+                      </Button>
+                    </div>
+                  </TableCell>
+                )}
               </TableRow>
             );
           })}

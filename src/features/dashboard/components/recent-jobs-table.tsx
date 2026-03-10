@@ -37,13 +37,7 @@ function RecentJobsTableSkeleton() {
             <TableHead className="h-11 px-4 lg:px-6">
               <Skeleton className="h-4 w-14" />
             </TableHead>
-            <TableHead className="hidden h-11 px-4 md:table-cell lg:px-6">
-              <Skeleton className="ml-auto h-4 w-14" />
-            </TableHead>
-            <TableHead className="hidden h-11 px-4 md:table-cell lg:px-6">
-              <Skeleton className="h-4 w-20" />
-            </TableHead>
-            <TableHead className="h-11 px-4 lg:px-6">
+            <TableHead className="hidden h-11 px-4 sm:table-cell lg:px-6">
               <Skeleton className="ml-auto h-4 w-14" />
             </TableHead>
           </TableRow>
@@ -67,19 +61,10 @@ function RecentJobsTableSkeleton() {
               <TableCell className="px-4 py-3.5 lg:px-6">
                 <Skeleton className="h-5 w-20 rounded-full" />
               </TableCell>
-              <TableCell className="hidden px-4 py-3.5 md:table-cell lg:px-6">
+              <TableCell className="hidden px-4 py-3.5 sm:table-cell lg:px-6">
                 <div className="flex items-center justify-end gap-1">
                   <Skeleton className="size-3.5 rounded" />
                   <Skeleton className="h-4 w-8" />
-                </div>
-              </TableCell>
-              <TableCell className="hidden px-4 py-3.5 md:table-cell lg:px-6">
-                <Skeleton className="h-4 w-28" />
-              </TableCell>
-              <TableCell className="px-4 py-3.5 lg:px-6">
-                <div className="flex items-center justify-end gap-1">
-                  <Skeleton className="size-7 rounded-md" />
-                  <Skeleton className="size-7 rounded-md" />
                 </div>
               </TableCell>
             </TableRow>
@@ -101,7 +86,7 @@ export function RecentJobsTable() {
   });
 
   const [selectedJob, setSelectedJob] = useState<TranslationJobResponse | null>(
-    null
+    null,
   );
   const [detailOpen, setDetailOpen] = useState(false);
 
@@ -116,7 +101,7 @@ export function RecentJobsTable() {
   return (
     <>
       <DashboardCard className="overflow-hidden">
-        <DashboardCardHeader className="flex flex-row items-center justify-between gap-4 px-6 pb-4">
+        <DashboardCardHeader className="flex flex-row items-center justify-between gap-4 px-4 pb-4 sm:px-6">
           <CardTitle className="text-base font-semibold text-foreground">
             {t("title")}
           </CardTitle>
@@ -129,11 +114,11 @@ export function RecentJobsTable() {
         </DashboardCardHeader>
         <DashboardCardContent padding="none" className="px-0 pb-6">
           {isLoading ? (
-            <div className="px-4 lg:px-6">
+            <div className="px-4 sm:px-6">
               <RecentJobsTableSkeleton />
             </div>
           ) : isError || isEmpty ? (
-            <div className="flex items-center justify-center px-6 py-12">
+            <div className="flex items-center justify-center px-4 py-12 sm:px-6">
               <p className="text-sm text-muted-foreground">{t("noJobs")}</p>
             </div>
           ) : (
@@ -142,6 +127,8 @@ export function RecentJobsTable() {
                 jobs={jobs}
                 locale={locale}
                 onViewDetails={handleViewDetails}
+                compact
+                hideActions
               />
             </div>
           )}

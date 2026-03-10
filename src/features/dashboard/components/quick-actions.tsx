@@ -11,8 +11,8 @@ export function QuickActions() {
   const t = useTranslations("dashboard.quickActions");
 
   return (
-    <div className="flex flex-wrap gap-3">
-      <Button asChild className="gap-2 bg-primary hover:bg-primary/90">
+    <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
+      <Button asChild className="w-full gap-2 bg-primary hover:bg-primary/90 sm:w-auto">
         <Link href="/documents">
           <FileUp className="size-4" />
           {t("uploadDocument")}
@@ -21,7 +21,7 @@ export function QuickActions() {
       <BuyCreditsDialog>
         <Button
           variant="outline"
-          className="gap-2 border-secondary text-secondary hover:bg-secondary/10 hover:text-secondary cursor-pointer"
+          className="w-full gap-2 border-secondary text-secondary hover:bg-secondary/10 hover:text-secondary cursor-pointer sm:w-auto"
           onClick={() => {
             trackEvent("buy_credit_click", {
               source: "dashboard_quick_actions",
