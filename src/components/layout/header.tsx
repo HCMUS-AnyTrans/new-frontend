@@ -43,6 +43,7 @@ export function Header({
 
   // Build nav items with translations
   const navItems: NavItem[] = [
+    { label: t("homepage"), href: "/" },
     { label: t("pricing"), href: "/pricing" },
     { label: t("about"), href: "/about" },
     { label: t("contact"), href: "/contact" },
