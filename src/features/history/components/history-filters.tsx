@@ -8,7 +8,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Search } from 'lucide-react';
-import { STATUS_OPTIONS, DOMAIN_OPTIONS } from '../data';
+import {
+  HISTORY_DOMAIN_FILTER_OPTIONS,
+  DOMAIN_OPTIONS_WITH_ICONS,
+} from '@/shared/constants/domains';
+import { STATUS_OPTIONS } from '../data';
 import type { HistoryFiltersProps } from '../types';
 
 export function HistoryFilters({
@@ -39,11 +43,20 @@ export function HistoryFilters({
           <SelectValue placeholder={t('filterDomain')} />
         </SelectTrigger>
         <SelectContent className="bg-popover">
-          {DOMAIN_OPTIONS.map((domain) => (
-            <SelectItem key={domain} value={domain}>
-              {domain === 'all' ? t('allDomains') : tDomain(domain)}
-            </SelectItem>
-          ))}
+          {HISTORY_DOMAIN_FILTER_OPTIONS.map((domainId) => {
+            const domainOption = DOMAIN_OPTIONS_WITH_ICONS.find(
+              (d) => d.id === domainId
+            );
+            const Icon = domainOption?.icon;
+            return (
+              <SelectItem key={domainId} value={domainId}>
+                {Icon && <Icon className="size-4" />}
+                {domainId === 'all'
+                  ? t('allDomains')
+                  : tDomain(domainId)}
+              </SelectItem>
+            );
+          })}
         </SelectContent>
       </Select>
       <Select value={statusFilter} onValueChange={onStatusChange}>

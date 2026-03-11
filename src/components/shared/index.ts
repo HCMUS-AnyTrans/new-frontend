@@ -23,3 +23,12 @@ export type {
 // UI Controls
 export { LanguageSwitcher } from './language-switcher';
 export { ModeToggle } from './mode-toggle';
+
+// User menu
+export {
+  UserAvatarMenu,
+  UserMenuList,
+  userMenuItemsConfig,
+  getUserInitials,
+} from './user-avatar-menu';
+export type { UserAvatarMenuProps, UserMenuListProps } from './user-avatar-menu';

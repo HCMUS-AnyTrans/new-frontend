@@ -64,8 +64,8 @@ function TestimonialCard({ testimonial, avatar, colorIndex }: TestimonialCardPro
           ))}
         </div>
 
-        {/* Content */}
-        <p className="text-muted-foreground leading-relaxed flex-1 text-pretty">
+        {/* Content - min-h prevents layout shift when switching slides */}
+        <p className="text-muted-foreground leading-relaxed flex-1 text-pretty min-h-[120px]">
           {`"${testimonial.content}"`}
         </p>
 
@@ -210,7 +210,7 @@ export function TestimonialsSection({ className }: TestimonialsSectionProps) {
             <ChevronRight className="w-5 h-5" />
           </button>
 
-          <div className="overflow-hidden -mx-4 px-4 -my-6 py-6">
+          <div className="overflow-hidden -mx-4 px-4 -my-6 py-6 min-h-[320px] md:min-h-[280px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}

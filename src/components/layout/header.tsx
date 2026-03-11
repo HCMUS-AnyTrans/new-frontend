@@ -2,13 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ModeToggle, LanguageSwitcher } from "@/components/shared";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ModeToggle, LanguageSwitcher, UserAvatarMenu, UserMenuList, getUserInitials } from "@/components/shared";
 import { siteConfig } from "@/data/site";
+import { locales } from "@/i18n/routing";
+import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/features/auth";
 
 export interface NavItem {
   label: string;
@@ -40,6 +44,38 @@ export function Header({
   const t = useTranslations("marketing.nav");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  const normalizedPathname = (() => {
+    if (!pathname) return "/";
+
+    // Strip query/hash defensively (shouldn't exist on pathname but keeps this robust)
+    const raw = pathname.split("#")[0]?.split("?")[0] ?? "/";
+
+    // Remove trailing slash (except root)
+    const noTrailing = raw !== "/" ? raw.replace(/\/+$/, "") : "/";
+
+    // Remove locale prefix when present (e.g. /en/pricing -> /pricing)
+    const parts = noTrailing.split("/").filter(Boolean);
+    const first = parts[0];
+    if (first && (locales as readonly string[]).includes(first)) {
+      const rest = parts.slice(1).join("/");
+      return rest ? `/${rest}` : "/";
+    }
+
+    return noTrailing;
+  })();
+
+  const isActiveHref = (href: string) => {
+    const normalizedHref = href !== "/" ? href.replace(/\/+$/, "") : "/";
+    if (normalizedHref === "/") return normalizedPathname === "/";
+    return (
+      normalizedPathname === normalizedHref ||
+      normalizedPathname.startsWith(`${normalizedHref}/`)
+    );
+  };
 
   // Build nav items with translations
   const navItems: NavItem[] = [
@@ -102,35 +138,59 @@ export function Header({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="relative px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors group"
+                  className={cn(
+                    "relative px-4 py-2 text-sm font-medium transition-colors group rounded-lg",
+                    isActiveHref(item.href)
+                      ? "text-primary"
+                      : "text-foreground hover:text-primary",
+                  )}
                 >
                   {item.label}
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-3/4 transition-all duration-300" />
+                  <span
+                    className={cn(
+                      "absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-primary transition-all duration-300",
+                      isActiveHref(item.href) ? "w-3/4" : "w-0 group-hover:w-3/4",
+                    )}
+                  />
                 </Link>
               ))}
             </nav>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons / Avatar */}
             <div className="hidden md:flex items-center gap-3">
               <LanguageSwitcher />
               <ModeToggle />
-              <Button variant="ghost" asChild>
-                <Link href={loginButton.href}>{loginButton.label}</Link>
-              </Button>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button asChild>
-                  <Link
-                    href={ctaButton.href}
-                    className="flex items-center gap-1"
+              {isAuthenticated ? (
+                <UserAvatarMenu showDashboardLink />
+              ) : (
+                <>
+                  <Button
+                    variant={isActiveHref(loginButton.href) ? "secondary" : "ghost"}
+                    asChild
                   >
-                    {ctaButton.label}
-                    {ctaButton.showIcon && <ChevronRight className="w-4 h-4" />}
-                  </Link>
-                </Button>
-              </motion.div>
+                    <Link href={loginButton.href}>{loginButton.label}</Link>
+                  </Button>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button
+                      className={cn(
+                        isActiveHref(ctaButton.href) && "ring-2 ring-primary/30",
+                      )}
+                      asChild
+                    >
+                      <Link
+                        href={ctaButton.href}
+                        className="flex items-center gap-1"
+                      >
+                        {ctaButton.label}
+                        {ctaButton.showIcon && <ChevronRight className="w-4 h-4" />}
+                      </Link>
+                    </Button>
+                  </motion.div>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -170,7 +230,12 @@ export function Header({
                     <Link
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="block px-4 py-3 text-foreground hover:text-primary hover:bg-primary-50 dark:hover:bg-primary-900 rounded-xl transition-colors font-medium"
+                      className={cn(
+                        "block px-4 py-3 rounded-xl transition-colors font-medium",
+                        isActiveHref(item.href)
+                          ? "text-primary bg-primary-50 dark:bg-primary-900/40"
+                          : "text-foreground hover:text-primary hover:bg-primary-50 dark:hover:bg-primary-900",
+                      )}
                     >
                       {item.label}
                     </Link>
@@ -181,20 +246,55 @@ export function Header({
                     <LanguageSwitcher />
                     <ModeToggle />
                   </div>
-                  <Button variant="ghost" className="justify-center" asChild>
-                    <Link href={loginButton.href}>{loginButton.label}</Link>
-                  </Button>
-                  <Button asChild>
-                    <Link
-                      href={ctaButton.href}
-                      className="flex items-center justify-center gap-1"
-                    >
-                      {ctaButton.label}
-                      {ctaButton.showIcon && (
-                        <ChevronRight className="w-4 h-4" />
-                      )}
-                    </Link>
-                  </Button>
+                  {isAuthenticated ? (
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-3 px-4 py-2 mb-1">
+                        <Avatar className="h-10 w-10">
+                          {user?.avatarUrl && (
+                            <AvatarImage src={user.avatarUrl} alt={user.fullName} />
+                          )}
+                          <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                            {getUserInitials(user)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium text-foreground truncate">
+                          {user?.fullName ?? user?.email ?? "User"}
+                        </span>
+                      </div>
+                      <UserMenuList
+                        showDashboardLink
+                        onItemClick={() => setIsMobileMenuOpen(false)}
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <Button
+                        variant={isActiveHref(loginButton.href) ? "secondary" : "ghost"}
+                        className="justify-center"
+                        asChild
+                      >
+                        <Link href={loginButton.href}>{loginButton.label}</Link>
+                      </Button>
+                      <Button
+                        className={cn(
+                          "justify-center",
+                          isActiveHref(ctaButton.href) && "ring-2 ring-primary/30",
+                        )}
+                        asChild
+                      >
+                        <Link
+                          href={ctaButton.href}
+                          className="flex items-center justify-center gap-1"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {ctaButton.label}
+                          {ctaButton.showIcon && (
+                            <ChevronRight className="w-4 h-4" />
+                          )}
+                        </Link>
+                      </Button>
+                    </>
+                  )}
                 </div>
               </nav>
             </div>

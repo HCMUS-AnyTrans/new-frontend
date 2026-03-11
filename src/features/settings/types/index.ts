@@ -43,7 +43,7 @@ export interface UserProfile {
 export interface UpdateProfileDto {
   fullName?: string;
   phone?: string | null;
-  avatarUrl?: string;
+  avatarUrl?: string | null;
 }
 
 // =============== FILE UPLOAD (for avatars) ===============
@@ -65,6 +65,32 @@ export interface GeneralUploadResponse {
   upload_url: string;
   storage_key: string;
   expires_in: number;
+}
+
+/**
+ * Crop area in pixels relative to the original image.
+ * Matches CropDataDto on the backend.
+ */
+export interface CropData {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * Request body for POST /settings/avatar/process
+ */
+export interface ProcessAvatarRequest {
+  storage_key: string;
+  crop: CropData;
+}
+
+/**
+ * Response from POST /settings/avatar/process
+ */
+export interface ProcessAvatarResponse {
+  avatarUrl: string;
 }
 
 // =============== PREFERENCES ===============

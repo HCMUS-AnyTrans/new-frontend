@@ -1,3 +1,8 @@
+import {
+  HISTORY_DOMAIN_FILTER_OPTIONS,
+  type HistoryDomainFilterValue,
+} from '@/shared/constants/domains';
+
 // ============================================================================
 // History Page Constants
 // ============================================================================
@@ -14,20 +19,9 @@ export const STATUS_OPTIONS = [
 
 export type StatusFilterValue = (typeof STATUS_OPTIONS)[number];
 
-export const DOMAIN_OPTIONS = [
-  'all',
-  'general',
-  'technology',
-  'medical',
-  'legal',
-  'finance',
-  'marketing',
-  'education',
-  'engineering',
-  'science',
-] as const;
-
-export type DomainFilterValue = (typeof DOMAIN_OPTIONS)[number];
+/** History domain filter options (includes "auto"). Re-export from shared. */
+export const DOMAIN_OPTIONS = HISTORY_DOMAIN_FILTER_OPTIONS;
+export type DomainFilterValue = HistoryDomainFilterValue;
 
 // ============================================================================
 // Helpers

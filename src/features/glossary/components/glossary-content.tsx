@@ -56,6 +56,8 @@ export function GlossaryContent() {
     search !== '' || domainFilter !== 'all' || srcLangFilter !== 'all';
 
   const isEmpty = !glossaries || glossaries.length === 0;
+  // isFetching but we already have data — show overlay, not skeleton
+  const isRefetching = isFetching && !isLoading && !isEmpty;
 
   // ─── Handlers ───────────────────────────────────────────────────────
   const handleSearchChange = useCallback((value: string) => {
@@ -114,6 +116,8 @@ export function GlossaryContent() {
       {/* Content */}
       {isLoading && !glossaries ? (
         <GlossarySkeleton showFilters={false} />
+      ) : isRefetching ? (
+        <GlossarySkeleton showFilters={false} count={glossaries?.length ?? 6} />
       ) : isError || isEmpty ? (
         <GlossaryEmptyState hasFilters={hasFilters} onCreateClick={handleCreateOpen} />
       ) : (

@@ -46,7 +46,7 @@ export function useHistoryJobs() {
     ...(domainFilter !== 'all' ? { domain: domainFilter } : {}),
   };
 
-  const { jobsData, isLoading, isError } = useRecentJobs(queryParams);
+  const { jobsData, isLoading, isFetching, isError } = useRecentJobs(queryParams);
 
   const jobs = jobsData?.data ?? [];
   const meta = jobsData?.meta;
@@ -58,6 +58,7 @@ export function useHistoryJobs() {
     jobs,
     meta,
     isLoading,
+    isFetching,
     isError,
     // Filter state
     search,

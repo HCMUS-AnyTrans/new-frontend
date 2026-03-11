@@ -1,44 +1,23 @@
 import { z } from 'zod';
 import {
-  Globe,
-  Laptop,
-  Stethoscope,
-  Scale,
-  Landmark,
-  Megaphone,
-  GraduationCap,
-  Cog,
-  FlaskConical,
-  FolderOpen,
-  type LucideIcon,
-} from 'lucide-react';
+  DOMAIN_OPTIONS_WITH_ICONS,
+  type DomainOption as SharedDomainOption,
+} from '@/shared/constants/domains';
 
 // ============================================================================
 // DOMAIN OPTIONS
 // ============================================================================
 
-export interface DomainOption {
-  id: string;
-  name: string;
-  icon: LucideIcon;
-}
+/** Re-export for backward compatibility. Glossary uses id + icon; name comes from i18n. */
+export type DomainOption = SharedDomainOption & { name?: string };
 
 /**
  * Available domain/subject area options for glossaries.
- * Aligned with backend domain values and document translation domains.
+ * Uses shared constants - aligned with backend and document translation.
  */
-export const glossaryDomains: DomainOption[] = [
-  { id: 'auto', name: 'Auto Detect', icon: FolderOpen },
-  { id: 'general', name: 'Tổng quát', icon: Globe },
-  { id: 'technology', name: 'Công nghệ', icon: Laptop },
-  { id: 'medical', name: 'Y tế', icon: Stethoscope },
-  { id: 'legal', name: 'Pháp lý', icon: Scale },
-  { id: 'finance', name: 'Tài chính', icon: Landmark },
-  { id: 'marketing', name: 'Marketing', icon: Megaphone },
-  { id: 'education', name: 'Giáo dục', icon: GraduationCap },
-  { id: 'engineering', name: 'Kỹ thuật', icon: Cog },
-  { id: 'science', name: 'Khoa học', icon: FlaskConical },
-];
+export const glossaryDomains: DomainOption[] = DOMAIN_OPTIONS_WITH_ICONS.map(
+  (d) => ({ id: d.id, icon: d.icon })
+);
 
 // ============================================================================
 // LANGUAGE OPTIONS

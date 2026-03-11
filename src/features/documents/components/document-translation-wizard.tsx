@@ -253,7 +253,6 @@ export function DocumentTranslationWizard() {
                       ? "failed"
                       : "idle"
             }
-            uploadProgress={uploadProgress}
             uploadError={flowError}
           />
         )}

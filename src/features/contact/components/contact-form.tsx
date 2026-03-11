@@ -46,8 +46,8 @@ export function ContactForm() {
     }, 1500)
   }
 
-  // Custom Input style to match design (border-bottom only)
-  const inputClass = "border-0 border-b border-border rounded-none px-0 py-2 focus-visible:ring-0 focus-visible:border-primary placeholder:text-muted-foreground bg-transparent text-foreground transition-colors"
+  // Custom Input style to match design (border-bottom only, rounded in dark mode)
+  const inputClass = "border-0 border-b border-border rounded-none dark:rounded-md px-3 py-2 focus-visible:ring-0 focus-visible:border-primary placeholder:text-muted-foreground bg-transparent text-foreground transition-colors"
   const labelClass = "text-muted-foreground font-medium text-xs uppercase tracking-wide"
 
   return (

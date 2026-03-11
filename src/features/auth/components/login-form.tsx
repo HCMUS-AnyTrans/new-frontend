@@ -32,6 +32,8 @@ export interface LoginFormProps {
   className?: string
   /** Custom redirect path after login */
   redirectTo?: string
+  /** Hide the "Don't have an account? Sign up" link at the bottom */
+  hideSocialLink?: boolean
 }
 
 export function LoginForm({
@@ -39,6 +41,7 @@ export function LoginForm({
   isLoading: isLoadingProp,
   className,
   redirectTo,
+  hideSocialLink = false,
 }: LoginFormProps) {
   const t = useTranslations("auth.login")
   const searchParams = useSearchParams()
@@ -154,6 +157,7 @@ export function LoginForm({
                 <FormItem className="flex items-center gap-2 space-y-0">
                   <FormControl>
                     <Checkbox
+                      id={field.name}
                       checked={field.value}
                       onCheckedChange={field.onChange}
                       disabled={isLoading}
@@ -187,15 +191,17 @@ export function LoginForm({
           </Button>
 
           {/* Sign Up Link */}
-          <p className="text-center text-sm text-foreground">
-            {t("noAccount")}{" "}
-            <Link
-              href="/register"
-              className="font-semibold text-primary hover:text-primary/80 transition-colors"
-            >
-              {t("signUp")}
-            </Link>
-          </p>
+          {!hideSocialLink && (
+            <p className="text-center text-sm text-foreground">
+              {t("noAccount")}{" "}
+              <Link
+                href="/register"
+                className="font-semibold text-primary hover:text-primary/80 transition-colors"
+              >
+                {t("signUp")}
+              </Link>
+            </p>
+          )}
         </form>
       </Form>
     </div>

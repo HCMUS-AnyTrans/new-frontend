@@ -2,9 +2,9 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateProfileApi } from '../api/settings.api';
-import { settingsKeys } from '@/lib/query-client';
-import { authKeys } from '@/lib/query-client';
+import { settingsKeys, authKeys } from '@/lib/query-client';
 import { getErrorMessage } from '@/lib/api-error';
+import { useAuthStore } from '@/features/auth';
 import type { UpdateProfileDto, UserProfile } from '../types';
 
 interface UseUpdateProfileOptions {
@@ -18,11 +18,18 @@ interface UseUpdateProfileOptions {
  */
 export function useUpdateProfile(options?: UseUpdateProfileOptions) {
   const queryClient = useQueryClient();
+  const updateUser = useAuthStore((state) => state.updateUser);
   const { onSuccess, onError } = options || {};
 
   const mutation = useMutation({
     mutationFn: (dto: UpdateProfileDto) => updateProfileApi(dto),
     onSuccess: (data) => {
+      // Sync Zustand store so header avatar/name updates immediately
+      updateUser({
+        fullName: data.fullName,
+        avatarUrl: data.avatarUrl ?? null,
+        phone: data.phone ?? null,
+      });
       // Update profile cache with returned data
       queryClient.setQueryData(settingsKeys.profile(), data);
       // Also invalidate auth user since name/avatar may have changed

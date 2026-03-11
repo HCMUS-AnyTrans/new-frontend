@@ -12,6 +12,8 @@ export { VerifyEmailHandler } from './verify-email-handler';
 
 // Auth UI components
 export { AuthHero } from './auth-hero';
+export { AuthCardLayout } from './auth-card-layout';
+export { AuthLoadingFallback } from './auth-loading-fallback';
 export { SocialLoginButtons } from './social-login-buttons';
 export { PasswordStrengthIndicator } from './password-strength-indicator';
 

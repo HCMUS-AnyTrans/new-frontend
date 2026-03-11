@@ -5,6 +5,8 @@ import type {
   UpdateProfileDto,
   GeneralUploadRequest,
   GeneralUploadResponse,
+  ProcessAvatarRequest,
+  ProcessAvatarResponse,
   UserPreferences,
   UpdatePreferencesDto,
   ChangePasswordDto,
@@ -85,6 +87,20 @@ export async function uploadFileToPresignedUrl(
       'Content-Type': file.type,
     },
   });
+}
+
+/**
+ * Process and save avatar server-side (crop + resize + WebP conversion)
+ * POST /settings/avatar/process
+ */
+export async function processAvatarApi(
+  dto: ProcessAvatarRequest,
+): Promise<ProcessAvatarResponse> {
+  const response = await apiClient.post<ProcessAvatarResponse>(
+    "/settings/avatar/process",
+    dto,
+  );
+  return response.data;
 }
 
 /**

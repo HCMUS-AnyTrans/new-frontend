@@ -150,6 +150,8 @@ export interface CreditEstimateItem {
 }
 
 export interface CreditEstimateResponse {
+  /** "pending" when document metadata is not ready yet — client should retry */
+  status?: "pending" | "ready";
   totalCredits: number;
   breakdown: CreditEstimateItem[];
 }
