@@ -7,14 +7,7 @@ import {
   Search,
   ChevronDown,
   Coins,
-  LogOut,
-  User,
   CreditCard,
-  Bell,
-  SlidersHorizontal,
-  Shield,
-  FolderOpen,
-  History,
   X,
 } from "lucide-react";
 import {
@@ -22,17 +15,15 @@ import {
   type SearchDropdownHandle,
 } from "./command-palette";
 import { Link } from "@/i18n/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { useAuthStore, useLogout } from "@/features/auth";
+import { UserAvatarMenu } from "@/components/shared";
 import { BuyCreditsDialog } from "./buy-credits-dialog";
 import { useWallet } from "../hooks";
 
@@ -41,10 +32,7 @@ export function DashboardHeader() {
   const [buyCreditsDialogOpen, setBuyCreditsDialogOpen] = useState(false);
   const [mobileSearchActive, setMobileSearchActive] = useState(false);
   const locale = useLocale();
-  const tSidebar = useTranslations("dashboard.sidebar");
   const tHeaderMenu = useTranslations("dashboard.headerMenu");
-  const user = useAuthStore((s) => s.user);
-  const { logout } = useLogout();
   const { wallet, isLoading: walletLoading } = useWallet();
 
   // Ref to focus the desktop search bar programmatically
@@ -66,15 +54,6 @@ export function DashboardHeader() {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
-
-  const initials = user?.fullName
-    ? user.fullName
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : "??";
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex h-[var(--dashboard-header-height)] items-center justify-between border-b border-border bg-background px-4 lg:px-6">
@@ -181,76 +160,7 @@ export function DashboardHeader() {
         />
 
         {/* User avatar menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              className="flex h-9 items-center gap-1 rounded-full border border-input bg-background pl-1 pr-2 transition-colors hover:bg-muted"
-            >
-              <Avatar className="h-8 w-8">
-                {user?.avatarUrl && (
-                  <AvatarImage src={user.avatarUrl} alt={user.fullName} />
-                )}
-                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
-              <ChevronDown className="mr-1 hidden size-3.5 text-muted-foreground sm:block" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-52">
-            <DropdownMenuItem asChild>
-              <Link href="/settings?tab=profile">
-                <User className="mr-2 size-4" />
-                {tSidebar("profile")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/settings?tab=billing">
-                <CreditCard className="mr-2 size-4" />
-                {tHeaderMenu("payment")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/settings?tab=notifications">
-                <Bell className="mr-2 size-4" />
-                {tHeaderMenu("notifications")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/settings?tab=preferences">
-                <SlidersHorizontal className="mr-2 size-4" />
-                {tHeaderMenu("references")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/settings?tab=security">
-                <Shield className="mr-2 size-4" />
-                {tHeaderMenu("security")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/settings?tab=files">
-                <FolderOpen className="mr-2 size-4" />
-                {tHeaderMenu("files")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/settings?tab=activity">
-                <History className="mr-2 size-4" />
-                {tHeaderMenu("activity")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => logout()}
-              className="text-destructive focus:bg-destructive/10 focus:text-destructive"
-            >
-              <LogOut className="mr-2 size-4 text-destructive" />
-              {tSidebar("logout")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <UserAvatarMenu />
       </div>
     </header>
   );

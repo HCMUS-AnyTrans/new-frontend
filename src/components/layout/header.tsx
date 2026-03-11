@@ -7,10 +7,12 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ModeToggle, LanguageSwitcher } from "@/components/shared";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ModeToggle, LanguageSwitcher, UserAvatarMenu, UserMenuList, getUserInitials } from "@/components/shared";
 import { siteConfig } from "@/data/site";
 import { locales } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/features/auth";
 
 export interface NavItem {
   label: string;
@@ -43,6 +45,8 @@ export function Header({
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const normalizedPathname = (() => {
     if (!pathname) return "/";
@@ -152,35 +156,41 @@ export function Header({
               ))}
             </nav>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons / Avatar */}
             <div className="hidden md:flex items-center gap-3">
               <LanguageSwitcher />
               <ModeToggle />
-              <Button
-                variant={isActiveHref(loginButton.href) ? "secondary" : "ghost"}
-                asChild
-              >
-                <Link href={loginButton.href}>{loginButton.label}</Link>
-              </Button>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  className={cn(
-                    isActiveHref(ctaButton.href) && "ring-2 ring-primary/30",
-                  )}
-                  asChild
-                >
-                  <Link
-                    href={ctaButton.href}
-                    className="flex items-center gap-1"
+              {isAuthenticated ? (
+                <UserAvatarMenu showDashboardLink />
+              ) : (
+                <>
+                  <Button
+                    variant={isActiveHref(loginButton.href) ? "secondary" : "ghost"}
+                    asChild
                   >
-                    {ctaButton.label}
-                    {ctaButton.showIcon && <ChevronRight className="w-4 h-4" />}
-                  </Link>
-                </Button>
-              </motion.div>
+                    <Link href={loginButton.href}>{loginButton.label}</Link>
+                  </Button>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button
+                      className={cn(
+                        isActiveHref(ctaButton.href) && "ring-2 ring-primary/30",
+                      )}
+                      asChild
+                    >
+                      <Link
+                        href={ctaButton.href}
+                        className="flex items-center gap-1"
+                      >
+                        {ctaButton.label}
+                        {ctaButton.showIcon && <ChevronRight className="w-4 h-4" />}
+                      </Link>
+                    </Button>
+                  </motion.div>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -236,30 +246,55 @@ export function Header({
                     <LanguageSwitcher />
                     <ModeToggle />
                   </div>
-                  <Button
-                    variant={isActiveHref(loginButton.href) ? "secondary" : "ghost"}
-                    className="justify-center"
-                    asChild
-                  >
-                    <Link href={loginButton.href}>{loginButton.label}</Link>
-                  </Button>
-                  <Button
-                    className={cn(
-                      "justify-center",
-                      isActiveHref(ctaButton.href) && "ring-2 ring-primary/30",
-                    )}
-                    asChild
-                  >
-                    <Link
-                      href={ctaButton.href}
-                      className="flex items-center justify-center gap-1"
-                    >
-                      {ctaButton.label}
-                      {ctaButton.showIcon && (
-                        <ChevronRight className="w-4 h-4" />
-                      )}
-                    </Link>
-                  </Button>
+                  {isAuthenticated ? (
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-3 px-4 py-2 mb-1">
+                        <Avatar className="h-10 w-10">
+                          {user?.avatarUrl && (
+                            <AvatarImage src={user.avatarUrl} alt={user.fullName} />
+                          )}
+                          <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                            {getUserInitials(user)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium text-foreground truncate">
+                          {user?.fullName ?? user?.email ?? "User"}
+                        </span>
+                      </div>
+                      <UserMenuList
+                        showDashboardLink
+                        onItemClick={() => setIsMobileMenuOpen(false)}
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <Button
+                        variant={isActiveHref(loginButton.href) ? "secondary" : "ghost"}
+                        className="justify-center"
+                        asChild
+                      >
+                        <Link href={loginButton.href}>{loginButton.label}</Link>
+                      </Button>
+                      <Button
+                        className={cn(
+                          "justify-center",
+                          isActiveHref(ctaButton.href) && "ring-2 ring-primary/30",
+                        )}
+                        asChild
+                      >
+                        <Link
+                          href={ctaButton.href}
+                          className="flex items-center justify-center gap-1"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {ctaButton.label}
+                          {ctaButton.showIcon && (
+                            <ChevronRight className="w-4 h-4" />
+                          )}
+                        </Link>
+                      </Button>
+                    </>
+                  )}
                 </div>
               </nav>
             </div>
