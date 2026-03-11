@@ -157,12 +157,14 @@ export function HistoryJobDetail({
                   {!job.input_file.is_expired && (
                     <button
                       type="button"
-                      onClick={() => download(job.input_file!.id, job.input_file!.name)}
+                      onClick={() =>
+                        download(job.input_file!.id, job.input_file!.name)
+                      }
                       disabled={isDownloading}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-foreground shadow-sm hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                      title={t('download.original')}
+                      className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      <Download className="size-3.5" />
-                      {t('download.original')}
+                      <Download className="size-4" />
                     </button>
                   )}
                 </div>
@@ -201,12 +203,14 @@ export function HistoryJobDetail({
                   {!job.output_file.is_expired && (
                     <button
                       type="button"
-                      onClick={() => download(job.output_file!.id, job.output_file!.name)}
+                      onClick={() =>
+                        download(job.output_file!.id, job.output_file!.name)
+                      }
                       disabled={isDownloading}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-foreground shadow-sm hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                      title={t('download.translated')}
+                      className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      <Download className="size-3.5" />
-                      {t('download.translated')}
+                      <Download className="size-4" />
                     </button>
                   )}
                 </div>
@@ -251,7 +255,11 @@ export function HistoryJobDetail({
                       {job.pricing_breakdown.map((item, i) => (
                         <tr
                           key={item.code}
-                          className={i < job.pricing_breakdown!.length - 1 ? 'border-b' : ''}
+                          className={
+                            i < job.pricing_breakdown!.length - 1
+                              ? 'border-b'
+                              : ''
+                          }
                         >
                           <td className="px-3 py-2 text-foreground">
                             <div>{item.name}</div>
@@ -270,7 +278,10 @@ export function HistoryJobDetail({
                     </tbody>
                     <tfoot>
                       <tr className="border-t bg-muted/50">
-                        <td colSpan={2} className="px-3 py-2 font-semibold text-foreground">
+                        <td
+                          colSpan={2}
+                          className="px-3 py-2 font-semibold text-foreground"
+                        >
                           {t('detail.breakdown.total')}
                         </td>
                         <td className="px-3 py-2 text-right font-semibold tabular-nums text-foreground">
