@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { ALLOWED_EXTENSIONS, type UploadedFile } from "../types";
@@ -40,7 +39,6 @@ interface StepUploadProps {
   onDragChange: (dragging: boolean) => void;
   onNext: () => void;
   pipelineStatus?: UploadPipelineStatus;
-  uploadProgress?: number;
   uploadError?: string | null;
 }
 
@@ -93,7 +91,6 @@ export function StepUpload({
   onDragChange,
   onNext,
   pipelineStatus = "idle",
-  uploadProgress = 0,
   uploadError,
 }: StepUploadProps) {
   const t = useTranslations("documents.upload");
@@ -323,16 +320,6 @@ export function StepUpload({
             {/* Pipeline progress */}
             {isBusy && (
               <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-4">
-                {pipelineStatus === "uploading" && (
-                  <div className="mb-4 space-y-2">
-                    <div className="flex items-center justify-between text-xs font-medium text-primary sm:text-sm">
-                      <span>{t("pipelineUploading")}</span>
-                      <span>{uploadProgress}%</span>
-                    </div>
-                    <Progress value={uploadProgress} className="h-2" />
-                  </div>
-                )}
-
                 {/* Steps */}
                 <div className="flex items-center justify-around gap-1 sm:gap-2">
                   {PIPELINE_STEPS.map((step, idx) => {

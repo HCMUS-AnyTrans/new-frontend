@@ -213,7 +213,8 @@ apiClient.interceptors.response.use(
           await apiClient.post<AuthRefreshResponse>('/auth/refresh');
         const { accessToken } = response.data;
 
-        // Update the store with new token
+        // Update the store with new token (also triggers WebSocket reconnection
+        // because useTranslationJobSocket watches useAccessToken() from Zustand)
         setAccessToken(accessToken);
 
         // Update the authorization header for the original request

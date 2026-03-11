@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { io, type Socket } from "socket.io-client"
 import { translationKeys } from "@/lib/query-client"
-import { useAccessToken } from "@/features/auth/store"
+import { useAccessToken, getAccessToken } from "@/features/auth/store"
 import type { TranslationJobResponse } from "../types"
 
 type SocketConnectionState =
@@ -53,7 +53,11 @@ export function useTranslationJobSocket(
       path: "/ws",
       transports: ["websocket"],
       autoConnect: true,
-      auth: { token: activeToken },
+      // Use a callback so every reconnect attempt fetches the latest token
+      // from the Zustand store instead of reusing the stale closure value
+      auth: (cb: (data: { token: string | null }) => void) => {
+        cb({ token: getAccessToken() })
+      },
     })
 
     const handleConnect = () => {
