@@ -34,6 +34,7 @@ export function HistoryContent() {
     jobs,
     meta,
     isLoading,
+    isFetching,
     isError,
     search,
     statusFilter,
@@ -46,6 +47,8 @@ export function HistoryContent() {
   } = useHistoryJobs();
 
   const isEmpty = jobs.length === 0;
+  // isFetching but we already have data — show overlay, not skeleton
+  const isRefetching = isFetching && !isLoading && !isEmpty;
 
   return (
     <>
@@ -62,6 +65,8 @@ export function HistoryContent() {
       {/* Content */}
       {isLoading && isEmpty ? (
         <HistoryTableSkeleton showFilters={false} />
+      ) : isRefetching ? (
+        <HistoryTableSkeleton showFilters={false} rowCount={jobs.length || 8} />
       ) : isError || isEmpty ? (
         <AppCard>
           <HistoryEmptyState hasFilters={hasFilters} />

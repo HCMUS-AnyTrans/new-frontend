@@ -104,8 +104,7 @@ function buildJobDto(
     src_lang: LANGUAGE_CODE_TO_API_NAME[config.srcLang],
     tgt_lang: LANGUAGE_CODE_TO_API_NAME[config.tgtLang],
     doc_tone: config.tone || undefined,
-    doc_domain:
-      config.domain === "auto" ? undefined : config.domain || undefined,
+    doc_domain: config.domain || "auto",
   }
 
   const mergedTerms = new Map<string, { src: string; tgt: string }>()
