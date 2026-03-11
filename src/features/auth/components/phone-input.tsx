@@ -64,6 +64,7 @@ const PhoneInput = React.forwardRef<HTMLDivElement, PhoneInputProps>(
       >
         <PhoneInputWithCountry
           international
+          limitMaxLength
           countryCallingCodeEditable={false}
           defaultCountry={defaultCountry}
           value={value}

@@ -1,38 +1,29 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
-import {
-  Search,
-  ChevronDown,
-  Coins,
-  CreditCard,
-  X,
-} from "lucide-react";
-import {
-  SearchDropdown,
-  type SearchDropdownHandle,
-} from "./command-palette";
-import { Link } from "@/i18n/navigation";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect, useCallback, useRef } from 'react';
+import Image from 'next/image';
+import { useLocale, useTranslations } from 'next-intl';
+import { Search, ChevronDown, Coins, CreditCard, X } from 'lucide-react';
+import { SearchDropdown, type SearchDropdownHandle } from './command-palette';
+import { Link } from '@/i18n/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { UserAvatarMenu } from "@/components/shared";
-import { BuyCreditsDialog } from "./buy-credits-dialog";
-import { useWallet } from "../hooks";
+} from '@/components/ui/dropdown-menu';
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import { UserAvatarMenu } from '@/components/shared';
+import { BuyCreditsDialog } from './buy-credits-dialog';
+import { useWallet } from '../hooks';
 
 export function DashboardHeader() {
   const [creditsMenuOpen, setCreditsMenuOpen] = useState(false);
   const [buyCreditsDialogOpen, setBuyCreditsDialogOpen] = useState(false);
   const [mobileSearchActive, setMobileSearchActive] = useState(false);
   const locale = useLocale();
-  const tHeaderMenu = useTranslations("dashboard.headerMenu");
+  const tHeaderMenu = useTranslations('dashboard.headerMenu');
   const { wallet, isLoading: walletLoading } = useWallet();
 
   // Ref to focus the desktop search bar programmatically
@@ -40,9 +31,9 @@ export function DashboardHeader() {
 
   // Cmd+K / Ctrl+K: focus desktop search or show mobile search
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
       e.preventDefault();
-      if (window.matchMedia("(min-width: 1024px)").matches) {
+      if (window.matchMedia('(min-width: 1024px)').matches) {
         desktopSearchRef.current?.focus();
       } else {
         setMobileSearchActive(true);
@@ -51,8 +42,8 @@ export function DashboardHeader() {
   }, []);
 
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
   return (
@@ -118,17 +109,20 @@ export function DashboardHeader() {
         {walletLoading ? (
           <Skeleton className="hidden h-9 w-28 rounded-full md:block" />
         ) : (
-          <DropdownMenu open={creditsMenuOpen} onOpenChange={setCreditsMenuOpen}>
+          <DropdownMenu
+            open={creditsMenuOpen}
+            onOpenChange={setCreditsMenuOpen}
+          >
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="hidden h-9 items-center gap-2 rounded-full border border-input px-3 text-sm md:flex"
+                className="hover:bg-muted hidden h-9 items-center gap-2 rounded-full border border-input px-3 text-sm md:flex"
                 title="Credits"
               >
                 <Coins className="size-4 text-primary" />
                 <span className="font-semibold text-foreground tabular-nums">
                   {(wallet?.balance ?? 0).toLocaleString(
-                    locale === "vi" ? "vi-VN" : "en-US",
+                    locale === 'vi' ? 'vi-VN' : 'en-US',
                   )}
                 </span>
                 <ChevronDown className="size-3.5 text-muted-foreground" />
@@ -142,12 +136,12 @@ export function DashboardHeader() {
                 }}
               >
                 <Coins className="mr-2 size-4 text-primary" />
-                {tHeaderMenu("buyMoreCredits")}
+                {tHeaderMenu('buyMoreCredits')}
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/settings?tab=billing">
                   <CreditCard className="mr-2 size-4" />
-                  {tHeaderMenu("paymentHistory")}
+                  {tHeaderMenu('paymentHistory')}
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>

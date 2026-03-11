@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
 import { Camera, X, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/features/auth/components/phone-input";
@@ -17,6 +18,13 @@ import {
 import { useProfile } from "../hooks/use-profile";
 import { useUpdateProfile } from "../hooks/use-update-profile";
 import { useUploadAvatar } from "../hooks/use-upload-avatar";
+import {
+  AvatarCropModal,
+  type CroppedAreaPixels,
+} from "./avatar-crop-modal";
+
+const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
 // ============================================================================
 // Skeleton Loading State
@@ -105,6 +113,8 @@ export function ProfileTab() {
     fullName: "",
     phone: "",
   });
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [cropOpen, setCropOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Show skeleton while loading
@@ -163,19 +173,44 @@ export function ProfileTab() {
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        return;
-      }
-      uploadAvatar(file);
-    }
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+    if (!file) return;
+
+    if (!ACCEPTED_TYPES.includes(file.type)) {
+      toast.error("Unsupported file type. Please use JPG, PNG, or WebP.");
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error("File is too large. Maximum size is 5 MB.");
+      return;
+    }
+
+    setPendingFile(file);
+    setCropOpen(true);
+  };
+
+  const handleCropSave = (cropArea: CroppedAreaPixels) => {
+    if (!pendingFile) return;
+    setCropOpen(false);
+    uploadAvatar(
+      { file: pendingFile, cropData: cropArea },
+      {
+        onSuccess: () => toast.success("Avatar updated successfully."),
+        onError: (err) => toast.error(err ?? "Failed to update avatar."),
+      },
+    );
+    setPendingFile(null);
+  };
+
+  const handleCropCancel = () => {
+    setCropOpen(false);
+    setPendingFile(null);
   };
 
   const handleRemoveAvatar = () => {
-    updateProfile({ avatarUrl: "" });
+    updateProfile({ avatarUrl: null });
   };
 
   const dateFormatter = new Intl.DateTimeFormat(
@@ -257,15 +292,22 @@ export function ProfileTab() {
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              {t("avatarHint")}
+              JPG, PNG, WebP &middot; Max 5 MB &middot; 1:1 recommended
             </p>
           </div>
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp"
             onChange={handleAvatarChange}
             className="hidden"
+          />
+
+          <AvatarCropModal
+            open={cropOpen}
+            file={pendingFile}
+            onSave={handleCropSave}
+            onCancel={handleCropCancel}
           />
         </div>
       </SettingsSection>
