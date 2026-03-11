@@ -10,6 +10,7 @@ import {
   History,
   Settings as SettingsIcon,
   HelpCircle,
+  ChevronRight,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -18,6 +19,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 interface NavItem {
@@ -38,18 +40,19 @@ const navItems: NavItem[] = [
 export function AppSidebar() {
   const pathname = usePathname();
   const t = useTranslations("dashboard.sidebar");
+  const { toggleSidebar, open } = useSidebar();
 
   // Remove locale prefix from pathname for matching
   const pathnameWithoutLocale = pathname.replace(/^\/(vi|en)/, "");
 
   return (
     <Sidebar
-      collapsible="offcanvas"
-      className="h-svh border-r border-sidebar-border bg-sidebar pt-[var(--dashboard-header-height)]"
+      collapsible="icon"
+      className="h-svh border-r border-sidebar-border bg-sidebar pt-(--dashboard-header-height)"
     >
       {/* Main Navigation */}
-      <SidebarContent className="px-2 pt-4">
-        <SidebarMenu className="gap-1 px-2">
+      <SidebarContent className={`pt-4 ${open ? "px-2" : "px-0"}`}>
+        <SidebarMenu className="gap-1">
           {navItems.map((item) => {
             const isActive =
               pathnameWithoutLocale === item.href ||
@@ -57,7 +60,10 @@ export function AppSidebar() {
             const title = t(item.titleKey);
 
             return (
-              <SidebarMenuItem key={item.href}>
+              <SidebarMenuItem
+                key={item.href}
+                className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center"
+              >
                 <SidebarMenuButton
                   asChild
                   isActive={isActive}
@@ -66,7 +72,7 @@ export function AppSidebar() {
                 >
                   <Link href={item.href}>
                     <item.icon className="size-5" />
-                    <span>{title}</span>
+                    {open && <span>{title}</span>}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -74,6 +80,17 @@ export function AppSidebar() {
           })}
         </SidebarMenu>
       </SidebarContent>
+
+      {/* Collapse / Expand round button on the right edge */}
+      <button
+        onClick={toggleSidebar}
+        className="absolute top-1/2 -right-3.5 z-20 hidden -translate-y-1/2 size-7 items-center justify-center rounded-full border border-sidebar-border bg-background shadow-sm transition-colors hover:bg-muted md:flex"
+      >
+        <ChevronRight
+          className="size-3.5 text-muted-foreground transition-transform duration-200"
+          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+        />
+      </button>
     </Sidebar>
   );
 }

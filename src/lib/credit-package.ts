@@ -1,5 +1,5 @@
-import type { CreditPackage } from "@/features/settings/types";
-import { normalizePercentage } from "@/lib/percentage";
+import type { CreditPackage } from '@/features/settings/types';
+import { normalizePercentage } from '@/lib/percentage';
 
 export interface CreditPackageViewModel {
   id: string;
@@ -21,20 +21,26 @@ export interface CreditPackageViewModel {
 export interface CreditPackageFormatter {
   formatCredits: (value: number) => string;
   formatAmount: (value: number, currency: string) => string;
-  formatPerCredit: (value: number, currency: string, perCreditLabel: string) => string;
+  formatPerCredit: (
+    value: number,
+    currency: string,
+    perCreditLabel: string,
+  ) => string;
 }
 
 function getIntlLocale(locale: string) {
-  return locale === "vi" ? "vi-VN" : "en-US";
+  return locale === 'vi' ? 'vi-VN' : 'en-US';
 }
 
 function getCurrencySymbol(currency: string) {
-  if (currency === "VND") return "đ";
-  if (currency === "USD") return "$";
+  if (currency === 'VND') return 'đ';
+  if (currency === 'USD') return '$';
   return currency;
 }
 
-export function createCreditPackageFormatter(locale: string): CreditPackageFormatter {
+export function createCreditPackageFormatter(
+  locale: string,
+): CreditPackageFormatter {
   const intlLocale = getIntlLocale(locale);
   const creditsFormatter = new Intl.NumberFormat(intlLocale);
   const amountFormatter = new Intl.NumberFormat(intlLocale, {
@@ -50,7 +56,9 @@ export function createCreditPackageFormatter(locale: string): CreditPackageForma
   };
 }
 
-export function sortActiveCreditPackages(packages: CreditPackage[] | undefined) {
+export function sortActiveCreditPackages(
+  packages: CreditPackage[] | undefined,
+) {
   return (packages ?? [])
     .filter((pkg) => pkg.active)
     .sort((a, b) => a.credits - b.credits);
@@ -59,7 +67,14 @@ export function sortActiveCreditPackages(packages: CreditPackage[] | undefined) 
 export function createCreditPackageViewModel(
   pkg: Pick<
     CreditPackage,
-    "id" | "name" | "credits" | "price" | "currency" | "bonus" | "discount" | "tags"
+    | 'id'
+    | 'name'
+    | 'credits'
+    | 'price'
+    | 'currency'
+    | 'bonus'
+    | 'discount'
+    | 'tags'
   >,
 ): CreditPackageViewModel {
   const discountPercent = normalizePercentage(pkg.discount);
@@ -78,8 +93,8 @@ export function createCreditPackageViewModel(
     price: pkg.price,
     currency: pkg.currency,
     tags: pkg.tags,
-    isBestValue: pkg.tags.includes("best-value"),
-    isPopular: pkg.tags.includes("popular"),
+    isBestValue: pkg.tags.includes('best-value'),
+    isPopular: pkg.tags.includes('popular'),
     discountPercent,
     bonusPercent,
     discountedPrice,
