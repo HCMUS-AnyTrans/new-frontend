@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
 import { Camera, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/features/auth/components/phone-input";
@@ -198,7 +199,8 @@ export function ProfileTab() {
       { file: pendingFile, cropData: cropArea },
       {
         onSuccess: () => toast.success("Avatar updated successfully."),
-        onError: (err) => toast.error(err ?? "Failed to update avatar."),
+        onError: (err) =>
+          toast.error(getErrorMessage(err) || "Failed to update avatar."),
       },
     );
     setPendingFile(null);

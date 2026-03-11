@@ -43,7 +43,7 @@ export interface UserProfile {
 export interface UpdateProfileDto {
   fullName?: string;
   phone?: string | null;
-  avatarUrl?: string;
+  avatarUrl?: string | null;
 }
 
 // =============== FILE UPLOAD (for avatars) ===============
