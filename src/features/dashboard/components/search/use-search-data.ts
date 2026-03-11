@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useDeferredValue } from "react";
-import { useTranslations } from "next-intl";
-import { getRecentJobsApi } from "../../api/dashboard.api";
-import { listGlossariesApi } from "@/features/glossary/api/glossary.api";
-import type { TranslationJobResponse } from "../../api/dashboard.api";
-import type { Glossary } from "@/features/glossary/types";
+import { useState, useEffect, useDeferredValue } from 'react';
+import { useTranslations } from 'next-intl';
+import { getRecentJobsApi } from '../../api/dashboard.api';
+import { listGlossariesApi } from '@/features/glossary/api/glossary.api';
+import type { TranslationJobResponse } from '../../api/dashboard.api';
+import type { Glossary } from '@/features/glossary/types';
 import {
   LayoutDashboard,
   FileText,
@@ -13,7 +13,7 @@ import {
   History,
   Settings,
   HelpCircle,
-} from "lucide-react";
+} from 'lucide-react';
 
 export interface NavItem {
   titleKey: string;
@@ -23,12 +23,42 @@ export interface NavItem {
 }
 
 const ALL_NAV_ITEMS: NavItem[] = [
-  { titleKey: "dashboard", href: "/dashboard", icon: LayoutDashboard, descriptionKey: "dashboardDesc" },
-  { titleKey: "documents", href: "/documents", icon: FileText, descriptionKey: "documentsDesc" },
-  { titleKey: "glossary", href: "/glossary", icon: BookOpen, descriptionKey: "glossaryDesc" },
-  { titleKey: "history", href: "/history", icon: History, descriptionKey: "historyDesc" },
-  { titleKey: "settings", href: "/settings", icon: Settings, descriptionKey: "settingsDesc" },
-  { titleKey: "help", href: "/help", icon: HelpCircle, descriptionKey: "helpDesc" },
+  {
+    titleKey: 'dashboard',
+    href: '/dashboard',
+    icon: LayoutDashboard,
+    descriptionKey: 'dashboardDesc',
+  },
+  {
+    titleKey: 'documents',
+    href: '/documents',
+    icon: FileText,
+    descriptionKey: 'documentsDesc',
+  },
+  {
+    titleKey: 'glossary',
+    href: '/glossary',
+    icon: BookOpen,
+    descriptionKey: 'glossaryDesc',
+  },
+  {
+    titleKey: 'history',
+    href: '/history',
+    icon: History,
+    descriptionKey: 'historyDesc',
+  },
+  {
+    titleKey: 'settings',
+    href: '/settings',
+    icon: Settings,
+    descriptionKey: 'settingsDesc',
+  },
+  {
+    titleKey: 'help',
+    href: '/help',
+    icon: HelpCircle,
+    descriptionKey: 'helpDesc',
+  },
 ];
 
 export interface SearchData {
@@ -42,7 +72,7 @@ export interface SearchData {
 }
 
 export function useSearchData(query: string): SearchData {
-  const tSidebar = useTranslations("dashboard.sidebar");
+  const tSidebar = useTranslations('dashboard.sidebar');
 
   const deferredQuery = useDeferredValue(query);
 
@@ -75,7 +105,10 @@ export function useSearchData(query: string): SearchData {
     const fetchGlossaries = async () => {
       setIsLoadingGlossaries(true);
       try {
-        const res = await listGlossariesApi({ search: deferredQuery, limit: 5 });
+        const res = await listGlossariesApi({
+          search: deferredQuery,
+          limit: 5,
+        });
         if (!cancelled) setGlossaries(res.items);
       } catch {
         if (!cancelled) setGlossaries([]);
@@ -87,12 +120,16 @@ export function useSearchData(query: string): SearchData {
     fetchJobs();
     fetchGlossaries();
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [deferredQuery]);
 
   const filteredNavItems = deferredQuery
     ? ALL_NAV_ITEMS.filter((item) =>
-        tSidebar(item.titleKey).toLowerCase().includes(deferredQuery.toLowerCase()),
+        tSidebar(item.titleKey)
+          .toLowerCase()
+          .includes(deferredQuery.toLowerCase()),
       )
     : ALL_NAV_ITEMS;
 

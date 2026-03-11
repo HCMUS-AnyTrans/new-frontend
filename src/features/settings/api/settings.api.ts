@@ -1,5 +1,5 @@
-import axios from "axios";
-import { apiClient } from "@/lib/api-client";
+import axios from 'axios';
+import { apiClient } from '@/lib/api-client';
 import type {
   UserProfile,
   UpdateProfileDto,
@@ -30,7 +30,7 @@ import type {
   StorageUsage,
   AuditLog,
   ActivityQuery,
-} from "../types";
+} from '../types';
 
 // ============================================================================
 // Profile API Functions
@@ -41,7 +41,7 @@ import type {
  * GET /settings/profile
  */
 export async function getProfileApi(): Promise<UserProfile> {
-  const response = await apiClient.get<UserProfile>("/settings/profile");
+  const response = await apiClient.get<UserProfile>('/settings/profile');
   return response.data;
 }
 
@@ -52,7 +52,7 @@ export async function getProfileApi(): Promise<UserProfile> {
 export async function updateProfileApi(
   dto: UpdateProfileDto,
 ): Promise<UserProfile> {
-  const response = await apiClient.patch<UserProfile>("/settings/profile", dto);
+  const response = await apiClient.patch<UserProfile>('/settings/profile', dto);
   return response.data;
 }
 
@@ -68,7 +68,7 @@ export async function requestGeneralUploadApi(
   dto: GeneralUploadRequest,
 ): Promise<GeneralUploadResponse> {
   const response = await apiClient.post<GeneralUploadResponse>(
-    "/files/upload/public",
+    '/files/upload/public',
     dto,
   );
   return response.data;
@@ -84,7 +84,7 @@ export async function uploadFileToPresignedUrl(
 ): Promise<void> {
   await axios.put(uploadUrl, file, {
     headers: {
-      "Content-Type": file.type,
+      'Content-Type': file.type,
     },
   });
 }
@@ -110,7 +110,7 @@ export async function processAvatarApi(
 export function buildStorageUrl(storageKey: string): string {
   const storageBase =
     process.env.NEXT_PUBLIC_STORAGE_URL ||
-    `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/storage`;
+    `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/storage`;
   return `${storageBase}/${storageKey}`;
 }
 
@@ -124,7 +124,7 @@ export function buildStorageUrl(storageKey: string): string {
  */
 export async function getPreferencesApi(): Promise<UserPreferences> {
   const response = await apiClient.get<UserPreferences>(
-    "/settings/preferences",
+    '/settings/preferences',
   );
   return response.data;
 }
@@ -137,7 +137,7 @@ export async function updatePreferencesApi(
   dto: UpdatePreferencesDto,
 ): Promise<UserPreferences> {
   const response = await apiClient.patch<UserPreferences>(
-    "/settings/preferences",
+    '/settings/preferences',
     dto,
   );
   return response.data;
@@ -153,7 +153,7 @@ export async function updatePreferencesApi(
  * Backend only accepts currentPassword + newPassword (no confirmPassword)
  */
 export async function changePasswordApi(dto: ChangePasswordDto): Promise<void> {
-  await apiClient.post("/auth/change-password", {
+  await apiClient.post('/auth/change-password', {
     currentPassword: dto.currentPassword,
     newPassword: dto.newPassword,
   });
@@ -182,7 +182,7 @@ export async function linkIdentityApi(
  */
 export async function getIdentitiesApi(): Promise<AuthIdentity[]> {
   const response = await apiClient.get<AuthIdentity[]>(
-    "/settings/security/identities",
+    '/settings/security/identities',
   );
   return response.data;
 }
@@ -208,7 +208,7 @@ export async function getNotificationsApi(
 ): Promise<PaginatedResponse<Notification> & { unreadCount: number }> {
   const response = await apiClient.get<
     PaginatedResponse<Notification> & { unreadCount: number }
-  >("/notifications", { params: query });
+  >('/notifications', { params: query });
   return response.data;
 }
 
@@ -235,7 +235,7 @@ export async function markAllNotificationsReadApi(): Promise<{
   updatedCount: number;
 }> {
   const response = await apiClient.patch<{ updatedCount: number }>(
-    "/notifications/read-all",
+    '/notifications/read-all',
   );
   return response.data;
 }
@@ -256,7 +256,7 @@ export async function getNotificationPreferencesApi(): Promise<
   NotificationPreference[]
 > {
   const response = await apiClient.get<NotificationPreference[]>(
-    "/settings/notification-preferences",
+    '/settings/notification-preferences',
   );
   return response.data;
 }
@@ -268,7 +268,7 @@ export async function getNotificationPreferencesApi(): Promise<
 export async function updateNotificationPreferencesApi(
   dto: UpdateNotificationPreferencesDto,
 ): Promise<void> {
-  await apiClient.patch("/settings/notification-preferences", dto);
+  await apiClient.patch('/settings/notification-preferences', dto);
 }
 
 // ============================================================================
@@ -280,7 +280,7 @@ export async function updateNotificationPreferencesApi(
  * GET /wallet
  */
 export async function getWalletApi(): Promise<Wallet> {
-  const response = await apiClient.get<Wallet>("/wallet");
+  const response = await apiClient.get<Wallet>('/wallet');
   return response.data;
 }
 
@@ -291,7 +291,7 @@ export async function getWalletApi(): Promise<Wallet> {
 export async function getWalletLedgerApi(
   query?: LedgerQuery,
 ): Promise<WalletLedgerResponse> {
-  const response = await apiClient.get<WalletLedgerResponse>("/wallet/ledger", {
+  const response = await apiClient.get<WalletLedgerResponse>('/wallet/ledger', {
     params: query,
   });
   return response.data;
@@ -302,7 +302,7 @@ export async function getWalletLedgerApi(
  * GET /credit-packages
  */
 export async function getCreditPackagesApi(): Promise<CreditPackage[]> {
-  const response = await apiClient.get<CreditPackage[]>("/credit-packages");
+  const response = await apiClient.get<CreditPackage[]>('/credit-packages');
   return response.data;
 }
 
@@ -314,7 +314,7 @@ export async function createVnpayPaymentApi(
   dto: CreateVnpayPaymentDto,
 ): Promise<CreateVnpayPaymentResponse> {
   const response = await apiClient.post<CreateVnpayPaymentResponse>(
-    "/payments/vnpay/create",
+    '/payments/vnpay/create',
     dto,
   );
   return response.data;
@@ -328,7 +328,7 @@ export async function getPaymentsApi(
   query?: PaymentsQuery,
 ): Promise<PaginatedResponse<Payment>> {
   const response = await apiClient.get<PaginatedResponse<Payment>>(
-    "/payments",
+    '/payments',
     { params: query },
   );
   return response.data;
@@ -345,7 +345,7 @@ export async function getPaymentsApi(
 export async function getFilesApi(
   query?: FilesQuery,
 ): Promise<PaginatedResponse<UserFile>> {
-  const response = await apiClient.get<PaginatedResponse<UserFile>>("/files", {
+  const response = await apiClient.get<PaginatedResponse<UserFile>>('/files', {
     params: query,
   });
   return response.data;
@@ -385,7 +385,7 @@ export async function deleteFilesByJobApi(jobId: string): Promise<void> {
  * GET /dashboard/storage
  */
 export async function getStorageUsageApi(): Promise<StorageUsage> {
-  const response = await apiClient.get<StorageUsage>("/dashboard/storage");
+  const response = await apiClient.get<StorageUsage>('/dashboard/storage');
   return response.data;
 }
 
@@ -401,7 +401,7 @@ export async function getActivityApi(
   query?: ActivityQuery,
 ): Promise<PaginatedResponse<AuditLog>> {
   const response = await apiClient.get<PaginatedResponse<AuditLog>>(
-    "/settings/activity",
+    '/settings/activity',
     { params: query },
   );
   return response.data;
