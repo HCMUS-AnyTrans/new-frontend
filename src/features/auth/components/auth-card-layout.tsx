@@ -41,7 +41,7 @@ export function AuthCardLayout({
           <div className="flex items-center justify-end">
             <Link
               href="/"
-              className="flex items-center gap-1.5 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+              className="flex items-center gap-1.5 rounded-full border border-white/30 bg-black/10 px-4 py-1.5 text-sm text-white backdrop-blur-sm transition-colors hover:bg-white/20"
             >
               {t('backToWebsite')}
               <ArrowRight className="size-3.5" />
