@@ -97,7 +97,7 @@ export async function processAvatarApi(
   dto: ProcessAvatarRequest,
 ): Promise<ProcessAvatarResponse> {
   const response = await apiClient.post<ProcessAvatarResponse>(
-    "/settings/avatar/process",
+    '/settings/avatar/process',
     dto,
   );
   return response.data;

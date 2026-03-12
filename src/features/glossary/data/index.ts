@@ -16,7 +16,7 @@ export type DomainOption = SharedDomainOption & { name?: string };
  * Uses shared constants - aligned with backend and document translation.
  */
 export const glossaryDomains: DomainOption[] = DOMAIN_OPTIONS_WITH_ICONS.map(
-  (d) => ({ id: d.id, icon: d.icon })
+  (d) => ({ id: d.id, icon: d.icon }),
 );
 
 // ============================================================================

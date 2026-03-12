@@ -58,33 +58,33 @@ async function pollEstimateCredits(
 
     try {
       const result = await estimateTranslationCredits({
-        job_type: "doc-trans",
+        job_type: 'doc-trans',
         file_id: fileId,
-      })
+      });
       // Backend returns status: "pending" when metadata is not ready yet — retry
-      if (result.status === "pending") {
+      if (result.status === 'pending') {
         if (attempt < ESTIMATE_MAX_ATTEMPTS - 1) {
           await new Promise((resolve) =>
             setTimeout(resolve, ESTIMATE_POLL_INTERVAL),
-          )
-          continue
+          );
+          continue;
         }
         throw new Error(
-          "Document analysis timed out. Please try again or upload a different file.",
-        )
+          'Document analysis timed out. Please try again or upload a different file.',
+        );
       }
-      return result
+      return result;
     } catch (err) {
       if (attempt < ESTIMATE_MAX_ATTEMPTS - 1) {
         await new Promise((resolve) =>
           setTimeout(resolve, ESTIMATE_POLL_INTERVAL),
-        )
+        );
       } else {
         throw err instanceof Error
           ? err
           : new Error(
-              "Document analysis timed out. Please try again or upload a different file.",
-            )
+              'Document analysis timed out. Please try again or upload a different file.',
+            );
       }
     }
   }
@@ -104,8 +104,8 @@ function buildJobDto(
     src_lang: LANGUAGE_CODE_TO_API_NAME[config.srcLang],
     tgt_lang: LANGUAGE_CODE_TO_API_NAME[config.tgtLang],
     doc_tone: config.tone || undefined,
-    doc_domain: config.domain || "auto",
-  }
+    doc_domain: config.domain || 'auto',
+  };
 
   const mergedTerms = new Map<string, { src: string; tgt: string }>();
 

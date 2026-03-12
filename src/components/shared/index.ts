@@ -31,4 +31,7 @@ export {
   userMenuItemsConfig,
   getUserInitials,
 } from './user-avatar-menu';
-export type { UserAvatarMenuProps, UserMenuListProps } from './user-avatar-menu';
+export type {
+  UserAvatarMenuProps,
+  UserMenuListProps,
+} from './user-avatar-menu';
