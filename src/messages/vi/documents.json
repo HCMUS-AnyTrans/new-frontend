@@ -92,6 +92,12 @@
       "downloading": "Đang tải...",
       "newTranslation": "Dịch tài liệu mới"
     },
+    "translationResult": {
+      "success": "Dịch tài liệu hoàn tất",
+      "successHint": "Tài liệu của bạn đã được dịch thành công",
+      "failed": "Dịch tài liệu thất bại",
+      "unknownError": "Đã xảy ra lỗi không xác định"
+    },
     "languages": {
       "auto": "Tự động phát hiện",
       "vi": "Tiếng Việt",

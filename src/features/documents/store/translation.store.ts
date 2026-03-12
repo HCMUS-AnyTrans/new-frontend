@@ -17,8 +17,7 @@ export const useTranslationStore = create<TranslationStore>()((set) => ({
   setActiveJobId: (id) => set({ activeJobId: id }),
 }));
 
-export const getActiveJobId = () =>
-  useTranslationStore.getState().activeJobId;
+export const getActiveJobId = () => useTranslationStore.getState().activeJobId;
 
 export const setActiveJobId = (id: string | null) =>
   useTranslationStore.getState().setActiveJobId(id);

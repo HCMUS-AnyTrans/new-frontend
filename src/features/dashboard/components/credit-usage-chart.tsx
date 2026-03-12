@@ -26,7 +26,7 @@ function CreditUsageChartSkeleton() {
         <Skeleton className="h-5 w-36" />
       </DashboardCardHeader>
       <DashboardCardContent>
-        <Skeleton className="mx-auto h-[140px] w-full rounded-lg sm:h-[200px]" />
+        <Skeleton className="mx-auto h-35 w-full rounded-lg sm:h-50" />
         <div className="mt-2 flex flex-col gap-2">
           {Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="flex items-center justify-between">
@@ -98,7 +98,7 @@ export function CreditUsageChart() {
           <>
             <ChartContainer
               config={chartConfig}
-              className="mx-auto h-[140px] w-full sm:h-[200px]"
+              className="mx-auto h-35 w-full sm:h-50"
             >
               <PieChart>
                 <ChartTooltip

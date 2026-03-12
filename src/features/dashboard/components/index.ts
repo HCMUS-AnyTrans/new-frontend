@@ -17,6 +17,7 @@ export { UsagePanel } from './usage-panel';
 
 // Tables
 export { RecentJobsTable } from './recent-jobs-table';
+export { NotificationBell } from './notification-bell';
 
 // Widgets
 export { QuickActions } from './quick-actions';

@@ -140,15 +140,28 @@ export type NotificationType =
   | 'promotion'
   | 'system';
 
+/**
+ * title and message are JSONB objects: `{ en: "...", vi: "..." }`
+ * Use `getNotifText(notif.title, locale)` to extract the right language.
+ */
 export interface Notification {
   id: string;
   type: NotificationType;
-  title: string;
-  message: string;
+  title: Record<string, string>;
+  message: Record<string, string>;
   data?: Record<string, unknown>;
   isRead: boolean;
   readAt: string | null;
   createdAt: string;
+}
+
+/** Extract the localized text from a notification title/message JSONB object. */
+export function getNotifText(
+  field: Record<string, string> | string,
+  locale: string,
+): string {
+  if (typeof field === 'string') return field;
+  return field[locale] ?? field['en'] ?? '';
 }
 
 export interface NotificationPreference {

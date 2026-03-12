@@ -90,6 +90,12 @@
       "pending": "Thanh toán đang được xử lý. Vui lòng kiểm tra lại sau ít phút.",
       "dismiss": "Đóng"
     },
+    "notifications": {
+      "title": "Thông báo",
+      "empty": "Bạn đã đọc tất cả thông báo!",
+      "markAllRead": "Đánh dấu tất cả đã đọc",
+      "viewAll": "Xem tất cả thông báo"
+    },
     "activity": {
       "title": "Hoạt động gần đây",
       "viewAll": "Xem tất cả"

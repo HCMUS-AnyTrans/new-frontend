@@ -3,7 +3,9 @@
 import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { io, type Socket } from 'socket.io-client';
-import { translationKeys, walletKeys } from '@/lib/query-client';
+import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
+import { translationKeys, walletKeys, notificationKeys } from '@/lib/query-client';
 import { getAccessToken, useAccessToken } from '@/features/auth/store';
 import { useTranslationStore, setActiveJobId } from '../store/translation.store';
 import type { TranslationJobResponse } from '../types';
@@ -35,6 +37,7 @@ export function TranslationSocketProvider() {
   const queryClient = useQueryClient();
   const accessToken = useAccessToken();
   const activeJobId = useTranslationStore((s) => s.activeJobId);
+  const tResult = useTranslations('documents.translationResult');
 
   // Only connect when there is an active job and a valid token
   const shouldConnect = !!activeJobId && !!accessToken;
@@ -71,9 +74,21 @@ export function TranslationSocketProvider() {
       if (event.status === 'succeeded' || event.status === 'failed') {
         setActiveJobId(null);
 
-        // Refresh history and wallet after job completes
+        // Show toast notification
+        if (event.status === 'succeeded') {
+          toast.success(tResult('success'), {
+            description: tResult('successHint'),
+          });
+        } else {
+          toast.error(tResult('failed'), {
+            description: event.error ?? tResult('unknownError'),
+          });
+        }
+
+        // Refresh history, wallet, and notification bell after job completes
         void queryClient.invalidateQueries({ queryKey: translationKeys.all });
         void queryClient.invalidateQueries({ queryKey: walletKeys.all });
+        void queryClient.invalidateQueries({ queryKey: notificationKeys.all });
       }
     };
 
@@ -85,7 +100,7 @@ export function TranslationSocketProvider() {
       socket.off('job:status', handleJobStatus);
       socket.disconnect();
     };
-  }, [activeJobId, shouldConnect, queryClient]);
+  }, [activeJobId, shouldConnect, queryClient, tResult]);
 
   return null;
 }

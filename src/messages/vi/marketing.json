@@ -248,6 +248,8 @@
       "packagesError": "Không thể tải gói credit lúc này.",
       "packagesEmpty": "Hiện chưa có gói credit khả dụng.",
       "retry": "Thử lại",
+      "processing": "Đang xử lý...",
+      "paymentError": "Không thể tạo thanh toán. Vui lòng thử lại.",
       "usageSection": {
         "title": "Sử dụng credits trong thực tế"
       },

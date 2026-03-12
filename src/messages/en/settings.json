@@ -74,6 +74,7 @@
       "unreadCount": "{count} unread notifications",
       "allRead": "All read",
       "markAllRead": "Mark All Read",
+      "markRead": "Mark as read",
       "noNotifications": "No notifications",
       "preferences": "Notification Settings",
       "preferencesDescription": "Choose how to receive each type of notification",

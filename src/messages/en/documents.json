@@ -92,6 +92,12 @@
       "downloading": "Downloading...",
       "newTranslation": "Translate new document"
     },
+    "translationResult": {
+      "success": "Translation completed",
+      "successHint": "Your document has been translated successfully",
+      "failed": "Translation failed",
+      "unknownError": "An unknown error occurred"
+    },
     "languages": {
       "auto": "Auto-detect",
       "vi": "Vietnamese",

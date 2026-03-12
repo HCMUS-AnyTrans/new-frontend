@@ -5,9 +5,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useQueryClient } from "@tanstack/react-query"
 import { CheckCircle, Clock, XCircle } from "lucide-react"
+import { toast } from "sonner"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { billingKeys, dashboardKeys, walletKeys } from "@/lib/query-client"
+import { billingKeys, dashboardKeys, notificationKeys, walletKeys } from "@/lib/query-client"
 import { trackEvent } from "@/lib/analytics"
 
 type BannerStatus = "success" | "error" | "pending" | null
@@ -44,6 +45,8 @@ export function PaymentStatusBanner() {
       queryClient.invalidateQueries({ queryKey: walletKeys.all })
       queryClient.invalidateQueries({ queryKey: billingKeys.all })
       queryClient.invalidateQueries({ queryKey: dashboardKeys.all })
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all })
+      toast.success(t("success"))
     }
   }, [status, queryClient])
 

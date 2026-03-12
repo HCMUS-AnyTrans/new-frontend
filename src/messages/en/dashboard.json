@@ -90,6 +90,12 @@
       "pending": "Payment is being processed. Please check again shortly.",
       "dismiss": "Dismiss"
     },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "You're all caught up!",
+      "markAllRead": "Mark all read",
+      "viewAll": "View all notifications"
+    },
     "activity": {
       "title": "Recent Activity",
       "viewAll": "View all"

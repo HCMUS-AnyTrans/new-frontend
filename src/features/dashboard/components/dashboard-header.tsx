@@ -16,6 +16,7 @@ import {
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { UserAvatarMenu } from '@/components/shared';
 import { BuyCreditsDialog } from './buy-credits-dialog';
+import { NotificationBell } from './notification-bell';
 import { useWallet } from '../hooks';
 import { Button } from '@/components/ui/button';
 
@@ -153,6 +154,9 @@ export function DashboardHeader() {
           open={buyCreditsDialogOpen}
           onOpenChange={setBuyCreditsDialogOpen}
         />
+
+        {/* Notification bell */}
+        <NotificationBell />
 
         {/* User avatar menu */}
         <UserAvatarMenu />

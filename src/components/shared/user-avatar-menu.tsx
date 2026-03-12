@@ -63,7 +63,7 @@ export function UserAvatarMenu({
   const avatarSize = sizeClasses[size];
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <button
           type="button"

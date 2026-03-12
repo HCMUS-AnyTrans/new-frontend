@@ -36,7 +36,6 @@ export function PricingGrid({ className }: PricingGridProps) {
       discount: pkg.discount,
       bonus: pkg.bonus,
       popular: isPopular,
-      checkoutUrl: `/checkout?packageId=${pkg.id}`,
     }
   })
 

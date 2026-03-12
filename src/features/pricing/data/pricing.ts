@@ -19,7 +19,6 @@ export interface Plan {
   discount?: number | null;
   bonus?: number | null;
   popular: boolean;
-  checkoutUrl: string;
 }
 
 export interface PlanFeature {

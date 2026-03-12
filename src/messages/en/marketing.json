@@ -248,6 +248,8 @@
       "packagesError": "Unable to load credit packages right now.",
       "packagesEmpty": "No credit packages available at the moment.",
       "retry": "Try again",
+      "processing": "Processing...",
+      "paymentError": "Payment could not be created. Please try again.",
       "usageSection": {
         "title": "Credits in practice"
       },
