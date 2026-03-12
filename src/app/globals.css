@@ -310,7 +310,7 @@
 
 /* Main wrapper - match FloatingLabelInput h-14, full width like other inputs */
 .phone-input-container .PhoneInput {
-  @apply relative flex items-center w-full min-w-0 h-14 rounded-md border border-input bg-transparent;
+  @apply relative flex items-center w-full min-w-0 h-14 rounded-md border border-border bg-transparent dark:bg-input/30 shadow-xs;
   @apply transition-all duration-200;
 }
 

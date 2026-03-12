@@ -19,6 +19,7 @@ function RegisterContent() {
       imageAlt="Register illustration"
       i18nNamespace="auth.register"
       formPanelScroll
+      formOnLeft
     >
       <div className="mb-8 space-y-2">
         <h1 className="text-3xl font-bold text-foreground">

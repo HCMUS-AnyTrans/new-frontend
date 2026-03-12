@@ -17,6 +17,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { UserAvatarMenu } from '@/components/shared';
 import { BuyCreditsDialog } from './buy-credits-dialog';
 import { useWallet } from '../hooks';
+import { Button } from '@/components/ui/button';
 
 export function DashboardHeader() {
   const [creditsMenuOpen, setCreditsMenuOpen] = useState(false);
@@ -114,19 +115,19 @@ export function DashboardHeader() {
             onOpenChange={setCreditsMenuOpen}
           >
             <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className="hover:bg-muted hidden h-9 items-center gap-2 rounded-full border border-input px-3 text-sm md:flex"
+              <Button
+                variant="outline"
+                className="hover:bg-secondary/10 hover:border-secondary hover:text-secondary text-secondary hidden h-9 items-center gap-2 rounded-full border border-input px-3 text-sm md:flex"
                 title="Credits"
               >
-                <Coins className="size-4 text-primary" />
-                <span className="font-semibold text-foreground tabular-nums">
+                <Coins className="size-4 " />
+                <span className="font-semibold   tabular-nums">
                   {(wallet?.balance ?? 0).toLocaleString(
                     locale === 'vi' ? 'vi-VN' : 'en-US',
                   )}
                 </span>
-                <ChevronDown className="size-3.5 text-muted-foreground" />
-              </button>
+                <ChevronDown className="size-3.5 " />
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem

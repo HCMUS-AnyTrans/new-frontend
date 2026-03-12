@@ -48,7 +48,10 @@ export function useUploadAvatar(options?: UseUploadAvatarOptions) {
       await uploadFileToPresignedUrl(upload_url, file);
 
       // Step 3: Ask backend to crop, resize, convert to WebP and save
-      const { avatarUrl } = await processAvatarApi({ storage_key, crop: cropData });
+      const { avatarUrl } = await processAvatarApi({
+        storage_key,
+        crop: cropData,
+      });
 
       return avatarUrl;
     },
