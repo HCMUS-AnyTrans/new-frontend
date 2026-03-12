@@ -4,6 +4,7 @@ export { StepUpload } from './step-upload';
 export { StepConfigure } from './step-configure';
 export { StepReview } from './step-review';
 export { DocumentTranslationWizard } from './document-translation-wizard';
+export { TranslationSocketProvider } from './translation-socket-provider';
 
 // Sub-components (for granular imports)
 export { LanguageSelector } from './language-selector';

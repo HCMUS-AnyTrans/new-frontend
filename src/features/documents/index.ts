@@ -7,6 +7,7 @@ export {
   StepConfigure,
   StepReview,
   DocumentTranslationWizard,
+  TranslationSocketProvider,
 } from './components';
 
 // Types

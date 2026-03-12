@@ -16,6 +16,7 @@ import type {
 } from '../types';
 import { LANGUAGE_CODE_TO_API_NAME } from '../types';
 import { extractErrorMessage } from './utils';
+import { setActiveJobId } from '../store/translation.store';
 
 interface UploadAndTranslateState {
   flowStatus: TranslationFlowStatus;
@@ -33,6 +34,8 @@ interface UseUploadAndTranslateReturn extends UploadAndTranslateState {
     glossaryTerms?: Array<{ srcTerm: string; tgtTerm: string }>,
   ) => Promise<void>;
   reset: () => void;
+  /** Restore a previously started job (e.g. after navigating back to the page) */
+  restoreJob: (jobId: string) => void;
 }
 
 const initialState: UploadAndTranslateState = {
@@ -140,6 +143,15 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
   const reset = useCallback(() => {
     abortRef.current = true;
     setState(initialState);
+    setActiveJobId(null);
+  }, []);
+
+  const restoreJob = useCallback((jobId: string) => {
+    setState((prev) => ({
+      ...prev,
+      flowStatus: 'translating',
+      jobId,
+    }));
   }, []);
 
   const startUpload = useCallback(async (file: File) => {
@@ -264,6 +276,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
 
         if (abortRef.current) return;
 
+        setActiveJobId(jobResponse.job_id);
         setState((prev) => ({
           ...prev,
           flowStatus: 'translating',
@@ -290,5 +303,6 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
     startUpload,
     startTranslation,
     reset,
+    restoreJob,
   };
 }

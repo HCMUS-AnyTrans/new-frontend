@@ -4,6 +4,7 @@ import { useState } from "react"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar, DashboardHeader } from "@/features/dashboard"
 import { ProtectedRoute } from "@/features/auth"
+import { TranslationSocketProvider } from "@/features/documents/components/translation-socket-provider"
 
 function getSidebarDefaultOpen(): boolean {
   if (typeof document === "undefined") return true
@@ -21,6 +22,7 @@ export default function DashboardLayout({
 
   return (
     <ProtectedRoute>
+      <TranslationSocketProvider />
       <SidebarProvider defaultOpen={defaultOpen}>
         <DashboardHeader />
         <AppSidebar />

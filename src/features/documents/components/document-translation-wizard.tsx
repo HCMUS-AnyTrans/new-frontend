@@ -17,13 +17,13 @@ import {
 import { defaultConfig } from "../data"
 import {
   useUploadAndTranslate,
-  useTranslationJobSocket,
   useTranslationJob,
   useDownloadFile,
 } from "../hooks"
 import { useGlossaries, useTerms } from "@/features/glossary"
 import { useWallet } from "@/features/dashboard/hooks"
 import { translationKeys, walletKeys } from "@/lib/query-client"
+import { useTranslationStore } from "../store/translation.store"
 
 // =============== MAIN COMPONENT ===============
 
@@ -53,15 +53,23 @@ export function DocumentTranslationWizard() {
     startUpload,
     startTranslation,
     reset: resetFlow,
+    restoreJob,
   } = useUploadAndTranslate()
 
-  const { connectionState: jobSocketState } = useTranslationJobSocket(jobId, {
-    enabled: flowStatus === "translating",
-  })
+  // On mount: if the store has an active job but this wizard has no local jobId
+  // (e.g. user navigated away and came back), restore the translating state so
+  // the polling fallback and UI can resume correctly.
+  const storeActiveJobId = useTranslationStore((s) => s.activeJobId)
+  useEffect(() => {
+    if (storeActiveJobId && !jobId) {
+      restoreJob(storeActiveJobId)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const { data: jobData } = useTranslationJob(jobId, {
     enabled: flowStatus === "translating",
-    pollInterval: jobSocketState === "connected" ? false : 3000,
+    pollInterval: 3000,
   })
 
   const { download, isDownloading } = useDownloadFile()
