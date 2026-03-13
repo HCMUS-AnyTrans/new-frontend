@@ -1,5 +1,6 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useState, useCallback, useRef } from 'react';
 import {
   requestDocUploadUrl,
@@ -17,6 +18,7 @@ import type {
 import { LANGUAGE_CODE_TO_API_NAME } from '../types';
 import { extractErrorMessage } from './utils';
 import { setActiveJobId } from '../store/translation.store';
+import { walletKeys } from '@/lib/query-client';
 
 interface UploadAndTranslateState {
   flowStatus: TranslationFlowStatus;
@@ -137,6 +139,7 @@ function buildJobDto(
 }
 
 export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
+  const queryClient = useQueryClient();
   const [state, setState] = useState<UploadAndTranslateState>(initialState);
   const abortRef = useRef(false);
 
@@ -277,6 +280,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
         if (abortRef.current) return;
 
         setActiveJobId(jobResponse.job_id);
+        await queryClient.refetchQueries({ queryKey: walletKeys.all });
         setState((prev) => ({
           ...prev,
           flowStatus: 'translating',
@@ -295,7 +299,7 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
         }));
       }
     },
-    [state.fileId],
+    [queryClient, state.fileId],
   );
 
   return {
