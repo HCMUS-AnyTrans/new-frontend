@@ -133,7 +133,7 @@ export interface ChangePasswordDto {
 // =============== NOTIFICATIONS ===============
 
 export type NotificationType =
-  | 'translation_complete'
+  | 'translation_status'
   | 'credit_purchase'
   | 'file_expiring'
   | 'security_alert'

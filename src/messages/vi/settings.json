@@ -81,9 +81,9 @@
       "email": "Email",
       "push": "Đẩy",
       "types": {
-        "translation_complete": {
-          "label": "Dịch hoàn tất",
-          "description": "Thông báo khi tài liệu được dịch xong"
+        "translation_status": {
+          "label": "Trạng thái bản dịch",
+          "description": "Thông báo khi tác vụ dịch thành công hoặc thất bại"
         },
         "credit_purchase": {
           "label": "Nạp credits",

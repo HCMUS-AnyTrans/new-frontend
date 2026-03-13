@@ -81,9 +81,9 @@
       "email": "Email",
       "push": "Push",
       "types": {
-        "translation_complete": {
-          "label": "Translation Complete",
-          "description": "When a translation job finishes"
+        "translation_status": {
+          "label": "Translation Status",
+          "description": "When a translation job succeeds or fails"
         },
         "credit_purchase": {
           "label": "Credit Purchase",

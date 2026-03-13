@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils';
 
 // ─── icon map ────────────────────────────────────────────────────────────────
 const TYPE_EMOJI: Record<NotificationType, string> = {
-  translation_complete: '📄',
+  translation_status: '📄',
   credit_purchase: '💳',
   file_expiring: '⚠️',
   security_alert: '🔒',
