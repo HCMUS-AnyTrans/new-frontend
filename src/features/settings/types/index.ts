@@ -162,11 +162,7 @@ export function normalizeNotifField(
 
   try {
     const parsed = JSON.parse(field) as unknown;
-    if (
-      parsed &&
-      typeof parsed === 'object' &&
-      !Array.isArray(parsed)
-    ) {
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
       return parsed as Record<string, string>;
     }
   } catch {
