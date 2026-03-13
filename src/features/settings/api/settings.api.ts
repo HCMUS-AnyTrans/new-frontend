@@ -31,6 +31,7 @@ import type {
   AuditLog,
   ActivityQuery,
 } from '../types';
+import { normalizeNotifField } from '../types';
 
 // ============================================================================
 // Profile API Functions
@@ -209,7 +210,15 @@ export async function getNotificationsApi(
   const response = await apiClient.get<
     PaginatedResponse<Notification> & { unreadCount: number }
   >('/notifications', { params: query });
-  return response.data;
+
+  return {
+    ...response.data,
+    items: response.data.items.map((item) => ({
+      ...item,
+      title: normalizeNotifField(item.title) as Notification['title'],
+      message: normalizeNotifField(item.message) as Notification['message'],
+    })),
+  };
 }
 
 /**
