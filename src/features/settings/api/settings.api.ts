@@ -5,6 +5,8 @@ import type {
   UpdateProfileDto,
   GeneralUploadRequest,
   GeneralUploadResponse,
+  ProcessAvatarRequest,
+  ProcessAvatarResponse,
   UserPreferences,
   UpdatePreferencesDto,
   ChangePasswordDto,
@@ -29,6 +31,7 @@ import type {
   AuditLog,
   ActivityQuery,
 } from '../types';
+import { normalizeNotifField } from '../types';
 
 // ============================================================================
 // Profile API Functions
@@ -48,12 +51,9 @@ export async function getProfileApi(): Promise<UserProfile> {
  * PATCH /settings/profile
  */
 export async function updateProfileApi(
-  dto: UpdateProfileDto
+  dto: UpdateProfileDto,
 ): Promise<UserProfile> {
-  const response = await apiClient.patch<UserProfile>(
-    '/settings/profile',
-    dto
-  );
+  const response = await apiClient.patch<UserProfile>('/settings/profile', dto);
   return response.data;
 }
 
@@ -63,14 +63,14 @@ export async function updateProfileApi(
 
 /**
  * Request a presigned upload URL for general purpose files (avatars, etc.)
- * POST /files/upload/general
+ * POST /files/upload/public
  */
 export async function requestGeneralUploadApi(
-  dto: GeneralUploadRequest
+  dto: GeneralUploadRequest,
 ): Promise<GeneralUploadResponse> {
   const response = await apiClient.post<GeneralUploadResponse>(
-    '/files/upload/general',
-    dto
+    '/files/upload/public',
+    dto,
   );
   return response.data;
 }
@@ -81,13 +81,27 @@ export async function requestGeneralUploadApi(
  */
 export async function uploadFileToPresignedUrl(
   uploadUrl: string,
-  file: File
+  file: File,
 ): Promise<void> {
   await axios.put(uploadUrl, file, {
     headers: {
       'Content-Type': file.type,
     },
   });
+}
+
+/**
+ * Process and save avatar server-side (crop + resize + WebP conversion)
+ * POST /settings/avatar/process
+ */
+export async function processAvatarApi(
+  dto: ProcessAvatarRequest,
+): Promise<ProcessAvatarResponse> {
+  const response = await apiClient.post<ProcessAvatarResponse>(
+    '/settings/avatar/process',
+    dto,
+  );
+  return response.data;
 }
 
 /**
@@ -111,7 +125,7 @@ export function buildStorageUrl(storageKey: string): string {
  */
 export async function getPreferencesApi(): Promise<UserPreferences> {
   const response = await apiClient.get<UserPreferences>(
-    '/settings/preferences'
+    '/settings/preferences',
   );
   return response.data;
 }
@@ -121,11 +135,11 @@ export async function getPreferencesApi(): Promise<UserPreferences> {
  * PATCH /settings/preferences
  */
 export async function updatePreferencesApi(
-  dto: UpdatePreferencesDto
+  dto: UpdatePreferencesDto,
 ): Promise<UserPreferences> {
   const response = await apiClient.patch<UserPreferences>(
     '/settings/preferences',
-    dto
+    dto,
   );
   return response.data;
 }
@@ -139,9 +153,7 @@ export async function updatePreferencesApi(
  * POST /auth/change-password
  * Backend only accepts currentPassword + newPassword (no confirmPassword)
  */
-export async function changePasswordApi(
-  dto: ChangePasswordDto
-): Promise<void> {
+export async function changePasswordApi(dto: ChangePasswordDto): Promise<void> {
   await apiClient.post('/auth/change-password', {
     currentPassword: dto.currentPassword,
     newPassword: dto.newPassword,
@@ -155,12 +167,12 @@ export async function changePasswordApi(
  */
 export async function linkIdentityApi(
   provider: string,
-  returnUrl?: string
+  returnUrl?: string,
 ): Promise<{ redirectUrl: string }> {
   const response = await apiClient.post<{ redirectUrl: string }>(
     `/settings/security/identities/${provider}/link`,
     undefined,
-    { params: returnUrl ? { returnUrl } : undefined }
+    { params: returnUrl ? { returnUrl } : undefined },
   );
   return response.data;
 }
@@ -171,7 +183,7 @@ export async function linkIdentityApi(
  */
 export async function getIdentitiesApi(): Promise<AuthIdentity[]> {
   const response = await apiClient.get<AuthIdentity[]>(
-    '/settings/security/identities'
+    '/settings/security/identities',
   );
   return response.data;
 }
@@ -180,9 +192,7 @@ export async function getIdentitiesApi(): Promise<AuthIdentity[]> {
  * Unlink an authentication provider
  * DELETE /settings/security/identities/:identityId
  */
-export async function unlinkIdentityApi(
-  identityId: string
-): Promise<void> {
+export async function unlinkIdentityApi(identityId: string): Promise<void> {
   await apiClient.delete(`/settings/security/identities/${identityId}`);
 }
 
@@ -195,12 +205,20 @@ export async function unlinkIdentityApi(
  * GET /notifications
  */
 export async function getNotificationsApi(
-  query?: NotificationsQuery
+  query?: NotificationsQuery,
 ): Promise<PaginatedResponse<Notification> & { unreadCount: number }> {
   const response = await apiClient.get<
     PaginatedResponse<Notification> & { unreadCount: number }
   >('/notifications', { params: query });
-  return response.data;
+
+  return {
+    ...response.data,
+    items: response.data.items.map((item) => ({
+      ...item,
+      title: normalizeNotifField(item.title) as Notification['title'],
+      message: normalizeNotifField(item.message) as Notification['message'],
+    })),
+  };
 }
 
 /**
@@ -208,7 +226,7 @@ export async function getNotificationsApi(
  * PATCH /notifications/:id/read
  */
 export async function markNotificationReadApi(
-  id: string
+  id: string,
 ): Promise<{ id: string; isRead: boolean; readAt: string }> {
   const response = await apiClient.patch<{
     id: string;
@@ -226,7 +244,7 @@ export async function markAllNotificationsReadApi(): Promise<{
   updatedCount: number;
 }> {
   const response = await apiClient.patch<{ updatedCount: number }>(
-    '/notifications/read-all'
+    '/notifications/read-all',
   );
   return response.data;
 }
@@ -247,7 +265,7 @@ export async function getNotificationPreferencesApi(): Promise<
   NotificationPreference[]
 > {
   const response = await apiClient.get<NotificationPreference[]>(
-    '/settings/notification-preferences'
+    '/settings/notification-preferences',
   );
   return response.data;
 }
@@ -257,7 +275,7 @@ export async function getNotificationPreferencesApi(): Promise<
  * PATCH /settings/notification-preferences
  */
 export async function updateNotificationPreferencesApi(
-  dto: UpdateNotificationPreferencesDto
+  dto: UpdateNotificationPreferencesDto,
 ): Promise<void> {
   await apiClient.patch('/settings/notification-preferences', dto);
 }
@@ -280,12 +298,11 @@ export async function getWalletApi(): Promise<Wallet> {
  * GET /wallet/ledger
  */
 export async function getWalletLedgerApi(
-  query?: LedgerQuery
+  query?: LedgerQuery,
 ): Promise<WalletLedgerResponse> {
-  const response = await apiClient.get<WalletLedgerResponse>(
-    '/wallet/ledger',
-    { params: query }
-  );
+  const response = await apiClient.get<WalletLedgerResponse>('/wallet/ledger', {
+    params: query,
+  });
   return response.data;
 }
 
@@ -303,11 +320,11 @@ export async function getCreditPackagesApi(): Promise<CreditPackage[]> {
  * POST /payments/vnpay/create
  */
 export async function createVnpayPaymentApi(
-  dto: CreateVnpayPaymentDto
+  dto: CreateVnpayPaymentDto,
 ): Promise<CreateVnpayPaymentResponse> {
   const response = await apiClient.post<CreateVnpayPaymentResponse>(
     '/payments/vnpay/create',
-    dto
+    dto,
   );
   return response.data;
 }
@@ -317,11 +334,11 @@ export async function createVnpayPaymentApi(
  * GET /payments
  */
 export async function getPaymentsApi(
-  query?: PaymentsQuery
+  query?: PaymentsQuery,
 ): Promise<PaginatedResponse<Payment>> {
   const response = await apiClient.get<PaginatedResponse<Payment>>(
     '/payments',
-    { params: query }
+    { params: query },
   );
   return response.data;
 }
@@ -335,7 +352,7 @@ export async function getPaymentsApi(
  * GET /files
  */
 export async function getFilesApi(
-  query?: FilesQuery
+  query?: FilesQuery,
 ): Promise<PaginatedResponse<UserFile>> {
   const response = await apiClient.get<PaginatedResponse<UserFile>>('/files', {
     params: query,
@@ -348,10 +365,10 @@ export async function getFilesApi(
  * GET /files/:fileId/download
  */
 export async function getFileDownloadApi(
-  fileId: string
+  fileId: string,
 ): Promise<FileDownloadResponse> {
   const response = await apiClient.get<FileDownloadResponse>(
-    `/files/${fileId}/download`
+    `/files/${fileId}/download`,
   );
   return response.data;
 }
@@ -362,6 +379,14 @@ export async function getFileDownloadApi(
  */
 export async function deleteFileApi(fileId: string): Promise<void> {
   await apiClient.delete(`/files/${fileId}`);
+}
+
+/**
+ * Delete both source and result files for a translation job
+ * DELETE /files/by-job/:jobId
+ */
+export async function deleteFilesByJobApi(jobId: string): Promise<void> {
+  await apiClient.delete(`/files/by-job/${jobId}`);
 }
 
 /**
@@ -382,11 +407,11 @@ export async function getStorageUsageApi(): Promise<StorageUsage> {
  * GET /settings/activity
  */
 export async function getActivityApi(
-  query?: ActivityQuery
+  query?: ActivityQuery,
 ): Promise<PaginatedResponse<AuditLog>> {
   const response = await apiClient.get<PaginatedResponse<AuditLog>>(
     '/settings/activity',
-    { params: query }
+    { params: query },
   );
   return response.data;
 }

@@ -3,11 +3,11 @@
 import { useState, useEffect, useRef } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import { useSearchParams } from "next/navigation"
+import { Link } from "@/i18n/navigation"
 import { useQueryClient } from "@tanstack/react-query"
 import {
   Wallet,
   Plus,
-  Star,
   ArrowUpRight,
   ArrowDownLeft,
   Loader2,
@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { CreditPackageCard } from "@/components/shared"
 import { SettingsSection, SettingsDivider } from "./settings-section"
 import { Pagination } from "@/components/ui/pagination"
 import {
@@ -31,7 +32,12 @@ import {
 } from "../hooks/use-billing"
 import type { LedgerType, PaymentStatus } from "../types"
 import { cn } from "@/lib/utils"
+import {
+  createCreditPackageFormatter,
+  createCreditPackageViewModels,
+} from "@/lib/credit-package"
 import { walletKeys, billingKeys } from "@/lib/query-client"
+import { trackEvent } from "@/lib/analytics"
 
 // ============================================================================
 // Skeleton Loading State
@@ -126,8 +132,8 @@ function BillingTabSkeleton() {
 
 export function BillingTab() {
   const t = useTranslations("settings.billing")
-  const tCommon = useTranslations("common")
   const locale = useLocale()
+  const { formatCredits, formatAmount, formatPerCredit } = createCreditPackageFormatter(locale)
   const searchParams = useSearchParams()
   const queryClient = useQueryClient()
 
@@ -155,37 +161,54 @@ export function BillingTab() {
   } = usePayments({ page: paymentsPage, limit: 10 })
   const { createPayment, isCreating } = useCreateVnpayPayment()
 
-  // VNPay callback banner state
-  const [vnpayStatus, setVnpayStatus] = useState<"success" | "error" | "pending" | null>(null)
+  const [vnpayStatus] = useState<"success" | "error" | "pending" | null>(() => {
+    const responseCode = searchParams.get("vnp_ResponseCode")
+    if (!responseCode) return null
+    if (responseCode === "00") return "success"
+    return "error"
+  })
+  const hasHandledVnpay = useRef(false)
+  const returnSource = searchParams.get("source")
 
   useEffect(() => {
     const responseCode = searchParams.get("vnp_ResponseCode")
-    if (responseCode) {
-      if (responseCode === "00") {
-        setVnpayStatus("success")
-        // Invalidate wallet + ledger + payments queries to refresh data
-        queryClient.invalidateQueries({ queryKey: walletKeys.all })
-        queryClient.invalidateQueries({ queryKey: billingKeys.all })
-      } else if (responseCode === "24") {
-        // User cancelled
-        setVnpayStatus("error")
-      } else {
-        setVnpayStatus("error")
-      }
-      // Clean up the URL query params without a full page reload
-      const url = new URL(window.location.href)
-      url.searchParams.delete("vnp_ResponseCode")
-      // Remove other VNPay params too
-      const vnpParams = Array.from(url.searchParams.keys()).filter((k) => k.startsWith("vnp_"))
-      vnpParams.forEach((k) => url.searchParams.delete(k))
-      window.history.replaceState({}, "", url.toString())
+    if (!responseCode || hasHandledVnpay.current) return
+
+    hasHandledVnpay.current = true
+
+    if (responseCode === "00") {
+      trackEvent("buy_credit_returned", {
+        source: returnSource ?? "billing",
+        status: "success",
+        responseCode,
+      })
+      // Invalidate wallet + ledger + payments queries to refresh data
+      queryClient.invalidateQueries({ queryKey: walletKeys.all })
+      queryClient.invalidateQueries({ queryKey: billingKeys.all })
+      return
     }
-  }, [searchParams, queryClient])
 
-  const isLoading = isLoadingWallet || isLoadingLedger || isLoadingPackages || isLoadingPayments
+    if (responseCode === "24") {
+      trackEvent("buy_credit_returned", {
+        source: returnSource ?? "billing",
+        status: "cancelled",
+        responseCode,
+      })
+      return
+    }
 
-  // Show skeleton while loading
-  if (isLoading) {
+    trackEvent("buy_credit_returned", {
+      source: returnSource ?? "billing",
+      status: "failed",
+      responseCode,
+    })
+  }, [searchParams, queryClient, returnSource])
+
+  // Full-page skeleton only for wallet + packages (above-the-fold content).
+  // Ledger and payments pagination refetch only their own section.
+  const isInitialLoading = isLoadingWallet || isLoadingPackages
+
+  if (isInitialLoading) {
     return <BillingTabSkeleton />
   }
 
@@ -237,7 +260,7 @@ export function BillingTab() {
     creditPackagesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
   }
 
-  const packageList = packages ?? []
+  const packageList = createCreditPackageViewModels(packages)
   const ledgerList = ledger ?? []
   const paymentList = payments ?? []
 
@@ -247,19 +270,46 @@ export function BillingTab() {
       {vnpayStatus === "success" && (
         <Alert className="border-success bg-success/10 text-success [&>svg]:text-success">
           <CheckCircle className="size-4" />
-          <AlertDescription>{t("vnpaySuccess")}</AlertDescription>
+          <AlertDescription className="flex gap-3 items-center">
+            <span>{t("vnpaySuccess")}</span>
+            {returnSource === "dashboard" ? (
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/dashboard?source=dashboard&paymentStatus=success">
+                  {t("backToDashboard")}
+                </Link>
+              </Button>
+            ) : null}
+          </AlertDescription>
         </Alert>
       )}
       {vnpayStatus === "error" && (
         <Alert variant="destructive">
           <XCircle className="size-4" />
-          <AlertDescription>{t("vnpayError")}</AlertDescription>
+          <AlertDescription className="flex gap-3 items-center">
+            <span>{t("vnpayError")}</span>
+            {returnSource === "dashboard" ? (
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/dashboard?source=dashboard&paymentStatus=error">
+                  {t("backToDashboard")}
+                </Link>
+              </Button>
+            ) : null}
+          </AlertDescription>
         </Alert>
       )}
       {vnpayStatus === "pending" && (
         <Alert className="border-yellow-500 bg-yellow-50 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400 [&>svg]:text-yellow-600">
           <Clock className="size-4" />
-          <AlertDescription>{t("vnpayPending")}</AlertDescription>
+          <AlertDescription className="flex gap-3 items-center">
+            <span>{t("vnpayPending")}</span>
+            {returnSource === "dashboard" ? (
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/dashboard?source=dashboard&paymentStatus=pending">
+                  {t("backToDashboard")}
+                </Link>
+              </Button>
+            ) : null}
+          </AlertDescription>
         </Alert>
       )}
 
@@ -272,7 +322,7 @@ export function BillingTab() {
             </div>
             <div>
               <p className="text-3xl font-bold text-foreground">
-                {(wallet?.balance ?? 0).toLocaleString(locale === "vi" ? "vi-VN" : "en-US")}
+                {formatCredits(wallet?.balance ?? 0)}
               </p>
               <p className="text-sm text-muted-foreground">{t("credits")}</p>
             </div>
@@ -295,62 +345,53 @@ export function BillingTab() {
         >
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {packageList.map((pkg) => {
-              const isBestValue = pkg.tags.includes("best-value")
-              const isPopular = pkg.tags.includes("popular")
-
               return (
-                <div
+                <CreditPackageCard
                   key={pkg.id}
-                  className={cn(
-                    "relative flex flex-col items-center rounded-xl border-2 p-4 text-center transition-all",
-                    isBestValue
-                      ? "border-primary bg-primary/5"
-                      : "border-border bg-card"
-                  )}
-                >
-                  {isBestValue && (
-                    <Badge className="absolute -top-2 gap-1 bg-warning text-warning-foreground">
-                      <Star className="size-3" />
-                      {t("bestValue")}
-                    </Badge>
-                  )}
-                  {isPopular && !isBestValue && (
-                    <Badge className="absolute -top-2" variant="secondary">
-                      {t("popular")}
-                    </Badge>
-                  )}
-
-                  <p className="mt-2 text-2xl font-bold text-foreground">
-                    {pkg.credits.toLocaleString(locale === "vi" ? "vi-VN" : "en-US")}
-                  </p>
-                  <p className="text-sm text-muted-foreground">{t("credits")}</p>
-
-                  {pkg.bonus ? (
-                    <p className="text-xs text-success">{t("bonusPercent", { percent: pkg.bonus })}</p>
-                  ) : null}
-
-                  <div className="mt-3">
-                    <p className="text-lg font-semibold text-foreground">
-                      {formatCurrency(pkg.price)}
-                    </p>
-                    {pkg.discount ? (
-                      <p className="text-xs text-success">{t("save", { percent: pkg.discount })}</p>
-                    ) : null}
-                  </div>
-
-                  <Button
-                    size="sm"
-                    className="mt-3 w-full"
-                    variant={isBestValue ? "default" : "outline"}
-                    onClick={() => handlePurchase(pkg.id)}
-                    disabled={isCreating}
-                  >
-                    {isCreating ? (
-                      <Loader2 className="mr-2 size-4 animate-spin" />
-                    ) : null}
-                    {t("buyNow")}
-                  </Button>
-                </div>
+                  title={pkg.name}
+                  creditsText={formatCredits(pkg.credits)}
+                  creditsLabel={t("credits")}
+                  originalPriceText={pkg.discountPercent ? formatAmount(pkg.price, pkg.currency) : undefined}
+                  priceText={formatAmount(pkg.discountedPrice, pkg.currency)}
+                  perCreditText={formatPerCredit(pkg.unitPrice, pkg.currency, t("perCredit"))}
+                  topBadge={
+                    pkg.isBestValue
+                      ? { label: t("bestValue"), tone: "warning", placement: "top-right" }
+                      : pkg.isPopular
+                        ? { label: t("popular"), tone: "secondary", placement: "top-right" }
+                        : undefined
+                  }
+                  metaBadges={
+                    pkg.discountPercent || pkg.bonusCredits ? (
+                      <>
+                        {pkg.discountPercent ? (
+                          <Badge className="border border-success/20 bg-success/10 text-success hover:bg-success/10">
+                            {t("save", { percent: pkg.discountPercent })}
+                          </Badge>
+                        ) : null}
+                        {pkg.bonusCredits ? (
+                          <Badge className="border border-primary/20 bg-primary/10 text-primary hover:bg-primary/10">
+                            {t("bonusCredits", { credits: pkg.bonusCredits })}
+                          </Badge>
+                        ) : null}
+                      </>
+                    ) : null
+                  }
+                  action={
+                    <Button
+                      size="sm"
+                      className="w-full"
+                      variant={pkg.isBestValue ? "default" : "outline"}
+                      onClick={() => handlePurchase(pkg.id)}
+                      disabled={isCreating}
+                    >
+                      {isCreating ? (
+                        <Loader2 className="mr-2 size-4 animate-spin" />
+                      ) : null}
+                      {t("buyNow")}
+                    </Button>
+                  }
+                />
               )
             })}
           </div>
@@ -362,7 +403,22 @@ export function BillingTab() {
         title={t("transactionHistory")}
         description={t("recentTransactions")}
       >
-        {ledgerList.length === 0 ? (
+        {isLoadingLedger ? (
+          <div className="space-y-1">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex items-center justify-between py-2">
+                <div className="flex items-center gap-3">
+                  <Skeleton className="size-9 rounded-lg" />
+                  <div className="space-y-1">
+                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="h-3 w-28" />
+                  </div>
+                </div>
+                <Skeleton className="h-4 w-16" />
+              </div>
+            ))}
+          </div>
+        ) : ledgerList.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
             <Wallet className="mb-2 size-8" />
             <p>{t("noTransactions")}</p>
@@ -419,7 +475,25 @@ export function BillingTab() {
         title={t("paymentHistory")}
         description={t("paymentHistoryDescription")}
       >
-        {paymentList.length === 0 ? (
+        {isLoadingPayments ? (
+          <div className="space-y-1">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex items-center justify-between py-2">
+                <div className="flex items-center gap-3">
+                  <Skeleton className="size-9 rounded-lg" />
+                  <div className="space-y-1">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                </div>
+                <div className="space-y-1 text-right">
+                  <Skeleton className="ml-auto h-4 w-20" />
+                  <Skeleton className="ml-auto h-5 w-16" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : paymentList.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
             <CreditCard className="mb-2 size-8" />
             <p>{t("noPayments")}</p>

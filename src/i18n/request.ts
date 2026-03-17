@@ -1,6 +1,6 @@
-import { getRequestConfig } from "next-intl/server";
-import { hasLocale } from "next-intl";
-import { routing } from "./routing";
+import { getRequestConfig } from 'next-intl/server';
+import { hasLocale } from 'next-intl';
+import { routing } from './routing';
 
 export default getRequestConfig(async ({ requestLocale }) => {
   // Typically corresponds to the `[locale]` segment
@@ -18,6 +18,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       ...(await import(`../messages/${locale}/settings.json`)).default,
       ...(await import(`../messages/${locale}/documents.json`)).default,
       ...(await import(`../messages/${locale}/marketing.json`)).default,
+      ...(await import(`../messages/${locale}/glossary.json`)).default,
     },
   };
 });

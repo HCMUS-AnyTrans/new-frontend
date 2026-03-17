@@ -11,12 +11,20 @@
     "upload": {
       "dropzone": "Kéo thả tài liệu vào đây",
       "or": "hoặc",
+      "dragHint": "hoặc kéo và thả",
       "browse": "Chọn tệp từ máy",
-      "supportedFormats": "Hỗ trợ: {extensions} (tối đa 50MB)",
+      "replaceFile": "Đổi tệp",
+      "supportedFormats": "Hỗ trợ: {extensions} (tối đa 10MB)",
+      "maxSize": "Dung lượng tối đa: 10MB",
+      "secureHint": "Tệp được xử lý an toàn",
       "valid": "Hợp lệ",
+      "fileReady": "Tệp đã sẵn sàng",
       "next": "Tiếp tục",
-      "errorUnsupported": "Định dạng file không được hỗ trợ. Vui lòng chọn file PDF, DOCX hoặc PPTX.",
-      "errorTooLarge": "File quá lớn. Kích thước tối đa là 50MB."
+      "errorUnsupported": "Định dạng file không được hỗ trợ. Vui lòng chọn file PDF, DOCX, DOC, PPTX hoặc PPT.",
+      "errorTooLarge": "File quá lớn. Kích thước tối đa là 10MB.",
+      "pipelineUploading": "Đang tải lên",
+      "pipelineConfirming": "Đang xác nhận",
+      "pipelineAnalyzing": "Đang phân tích"
     },
     "configure": {
       "title": "Cấu hình dịch thuật",
@@ -31,10 +39,38 @@
       "toneLabel": "Giọng điệu dịch",
       "glossary": "Glossary (Bảng thuật ngữ)",
       "glossaryDescription": "Thêm thuật ngữ chuyên ngành để dịch chính xác hơn",
+      "savedGlossaryLabel": "Glossary đã lưu",
+      "savedGlossaryPlaceholder": "Chọn glossary",
+      "savedGlossaryNone": "Không dùng",
+      "savedGlossaryLoading": "Đang tải danh sách glossary...",
+      "savedGlossaryEmpty": "Không có glossary phù hợp với cặp ngôn ngữ này.",
+      "savedGlossaryTermsLoading": "Đang tải thuật ngữ glossary...",
+      "savedGlossaryTermsCount": "Sẽ áp dụng {count} thuật ngữ",
+      "manualTermsTitle": "Thuật ngữ nhập tay",
+      "manualTermsHelper": "Thêm thuật ngữ quan trọng để ưu tiên cách diễn đạt mong muốn.",
       "addTerm": "Thêm thuật ngữ",
       "sourceTerm": "Từ gốc",
       "translatedTerm": "Bản dịch",
+      "actions": "Thao tác",
+      "removeTerm": "Xóa thuật ngữ",
+      "termPairWarning": "Cần nhập đủ từ gốc và bản dịch để áp dụng thuật ngữ này.",
+      "emptyManualTitle": "Chưa có thuật ngữ nhập tay",
+      "emptyManualHint": "Thêm cặp thuật ngữ khi bạn cần kiểm soát cách diễn đạt.",
+      "nearLimitWarning": "Bạn đang gần chạm giới hạn thuật ngữ nhập tay (20).",
+      "termsAppliedLabel": "Thuật ngữ sẽ được áp dụng",
+      "termsAppliedCount": "{count} thuật ngữ",
       "noTerms": "Chưa có thuật ngữ nào. Nhấn nút bên dưới để thêm.",
+      "estimate": {
+        "title": "Ước tính credits",
+        "loading": "Đang tính credits...",
+        "total": "Tổng ước tính",
+        "credits": "credits",
+        "note": "Kết quả ước tính có thể chênh lệch nhẹ sau khi trích xuất nội dung thực tế.",
+        "currentBalance": "Số dư hiện có",
+        "balanceLoading": "Đang tải...",
+        "insufficientCredits": "Không đủ credits. Cần thêm {missing} credits.",
+        "insufficientActionHint": "Vui lòng mua thêm credits trước khi bắt đầu dịch."
+      },
       "back": "Quay lại",
       "startTranslation": "Bắt đầu dịch",
       "processing": "Đang xử lý..."
@@ -56,6 +92,12 @@
       "downloading": "Đang tải...",
       "newTranslation": "Dịch tài liệu mới"
     },
+    "translationResult": {
+      "success": "Dịch tài liệu hoàn tất",
+      "successHint": "Tài liệu của bạn đã được dịch thành công",
+      "failed": "Dịch tài liệu thất bại",
+      "unknownError": "Đã xảy ra lỗi không xác định"
+    },
     "languages": {
       "auto": "Tự động phát hiện",
       "vi": "Tiếng Việt",
@@ -68,12 +110,16 @@
       "es": "Tiếng Tây Ban Nha"
     },
     "domains": {
+      "auto": "Tự động nhận diện",
       "general": "Tổng quát",
-      "tech": "Công nghệ",
+      "technology": "Công nghệ",
       "medical": "Y tế",
       "legal": "Pháp lý",
       "finance": "Tài chính",
-      "marketing": "Marketing"
+      "marketing": "Marketing",
+      "education": "Giáo dục",
+      "engineering": "Kỹ thuật",
+      "science": "Khoa học"
     },
     "tones": {
       "formal": "Trang trọng",

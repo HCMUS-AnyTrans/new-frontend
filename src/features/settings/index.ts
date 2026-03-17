@@ -14,7 +14,7 @@ export {
   BillingTab,
   FilesTab,
   ActivityTab,
-} from "./components"
+} from './components';
 
 // API
 export {
@@ -45,7 +45,7 @@ export {
   deleteFileApi,
   getStorageUsageApi,
   getActivityApi,
-} from "./api"
+} from './api';
 
 // Hooks
 export {
@@ -74,7 +74,7 @@ export {
   useDeleteFile,
   useStorageUsage,
   useActivity,
-} from "./hooks"
+} from './hooks';
 
 // Types
 export type {
@@ -122,10 +122,7 @@ export type {
   PaymentsQuery,
   FilesQuery,
   ActivityQuery,
-} from "./types"
+} from './types';
 
 // Data
-export {
-  uiLanguageOptions,
-  authProviderOptions,
-} from "./data"
+export { uiLanguageOptions, authProviderOptions } from './data';

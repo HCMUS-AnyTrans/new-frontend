@@ -2,7 +2,8 @@
 
 import { ArrowLeftRight, AlertCircle } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { CardTitle } from "@/components/ui/card"
+import { AppCard, AppCardContent, AppCardHeader } from "@/components/ui/app-card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import {
@@ -29,23 +30,22 @@ export function LanguageSelector({
   onTgtLangChange,
 }: LanguageSelectorProps) {
   const t = useTranslations("documents")
-  const isSameLang = srcLang !== "auto" && srcLang === tgtLang
+  const isSameLang = srcLang === tgtLang
 
   const swapLanguages = () => {
-    if (srcLang === "auto") return
     onSrcLangChange(tgtLang)
     onTgtLangChange(srcLang)
   }
 
   return (
-    <Card>
-      <CardHeader>
+    <AppCard>
+      <AppCardHeader className="pb-3">
         <CardTitle className="text-base">{t("configure.language")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col items-center gap-4 md:flex-row">
+      </AppCardHeader>
+      <AppCardContent>
+        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-end">
           {/* Source language */}
-          <div className="w-full flex-1">
+          <div className="w-full">
             <Label htmlFor="src-lang" className="mb-2 block">
               {t("configure.from")}
             </Label>
@@ -68,14 +68,13 @@ export function LanguageSelector({
             variant="outline"
             size="icon"
             onClick={swapLanguages}
-            disabled={srcLang === "auto"}
-            className="mt-6 shrink-0"
+            className="mx-auto shrink-0 md:mb-0.5"
           >
             <ArrowLeftRight className="size-4" />
           </Button>
 
           {/* Target language */}
-          <div className="w-full flex-1">
+          <div className="w-full">
             <Label htmlFor="tgt-lang" className="mb-2 block">
               {t("configure.to")}
             </Label>
@@ -100,7 +99,7 @@ export function LanguageSelector({
             <span className="text-sm font-medium">{t("configure.sameLangError")}</span>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </AppCardContent>
+    </AppCard>
   )
 }

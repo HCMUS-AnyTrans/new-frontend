@@ -36,7 +36,8 @@ export function ContactForm() {
     },
   })
 
-  function onSubmit(_data: ContactFormValues) {
+  function onSubmit(data: ContactFormValues) {
+    void data
     setIsSubmitting(true)
     // TODO: integrate with real contact API
     setTimeout(() => {
@@ -45,12 +46,12 @@ export function ContactForm() {
     }, 1500)
   }
 
-  // Custom Input style to match design (border-bottom only)
-  const inputClass = "border-0 border-b border-border rounded-none px-0 py-2 focus-visible:ring-0 focus-visible:border-primary placeholder:text-muted-foreground bg-transparent text-foreground transition-colors"
+  // Custom Input style to match design (border-bottom only, rounded in both modes)
+  const inputClass = "border-0 border-b border-border rounded-md px-3 py-2 focus-visible:ring-0 focus-visible:border-primary placeholder:text-muted-foreground bg-transparent text-foreground transition-colors"
   const labelClass = "text-muted-foreground font-medium text-xs uppercase tracking-wide"
 
   return (
-    <div className="p-10 bg-background h-full flex flex-col justify-center">
+    <div className="flex h-full flex-col justify-center bg-background p-10 dark:bg-card">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
           

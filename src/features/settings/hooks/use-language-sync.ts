@@ -3,8 +3,10 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import { settingsKeys } from '@/lib/query-client';
 import { usePreferences, useUpdatePreferences } from './use-preferences';
-import type { UILanguage } from '../types';
+import type { UILanguage, UserPreferences } from '../types';
 
 /**
  * Unified language hook that syncs next-intl locale (UI) ↔ backend (persistence).
@@ -16,6 +18,7 @@ export function useLanguageSync() {
   const locale = useLocale() as UILanguage;
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { preferences } = usePreferences();
   const { updatePreferences } = useUpdatePreferences();
   const hasSynced = useRef(false);
@@ -24,11 +27,12 @@ export function useLanguageSync() {
   const navigateToLocale = useCallback(
     (newLocale: UILanguage) => {
       const pathnameWithoutLocale = pathname.replace(/^\/(vi|en)/, '');
-      const search = typeof window !== 'undefined' ? window.location.search : '';
+      const search =
+        typeof window !== 'undefined' ? window.location.search : '';
       const newPath = `/${newLocale}${pathnameWithoutLocale || ''}${search}`;
       router.push(newPath);
     },
-    [pathname, router]
+    [pathname, router],
   );
 
   // Sync backend → URL locale on first load (once)
@@ -43,10 +47,35 @@ export function useLanguageSync() {
 
   const changeLanguage = useCallback(
     (newLanguage: UILanguage) => {
+      const previousPreferences = queryClient.getQueryData<UserPreferences>(
+        settingsKeys.preferences(),
+      );
+
+      queryClient.setQueryData<UserPreferences | undefined>(
+        settingsKeys.preferences(),
+        (current) => {
+          if (!current) return current;
+          return { ...current, uiLanguage: newLanguage };
+        },
+      );
+
       navigateToLocale(newLanguage);
-      updatePreferences({ uiLanguage: newLanguage });
+
+      updatePreferences(
+        { uiLanguage: newLanguage },
+        {
+          onError: () => {
+            if (previousPreferences) {
+              queryClient.setQueryData(
+                settingsKeys.preferences(),
+                previousPreferences,
+              );
+            }
+          },
+        },
+      );
     },
-    [navigateToLocale, updatePreferences]
+    [navigateToLocale, queryClient, updatePreferences],
   );
 
   const toggleLanguage = useCallback(() => {

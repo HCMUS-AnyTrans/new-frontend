@@ -26,14 +26,16 @@ export function EnterpriseBlock({
       <div
         className={cn(
           "relative rounded-3xl p-8 md:p-12 overflow-hidden",
-          isDark ? "bg-foreground" : "bg-card border border-border"
+          isDark
+            ? "bg-foreground shadow-xl shadow-black/10 dark:bg-card dark:border dark:border-border/80 dark:shadow-black/30"
+            : "bg-card border border-border dark:bg-card/90 dark:border-border/80"
         )}
       >
         {/* Background Pattern */}
         <div
           className={cn(
             "absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:32px_32px]",
-            !isDark && "opacity-50"
+            isDark ? "opacity-100 dark:opacity-40" : "opacity-50 dark:opacity-20"
           )}
         />
 
@@ -56,7 +58,7 @@ export function EnterpriseBlock({
               <h3
                 className={cn(
                   "text-2xl font-bold",
-                  isDark ? "text-background" : "text-foreground"
+                  isDark ? "text-background dark:text-white" : "text-foreground"
                 )}
               >
                 {t("enterpriseTitle")}
@@ -64,7 +66,7 @@ export function EnterpriseBlock({
               <p
                 className={cn(
                   "mt-1",
-                  isDark ? "text-muted" : "text-muted-foreground"
+                  isDark ? "text-background/80 dark:text-muted-foreground" : "text-muted-foreground"
                 )}
               >
                 {t("enterpriseDesc")}
@@ -97,10 +99,10 @@ export function EnterpriseBlock({
               {enterpriseFeatures.map((feature, idx) => {
                 const Icon = featureIcons[idx]
                 return (
-                  <div
-                    key={feature}
-                    className="flex items-center gap-2 text-muted-foreground"
-                  >
+                    <div
+                      key={feature}
+                      className="flex items-center gap-2 text-muted-foreground dark:text-muted-foreground/90"
+                    >
                     <Icon className="w-5 h-5 text-primary" />
                     <span className="text-sm">{feature}</span>
                   </div>

@@ -1,6 +1,11 @@
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from 'lucide-react';
 import type { HistoryPaginationProps } from '../types';
 
 export function HistoryPagination({
@@ -12,7 +17,7 @@ export function HistoryPagination({
   if (meta.totalPages <= 1) return null;
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-4 border-t">
+    <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
       <p className="text-sm text-muted-foreground">
         {t('totalJobs', { count: meta.total })}
         {' \u2022 '}
@@ -21,7 +26,17 @@ export function HistoryPagination({
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
-          size="sm"
+          size="icon"
+          className="hidden size-8 sm:inline-flex"
+          disabled={!meta.hasPrev}
+          onClick={() => onPageChange(1)}
+        >
+          <ChevronsLeft className="size-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          className="size-8"
           disabled={!meta.hasPrev}
           onClick={() => onPageChange(Math.max(1, meta.page - 1))}
         >
@@ -29,11 +44,21 @@ export function HistoryPagination({
         </Button>
         <Button
           variant="outline"
-          size="sm"
+          size="icon"
+          className="size-8"
           disabled={!meta.hasNext}
           onClick={() => onPageChange(meta.page + 1)}
         >
           <ChevronRight className="size-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          className="hidden size-8 sm:inline-flex"
+          disabled={!meta.hasNext}
+          onClick={() => onPageChange(meta.totalPages)}
+        >
+          <ChevronsRight className="size-4" />
         </Button>
       </div>
     </div>

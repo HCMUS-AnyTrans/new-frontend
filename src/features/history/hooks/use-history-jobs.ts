@@ -1,33 +1,37 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useDeferredValue } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useRecentJobs } from '@/features/dashboard/hooks';
 import type { RecentJobsQuery } from '@/features/dashboard/api/dashboard.api';
 import { ITEMS_PER_PAGE } from '../data';
 
 /**
  * Encapsulates all history page state: search (debounced), status filter,
- * pagination, and the underlying data-fetching via useRecentJobs.
+ * job type filter, pagination, and the underlying data-fetching via useRecentJobs.
+ * Reads the initial `search` value from the URL `?search=` query param so that
+ * navigating from the command palette pre-fills the search field.
  */
 export function useHistoryJobs() {
+  const searchParams = useSearchParams();
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [search, setSearch] = useState(() => searchParams.get('search') ?? '');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [domainFilter, setDomainFilter] = useState<string>('all');
+  const deferredSearch = useDeferredValue(search);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearch(value);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      setDebouncedSearch(value);
-      setPage(1);
-    }, 400);
+    setPage(1);
   }, []);
 
   const handleStatusChange = useCallback((value: string) => {
     setStatusFilter(value);
+    setPage(1);
+  }, []);
+
+  const handleDomainChange = useCallback((value: string) => {
+    setDomainFilter(value);
     setPage(1);
   }, []);
 
@@ -37,29 +41,35 @@ export function useHistoryJobs() {
     limit: ITEMS_PER_PAGE,
     sortBy: 'createdAt',
     sortOrder: 'desc',
-    ...(debouncedSearch ? { search: debouncedSearch } : {}),
+    ...(deferredSearch ? { search: deferredSearch } : {}),
     ...(statusFilter !== 'all' ? { status: statusFilter } : {}),
+    ...(domainFilter !== 'all' ? { domain: domainFilter } : {}),
   };
 
-  const { jobsData, isLoading, isError } = useRecentJobs(queryParams);
+  const { jobsData, isLoading, isFetching, isError } =
+    useRecentJobs(queryParams);
 
   const jobs = jobsData?.data ?? [];
   const meta = jobsData?.meta;
-  const hasFilters = !!debouncedSearch || statusFilter !== 'all';
+  const hasFilters =
+    !!search || statusFilter !== 'all' || domainFilter !== 'all';
 
   return {
     // Data
     jobs,
     meta,
     isLoading,
+    isFetching,
     isError,
     // Filter state
     search,
     statusFilter,
+    domainFilter,
     hasFilters,
     // Actions
     handleSearchChange,
     handleStatusChange,
+    handleDomainChange,
     setPage,
   };
 }

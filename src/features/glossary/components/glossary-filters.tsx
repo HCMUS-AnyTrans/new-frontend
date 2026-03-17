@@ -1,0 +1,83 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
+import { Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  DOMAIN_FILTER_OPTIONS,
+  DOMAIN_OPTIONS_WITH_ICONS,
+} from '@/shared/constants/domains';
+import { glossaryLanguages } from '../data';
+
+interface GlossaryFiltersProps {
+  search: string;
+  onSearchChange: (value: string) => void;
+  domainFilter: string;
+  onDomainChange: (value: string) => void;
+  srcLangFilter: string;
+  onSrcLangChange: (value: string) => void;
+}
+
+export function GlossaryFilters({
+  search,
+  onSearchChange,
+  domainFilter,
+  onDomainChange,
+  srcLangFilter,
+  onSrcLangChange,
+}: GlossaryFiltersProps) {
+  const t = useTranslations('glossary');
+
+  return (
+    <div className="flex flex-1 flex-col sm:flex-row gap-3">
+      <div className="relative flex-1">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+        <Input
+          placeholder={t('searchPlaceholder')}
+          value={search}
+          onChange={(e) => onSearchChange(e.target.value)}
+          className="bg-background pl-9"
+        />
+      </div>
+      <Select value={domainFilter} onValueChange={onDomainChange}>
+        <SelectTrigger className="w-full bg-background hover:bg-background sm:w-[160px]">
+          <SelectValue placeholder={t('filterDomain')} />
+        </SelectTrigger>
+        <SelectContent className="bg-popover">
+          {DOMAIN_FILTER_OPTIONS.map((domainId) => {
+            const domainOption = DOMAIN_OPTIONS_WITH_ICONS.find(
+              (d) => d.id === domainId
+            );
+            const Icon = domainOption?.icon;
+            return (
+              <SelectItem key={domainId} value={domainId}>
+                {Icon && <Icon className="size-4" />}
+                {domainId === 'all' ? t('allDomains') : t(`domains.${domainId}`)}
+              </SelectItem>
+            );
+          })}
+        </SelectContent>
+      </Select>
+      <Select value={srcLangFilter} onValueChange={onSrcLangChange}>
+        <SelectTrigger className="w-full bg-background hover:bg-background sm:w-[160px]">
+          <SelectValue placeholder={t('filterSrcLang')} />
+        </SelectTrigger>
+        <SelectContent className="bg-popover">
+          <SelectItem value="all">{t('allLanguages')}</SelectItem>
+          {glossaryLanguages.map((lang) => (
+            <SelectItem key={lang.code} value={lang.code}>
+              {t(`languages.${lang.code}`)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}

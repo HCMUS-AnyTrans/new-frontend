@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useTranslations, useLocale } from "next-intl"
-import { Bell, Mail, Smartphone, CheckCheck, Loader2 } from "lucide-react"
+import { Bell, Check, Mail, Smartphone, CheckCheck, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -16,10 +16,11 @@ import {
   useUpdateNotificationPreferences,
 } from "../hooks/use-notifications"
 import type { NotificationType } from "../types"
+import { getNotifText } from "../types"
 import { cn } from "@/lib/utils"
 
 const notificationTypeIcons: Record<NotificationType, string> = {
-  translation_complete: "\u{1F4C4}",
+  translation_status: "\u{1F4C4}",
   credit_purchase: "\u{1F4B3}",
   file_expiring: "\u26A0\uFE0F",
   security_alert: "\u{1F512}",
@@ -182,10 +183,9 @@ export function NotificationsTab() {
             {notifList.map((notif, idx) => (
               <div key={notif.id}>
                 {idx > 0 && <SettingsDivider />}
-                <button
-                  onClick={() => handleToggleRead(notif.id)}
+                <div
                   className={cn(
-                    "flex w-full items-start gap-3 rounded-lg p-2 text-left transition-colors hover:bg-muted/50",
+                    "flex w-full items-start gap-3 rounded-lg p-2 transition-colors hover:bg-muted/50",
                     !notif.isRead && "bg-primary/5"
                   )}
                 >
@@ -195,20 +195,30 @@ export function NotificationsTab() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <p className={cn("text-sm", !notif.isRead && "font-medium")}>
-                        {notif.title}
+                        {getNotifText(notif.title, locale)}
                       </p>
                       {!notif.isRead && (
                         <span className="size-2 rounded-full bg-primary" />
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground line-clamp-1">
-                      {notif.message}
+                      {getNotifText(notif.message, locale)}
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground">
                       {formatDate(notif.createdAt)}
                     </p>
                   </div>
-                </button>
+                  {!notif.isRead && (
+                    <button
+                      type="button"
+                      onClick={() => handleToggleRead(notif.id)}
+                      className="shrink-0 rounded p-1 text-muted-foreground/50 transition-colors hover:text-foreground"
+                      title={t("markRead")}
+                    >
+                      <Check className="size-4" />
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>

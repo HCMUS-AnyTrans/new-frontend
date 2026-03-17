@@ -1,40 +1,40 @@
-import { z } from "zod"
-import { isValidPhoneNumber } from "react-phone-number-input"
+import { z } from 'zod';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
 export interface LoginCredentials {
-  email: string
-  password: string
-  rememberMe?: boolean
+  email: string;
+  password: string;
+  rememberMe?: boolean;
 }
 
 export interface RegisterCredentials {
-  firstName: string
-  lastName: string
-  email: string
-  phone?: string
-  password: string
-  confirmPassword: string
-  agreeToTerms: boolean
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  password: string;
+  confirmPassword: string;
+  agreeToTerms: boolean;
 }
 
 export interface AuthResponse {
-  success: boolean
-  token?: string
+  success: boolean;
+  token?: string;
   user?: {
-    id: string
-    email: string
-    name: string
-  }
-  message?: string
+    id: string;
+    email: string;
+    name: string;
+  };
+  message?: string;
 }
 
 export interface AuthError {
-  field?: string
-  message: string
+  field?: string;
+  message: string;
 }
 
 // ============================================================================
@@ -43,53 +43,54 @@ export interface AuthError {
 
 export const authValidationMessages = {
   // Common
-  emailRequired: "Vui lòng nhập email",
-  emailInvalid: "Email không hợp lệ",
-  passwordRequired: "Vui lòng nhập mật khẩu",
-  passwordMinLength: "Mật khẩu phải có ít nhất 8 ký tự",
-  passwordRequiresLowercase: "Mật khẩu phải có ít nhất 1 chữ thường",
-  passwordRequiresUppercase: "Mật khẩu phải có ít nhất 1 chữ hoa",
-  passwordRequiresNumber: "Mật khẩu phải có ít nhất 1 số",
-  passwordRequiresSymbol: "Mật khẩu phải có ít nhất 1 ký tự đặc biệt",
-  networkError: "Lỗi kết nối. Vui lòng thử lại",
+  emailRequired: 'Vui lòng nhập email',
+  emailInvalid: 'Email không hợp lệ',
+  passwordRequired: 'Vui lòng nhập mật khẩu',
+  passwordMinLength: 'Mật khẩu phải có ít nhất 8 ký tự',
+  passwordRequiresLowercase: 'Mật khẩu phải có ít nhất 1 chữ thường',
+  passwordRequiresUppercase: 'Mật khẩu phải có ít nhất 1 chữ hoa',
+  passwordRequiresNumber: 'Mật khẩu phải có ít nhất 1 số',
+  passwordRequiresSymbol: 'Mật khẩu phải có ít nhất 1 ký tự đặc biệt',
+  networkError: 'Lỗi kết nối. Vui lòng thử lại',
 
   // Login specific
-  loginFailed: "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin",
-  loginSuccess: "Đăng nhập thành công!",
-  loginWelcome: "Chào mừng bạn quay trở lại",
+  loginFailed: 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin',
+  loginSuccess: 'Đăng nhập thành công!',
+  loginWelcome: 'Chào mừng bạn quay trở lại',
 
   // Register specific
-  firstNameRequired: "Vui lòng nhập họ",
-  firstNameMinLength: "Họ phải có ít nhất 2 ký tự",
-  lastNameRequired: "Vui lòng nhập tên",
-  lastNameMinLength: "Tên phải có ít nhất 2 ký tự",
-  phoneInvalid: "Số điện thoại phải có mã quốc gia (ví dụ: +84901234567)",
-  confirmPasswordRequired: "Vui lòng xác nhận mật khẩu",
-  passwordMismatch: "Mật khẩu không khớp",
-  agreeToTermsRequired: "Bạn phải đồng ý với điều khoản sử dụng",
-  registerFailed: "Đăng ký thất bại. Vui lòng thử lại",
-  registerSuccess: "Đăng ký thành công!",
-  registerWelcome: "Chào mừng bạn đến với AnyTrans",
+  firstNameRequired: 'Vui lòng nhập họ',
+  firstNameMinLength: 'Họ phải có ít nhất 2 ký tự',
+  lastNameRequired: 'Vui lòng nhập tên',
+  lastNameMinLength: 'Tên phải có ít nhất 2 ký tự',
+  phoneInvalid: 'Số điện thoại phải có mã quốc gia (ví dụ: +84901234567)',
+  confirmPasswordRequired: 'Vui lòng xác nhận mật khẩu',
+  passwordMismatch: 'Mật khẩu không khớp',
+  agreeToTermsRequired: 'Bạn phải đồng ý với điều khoản sử dụng',
+  registerFailed: 'Đăng ký thất bại. Vui lòng thử lại',
+  registerSuccess: 'Đăng ký thành công!',
+  registerWelcome: 'Chào mừng bạn đến với AnyTrans',
 
   // Forgot password specific
-  forgotPasswordSuccess: "Email khôi phục mật khẩu đã được gửi",
-  forgotPasswordFailed: "Không thể gửi email. Vui lòng thử lại",
+  forgotPasswordSuccess: 'Email khôi phục mật khẩu đã được gửi',
+  forgotPasswordFailed: 'Không thể gửi email. Vui lòng thử lại',
 
   // Reset password specific
-  resetPasswordSuccess: "Mật khẩu đã được đặt lại thành công",
-  resetPasswordFailed: "Không thể đặt lại mật khẩu. Vui lòng thử lại",
+  resetPasswordSuccess: 'Mật khẩu đã được đặt lại thành công',
+  resetPasswordFailed: 'Không thể đặt lại mật khẩu. Vui lòng thử lại',
 
   // Verify email specific
-  verifyEmailLoading: "Đang xác thực email của bạn...",
-  verifyEmailSuccess: "Email đã được xác thực thành công!",
-  verifyEmailSuccessDescription: "Bạn sẽ được chuyển đến trang đăng nhập trong",
-  verifyEmailFailed: "Không thể xác thực email. Vui lòng thử lại",
-  verifyEmailInvalidLink: "Liên kết xác thực không hợp lệ",
-  verifyEmailInvalidLinkDescription: "Liên kết xác thực email không hợp lệ hoặc đã hết hạn. Vui lòng yêu cầu gửi lại email xác thực.",
-  verifyEmailResendButton: "Gửi lại email xác thực",
-  verifyEmailResendSuccess: "Email xác thực đã được gửi lại",
-  verifyEmailResendFailed: "Không thể gửi lại email. Vui lòng thử lại",
-}
+  verifyEmailLoading: 'Đang xác thực email của bạn...',
+  verifyEmailSuccess: 'Email đã được xác thực thành công!',
+  verifyEmailSuccessDescription: 'Bạn sẽ được chuyển đến trang đăng nhập trong',
+  verifyEmailFailed: 'Không thể xác thực email. Vui lòng thử lại',
+  verifyEmailInvalidLink: 'Liên kết xác thực không hợp lệ',
+  verifyEmailInvalidLinkDescription:
+    'Liên kết xác thực email không hợp lệ hoặc đã hết hạn. Vui lòng yêu cầu gửi lại email xác thực.',
+  verifyEmailResendButton: 'Gửi lại email xác thực',
+  verifyEmailResendSuccess: 'Email xác thực đã được gửi lại',
+  verifyEmailResendFailed: 'Không thể gửi lại email. Vui lòng thử lại',
+};
 
 // ============================================================================
 // ZOD SCHEMA - Login
@@ -105,9 +106,9 @@ export const loginFormSchema = z.object({
     .min(1, authValidationMessages.passwordRequired)
     .min(8, authValidationMessages.passwordMinLength),
   rememberMe: z.boolean().default(false),
-})
+});
 
-export type LoginFormValues = z.infer<typeof loginFormSchema>
+export type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 // ============================================================================
 // PASSWORD VALIDATION HELPER
@@ -128,7 +129,7 @@ export const strongPasswordSchema = z
   .regex(/[a-z]/, authValidationMessages.passwordRequiresLowercase)
   .regex(/[A-Z]/, authValidationMessages.passwordRequiresUppercase)
   .regex(/[0-9]/, authValidationMessages.passwordRequiresNumber)
-  .regex(/[^a-zA-Z0-9]/, authValidationMessages.passwordRequiresSymbol)
+  .regex(/[^a-zA-Z0-9]/, authValidationMessages.passwordRequiresSymbol);
 
 /**
  * E.164 phone number format validation using react-phone-number-input
@@ -139,8 +140,8 @@ export const phoneSchema = z
   .optional()
   .refine(
     (val) => !val || isValidPhoneNumber(val),
-    authValidationMessages.phoneInvalid
-  )
+    authValidationMessages.phoneInvalid,
+  );
 
 // ============================================================================
 // ZOD SCHEMA - Register
@@ -171,10 +172,10 @@ export const registerFormSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: authValidationMessages.passwordMismatch,
-    path: ["confirmPassword"],
-  })
+    path: ['confirmPassword'],
+  });
 
-export type RegisterFormValues = z.infer<typeof registerFormSchema>
+export type RegisterFormValues = z.infer<typeof registerFormSchema>;
 
 // ============================================================================
 // ZOD SCHEMA - Forgot Password
@@ -185,9 +186,9 @@ export const forgotPasswordFormSchema = z.object({
     .string()
     .min(1, authValidationMessages.emailRequired)
     .email(authValidationMessages.emailInvalid),
-})
+});
 
-export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordFormSchema>
+export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordFormSchema>;
 
 // ============================================================================
 // ZOD SCHEMA - Reset Password
@@ -203,49 +204,49 @@ export const resetPasswordFormSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: authValidationMessages.passwordMismatch,
-    path: ["confirmPassword"],
-  })
+    path: ['confirmPassword'],
+  });
 
-export type ResetPasswordFormValues = z.infer<typeof resetPasswordFormSchema>
+export type ResetPasswordFormValues = z.infer<typeof resetPasswordFormSchema>;
 
 // ============================================================================
 // API CONFIGURATION
 // ============================================================================
 
 export const authConfig = {
-  loginEndpoint: "/api/auth/login",
-  registerEndpoint: "/api/auth/register",
-  forgotPasswordEndpoint: "/api/auth/forgot-password",
-  resetPasswordEndpoint: "/api/auth/reset-password",
-  logoutEndpoint: "/api/auth/logout",
-  tokenKey: "auth_token",
-  userKey: "auth_user",
-}
+  loginEndpoint: '/api/auth/login',
+  registerEndpoint: '/api/auth/register',
+  forgotPasswordEndpoint: '/api/auth/forgot-password',
+  resetPasswordEndpoint: '/api/auth/reset-password',
+  logoutEndpoint: '/api/auth/logout',
+  tokenKey: 'auth_token',
+  userKey: 'auth_user',
+};
 
 // ============================================================================
 // SOCIAL LOGIN PROVIDERS
 // ============================================================================
 
 export interface SocialProvider {
-  id: string
-  name: string
-  icon: string
-  color: string
-  bgColor?: string
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  bgColor?: string;
 }
 
 export const socialLoginProviders: SocialProvider[] = [
   {
-    id: "facebook",
-    name: "Facebook",
-    icon: "/authen/facebook-icon.svg",
-    color: "#1877f2",
-    bgColor: "bg-[#1877f2]",
+    id: 'facebook',
+    name: 'Facebook',
+    icon: '/authen/facebook-icon.svg',
+    color: '#1877f2',
+    bgColor: 'bg-[#1877f2]',
   },
   {
-    id: "google",
-    name: "Google",
-    icon: "/authen/google.svg",
-    color: "#4285f4",
+    id: 'google',
+    name: 'Google',
+    icon: '/authen/google.svg',
+    color: '#4285f4',
   },
-]
+];

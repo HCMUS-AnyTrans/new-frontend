@@ -30,7 +30,9 @@ export function getErrorMessage(error: unknown): string {
  * Get validation errors from API error response
  * Returns a record of field names to error messages
  */
-export function getValidationErrors(error: unknown): Record<string, string[]> | null {
+export function getValidationErrors(
+  error: unknown,
+): Record<string, string[]> | null {
   if (isApiError(error) && error.errors) {
     return error.errors;
   }

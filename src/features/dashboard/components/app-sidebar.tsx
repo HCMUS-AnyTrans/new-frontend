@@ -1,10 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChevronUp, LogOut, User, Settings } from "lucide-react";
 import {
   LayoutDashboard,
   FileText,
@@ -12,30 +10,17 @@ import {
   History,
   Settings as SettingsIcon,
   HelpCircle,
+  ChevronRight,
   type LucideIcon,
 } from "lucide-react";
 import {
   Sidebar,
-  SidebarHeader,
   SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarSeparator,
+  useSidebar,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useAuthStore, useLogout } from "@/features/auth";
 
 interface NavItem {
   titleKey: string;
@@ -43,169 +28,69 @@ interface NavItem {
   icon: LucideIcon;
 }
 
-interface NavGroup {
-  labelKey: string;
-  items: NavItem[];
-}
-
-const navGroups: NavGroup[] = [
-  {
-    labelKey: "mainMenu",
-    items: [
-      { titleKey: "dashboard", href: "/dashboard", icon: LayoutDashboard },
-      { titleKey: "documents", href: "/documents", icon: FileText },
-      { titleKey: "glossary", href: "/glossary", icon: BookOpen },
-      { titleKey: "history", href: "/history", icon: History },
-    ],
-  },
-  {
-    labelKey: "other",
-    items: [
-      { titleKey: "settings", href: "/settings", icon: SettingsIcon },
-      { titleKey: "help", href: "/help", icon: HelpCircle },
-    ],
-  },
+const navItems: NavItem[] = [
+  { titleKey: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { titleKey: "documents", href: "/documents", icon: FileText },
+  { titleKey: "glossary", href: "/glossary", icon: BookOpen },
+  { titleKey: "history", href: "/history", icon: History },
+  { titleKey: "settings", href: "/settings", icon: SettingsIcon },
+  { titleKey: "help", href: "/help", icon: HelpCircle },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
   const t = useTranslations("dashboard.sidebar");
-  const user = useAuthStore((s) => s.user);
-  const { logout } = useLogout();
+  const { toggleSidebar, open } = useSidebar();
 
   // Remove locale prefix from pathname for matching
   const pathnameWithoutLocale = pathname.replace(/^\/(vi|en)/, "");
 
-  // Generate user initials from fullName
-  const initials = user?.fullName
-    ? user.fullName
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : "??";
-
-  const handleLogout = () => {
-    logout();
-  };
-
   return (
     <Sidebar
       collapsible="icon"
-      className="border-r border-sidebar-border bg-sidebar"
+      className="h-svh border-r border-sidebar-border bg-sidebar pt-(--dashboard-header-height)"
     >
-      {/* Header - Logo */}
-      <SidebarHeader className="p-4 group-data-[collapsible=icon]:p-2">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="relative h-8 w-8 shrink-0">
-            <Image
-              src="/logo.svg"
-              alt="AnyTrans Logo"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
-          <span className="text-lg font-bold text-foreground group-data-[collapsible=icon]:hidden">
-            AnyTrans
-          </span>
-        </Link>
-      </SidebarHeader>
-
       {/* Main Navigation */}
-      <SidebarContent>
-        {navGroups.map((group) => (
-          <SidebarGroup key={group.labelKey}>
-            <SidebarGroupLabel className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
-              {t(group.labelKey)}
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {group.items.map((item) => {
-                  const isActive = pathnameWithoutLocale === item.href;
-                  const title = t(item.titleKey);
-                  return (
-                    <SidebarMenuItem key={item.href}>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={isActive}
-                        tooltip={title}
-                      >
-                        <Link href={item.href}>
-                          <item.icon className="size-4" />
-                          <span>{title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  );
-                })}
-              </SidebarMenu>
-            </SidebarGroupContent>
-            {group.labelKey === "mainMenu" && (
-              <SidebarSeparator className="mt-2" />
-            )}
-          </SidebarGroup>
-        ))}
+      <SidebarContent className={`pt-4 ${open ? "px-2" : "px-0"}`}>
+        <SidebarMenu className="gap-1">
+          {navItems.map((item) => {
+            const isActive =
+              pathnameWithoutLocale === item.href ||
+              pathnameWithoutLocale.startsWith(item.href + "/");
+            const title = t(item.titleKey);
+
+            return (
+              <SidebarMenuItem
+                key={item.href}
+                className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center"
+              >
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive}
+                  tooltip={title}
+                  className="text-sidebar-foreground"
+                >
+                  <Link href={item.href}>
+                    <item.icon className="size-5" />
+                    {open && <span>{title}</span>}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
       </SidebarContent>
 
-      {/* Footer - User */}
-      <SidebarFooter className="gap-3">
-        <SidebarSeparator />
-
-        {/* User Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              className="flex w-full items-center gap-3 rounded-lg p-2 mx-2 text-left hover:bg-muted transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:mx-0"
-            >
-              <Avatar className="h-9 w-9 shrink-0">
-                {user?.avatarUrl && (
-                  <AvatarImage
-                    src={user.avatarUrl}
-                    alt={user.fullName}
-                  />
-                )}
-                <AvatarFallback className="bg-primary text-primary-foreground text-xs font-medium">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-1 flex-col min-w-0 group-data-[collapsible=icon]:hidden">
-                <span className="text-sm font-medium text-foreground truncate">
-                  {user?.fullName || "---"}
-                </span>
-                <span className="text-xs text-muted-foreground truncate">
-                  {user?.email || "---"}
-                </span>
-              </div>
-              <ChevronUp className="size-4 text-muted-foreground group-data-[collapsible=icon]:hidden" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" side="top" className="w-56 mb-2">
-            <DropdownMenuItem asChild>
-              <Link href="/settings" className="flex items-center">
-                <User className="mr-2 size-4" />
-                {t("profile")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/settings" className="flex items-center">
-                <Settings className="mr-2 size-4" />
-                {t("settings")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="text-destructive focus:text-destructive focus:bg-destructive/10"
-            >
-              <LogOut className="mr-2 size-4" />
-              {t("logout")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarFooter>
+      {/* Collapse / Expand round button on the right edge */}
+      <button
+        onClick={toggleSidebar}
+        className="absolute top-1/2 -right-3.5 z-20 hidden -translate-y-1/2 size-7 items-center justify-center rounded-full border border-sidebar-border bg-background shadow-sm transition-colors hover:bg-muted md:flex"
+      >
+        <ChevronRight
+          className="size-3.5 text-muted-foreground transition-transform duration-200"
+          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+        />
+      </button>
     </Sidebar>
   );
 }

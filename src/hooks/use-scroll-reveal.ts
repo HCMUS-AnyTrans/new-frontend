@@ -1,16 +1,16 @@
-"use client"
+'use client';
 
-import { useEffect, useRef, useState, type RefObject } from "react"
+import { useEffect, useRef, useState, type RefObject } from 'react';
 
 interface UseScrollRevealOptions {
-  threshold?: number
-  rootMargin?: string
-  triggerOnce?: boolean
+  threshold?: number;
+  rootMargin?: string;
+  triggerOnce?: boolean;
 }
 
 interface UseScrollRevealReturn<T extends HTMLElement> {
-  ref: RefObject<T | null>
-  isVisible: boolean
+  ref: RefObject<T | null>;
+  isVisible: boolean;
 }
 
 /**
@@ -18,37 +18,37 @@ interface UseScrollRevealReturn<T extends HTMLElement> {
  * Uses IntersectionObserver for performance
  */
 export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
-  options: UseScrollRevealOptions = {}
+  options: UseScrollRevealOptions = {},
 ): UseScrollRevealReturn<T> {
-  const { threshold = 0.1, rootMargin = "0px", triggerOnce = true } = options
+  const { threshold = 0.1, rootMargin = '0px', triggerOnce = true } = options;
 
-  const ref = useRef<T | null>(null)
-  const [isVisible, setIsVisible] = useState(false)
+  const ref = useRef<T | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const element = ref.current
-    if (!element) return
+    const element = ref.current;
+    if (!element) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setIsVisible(true)
+          setIsVisible(true);
           if (triggerOnce) {
-            observer.unobserve(element)
+            observer.unobserve(element);
           }
         } else if (!triggerOnce) {
-          setIsVisible(false)
+          setIsVisible(false);
         }
       },
-      { threshold, rootMargin }
-    )
+      { threshold, rootMargin },
+    );
 
-    observer.observe(element)
+    observer.observe(element);
 
     return () => {
-      observer.disconnect()
-    }
-  }, [threshold, rootMargin, triggerOnce])
+      observer.disconnect();
+    };
+  }, [threshold, rootMargin, triggerOnce]);
 
-  return { ref, isVisible }
+  return { ref, isVisible };
 }

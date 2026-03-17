@@ -19,7 +19,7 @@ import type {
  * GET /dashboard/stats
  */
 export async function getDashboardStatsApi(
-  query?: DashboardStatsQuery
+  query?: DashboardStatsQuery,
 ): Promise<DashboardStats> {
   const response = await apiClient.get<DashboardStats>('/dashboard/stats', {
     params: query,
@@ -32,11 +32,11 @@ export async function getDashboardStatsApi(
  * GET /dashboard/charts/jobs
  */
 export async function getJobsChartApi(
-  query?: JobsChartQuery
+  query?: JobsChartQuery,
 ): Promise<JobChartDataPoint[]> {
   const response = await apiClient.get<JobChartDataPoint[]>(
     '/dashboard/charts/jobs',
-    { params: query }
+    { params: query },
   );
   return response.data;
 }
@@ -46,11 +46,11 @@ export async function getJobsChartApi(
  * GET /dashboard/charts/credits
  */
 export async function getCreditsChartApi(
-  query?: CreditsChartQuery
+  query?: CreditsChartQuery,
 ): Promise<CreditsChartResponse> {
   const response = await apiClient.get<CreditsChartResponse>(
     '/dashboard/charts/credits',
-    { params: query }
+    { params: query },
   );
   return response.data;
 }
@@ -82,12 +82,21 @@ export interface TranslationJobFile {
   name: string;
   mime: string;
   size_bytes: number;
-  sha256: string;
+  sha256: string | null;
   status: string;
   type: string;
   created_at: string;
   store_until: string;
   is_expired: boolean;
+}
+
+export interface PricingBreakdownItem {
+  code: string;
+  name: string;
+  unit: string;
+  price: number;
+  credits: number;
+  quantity: number;
 }
 
 export interface TranslationJobResponse {
@@ -101,6 +110,9 @@ export interface TranslationJobResponse {
   error?: string;
   created_at: string;
   completed_at?: string;
+  cost_credits?: number;
+  pricing_breakdown?: PricingBreakdownItem[];
+  domain?: string;
 }
 
 export interface TranslationJobsListResponse {
@@ -118,8 +130,9 @@ export interface TranslationJobsListResponse {
 export interface RecentJobsQuery {
   page?: number;
   limit?: number;
-  job_type?: string;
+  job_type?: 'document' | 'subtitle';
   status?: string;
+  domain?: string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   search?: string;
@@ -130,11 +143,11 @@ export interface RecentJobsQuery {
  * GET /translations
  */
 export async function getRecentJobsApi(
-  params?: RecentJobsQuery
+  params?: RecentJobsQuery,
 ): Promise<TranslationJobsListResponse> {
   const response = await apiClient.get<TranslationJobsListResponse>(
     '/translations',
-    { params }
+    { params },
   );
   return response.data;
 }

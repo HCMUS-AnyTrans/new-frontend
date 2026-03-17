@@ -4,3 +4,4 @@ export { HistoryTable } from './history-table';
 export { HistoryPagination } from './history-pagination';
 export { HistoryEmptyState } from './history-empty-state';
 export { HistoryTableSkeleton } from './history-table-skeleton';
+export { HistoryJobDetail } from './history-job-detail';

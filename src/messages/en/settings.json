@@ -41,7 +41,11 @@
       "emailResultsDescription": "Automatically send email when translation is complete",
       "fileTtl": "File Retention Period",
       "fileTtlDescription": "Files will be automatically deleted after this period",
-      "days": "{count} days"
+      "days": "{count} days",
+      "hours": "{count} hours",
+      "hourUnit": "hours",
+      "custom": "Custom",
+      "customHoursPlaceholder": "Enter hours"
     },
     "security": {
       "title": "Account Security",
@@ -70,15 +74,16 @@
       "unreadCount": "{count} unread notifications",
       "allRead": "All read",
       "markAllRead": "Mark All Read",
+      "markRead": "Mark as read",
       "noNotifications": "No notifications",
       "preferences": "Notification Settings",
       "preferencesDescription": "Choose how to receive each type of notification",
       "email": "Email",
       "push": "Push",
       "types": {
-        "translation_complete": {
-          "label": "Translation Complete",
-          "description": "When a translation job finishes"
+        "translation_status": {
+          "label": "Translation Status",
+          "description": "When a translation job succeeds or fails"
         },
         "credit_purchase": {
           "label": "Credit Purchase",
@@ -115,6 +120,8 @@
       "save": "Save {percent}%",
       "buyNow": "Buy Now",
       "bonusPercent": "+{percent}% bonus",
+      "bonusCredits": "+{credits} bonus credits",
+      "perCredit": "credit",
       "transactionHistory": "Transaction History",
       "recentTransactions": "Recent credit transactions",
       "noTransactions": "No transactions yet",
@@ -136,20 +143,32 @@
       "package": "Package",
       "vnpaySuccess": "Payment successful! Credits have been added to your account.",
       "vnpayError": "Payment was not successful. Please try again.",
-      "vnpayPending": "Payment is being processed. Please wait a moment."
+      "vnpayPending": "Payment is being processed. Please wait a moment.",
+      "backToDashboard": "Back to dashboard"
     },
     "files": {
       "title": "File Management",
-      "description": "View and manage your uploaded files",
+      "description": "View and manage your translation files",
       "storageUsage": "Storage Usage",
       "filesStored": "{count} files stored",
       "yourFiles": "Your Files",
-      "yourFilesDescription": "Manage your uploaded and translated files",
+      "yourFilesDescription": "Download or delete files from your translation jobs",
       "noFiles": "No files yet",
+      "noTranslationFiles": "No translation files yet",
+      "noTranslationFilesDescription": "Your translated documents will appear here once you start translating.",
+      "startTranslating": "Start translating",
       "daysRemaining": "{count} days left",
       "expiresOn": "Expires {date}",
+      "fileExpired": "File expired",
+      "originalFile": "Original",
+      "translatedFile": "Translated",
+      "download": "Download",
+      "downloadOriginal": "Original file",
+      "downloadTranslated": "Translated file",
       "confirmDelete": "Confirm Delete",
-      "confirmDeleteMessage": "Are you sure you want to delete \"{name}\"? This action cannot be undone."
+      "confirmDeleteMessage": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+      "confirmDeleteJob": "Delete translation files",
+      "confirmDeleteJobMessage": "Are you sure you want to delete the original and translated files for \"{name}\"? This action cannot be undone."
     },
     "activity": {
       "title": "Activity Log",

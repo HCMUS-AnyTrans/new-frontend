@@ -12,12 +12,7 @@ import { initiateGoogleAuth } from '../api/auth.api';
  * Provides a single interface for authentication operations
  */
 export function useAuth() {
-  const {
-    user,
-    isAuthenticated,
-    isInitialized,
-    accessToken,
-  } = useAuthStore();
+  const { user, isAuthenticated, isInitialized, accessToken } = useAuthStore();
 
   const login = useLogin();
   const logout = useLogout();

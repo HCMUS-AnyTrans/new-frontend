@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Sun, Moon, Monitor, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
@@ -21,7 +22,7 @@ import { uiLanguageOptions } from "../data";
 import { usePreferences, useUpdatePreferences } from "../hooks/use-preferences";
 import { useThemeSync } from "../hooks/use-theme-sync";
 import { useLanguageSync } from "../hooks/use-language-sync";
-import type { UserPreferences, UILanguage, Theme, FileTTL } from "../types";
+import type { UILanguage, Theme, FileTTL } from "../types";
 
 const themeIcons = {
   light: Sun,
@@ -29,14 +30,23 @@ const themeIcons = {
   system: Monitor,
 };
 
-// Minutes to days mapping for fileTtl
-const FILE_TTL_OPTIONS: { value: FileTTL; days: number }[] = [
-  { value: 10080, days: 7 },
-  { value: 20160, days: 14 },
-  { value: 43200, days: 30 },
-  { value: 86400, days: 60 },
-  { value: 129600, days: 90 },
+// Hours options for fileTtl
+const FILE_TTL_OPTIONS: { value: FileTTL; hours: number }[] = [
+  { value: 1, hours: 1 },
+  { value: 6, hours: 6 },
+  { value: 12, hours: 12 },
+  { value: 24, hours: 24 },
 ];
+
+const DEFAULT_FILE_TTL: FileTTL = 6;
+
+function normalizeFileTtl(value: number | null | undefined): FileTTL {
+  if (typeof value === "number" && Number.isFinite(value) && value > 0) {
+    return Math.floor(value);
+  }
+
+  return DEFAULT_FILE_TTL;
+}
 
 // ============================================================================
 // Skeleton Loading State
@@ -108,32 +118,63 @@ export function PreferencesTab() {
   const { locale, changeLanguage } = useLanguageSync();
 
   // Local state (fileTtl only — theme and language are handled instantly)
-  const [formData, setFormData] = useState<Pick<UserPreferences, "fileTtl"> | null>(null);
+  const [selectedFileTtl, setSelectedFileTtl] = useState<FileTTL | null>(null);
+  const [customFileTtlInput, setCustomFileTtlInput] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Sync form data when preferences load
-  useEffect(() => {
-    if (preferences && !formData) {
-      setFormData({ fileTtl: preferences.fileTtl });
-    }
-  }, [preferences, formData]);
-
   // Show skeleton while loading
-  if (isLoading || !preferences || !formData) {
+  if (isLoading || !preferences) {
     return <PreferencesTabSkeleton />;
   }
 
+  const normalizedPreferenceFileTtl = normalizeFileTtl(preferences.fileTtl);
+  const currentFileTtl = selectedFileTtl ?? normalizedPreferenceFileTtl;
+  const isPresetFileTtl = FILE_TTL_OPTIONS.some(
+    (option) => option.value === currentFileTtl,
+  );
+  const showCustomFileTtlInput = customFileTtlInput !== "" || !isPresetFileTtl;
+  const hasInvalidLegacyTtl = false;
+
   const handleFileTtlChange = (value: FileTTL) => {
-    setFormData({ fileTtl: value });
+    setSelectedFileTtl(value);
+    setCustomFileTtlInput("");
     setHasChanges(true);
   };
 
+  const handleFileTtlSelectChange = (value: string) => {
+    if (value === "custom") {
+      setSelectedFileTtl(currentFileTtl);
+      setCustomFileTtlInput(String(currentFileTtl));
+      return;
+    }
+
+    handleFileTtlChange(Number(value));
+  };
+
+  const handleCustomFileTtlChange = (value: string) => {
+    const sanitizedValue = value.replace(/[^0-9]/g, "");
+
+    setCustomFileTtlInput(sanitizedValue);
+
+    if (!sanitizedValue) return;
+
+    const hours = Number(sanitizedValue);
+    if (hours > 0) {
+      setSelectedFileTtl(hours);
+      setHasChanges(true);
+    }
+  };
+
   const handleSave = () => {
-    updatePreferences(formData, {
-      onSuccess: () => {
-        setHasChanges(false);
+    updatePreferences(
+      { fileTtl: currentFileTtl },
+      {
+        onSuccess: () => {
+          setHasChanges(false);
+          setSelectedFileTtl(null);
+        },
       },
-    });
+    );
   };
 
   const themeOptions = [
@@ -147,7 +188,10 @@ export function PreferencesTab() {
       {/* Display Settings */}
       <SettingsSection title={t("title")} description={t("description")}>
         <div className="space-y-1">
-          <SettingsRow label={t("language")} description={t("languageDescription")}>
+          <SettingsRow
+            label={t("language")}
+            description={t("languageDescription")}
+          >
             <div className="flex gap-1">
               {uiLanguageOptions.map((lang) => {
                 const isActive = locale === lang.value;
@@ -204,8 +248,8 @@ export function PreferencesTab() {
             description={t("fileTtlDescription")}
           >
             <Select
-              value={String(formData.fileTtl)}
-              onValueChange={(v) => handleFileTtlChange(Number(v) as FileTTL)}
+              value={showCustomFileTtlInput ? "custom" : String(currentFileTtl)}
+              onValueChange={handleFileTtlSelectChange}
             >
               <SelectTrigger className="w-32">
                 <SelectValue />
@@ -213,17 +257,34 @@ export function PreferencesTab() {
               <SelectContent>
                 {FILE_TTL_OPTIONS.map((option) => (
                   <SelectItem key={option.value} value={String(option.value)}>
-                    {t("days", { count: option.days })}
+                    {t("hours", { count: option.hours })}
                   </SelectItem>
                 ))}
+                <SelectItem value="custom">{t("custom")}</SelectItem>
               </SelectContent>
             </Select>
+            {showCustomFileTtlInput ? (
+              <div className="flex items-center mt-2 gap-2">
+                <Input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={customFileTtlInput || String(currentFileTtl)}
+                  onChange={(e) => handleCustomFileTtlChange(e.target.value)}
+                  className="w-32"
+                  placeholder={t("customHoursPlaceholder")}
+                />
+                <span className="text-sm text-muted-foreground">
+                  {t("hourUnit")}
+                </span>
+              </div>
+            ) : null}
           </SettingsRow>
         </div>
       </SettingsSection>
 
       {/* Save Button */}
-      {hasChanges && (
+      {(hasChanges || hasInvalidLegacyTtl) && (
         <div className="flex justify-end">
           <Button onClick={handleSave} disabled={isUpdating}>
             {isUpdating ? (
