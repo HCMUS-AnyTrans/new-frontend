@@ -7,7 +7,11 @@ import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { translationKeys, walletKeys, notificationKeys } from '@/lib/query-client';
 import { getAccessToken, useAccessToken } from '@/features/auth/store';
-import { useTranslationStore, setActiveJobId } from '../store/translation.store';
+import {
+  useTranslationStore,
+  setActiveJobId,
+  setTranslationConnectionState,
+} from '../store/translation.store';
 import type { TranslationJobResponse } from '../types';
 
 interface JobStatusSocketEvent {
@@ -44,8 +48,11 @@ export function TranslationSocketProvider() {
 
   useEffect(() => {
     if (!shouldConnect || !activeJobId) {
+      setTranslationConnectionState('idle');
       return;
     }
+
+    setTranslationConnectionState('connecting');
 
     const socket: Socket = io(API_BASE_URL, {
       path: '/ws',
@@ -57,10 +64,16 @@ export function TranslationSocketProvider() {
     });
 
     const handleConnect = () => {
+      setTranslationConnectionState('connected');
       socket.emit('translation:watch', { jobId: activeJobId });
-      void queryClient.invalidateQueries({
-        queryKey: translationKeys.detail(activeJobId),
-      });
+    };
+
+    const handleDisconnect = () => {
+      setTranslationConnectionState('disconnected');
+    };
+
+    const handleConnectError = () => {
+      setTranslationConnectionState('error');
     };
 
     const handleJobStatus = (event: JobStatusSocketEvent) => {
@@ -73,6 +86,7 @@ export function TranslationSocketProvider() {
       // Clear the active job from the store once it reaches a terminal state
       if (event.status === 'succeeded' || event.status === 'failed') {
         setActiveJobId(null);
+        setTranslationConnectionState('idle');
 
         // Show toast notification
         if (event.status === 'succeeded') {
@@ -86,17 +100,21 @@ export function TranslationSocketProvider() {
         }
 
         // Refresh history, wallet, and notification bell after job completes
-        void queryClient.invalidateQueries({ queryKey: translationKeys.all });
+        void queryClient.invalidateQueries({ queryKey: translationKeys.lists() });
         void queryClient.invalidateQueries({ queryKey: walletKeys.all });
         void queryClient.invalidateQueries({ queryKey: notificationKeys.all });
       }
     };
 
     socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
+    socket.on('connect_error', handleConnectError);
     socket.on('job:status', handleJobStatus);
 
     return () => {
       socket.off('connect', handleConnect);
+      socket.off('disconnect', handleDisconnect);
+      socket.off('connect_error', handleConnectError);
       socket.off('job:status', handleJobStatus);
       socket.disconnect();
     };

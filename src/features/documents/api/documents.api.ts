@@ -7,9 +7,11 @@ import type {
   FileResponse,
   CreditEstimateDto,
   CreditEstimateResponse,
+  FileAnalysisResponse,
   CreateTranslationJobDto,
   TranslationJobResponse,
   FileDownloadUrlResponse,
+  FontCheckResponse,
 } from '../types';
 
 // ============================================================================
@@ -70,6 +72,19 @@ export async function confirmFileUpload(
   return response.data;
 }
 
+/**
+ * Get a unified file analysis snapshot for upload wizard readiness.
+ * GET /files/:file_id/analysis
+ */
+export async function getFileAnalysis(
+  fileId: string,
+): Promise<FileAnalysisResponse> {
+  const response = await apiClient.get<FileAnalysisResponse>(
+    `/files/${fileId}/analysis`,
+  );
+  return response.data;
+}
+
 // ============================================================================
 // Translation API Functions
 // ============================================================================
@@ -119,6 +134,18 @@ export async function getTranslationJob(
   const response = await apiClient.get<TranslationJobResponse>(
     `/translations/${jobId}`,
   );
+  return response.data;
+}
+
+/**
+ * Check whether parsed fonts support the target language.
+ * POST /fonts/check
+ */
+export async function checkFonts(dto: {
+  fonts: string[];
+  language: string;
+}): Promise<FontCheckResponse> {
+  const response = await apiClient.post<FontCheckResponse>('/fonts/check', dto);
   return response.data;
 }
 

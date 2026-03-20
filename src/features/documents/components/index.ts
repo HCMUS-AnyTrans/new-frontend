@@ -11,3 +11,5 @@ export { LanguageSelector } from './language-selector';
 export { DomainSelector } from './domain-selector';
 export { ToneSelector } from './tone-selector';
 export { GlossarySection } from './glossary-section';
+export { FontConfigurationSection } from './font-configuration-section';
+export { FontMappingRow } from './font-mapping-row';

@@ -1,7 +1,6 @@
 "use client"
 
-import { useState, useCallback, useMemo, useEffect } from "react"
-import { useQueryClient } from "@tanstack/react-query"
+import { useState, useCallback, useMemo, useEffect, useRef } from "react"
 import { useTranslations } from "next-intl"
 import { TranslationStepper } from "./translation-stepper"
 import { StepUpload } from "./step-upload"
@@ -13,23 +12,73 @@ import {
   type UploadedFile,
   ALLOWED_FILE_TYPES,
   MAX_FILE_SIZE,
+  LANGUAGE_CODE_TO_API_NAME,
 } from "../types"
 import { defaultConfig } from "../data"
 import {
   useUploadAndTranslate,
   useTranslationJob,
   useDownloadFile,
+  useFontCheck,
 } from "../hooks"
 import { useGlossaries, useTerms } from "@/features/glossary"
 import { useWallet } from "@/features/dashboard/hooks"
-import { translationKeys, walletKeys } from "@/lib/query-client"
 import { useTranslationStore } from "../store/translation.store"
+import type { FontCheckItem, FontReplacement, FontSelectionMap, LanguageCode } from "../types"
+
+function buildDefaultFontSelections(items: FontCheckItem[]): FontSelectionMap {
+  return items.reduce<FontSelectionMap>((acc, item) => {
+    acc[item.from_font] = item.to_font || item.from_font
+    return acc
+  }, {})
+}
+
+function reconcileFontSelections(
+  items: FontCheckItem[],
+  currentSelections: FontSelectionMap
+): FontSelectionMap {
+  return items.reduce<FontSelectionMap>((acc, item) => {
+    const current = currentSelections[item.from_font]
+    const allowed = new Set([item.from_font, item.to_font, ...item.replacement_candidates])
+
+    acc[item.from_font] = current && allowed.has(current) ? current : item.to_font || item.from_font
+    return acc
+  }, {})
+}
+
+function buildFontReplacements(
+  items: FontCheckItem[],
+  fontSelections: FontSelectionMap
+): FontReplacement[] {
+  return items
+    .map((item) => {
+      const selected = fontSelections[item.from_font] ?? item.to_font ?? item.from_font
+      const allowed = new Set([item.from_font, item.to_font, ...item.replacement_candidates])
+
+      if (!selected || !allowed.has(selected)) {
+        return null
+      }
+
+      if (item.supported && selected === item.from_font) {
+        return null
+      }
+
+      if (!item.supported || selected !== item.from_font) {
+        return {
+          from_font: item.from_font,
+          to_font: selected,
+        }
+      }
+
+      return null
+    })
+    .filter((item): item is FontReplacement => item !== null)
+}
 
 // =============== MAIN COMPONENT ===============
 
 export function DocumentTranslationWizard() {
   const t = useTranslations("documents.upload")
-  const queryClient = useQueryClient()
 
   // Step state
   const [step, setStep] = useState<TranslationStep>(1)
@@ -48,6 +97,10 @@ export function DocumentTranslationWizard() {
     uploadProgress,
     fileId,
     estimate,
+    analysisFile,
+    fontsUsedByGroup,
+    fontParseSupported,
+    fontFlowUnavailable,
     jobId,
     error: flowError,
     startUpload,
@@ -60,6 +113,7 @@ export function DocumentTranslationWizard() {
   // (e.g. user navigated away and came back), restore the translating state so
   // the polling fallback and UI can resume correctly.
   const storeActiveJobId = useTranslationStore((s) => s.activeJobId)
+  const socketConnectionState = useTranslationStore((s) => s.connectionState)
   useEffect(() => {
     if (storeActiveJobId && !jobId) {
       restoreJob(storeActiveJobId)
@@ -67,13 +121,26 @@ export function DocumentTranslationWizard() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const translationPollInterval =
+    flowStatus === "translating" && socketConnectionState === "connected" ? false : 3000
+
   const { data: jobData } = useTranslationJob(jobId, {
     enabled: flowStatus === "translating",
-    pollInterval: 3000,
+    pollInterval: translationPollInterval,
   })
 
   const { download, isDownloading } = useDownloadFile()
   const { wallet, isLoading: isLoadingWallet } = useWallet()
+  const previousTargetLangRef = useRef<LanguageCode>(config.tgtLang)
+
+  const { data: fontCheckState, isLoading: isCheckingFonts } = useFontCheck(
+    fileId,
+    analysisFile?.id ? LANGUAGE_CODE_TO_API_NAME[config.tgtLang] : null,
+    fontsUsedByGroup,
+    fontParseSupported
+  )
+  const fontCheckItems = useMemo(() => fontCheckState?.items ?? [], [fontCheckState?.items])
+  const fontCheckUnavailable = fontCheckState?.fontCheckUnavailable ?? false
 
   const glossaryFilters = useMemo(
     () => ({
@@ -119,15 +186,6 @@ export function DocumentTranslationWizard() {
       : jobData?.status === "failed"
         ? "failed"
         : flowStatus
-
-  // When job reaches a terminal state, refresh history / recent jobs lists + wallet credits
-  useEffect(() => {
-    if (!jobData) return
-    if (jobData.status === "succeeded" || jobData.status === "failed") {
-      queryClient.invalidateQueries({ queryKey: translationKeys.all })
-      queryClient.invalidateQueries({ queryKey: walletKeys.all })
-    }
-  }, [jobData, queryClient])
 
   // =============== FILE HANDLERS ===============
 
@@ -176,6 +234,52 @@ export function DocumentTranslationWizard() {
     setConfig((prev) => ({ ...prev, ...updates }))
   }, [])
 
+  const handleFontSelectionChange = useCallback((fromFont: string, toFont: string) => {
+    setConfig((prev) => ({
+      ...prev,
+      fontSelections: {
+        ...prev.fontSelections,
+        [fromFont]: toFont,
+      },
+    }))
+  }, [])
+
+  useEffect(() => {
+    const targetChanged = previousTargetLangRef.current !== config.tgtLang
+
+    setConfig((prev) => {
+      if (fontCheckItems.length === 0) {
+        if (!targetChanged || Object.keys(prev.fontSelections).length === 0) {
+          return prev
+        }
+
+        return {
+          ...prev,
+          fontSelections: {},
+        }
+      }
+
+      const nextSelections = targetChanged
+        ? buildDefaultFontSelections(fontCheckItems)
+        : reconcileFontSelections(fontCheckItems, prev.fontSelections)
+
+      const unchanged =
+        Object.keys(nextSelections).length === Object.keys(prev.fontSelections).length &&
+        Object.entries(nextSelections).every(([key, value]) => prev.fontSelections[key] === value)
+
+      if (unchanged) {
+        return prev
+      }
+
+      return {
+        ...prev,
+        fontSelections: nextSelections,
+      }
+    })
+
+    previousTargetLangRef.current = config.tgtLang
+  }, [config.tgtLang, fontCheckItems])
+
   // =============== NAVIGATION HANDLERS ===============
 
   const goToStep = useCallback((newStep: TranslationStep) => {
@@ -208,10 +312,20 @@ export function DocumentTranslationWizard() {
     goToStep(3)
 
     const usableGlossaryTerms = activeSelectedGlossaryId ? selectedGlossaryTerms : []
+    const fontReplacements = buildFontReplacements(fontCheckItems, config.fontSelections)
 
     // Start the translation job for the already-uploaded file
-    startTranslation(config, usableGlossaryTerms)
-  }, [file, fileId, config, activeSelectedGlossaryId, selectedGlossaryTerms, goToStep, startTranslation])
+    startTranslation(config, usableGlossaryTerms, fontReplacements)
+  }, [
+    file,
+    fileId,
+    config,
+    activeSelectedGlossaryId,
+    selectedGlossaryTerms,
+    goToStep,
+    startTranslation,
+    fontCheckItems,
+  ])
 
   // =============== RESULT HANDLERS ===============
 
@@ -278,6 +392,13 @@ export function DocumentTranslationWizard() {
             estimateError={null}
             currentBalance={wallet?.balance}
             isLoadingBalance={isLoadingWallet}
+            fontsUsedByGroup={fontsUsedByGroup}
+            fontCheckItems={fontCheckItems}
+            fontParseSupported={fontParseSupported}
+            fontFlowUnavailable={fontFlowUnavailable}
+            fontCheckUnavailable={fontCheckUnavailable}
+            isCheckingFonts={isCheckingFonts}
+            onFontSelectionChange={handleFontSelectionChange}
             onBack={handleConfigBack}
             onStart={handleStartTranslation}
             isLoading={flowStatus === "creating" || flowStatus === "translating"}

@@ -8,8 +8,9 @@ import { LanguageSelector } from "./language-selector"
 import { DomainSelector } from "./domain-selector"
 import { ToneSelector } from "./tone-selector"
 import { GlossarySection } from "./glossary-section"
+import { FontConfigurationSection } from "./font-configuration-section"
 import { cn } from "@/lib/utils"
-import type { TranslationConfig, LanguageCode } from "../types"
+import type { TranslationConfig, LanguageCode, ParsedFontsByGroup, FontCheckItem } from "../types"
 import type { Glossary, Term } from "@/features/glossary"
 import type { CreditEstimateResponse } from "../types"
 
@@ -25,6 +26,13 @@ interface StepConfigureProps {
   estimateError: string | null
   currentBalance?: number
   isLoadingBalance?: boolean
+  fontsUsedByGroup: ParsedFontsByGroup
+  fontCheckItems: FontCheckItem[]
+  fontParseSupported: boolean | null
+  fontFlowUnavailable: boolean
+  fontCheckUnavailable: boolean
+  isCheckingFonts: boolean
+  onFontSelectionChange: (fromFont: string, toFont: string) => void
   onBack: () => void
   onStart: () => void
   isLoading?: boolean
@@ -42,6 +50,13 @@ export function StepConfigure({
   estimateError,
   currentBalance,
   isLoadingBalance,
+  fontsUsedByGroup,
+  fontCheckItems,
+  fontParseSupported,
+  fontFlowUnavailable,
+  fontCheckUnavailable,
+  isCheckingFonts,
+  onFontSelectionChange,
   onBack,
   onStart,
   isLoading,
@@ -50,12 +65,14 @@ export function StepConfigure({
   const isSameLang = config.srcLang === config.tgtLang
   const hasEstimate = !isEstimating && !!estimate
   const isEstimatePending = isEstimating || !estimate
+  const hasParsedFonts = Object.keys(fontsUsedByGroup).length > 0
   const isInsufficientCredits =
     hasEstimate && typeof currentBalance === "number" && currentBalance < estimate.totalCredits
   const missingCredits =
     isInsufficientCredits && typeof currentBalance === "number"
       ? estimate.totalCredits - currentBalance
       : 0
+  const isFontCheckPending = hasParsedFonts && fontParseSupported === true && isCheckingFonts
 
   // Manual terms handlers
   const addManualTerm = () => {
@@ -98,6 +115,17 @@ export function StepConfigure({
               <ToneSelector value={config.tone} onChange={(tone) => onConfigChange({ tone })} />
             </AppCardContent>
           </AppCard>
+
+          <FontConfigurationSection
+            fontsUsedByGroup={fontsUsedByGroup}
+            fontCheckItems={fontCheckItems}
+            fontSelections={config.fontSelections}
+            fontParseSupported={fontParseSupported}
+            fontFlowUnavailable={fontFlowUnavailable}
+            fontCheckUnavailable={fontCheckUnavailable}
+            isCheckingFonts={isCheckingFonts}
+            onSelectionChange={onFontSelectionChange}
+          />
 
           <GlossarySection
             glossaries={glossaries}
@@ -186,7 +214,7 @@ export function StepConfigure({
               </Button>
               <Button
                 onClick={onStart}
-                disabled={isSameLang || isLoading || isEstimatePending || isInsufficientCredits}
+                disabled={isSameLang || isLoading || isEstimatePending || isInsufficientCredits || isFontCheckPending}
                 className="w-full"
               >
                 {isLoading ? t("processing") : t("startTranslation")}
@@ -231,7 +259,7 @@ export function StepConfigure({
           </Button>
           <Button
             onClick={onStart}
-            disabled={isSameLang || isLoading || isEstimatePending || isInsufficientCredits}
+            disabled={isSameLang || isLoading || isEstimatePending || isInsufficientCredits || isFontCheckPending}
             className="flex-1"
           >
             {isLoading ? t("processing") : t("startTranslation")}

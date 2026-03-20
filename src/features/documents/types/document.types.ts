@@ -63,6 +63,40 @@ export interface ManualTerm {
   tgt: string;
 }
 
+export interface FontReplacement {
+  from_font: string;
+  to_font: string;
+}
+
+export interface ParsedFontsByGroup {
+  [group: string]: string[];
+}
+
+export interface FileMetadata {
+  charCount?: number;
+  language?: string;
+  fontsUsed?: ParsedFontsByGroup;
+  fontParseSupported?: boolean;
+}
+
+export interface FontCheckItem {
+  font_name: string;
+  from_font: string;
+  to_font: string;
+  supported: boolean;
+  replacer: string | null;
+  replacement_candidates: string[];
+}
+
+export interface FontCheckResponse {
+  language: string;
+  items: FontCheckItem[];
+}
+
+export interface FontSelectionMap {
+  [from_font: string]: string;
+}
+
 // =============== FILE TYPES ===============
 
 export interface UploadedFile {
@@ -127,11 +161,8 @@ export interface FileResponse {
   status: string;
   type: string;
   created_at: string;
-  store_until: string;
-  metadata?: {
-    charCount: number;
-    language?: string;
-  } | null;
+  store_until: string | null;
+  metadata: FileMetadata | null;
   is_expired: boolean;
 }
 
@@ -156,6 +187,13 @@ export interface CreditEstimateResponse {
   breakdown: CreditEstimateItem[];
 }
 
+export interface FileAnalysisResponse {
+  status: 'pending' | 'ready' | 'failed';
+  file: FileResponse;
+  estimate: CreditEstimateResponse | null;
+  error?: string | null;
+}
+
 /** POST /translations/doc — request body */
 export interface CreateTranslationJobDto {
   file_id: string;
@@ -165,7 +203,7 @@ export interface CreateTranslationJobDto {
   doc_domain?: string;
   user_glossary?: { src_lang: string; tgt_lang: string }[];
   keep_original_font_size?: boolean;
-  keep_original_fonts?: boolean;
+  font_replacements?: FontReplacement[];
   pdf_output_format?: 'docx' | 'pptx';
 }
 
@@ -216,6 +254,7 @@ export interface TranslationConfig {
   tone: string;
   selectedGlossaryId: string | null;
   manualTerms: ManualTerm[];
+  fontSelections: FontSelectionMap;
 }
 
 // =============== STEP TYPES ===============

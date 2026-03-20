@@ -71,6 +71,21 @@
         "insufficientCredits": "Insufficient credits. Need {missing} more credits.",
         "insufficientActionHint": "Please buy more credits before starting translation."
       },
+      "fonts": {
+        "title": "Fonts",
+        "description": "Review parsed fonts and choose replacements for the target language.",
+        "metadataUnavailable": "Font metadata is unavailable right now. You can still continue without custom font mapping.",
+        "parsingUnsupported": "This file type does not support font parsing. Translation can continue without font configuration.",
+        "empty": "No parsed fonts were found in this file.",
+        "checkUnavailable": "Font compatibility check is currently unavailable. You can still continue and let the backend apply its own validation.",
+        "checking": "Checking font compatibility for the selected target language...",
+        "groupCount": "{count, plural, one {# parsed font} other {# parsed fonts}}",
+        "replacementLabel": "Replacement",
+        "supported": "Supported",
+        "unsupported": "Needs replacement",
+        "suggested": "Suggested",
+        "noCandidates": "No replacement candidates were returned for this font."
+      },
       "back": "Back",
       "startTranslation": "Start translation",
       "processing": "Processing..."

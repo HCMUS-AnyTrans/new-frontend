@@ -71,6 +71,21 @@
         "insufficientCredits": "Không đủ credits. Cần thêm {missing} credits.",
         "insufficientActionHint": "Vui lòng mua thêm credits trước khi bắt đầu dịch."
       },
+      "fonts": {
+        "title": "Phông chữ",
+        "description": "Kiểm tra phông đã parse và chọn phông thay thế theo ngôn ngữ đích.",
+        "metadataUnavailable": "Hiện chưa lấy được metadata phông chữ. Bạn vẫn có thể tiếp tục mà không cần cấu hình phông.",
+        "parsingUnsupported": "Loại tệp này không hỗ trợ parse phông chữ. Bạn vẫn có thể tiếp tục dịch mà không cần cấu hình phông.",
+        "empty": "Không tìm thấy phông chữ nào đã được parse trong tệp này.",
+        "checkUnavailable": "Hiện chưa kiểm tra được độ tương thích phông. Bạn vẫn có thể tiếp tục và để backend tự kiểm tra khi tạo job.",
+        "checking": "Đang kiểm tra độ tương thích phông cho ngôn ngữ đích đã chọn...",
+        "groupCount": "{count, plural, one {# phông đã parse} other {# phông đã parse}}",
+        "replacementLabel": "Phông thay thế",
+        "supported": "Hỗ trợ",
+        "unsupported": "Cần thay thế",
+        "suggested": "Đề xuất",
+        "noCandidates": "Không có danh sách phông thay thế nào được trả về cho phông này."
+      },
       "back": "Quay lại",
       "startTranslation": "Bắt đầu dịch",
       "processing": "Đang xử lý..."
