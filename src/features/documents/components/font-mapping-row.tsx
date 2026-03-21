@@ -12,6 +12,18 @@ import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import type { FontCheckItem } from '../types';
 
+function getFontPreviewStyle(fontName: string) {
+  const normalized = fontName.toLowerCase();
+  const serifHints = ['times', 'georgia', 'garamond', 'serif', 'cambria', 'baskerville', 'roman'];
+  const fallback = serifHints.some((hint) => normalized.includes(hint))
+    ? 'ui-serif, Georgia, Cambria, "Times New Roman", serif'
+    : 'ui-sans-serif, system-ui, sans-serif';
+
+  return {
+    fontFamily: `"${fontName}", ${fallback}`,
+  };
+}
+
 interface FontMappingRowProps {
   item: FontCheckItem;
   value: string;
@@ -108,19 +120,29 @@ export function FontMappingRow({
             : 'border border-border/70 bg-muted/10',
       )}
     >
-      <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,1.45fr)_240px_112px] lg:items-center lg:gap-0">
+      <div
+        className={cn(
+          'flex flex-col gap-3 lg:items-center',
+          item.supported
+            ? 'lg:block'
+            : 'lg:grid lg:grid-cols-[minmax(0,1.45fr)_240px_112px] lg:gap-0'
+        )}
+      >
         <div
           className={cn('min-w-0 space-y-2 pr-0 lg:pr-4',
             enabled || item.supported ? '' : 'opacity-60'
           )}
         >
-          <div className="flex items-start gap-3">
+          <div className={cn("flex gap-3", item.supported ? "items-center" : "items-start")}>
             <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500">
               <Type className="size-4" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="break-words text-base font-semibold leading-5 text-foreground">
+                <span
+                  className="break-words text-base font-semibold leading-5 text-foreground"
+                  style={getFontPreviewStyle(item.from_font)}
+                >
                   {item.from_font}
                 </span>
                 <Badge
@@ -140,13 +162,15 @@ export function FontMappingRow({
                   {statusLabel}
                 </Badge>
               </div>
-              <p className="mt-1.5 text-xs text-muted-foreground">
-                {suggestedLabel}:{' '}
-                <span className="font-medium text-foreground">
-                  {item.to_font || item.from_font}
-                </span>
-              </p>
-              {helperText ? (
+              {!item.supported ? (
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  {suggestedLabel}:{' '}
+                  <span className="font-medium text-foreground" style={getFontPreviewStyle(item.to_font || item.from_font)}>
+                    {item.to_font || item.from_font}
+                  </span>
+                </p>
+              ) : null}
+              {helperText && !item.supported ? (
                 <p className={cn(
                   'mt-1 text-[11px]',
                   item.supported ? 'text-muted-foreground' : 'text-amber-700'
@@ -158,7 +182,8 @@ export function FontMappingRow({
           </div>
         </div>
 
-        <div className="flex items-center border-t border-border/50 pt-3 lg:min-h-[64px] lg:border-t-0 lg:border-l lg:px-4 lg:pt-0">
+        {!item.supported ? (
+          <div className="flex items-center border-t border-border/50 pt-3 lg:min-h-[64px] lg:border-t-0 lg:border-l lg:px-4 lg:pt-0">
           <div className="w-full">
             <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
               {replacementLabel}
@@ -237,7 +262,9 @@ export function FontMappingRow({
                               : 'text-foreground hover:bg-muted/60',
                           )}
                         >
-                          <span className="truncate pr-3">{option}</span>
+                          <span className="truncate pr-3" style={getFontPreviewStyle(option)}>
+                            {option}
+                          </span>
                           {isSelected ? (
                             <CheckCircle2 className="size-4 shrink-0 text-primary" />
                           ) : null}
@@ -249,9 +276,11 @@ export function FontMappingRow({
               </PopoverContent>
             </Popover>
           </div>
-        </div>
+          </div>
+        ) : null}
 
-        <div className="flex items-center border-t border-border/50 pt-3 lg:min-h-[64px] lg:border-t-0 lg:border-l lg:pl-4 lg:pt-0">
+        {!item.supported ? (
+          <div className="flex items-center border-t border-border/50 pt-3 lg:min-h-[64px] lg:border-t-0 lg:border-l lg:pl-4 lg:pt-0">
           <div className="w-full">
             <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
               {enabledLabel}
@@ -267,7 +296,8 @@ export function FontMappingRow({
               </div>
             </div>
           </div>
-        </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

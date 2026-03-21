@@ -72,6 +72,7 @@ export const defaultConfig: TranslationConfig = {
   tone: 'professional',
   selectedGlossaryId: null,
   manualTerms: [],
+  keepOriginalFontSize: false,
   fontConfigEnabled: true,
   fontEnabledMap: {},
   fontSelections: {},

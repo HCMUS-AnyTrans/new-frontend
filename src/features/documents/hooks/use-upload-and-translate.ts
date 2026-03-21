@@ -189,6 +189,10 @@ function buildJobDto(
     dto.font_replacements = fontReplacements;
   }
 
+  if (config.keepOriginalFontSize) {
+    dto.keep_original_font_size = true;
+  }
+
   return dto;
 }
 

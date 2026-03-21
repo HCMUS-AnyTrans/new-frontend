@@ -1,8 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { ChevronDown } from "lucide-react"
-import { CardDescription, CardTitle } from "@/components/ui/card"
+import { CardTitle } from "@/components/ui/card"
 import { AppCard, AppCardHeader } from "@/components/ui/app-card"
 import { Switch } from "@/components/ui/switch"
 import type { FontCheckItem, FontEnabledMap, FontSelectionMap, ParsedFontsByGroup } from "../types"
@@ -22,6 +21,7 @@ function extractMergedFonts(fontsUsedByGroup: ParsedFontsByGroup): string[] {
 interface FontConfigurationSectionProps {
   fontsUsedByGroup: ParsedFontsByGroup
   fontCheckItems: FontCheckItem[]
+  keepOriginalFontSize: boolean
   fontConfigEnabled: boolean
   fontEnabledMap: FontEnabledMap
   fontSelections: FontSelectionMap
@@ -29,6 +29,7 @@ interface FontConfigurationSectionProps {
   fontFlowUnavailable: boolean
   fontCheckUnavailable: boolean
   isCheckingFonts: boolean
+  onKeepOriginalFontSizeChange: (enabled: boolean) => void
   onConfigEnabledChange: (enabled: boolean) => void
   onFontEnabledChange: (fromFont: string, enabled: boolean) => void
   onSelectionChange: (fromFont: string, toFont: string) => void
@@ -37,6 +38,7 @@ interface FontConfigurationSectionProps {
 export function FontConfigurationSection({
   fontsUsedByGroup,
   fontCheckItems,
+  keepOriginalFontSize,
   fontConfigEnabled,
   fontEnabledMap,
   fontSelections,
@@ -44,6 +46,7 @@ export function FontConfigurationSection({
   fontFlowUnavailable,
   fontCheckUnavailable,
   isCheckingFonts,
+  onKeepOriginalFontSizeChange,
   onConfigEnabledChange,
   onFontEnabledChange,
   onSelectionChange,
@@ -56,18 +59,8 @@ export function FontConfigurationSection({
   return (
     <AppCard>
       <AppCardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-4">
-          <div className="space-y-1">
-            <CardTitle className="text-base">{t("title")}</CardTitle>
-            <CardDescription>{t("description")}</CardDescription>
-          </div>
-
-          {hasFontOptions ? (
-            <div className="flex items-center gap-3 rounded-full border bg-muted/20 px-3 py-1.5">
-              <span className="text-xs font-medium text-muted-foreground">{t("globalToggle")}</span>
-              <Switch checked={fontConfigEnabled} onCheckedChange={onConfigEnabledChange} />
-            </div>
-          ) : null}
+        <div className="space-y-1">
+          <CardTitle className="text-base">{t("title")}</CardTitle>
         </div>
       </AppCardHeader>
       <div className="space-y-4 px-6 pb-6">
@@ -95,6 +88,14 @@ export function FontConfigurationSection({
           </div>
         ) : null}
 
+        <div className="flex items-start justify-between gap-4 rounded-xl border bg-background/70 px-4 py-3">
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-foreground">{t("fontSizeToggleTitle")}</p>
+            <p className="text-xs text-muted-foreground">{t("fontSizeToggleDescription")}</p>
+          </div>
+          <Switch checked={keepOriginalFontSize} onCheckedChange={onKeepOriginalFontSizeChange} />
+        </div>
+
         {isCheckingFonts ? (
           <div className="rounded-lg border bg-muted/20 p-4 text-sm text-muted-foreground">
             {t("checking")}
@@ -102,18 +103,22 @@ export function FontConfigurationSection({
         ) : null}
 
         {!isCheckingFonts && hasFontOptions ? (
-          <div className="space-y-4">
-            <section className="space-y-3 rounded-xl border bg-muted/10 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs text-muted-foreground">{t("groupCount", { count: mergedFonts.length })}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">{fontConfigEnabled ? t("expandedHint") : t("collapsedHint")}</p>
+          <div>
+            <section className="overflow-hidden rounded-xl border bg-background/70">
+              <div className="flex items-start justify-between gap-4 px-4 py-3">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-foreground">{t("globalToggle")}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {fontConfigEnabled ? t("expandedHint") : t("collapsedHint")}
+                  </p>
                 </div>
-                <ChevronDown className={`size-4 text-muted-foreground transition-transform ${fontConfigEnabled ? "rotate-180" : "rotate-0"}`} />
+                <div className="flex items-center">
+                  <Switch checked={fontConfigEnabled} onCheckedChange={onConfigEnabledChange} />
+                </div>
               </div>
 
               {fontConfigEnabled ? (
-                <div className="space-y-3">
+                <div className="space-y-3 border-t bg-muted/10 p-3 sm:p-4">
                   {mergedFonts.map((font) => {
                     const item = itemMap.get(font)
 

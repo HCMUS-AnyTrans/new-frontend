@@ -28,12 +28,14 @@ interface StepConfigureProps {
   isLoadingBalance?: boolean
   fontsUsedByGroup: ParsedFontsByGroup
   fontCheckItems: FontCheckItem[]
+  keepOriginalFontSize: boolean
   fontConfigEnabled: boolean
   fontEnabledMap: FontEnabledMap
   fontParseSupported: boolean | null
   fontFlowUnavailable: boolean
   fontCheckUnavailable: boolean
   isCheckingFonts: boolean
+  onKeepOriginalFontSizeChange: (enabled: boolean) => void
   onFontConfigEnabledChange: (enabled: boolean) => void
   onFontEnabledChange: (fromFont: string, enabled: boolean) => void
   onFontSelectionChange: (fromFont: string, toFont: string) => void
@@ -56,12 +58,14 @@ export function StepConfigure({
   isLoadingBalance,
   fontsUsedByGroup,
   fontCheckItems,
+  keepOriginalFontSize,
   fontConfigEnabled,
   fontEnabledMap,
   fontParseSupported,
   fontFlowUnavailable,
   fontCheckUnavailable,
   isCheckingFonts,
+  onKeepOriginalFontSizeChange,
   onFontConfigEnabledChange,
   onFontEnabledChange,
   onFontSelectionChange,
@@ -127,6 +131,7 @@ export function StepConfigure({
           <FontConfigurationSection
             fontsUsedByGroup={fontsUsedByGroup}
             fontCheckItems={fontCheckItems}
+            keepOriginalFontSize={keepOriginalFontSize}
             fontConfigEnabled={fontConfigEnabled}
             fontEnabledMap={fontEnabledMap}
             fontSelections={config.fontSelections}
@@ -134,6 +139,7 @@ export function StepConfigure({
             fontFlowUnavailable={fontFlowUnavailable}
             fontCheckUnavailable={fontCheckUnavailable}
             isCheckingFonts={isCheckingFonts}
+            onKeepOriginalFontSizeChange={onKeepOriginalFontSizeChange}
             onConfigEnabledChange={onFontConfigEnabledChange}
             onFontEnabledChange={onFontEnabledChange}
             onSelectionChange={onFontSelectionChange}

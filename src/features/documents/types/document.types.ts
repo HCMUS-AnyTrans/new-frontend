@@ -253,6 +253,7 @@ export interface TranslationConfig {
   tone: string;
   selectedGlossaryId: string | null;
   manualTerms: ManualTerm[];
+  keepOriginalFontSize: boolean;
   fontConfigEnabled: boolean;
   fontEnabledMap: FontEnabledMap;
   fontSelections: FontSelectionMap;

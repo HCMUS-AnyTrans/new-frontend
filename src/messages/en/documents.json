@@ -84,6 +84,8 @@
         "fontToggle": "Apply",
         "expandedHint": "Choose which fonts to replace before starting translation.",
         "collapsedHint": "Custom font replacement is turned off. The original font mapping will be kept.",
+        "fontSizeToggleTitle": "Keep original font size",
+        "fontSizeToggleDescription": "Preserve the source document's font sizes instead of letting the backend reduce them.",
         "replacementLabel": "Replacement",
         "supported": "Supported",
         "unsupported": "Replacement needed",

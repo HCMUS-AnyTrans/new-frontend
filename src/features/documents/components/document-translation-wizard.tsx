@@ -271,6 +271,13 @@ export function DocumentTranslationWizard() {
     }))
   }, [])
 
+  const handleKeepOriginalFontSizeChange = useCallback((enabled: boolean) => {
+    setConfig((prev) => ({
+      ...prev,
+      keepOriginalFontSize: enabled,
+    }))
+  }, [])
+
   const handleFontEnabledChange = useCallback((fromFont: string, enabled: boolean) => {
     setConfig((prev) => ({
       ...prev,
@@ -448,12 +455,14 @@ export function DocumentTranslationWizard() {
             isLoadingBalance={isLoadingWallet}
             fontsUsedByGroup={fontsUsedByGroup}
             fontCheckItems={fontCheckItems}
+            keepOriginalFontSize={config.keepOriginalFontSize}
             fontConfigEnabled={config.fontConfigEnabled}
             fontEnabledMap={config.fontEnabledMap}
             fontParseSupported={fontParseSupported}
             fontFlowUnavailable={fontFlowUnavailable}
             fontCheckUnavailable={fontCheckUnavailable}
             isCheckingFonts={isCheckingFonts}
+            onKeepOriginalFontSizeChange={handleKeepOriginalFontSizeChange}
             onFontConfigEnabledChange={handleFontConfigEnabledChange}
             onFontEnabledChange={handleFontEnabledChange}
             onFontSelectionChange={handleFontSelectionChange}
