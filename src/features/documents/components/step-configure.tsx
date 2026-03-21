@@ -10,7 +10,7 @@ import { ToneSelector } from "./tone-selector"
 import { GlossarySection } from "./glossary-section"
 import { FontConfigurationSection } from "./font-configuration-section"
 import { cn } from "@/lib/utils"
-import type { TranslationConfig, LanguageCode, ParsedFontsByGroup, FontCheckItem } from "../types"
+import type { TranslationConfig, LanguageCode, ParsedFontsByGroup, FontCheckItem, FontEnabledMap } from "../types"
 import type { Glossary, Term } from "@/features/glossary"
 import type { CreditEstimateResponse } from "../types"
 
@@ -28,10 +28,14 @@ interface StepConfigureProps {
   isLoadingBalance?: boolean
   fontsUsedByGroup: ParsedFontsByGroup
   fontCheckItems: FontCheckItem[]
+  fontConfigEnabled: boolean
+  fontEnabledMap: FontEnabledMap
   fontParseSupported: boolean | null
   fontFlowUnavailable: boolean
   fontCheckUnavailable: boolean
   isCheckingFonts: boolean
+  onFontConfigEnabledChange: (enabled: boolean) => void
+  onFontEnabledChange: (fromFont: string, enabled: boolean) => void
   onFontSelectionChange: (fromFont: string, toFont: string) => void
   onBack: () => void
   onStart: () => void
@@ -52,10 +56,14 @@ export function StepConfigure({
   isLoadingBalance,
   fontsUsedByGroup,
   fontCheckItems,
+  fontConfigEnabled,
+  fontEnabledMap,
   fontParseSupported,
   fontFlowUnavailable,
   fontCheckUnavailable,
   isCheckingFonts,
+  onFontConfigEnabledChange,
+  onFontEnabledChange,
   onFontSelectionChange,
   onBack,
   onStart,
@@ -119,11 +127,15 @@ export function StepConfigure({
           <FontConfigurationSection
             fontsUsedByGroup={fontsUsedByGroup}
             fontCheckItems={fontCheckItems}
+            fontConfigEnabled={fontConfigEnabled}
+            fontEnabledMap={fontEnabledMap}
             fontSelections={config.fontSelections}
             fontParseSupported={fontParseSupported}
             fontFlowUnavailable={fontFlowUnavailable}
             fontCheckUnavailable={fontCheckUnavailable}
             isCheckingFonts={isCheckingFonts}
+            onConfigEnabledChange={onFontConfigEnabledChange}
+            onFontEnabledChange={onFontEnabledChange}
             onSelectionChange={onFontSelectionChange}
           />
 

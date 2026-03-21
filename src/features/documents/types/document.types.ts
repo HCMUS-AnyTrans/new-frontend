@@ -68,6 +68,10 @@ export interface FontReplacement {
   to_font: string;
 }
 
+export interface FontEnabledMap {
+  [from_font: string]: boolean;
+}
+
 export interface ParsedFontsByGroup {
   [group: string]: string[];
 }
@@ -249,6 +253,8 @@ export interface TranslationConfig {
   tone: string;
   selectedGlossaryId: string | null;
   manualTerms: ManualTerm[];
+  fontConfigEnabled: boolean;
+  fontEnabledMap: FontEnabledMap;
   fontSelections: FontSelectionMap;
 }
 

@@ -24,11 +24,21 @@ import {
 import { useGlossaries, useTerms } from "@/features/glossary"
 import { useWallet } from "@/features/dashboard/hooks"
 import { useTranslationStore } from "../store/translation.store"
-import type { FontCheckItem, FontReplacement, FontSelectionMap, LanguageCode } from "../types"
+import type { FontCheckItem, FontEnabledMap, FontReplacement, FontSelectionMap, LanguageCode } from "../types"
 
 function buildDefaultFontSelections(items: FontCheckItem[]): FontSelectionMap {
   return items.reduce<FontSelectionMap>((acc, item) => {
     acc[item.from_font] = item.to_font || item.from_font
+    return acc
+  }, {})
+}
+
+function reconcileFontEnabledMap(
+  items: FontCheckItem[],
+  currentEnabledMap: FontEnabledMap
+): FontEnabledMap {
+  return items.reduce<FontEnabledMap>((acc, item) => {
+    acc[item.from_font] = currentEnabledMap[item.from_font] ?? true
     return acc
   }, {})
 }
@@ -48,10 +58,20 @@ function reconcileFontSelections(
 
 function buildFontReplacements(
   items: FontCheckItem[],
-  fontSelections: FontSelectionMap
+  fontSelections: FontSelectionMap,
+  fontConfigEnabled: boolean,
+  fontEnabledMap: FontEnabledMap
 ): FontReplacement[] {
+  if (!fontConfigEnabled) {
+    return []
+  }
+
   return items
     .map((item) => {
+      if (!(fontEnabledMap[item.from_font] ?? true)) {
+        return null
+      }
+
       const selected = fontSelections[item.from_font] ?? item.to_font ?? item.from_font
       const allowed = new Set([item.from_font, item.to_font, ...item.replacement_candidates])
 
@@ -244,17 +264,39 @@ export function DocumentTranslationWizard() {
     }))
   }, [])
 
+  const handleFontConfigEnabledChange = useCallback((enabled: boolean) => {
+    setConfig((prev) => ({
+      ...prev,
+      fontConfigEnabled: enabled,
+    }))
+  }, [])
+
+  const handleFontEnabledChange = useCallback((fromFont: string, enabled: boolean) => {
+    setConfig((prev) => ({
+      ...prev,
+      fontEnabledMap: {
+        ...prev.fontEnabledMap,
+        [fromFont]: enabled,
+      },
+    }))
+  }, [])
+
   useEffect(() => {
     const targetChanged = previousTargetLangRef.current !== config.tgtLang
 
     setConfig((prev) => {
       if (fontCheckItems.length === 0) {
-        if (!targetChanged || Object.keys(prev.fontSelections).length === 0) {
+        if (
+          !targetChanged ||
+          (Object.keys(prev.fontSelections).length === 0 && Object.keys(prev.fontEnabledMap).length === 0)
+        ) {
           return prev
         }
 
         return {
           ...prev,
+          fontConfigEnabled: true,
+          fontEnabledMap: {},
           fontSelections: {},
         }
       }
@@ -262,17 +304,24 @@ export function DocumentTranslationWizard() {
       const nextSelections = targetChanged
         ? buildDefaultFontSelections(fontCheckItems)
         : reconcileFontSelections(fontCheckItems, prev.fontSelections)
+      const nextEnabledMap = reconcileFontEnabledMap(fontCheckItems, prev.fontEnabledMap)
 
-      const unchanged =
+      const selectionsUnchanged =
         Object.keys(nextSelections).length === Object.keys(prev.fontSelections).length &&
         Object.entries(nextSelections).every(([key, value]) => prev.fontSelections[key] === value)
+      const enabledMapUnchanged =
+        Object.keys(nextEnabledMap).length === Object.keys(prev.fontEnabledMap).length &&
+        Object.entries(nextEnabledMap).every(([key, value]) => prev.fontEnabledMap[key] === value)
+      const nextFontConfigEnabled = targetChanged || !enabledMapUnchanged ? true : prev.fontConfigEnabled
 
-      if (unchanged) {
+      if (selectionsUnchanged && enabledMapUnchanged && nextFontConfigEnabled === prev.fontConfigEnabled) {
         return prev
       }
 
       return {
         ...prev,
+        fontConfigEnabled: nextFontConfigEnabled,
+        fontEnabledMap: nextEnabledMap,
         fontSelections: nextSelections,
       }
     })
@@ -312,7 +361,12 @@ export function DocumentTranslationWizard() {
     goToStep(3)
 
     const usableGlossaryTerms = activeSelectedGlossaryId ? selectedGlossaryTerms : []
-    const fontReplacements = buildFontReplacements(fontCheckItems, config.fontSelections)
+    const fontReplacements = buildFontReplacements(
+      fontCheckItems,
+      config.fontSelections,
+      config.fontConfigEnabled,
+      config.fontEnabledMap
+    )
 
     // Start the translation job for the already-uploaded file
     startTranslation(config, usableGlossaryTerms, fontReplacements)
@@ -394,10 +448,14 @@ export function DocumentTranslationWizard() {
             isLoadingBalance={isLoadingWallet}
             fontsUsedByGroup={fontsUsedByGroup}
             fontCheckItems={fontCheckItems}
+            fontConfigEnabled={config.fontConfigEnabled}
+            fontEnabledMap={config.fontEnabledMap}
             fontParseSupported={fontParseSupported}
             fontFlowUnavailable={fontFlowUnavailable}
             fontCheckUnavailable={fontCheckUnavailable}
             isCheckingFonts={isCheckingFonts}
+            onFontConfigEnabledChange={handleFontConfigEnabledChange}
+            onFontEnabledChange={handleFontEnabledChange}
             onFontSelectionChange={handleFontSelectionChange}
             onBack={handleConfigBack}
             onStart={handleStartTranslation}

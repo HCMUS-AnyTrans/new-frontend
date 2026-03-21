@@ -1,52 +1,76 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import { ChevronDown } from "lucide-react"
 import { CardDescription, CardTitle } from "@/components/ui/card"
-import { AppCard, AppCardContent, AppCardHeader } from "@/components/ui/app-card"
-import type { FontCheckItem, FontSelectionMap, ParsedFontsByGroup } from "../types"
+import { AppCard, AppCardHeader } from "@/components/ui/app-card"
+import { Switch } from "@/components/ui/switch"
+import type { FontCheckItem, FontEnabledMap, FontSelectionMap, ParsedFontsByGroup } from "../types"
 import { FontMappingRow } from "./font-mapping-row"
+
+function extractMergedFonts(fontsUsedByGroup: ParsedFontsByGroup): string[] {
+  return [
+    ...new Set(
+      Object.values(fontsUsedByGroup)
+        .flatMap((fonts) => fonts)
+        .map((font) => font.trim())
+        .filter((font) => font.length > 0)
+    ),
+  ]
+}
 
 interface FontConfigurationSectionProps {
   fontsUsedByGroup: ParsedFontsByGroup
   fontCheckItems: FontCheckItem[]
+  fontConfigEnabled: boolean
+  fontEnabledMap: FontEnabledMap
   fontSelections: FontSelectionMap
   fontParseSupported: boolean | null
   fontFlowUnavailable: boolean
   fontCheckUnavailable: boolean
   isCheckingFonts: boolean
+  onConfigEnabledChange: (enabled: boolean) => void
+  onFontEnabledChange: (fromFont: string, enabled: boolean) => void
   onSelectionChange: (fromFont: string, toFont: string) => void
-}
-
-const GROUP_LABELS: Record<string, string> = {
-  ascii: "ASCII",
-  hAnsi: "HAnsi",
-  eastAsia: "East Asia",
-  cs: "Complex Script",
-  latin: "Latin",
-  ea: "East Asia",
 }
 
 export function FontConfigurationSection({
   fontsUsedByGroup,
   fontCheckItems,
+  fontConfigEnabled,
+  fontEnabledMap,
   fontSelections,
   fontParseSupported,
   fontFlowUnavailable,
   fontCheckUnavailable,
   isCheckingFonts,
+  onConfigEnabledChange,
+  onFontEnabledChange,
   onSelectionChange,
 }: FontConfigurationSectionProps) {
   const t = useTranslations("documents.configure.fonts")
-  const groups = Object.entries(fontsUsedByGroup)
+  const mergedFonts = extractMergedFonts(fontsUsedByGroup)
   const itemMap = new Map(fontCheckItems.map((item) => [item.from_font, item]))
+  const hasFontOptions = fontParseSupported === true && !fontFlowUnavailable && mergedFonts.length > 0
 
   return (
     <AppCard>
       <AppCardHeader className="pb-3">
-        <CardTitle className="text-base">{t("title")}</CardTitle>
-        <CardDescription>{t("description")}</CardDescription>
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            <CardTitle className="text-base">{t("title")}</CardTitle>
+            <CardDescription>{t("description")}</CardDescription>
+          </div>
+
+          {hasFontOptions ? (
+            <div className="flex items-center gap-3 rounded-full border bg-muted/20 px-3 py-1.5">
+              <span className="text-xs font-medium text-muted-foreground">{t("globalToggle")}</span>
+              <Switch checked={fontConfigEnabled} onCheckedChange={onConfigEnabledChange} />
+            </div>
+          ) : null}
+        </div>
       </AppCardHeader>
-      <AppCardContent className="space-y-4">
+      <div className="space-y-4 px-6 pb-6">
         {fontFlowUnavailable ? (
           <div className="rounded-lg border border-dashed bg-muted/20 p-4 text-sm text-muted-foreground">
             {t("metadataUnavailable")}
@@ -59,7 +83,7 @@ export function FontConfigurationSection({
           </div>
         ) : null}
 
-        {fontParseSupported !== false && !fontFlowUnavailable && groups.length === 0 ? (
+        {fontParseSupported !== false && !fontFlowUnavailable && mergedFonts.length === 0 ? (
           <div className="rounded-lg border border-dashed bg-muted/20 p-4 text-sm text-muted-foreground">
             {t("empty")}
           </div>
@@ -77,24 +101,25 @@ export function FontConfigurationSection({
           </div>
         ) : null}
 
-        {!isCheckingFonts && fontParseSupported === true && !fontFlowUnavailable && groups.length > 0 ? (
+        {!isCheckingFonts && hasFontOptions ? (
           <div className="space-y-4">
-            {groups.map(([group, fonts]) => (
-              <section key={group} className="space-y-3 rounded-xl border bg-muted/10 p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">{GROUP_LABELS[group] ?? group}</p>
-                    <p className="text-xs text-muted-foreground">{t("groupCount", { count: fonts.length })}</p>
-                  </div>
+            <section className="space-y-3 rounded-xl border bg-muted/10 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs text-muted-foreground">{t("groupCount", { count: mergedFonts.length })}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{fontConfigEnabled ? t("expandedHint") : t("collapsedHint")}</p>
                 </div>
+                <ChevronDown className={`size-4 text-muted-foreground transition-transform ${fontConfigEnabled ? "rotate-180" : "rotate-0"}`} />
+              </div>
 
+              {fontConfigEnabled ? (
                 <div className="space-y-3">
-                  {fonts.map((font) => {
+                  {mergedFonts.map((font) => {
                     const item = itemMap.get(font)
 
                     if (!item) {
                       return (
-                        <div key={`${group}-${font}`} className="rounded-lg border bg-background p-3 text-sm text-muted-foreground">
+                        <div key={font} className="rounded-lg border bg-background p-3 text-sm text-muted-foreground">
                           {font}
                         </div>
                       )
@@ -102,25 +127,32 @@ export function FontConfigurationSection({
 
                     return (
                       <FontMappingRow
-                        key={`${group}-${font}`}
+                        key={font}
                         item={item}
+                        enabled={fontEnabledMap[item.from_font] ?? true}
                         value={fontSelections[item.from_font] ?? item.to_font}
-                        groupLabel={GROUP_LABELS[group] ?? group}
                         replacementLabel={t("replacementLabel")}
+                        enabledLabel={t("fontToggle")}
                         supportedLabel={t("supported")}
                         unsupportedLabel={t("unsupported")}
+                        supportedLockedLabel={t("supportedLocked")}
                         suggestedLabel={t("suggested")}
+                        toggleOnLabel={t("toggleOn")}
+                        toggleOffLabel={t("toggleOff")}
+                        searchPlaceholder={t("searchPlaceholder")}
+                        noSearchResultsLabel={t("noSearchResults")}
                         noCandidatesLabel={t("noCandidates")}
+                        onToggle={(enabled) => onFontEnabledChange(item.from_font, enabled)}
                         onChange={(value) => onSelectionChange(item.from_font, value)}
                       />
                     )
                   })}
                 </div>
-              </section>
-            ))}
+              ) : null}
+            </section>
           </div>
         ) : null}
-      </AppCardContent>
+      </div>
     </AppCard>
   )
 }
