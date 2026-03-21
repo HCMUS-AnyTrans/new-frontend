@@ -166,11 +166,6 @@ export interface FileResponse {
   is_expired: boolean;
 }
 
-export interface CreditEstimateDto {
-  job_type: 'doc-trans' | 'sub-trans';
-  file_id: string;
-}
-
 export interface CreditEstimateItem {
   code: string;
   name: string;
@@ -233,7 +228,7 @@ export interface FileDownloadUrlResponse {
  * idle → uploading → confirming → analyzing → creating → translating → succeeded/failed
  *
  * "analyzing" means the file was uploaded and confirmed; the backend is now
- * parsing metadata and we are polling estimate-credits until it succeeds.
+ * parsing metadata and we are polling file analysis until it succeeds.
  */
 export type TranslationFlowStatus =
   | 'idle'
