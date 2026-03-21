@@ -20,7 +20,6 @@ interface StepConfigureProps {
   glossaries: Glossary[]
   selectedGlossaryTerms: Term[]
   isLoadingGlossaries: boolean
-  isLoadingGlossaryTerms: boolean
   estimate: CreditEstimateResponse | undefined
   isEstimating: boolean
   estimateError: string | null
@@ -50,7 +49,6 @@ export function StepConfigure({
   glossaries,
   selectedGlossaryTerms,
   isLoadingGlossaries,
-  isLoadingGlossaryTerms,
   estimate,
   isEstimating,
   estimateError,
@@ -150,7 +148,6 @@ export function StepConfigure({
             selectedGlossaryId={config.selectedGlossaryId}
             selectedGlossaryTermCount={selectedGlossaryTerms.length}
             isLoadingGlossaries={isLoadingGlossaries}
-            isLoadingGlossaryTerms={isLoadingGlossaryTerms}
             onSelectGlossary={(id) => onConfigChange({ selectedGlossaryId: id })}
             manualTerms={config.manualTerms}
             onAddManualTerm={addManualTerm}

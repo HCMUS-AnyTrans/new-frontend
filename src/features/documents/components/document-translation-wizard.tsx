@@ -168,8 +168,9 @@ export function DocumentTranslationWizard() {
       limit: 100,
       srcLang: config.srcLang,
       tgtLang: config.tgtLang,
+      ...(config.domain !== "auto" ? { domain: config.domain } : {}),
     }),
-    [config.srcLang, config.tgtLang]
+    [config.domain, config.srcLang, config.tgtLang]
   )
 
   const {
@@ -178,15 +179,15 @@ export function DocumentTranslationWizard() {
     isFetching: isFetchingGlossaries,
   } = useGlossaries(glossaryFilters)
 
+  const visibleGlossaries = isFetchingGlossaries ? [] : glossaries
+
   const activeSelectedGlossaryId =
-    config.selectedGlossaryId && glossaries.some((item) => item.id === config.selectedGlossaryId)
+    config.selectedGlossaryId && visibleGlossaries.some((item) => item.id === config.selectedGlossaryId)
       ? config.selectedGlossaryId
       : null
 
   const {
     terms: selectedGlossaryTerms = [],
-    isLoading: isLoadingGlossaryTerms,
-    isFetching: isFetchingGlossaryTerms,
   } = useTerms(activeSelectedGlossaryId, {
     page: 1,
     limit: 100,
@@ -444,10 +445,9 @@ export function DocumentTranslationWizard() {
           <StepConfigure
             config={{ ...config, selectedGlossaryId: activeSelectedGlossaryId }}
             onConfigChange={handleConfigChange}
-            glossaries={glossaries}
+            glossaries={visibleGlossaries}
             selectedGlossaryTerms={selectedGlossaryTerms}
             isLoadingGlossaries={isLoadingGlossaries || isFetchingGlossaries}
-            isLoadingGlossaryTerms={isLoadingGlossaryTerms || isFetchingGlossaryTerms}
             estimate={estimate ?? undefined}
             isEstimating={isEstimating}
             estimateError={null}

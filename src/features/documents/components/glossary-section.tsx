@@ -2,27 +2,20 @@
 
 import { Plus, Trash2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { CardTitle, CardDescription } from "@/components/ui/card"
+import { CardTitle } from "@/components/ui/card"
 import { AppCard, AppCardContent, AppCardHeader } from "@/components/ui/app-card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { cn } from "@/lib/utils"
 import type { ManualTerm } from "../types"
 import type { Glossary } from "@/features/glossary"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 
 interface GlossarySectionProps {
   glossaries: Glossary[]
   selectedGlossaryId: string | null
   selectedGlossaryTermCount: number
   isLoadingGlossaries: boolean
-  isLoadingGlossaryTerms: boolean
   onSelectGlossary: (id: string | null) => void
   manualTerms: ManualTerm[]
   onAddManualTerm: () => void
@@ -35,7 +28,6 @@ export function GlossarySection({
   selectedGlossaryId,
   selectedGlossaryTermCount,
   isLoadingGlossaries,
-  isLoadingGlossaryTerms,
   onSelectGlossary,
   manualTerms,
   onAddManualTerm,
@@ -43,6 +35,7 @@ export function GlossarySection({
   onRemoveManualTerm,
 }: GlossarySectionProps) {
   const t = useTranslations("documents.configure")
+  const tGlossary = useTranslations("glossary")
   const validManualTerms = manualTerms.filter(
     (term) => term.src.trim().length > 0 && term.tgt.trim().length > 0
   ).length
@@ -53,48 +46,81 @@ export function GlossarySection({
     <AppCard>
       <AppCardHeader className="pb-3">
         <CardTitle className="text-base">{t("glossary")}</CardTitle>
-        <CardDescription>{t("glossaryDescription")}</CardDescription>
       </AppCardHeader>
-      <AppCardContent className="space-y-5">
-        <div className="rounded-lg border bg-muted/20 p-4">
-          <div className="space-y-2">
+      <AppCardContent className="space-y-4">
+        <div className="rounded-lg border bg-background/70 p-4">
+          <div className="space-y-3">
             <Label className="text-sm font-medium text-foreground">{t("savedGlossaryLabel")}</Label>
-            <Select
-              value={selectedGlossaryId ?? "none"}
-              onValueChange={(value) => onSelectGlossary(value === "none" ? null : value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={t("savedGlossaryPlaceholder")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">{t("savedGlossaryNone")}</SelectItem>
-                {glossaries.map((glossary) => (
-                  <SelectItem key={glossary.id} value={glossary.id}>
-                    {glossary.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => onSelectGlossary(null)}
+                disabled={isLoadingGlossaries}
+                className={cn(
+                  "flex min-h-20 flex-col items-start justify-center rounded-lg border p-2.5 text-left text-sm transition-all",
+                  selectedGlossaryId === null
+                    ? "border-primary bg-primary/5"
+                    : "border-border bg-card text-foreground hover:bg-muted/50",
+                  isLoadingGlossaries && "cursor-wait opacity-70"
+                )}
+              >
+                <span
+                  className={cn(
+                    "text-sm font-medium",
+                    selectedGlossaryId === null ? "text-primary" : "text-foreground"
+                  )}
+                >
+                  {t("savedGlossaryNone")}
+                </span>
+                <span className="mt-0.5 text-xs text-muted-foreground">{t("savedGlossaryLabel")}</span>
+              </button>
+
+              {glossaries.map((glossary) => {
+                const isSelected = selectedGlossaryId === glossary.id
+
+                return (
+                  <button
+                    key={glossary.id}
+                    type="button"
+                    onClick={() => onSelectGlossary(glossary.id)}
+                    disabled={isLoadingGlossaries}
+                    className={cn(
+                      "flex min-h-20 flex-col items-start rounded-lg border p-2.5 text-left text-sm transition-all",
+                      isSelected
+                        ? "border-primary bg-primary/5"
+                        : "border-border bg-card text-foreground hover:bg-muted/50",
+                      isLoadingGlossaries && "cursor-wait opacity-70"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "line-clamp-2 text-sm font-medium leading-5",
+                        isSelected ? "text-primary" : "text-foreground"
+                      )}
+                    >
+                      {glossary.name}
+                    </span>
+                    <span className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
+                      {tGlossary(`domains.${glossary.domain}`)}
+                    </span>
+                    <span className="mt-2 inline-flex rounded-full border border-border bg-background px-2 py-0.5 text-[11px] text-muted-foreground">
+                      {tGlossary("termCount", { count: glossary.termCount })}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
 
             {isLoadingGlossaries ? (
               <p className="text-xs text-muted-foreground">{t("savedGlossaryLoading")}</p>
-            ) : null}
-
-            {!isLoadingGlossaries && glossaries.length === 0 ? (
+            ) : glossaries.length === 0 ? (
               <p className="text-xs text-muted-foreground">{t("savedGlossaryEmpty")}</p>
             ) : null}
 
-            {selectedGlossaryId ? (
-              <p className="inline-flex rounded-full border border-border bg-background px-2.5 py-1 text-xs text-muted-foreground">
-                {isLoadingGlossaryTerms
-                  ? t("savedGlossaryTermsLoading")
-                  : t("savedGlossaryTermsCount", { count: selectedGlossaryTermCount })}
-              </p>
-            ) : null}
           </div>
         </div>
 
-        <div className="space-y-3 rounded-lg border p-4">
+        <div className="space-y-3 rounded-lg border bg-background/70 p-4">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-medium text-foreground">{t("manualTermsTitle")}</p>
@@ -161,12 +187,14 @@ export function GlossarySection({
           {isNearLimit ? <p className="text-xs text-warning">{t("nearLimitWarning")}</p> : null}
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border bg-muted/20 px-3 py-2">
-          <span className="text-xs text-muted-foreground">{t("termsAppliedLabel")}</span>
-          <span className="text-sm font-semibold text-foreground">
-            {t("termsAppliedCount", { count: totalAppliedTerms })}
-          </span>
-        </div>
+        {totalAppliedTerms > 0 ? (
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border bg-background/70 px-3 py-2.5">
+            <span className="text-xs text-muted-foreground">{t("termsAppliedLabel")}</span>
+            <span className="text-sm font-semibold text-foreground">
+              {t("termsAppliedCount", { count: totalAppliedTerms })}
+            </span>
+          </div>
+        ) : null}
       </AppCardContent>
     </AppCard>
   )

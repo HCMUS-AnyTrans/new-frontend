@@ -43,7 +43,7 @@
       "savedGlossaryPlaceholder": "Chọn glossary",
       "savedGlossaryNone": "Không dùng",
       "savedGlossaryLoading": "Đang tải danh sách glossary...",
-      "savedGlossaryEmpty": "Không có glossary phù hợp với cặp ngôn ngữ này.",
+      "savedGlossaryEmpty": "Không có glossary phù hợp với cặp ngôn ngữ và domain hiện tại.",
       "savedGlossaryTermsLoading": "Đang tải thuật ngữ glossary...",
       "savedGlossaryTermsCount": "Sẽ áp dụng {count} thuật ngữ",
       "manualTermsTitle": "Thuật ngữ nhập tay",
