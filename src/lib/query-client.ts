@@ -78,6 +78,7 @@ export const walletKeys = {
 // Translation-related query keys
 export const translationKeys = {
   all: ['translations'] as const,
+  lists: () => [...translationKeys.all, 'list'] as const,
   list: (params?: unknown) => [...translationKeys.all, 'list', params] as const,
   detail: (id: string) => [...translationKeys.all, 'detail', id] as const,
 };

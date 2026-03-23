@@ -5,11 +5,11 @@ import type {
   UploadUrlResponse,
   UpdateFileStatusDto,
   FileResponse,
-  CreditEstimateDto,
-  CreditEstimateResponse,
+  FileAnalysisResponse,
   CreateTranslationJobDto,
   TranslationJobResponse,
   FileDownloadUrlResponse,
+  FontCheckResponse,
 } from '../types';
 
 // ============================================================================
@@ -70,6 +70,19 @@ export async function confirmFileUpload(
   return response.data;
 }
 
+/**
+ * Get a unified file analysis snapshot for upload wizard readiness.
+ * GET /files/:file_id/analysis
+ */
+export async function getFileAnalysis(
+  fileId: string,
+): Promise<FileAnalysisResponse> {
+  const response = await apiClient.get<FileAnalysisResponse>(
+    `/files/${fileId}/analysis`,
+  );
+  return response.data;
+}
+
 // ============================================================================
 // Translation API Functions
 // ============================================================================
@@ -96,20 +109,6 @@ export async function createTranslationJob(
 }
 
 /**
- * Estimate required credits for a translation request.
- * POST /translations/estimate-credits
- */
-export async function estimateTranslationCredits(
-  dto: CreditEstimateDto,
-): Promise<CreditEstimateResponse> {
-  const response = await apiClient.post<CreditEstimateResponse>(
-    '/translations/estimate-credits',
-    dto,
-  );
-  return response.data;
-}
-
-/**
  * Get a translation job by ID (used for polling status).
  * GET /translations/:job_id
  */
@@ -119,6 +118,18 @@ export async function getTranslationJob(
   const response = await apiClient.get<TranslationJobResponse>(
     `/translations/${jobId}`,
   );
+  return response.data;
+}
+
+/**
+ * Check whether parsed fonts support the target language.
+ * POST /fonts/check
+ */
+export async function checkFonts(dto: {
+  fonts: string[];
+  language: string;
+}): Promise<FontCheckResponse> {
+  const response = await apiClient.post<FontCheckResponse>('/fonts/check', dto);
   return response.data;
 }
 
