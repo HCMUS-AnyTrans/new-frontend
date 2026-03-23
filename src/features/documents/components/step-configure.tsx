@@ -128,6 +128,7 @@ export function StepConfigure({
 
           <FontConfigurationSection
             fontsUsedByGroup={fontsUsedByGroup}
+            tgtLang={config.tgtLang}
             fontCheckItems={fontCheckItems}
             keepOriginalFontSize={keepOriginalFontSize}
             fontConfigEnabled={fontConfigEnabled}

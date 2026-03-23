@@ -85,7 +85,7 @@
         "expandedHint": "Chọn những phông cần thay thế trước khi bắt đầu dịch.",
         "collapsedHint": "Đã tắt thay thế phông tùy chỉnh. Hệ thống sẽ giữ nguyên ánh xạ phông gốc.",
         "fontSizeToggleTitle": "Giữ nguyên cỡ chữ gốc",
-        "fontSizeToggleDescription": "Giữ nguyên cỡ chữ của tài liệu nguồn thay vì để backend tự giảm khi xử lý.",
+        "fontSizeToggleDescription": "Bật để giữ nguyên cỡ chữ, tắt để giảm nhẹ nhằm tránh tràn nội dung.",
         "replacementLabel": "Phông thay thế",
         "supported": "Hỗ trợ",
         "unsupported": "Cần thay font",

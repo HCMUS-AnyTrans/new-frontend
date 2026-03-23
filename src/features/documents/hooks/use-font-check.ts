@@ -2,7 +2,8 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { checkFonts } from '../api/documents.api';
-import type { FontCheckItem, ParsedFontsByGroup } from '../types';
+import { extractTargetFonts } from '../utils/font-target-slots';
+import type { FontCheckItem, LanguageCode, ParsedFontsByGroup } from '../types';
 
 interface FontCheckState {
   items: FontCheckItem[];
@@ -10,20 +11,17 @@ interface FontCheckState {
   fontCheckUnavailable: boolean;
 }
 
-function extractUniqueFonts(fontsUsedByGroup: ParsedFontsByGroup): string[] {
-  return [...new Set(Object.values(fontsUsedByGroup).flatMap((fonts) => fonts))];
-}
-
 export function useFontCheck(
   fileId: string | null,
   targetLanguage: string | null,
+  targetLanguageCode: LanguageCode | null,
   fontsUsedByGroup: ParsedFontsByGroup,
   fontParseSupported: boolean | null,
 ) {
-  const fonts = extractUniqueFonts(fontsUsedByGroup);
+  const fonts = extractTargetFonts(fontsUsedByGroup, targetLanguageCode);
 
   return useQuery<FontCheckState>({
-    queryKey: ['documents', 'font-check', fileId, targetLanguage, fonts],
+    queryKey: ['documents', 'font-check', fileId, targetLanguage, targetLanguageCode, fonts],
     enabled:
       fileId !== null &&
       !!targetLanguage &&

@@ -4,22 +4,13 @@ import { useTranslations } from "next-intl"
 import { CardTitle } from "@/components/ui/card"
 import { AppCard, AppCardHeader } from "@/components/ui/app-card"
 import { Switch } from "@/components/ui/switch"
-import type { FontCheckItem, FontEnabledMap, FontSelectionMap, ParsedFontsByGroup } from "../types"
+import { extractTargetFonts } from "../utils/font-target-slots"
+import type { FontCheckItem, FontEnabledMap, FontSelectionMap, LanguageCode, ParsedFontsByGroup } from "../types"
 import { FontMappingRow } from "./font-mapping-row"
-
-function extractMergedFonts(fontsUsedByGroup: ParsedFontsByGroup): string[] {
-  return [
-    ...new Set(
-      Object.values(fontsUsedByGroup)
-        .flatMap((fonts) => fonts)
-        .map((font) => font.trim())
-        .filter((font) => font.length > 0)
-    ),
-  ]
-}
 
 interface FontConfigurationSectionProps {
   fontsUsedByGroup: ParsedFontsByGroup
+  tgtLang: LanguageCode
   fontCheckItems: FontCheckItem[]
   keepOriginalFontSize: boolean
   fontConfigEnabled: boolean
@@ -37,6 +28,7 @@ interface FontConfigurationSectionProps {
 
 export function FontConfigurationSection({
   fontsUsedByGroup,
+  tgtLang,
   fontCheckItems,
   keepOriginalFontSize,
   fontConfigEnabled,
@@ -52,7 +44,7 @@ export function FontConfigurationSection({
   onSelectionChange,
 }: FontConfigurationSectionProps) {
   const t = useTranslations("documents.configure.fonts")
-  const mergedFonts = extractMergedFonts(fontsUsedByGroup)
+  const mergedFonts = extractTargetFonts(fontsUsedByGroup, tgtLang)
   const itemMap = new Map(fontCheckItems.map((item) => [item.from_font, item]))
   const hasFontOptions = fontParseSupported === true && !fontFlowUnavailable && mergedFonts.length > 0
 

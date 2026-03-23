@@ -156,6 +156,7 @@ export function DocumentTranslationWizard() {
   const { data: fontCheckState, isLoading: isCheckingFonts } = useFontCheck(
     fileId,
     analysisFile?.id ? LANGUAGE_CODE_TO_API_NAME[config.tgtLang] : null,
+    config.tgtLang,
     fontsUsedByGroup,
     fontParseSupported
   )
