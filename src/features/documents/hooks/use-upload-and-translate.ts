@@ -285,7 +285,9 @@ export function useUploadAndTranslate(): UseUploadAndTranslateReturn {
         flowStatus: 'idle',
         estimate: analysisResult.estimate,
         analysisFile: analysisResult.file,
-        fontsUsedByGroup: normalizeFontsUsed(analysisResult.file.metadata?.fontsUsed),
+        fontsUsedByGroup: normalizeFontsUsed(
+          analysisResult.file.metadata?.fontsUsed,
+        ),
         fontParseSupported:
           typeof analysisResult.file.metadata?.fontParseSupported === 'boolean'
             ? analysisResult.file.metadata.fontParseSupported

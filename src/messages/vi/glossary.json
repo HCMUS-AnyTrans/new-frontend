@@ -27,16 +27,19 @@
     "updatedAt": "Cập nhật lần cuối",
     "backToList": "Quay lại danh sách",
     "domains": {
-      "auto": "Tự động nhận diện",
+      "auto": "Tự động phát hiện",
       "general": "Tổng quát",
-      "technology": "Công nghệ",
-      "medical": "Y tế",
+      "it_software": "Phần mềm & CNTT",
+      "medical": "Y tế & Chăm sóc sức khỏe",
       "legal": "Pháp lý",
-      "finance": "Tài chính",
-      "marketing": "Marketing",
-      "education": "Giáo dục",
-      "engineering": "Kỹ thuật",
-      "science": "Khoa học"
+      "finance": "Tài chính & Ngân hàng",
+      "engineering": "Kỹ thuật & Công nghiệp",
+      "science_academic": "Khoa học & Học thuật",
+      "commerce": "Thương mại & Bán lẻ",
+      "tourism": "Du lịch & Khách sạn",
+      "media_entertainment": "Truyền thông & Giải trí",
+      "marketing_advertising": "Marketing & Quảng cáo",
+      "administrative": "Hành chính & Giấy tờ"
     },
     "languages": {
       "en": "Tiếng Anh",
@@ -46,7 +49,11 @@
       "zh": "Tiếng Trung",
       "fr": "Tiếng Pháp",
       "de": "Tiếng Đức",
-      "es": "Tiếng Tây Ban Nha"
+      "es": "Tiếng Tây Ban Nha",
+      "ru": "Tiếng Nga",
+      "ar": "Tiếng Ả Rập",
+      "th": "Tiếng Thái",
+      "hi": "Tiếng Hindi"
     },
     "form": {
       "domainPlaceholder": "Chọn lĩnh vực",

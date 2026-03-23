@@ -8,12 +8,18 @@ interface UseManualTermsOptions {
   onConfigChange: (updates: Partial<TranslationConfig>) => void;
 }
 
-export function useManualTerms({ manualTerms, onConfigChange }: UseManualTermsOptions) {
+export function useManualTerms({
+  manualTerms,
+  onConfigChange,
+}: UseManualTermsOptions) {
   const addManualTerm = useCallback(() => {
     if (manualTerms.length >= 20) return;
 
     onConfigChange({
-      manualTerms: [...manualTerms, { id: `term-${Date.now()}`, src: '', tgt: '' }],
+      manualTerms: [
+        ...manualTerms,
+        { id: `term-${Date.now()}`, src: '', tgt: '' },
+      ],
     });
   }, [manualTerms, onConfigChange]);
 

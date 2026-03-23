@@ -21,7 +21,14 @@ export function useFontCheck(
   const fonts = extractTargetFonts(fontsUsedByGroup, targetLanguageCode);
 
   return useQuery<FontCheckState>({
-    queryKey: ['documents', 'font-check', fileId, targetLanguage, targetLanguageCode, fonts],
+    queryKey: [
+      'documents',
+      'font-check',
+      fileId,
+      targetLanguage,
+      targetLanguageCode,
+      fonts,
+    ],
     enabled:
       fileId !== null &&
       !!targetLanguage &&

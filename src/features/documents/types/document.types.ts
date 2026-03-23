@@ -10,7 +10,11 @@ export type LanguageCode =
   | 'zh'
   | 'fr'
   | 'de'
-  | 'es';
+  | 'es'
+  | 'ru'
+  | 'ar'
+  | 'th'
+  | 'hi';
 
 export interface Language {
   code: LanguageCode;
@@ -32,6 +36,10 @@ export const LANGUAGE_CODE_TO_API_NAME: Record<LanguageCode, string> = {
   fr: 'French',
   de: 'German',
   es: 'Spanish',
+  ru: 'Russian',
+  ar: 'Arabic',
+  th: 'Thai',
+  hi: 'Hindi',
 };
 
 // =============== DOMAIN TYPES ===============

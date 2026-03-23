@@ -29,14 +29,17 @@
     "domains": {
       "auto": "Auto Detect",
       "general": "General",
-      "technology": "Technology",
-      "medical": "Medical",
+      "it_software": "IT & Software",
+      "medical": "Medical & Healthcare",
       "legal": "Legal",
-      "finance": "Finance",
-      "marketing": "Marketing",
-      "education": "Education",
-      "engineering": "Engineering",
-      "science": "Science"
+      "finance": "Finance & Banking",
+      "engineering": "Engineering & Industrial",
+      "science_academic": "Science & Academic",
+      "commerce": "Commerce & Retail",
+      "tourism": "Tourism & Hospitality",
+      "media_entertainment": "Media & Entertainment",
+      "marketing_advertising": "Marketing & Advertising",
+      "administrative": "Administrative"
     },
     "languages": {
       "en": "English",
@@ -46,7 +49,11 @@
       "zh": "Chinese",
       "fr": "French",
       "de": "German",
-      "es": "Spanish"
+      "es": "Spanish",
+      "ru": "Russian",
+      "ar": "Arabic",
+      "th": "Thai",
+      "hi": "Hindi"
     },
     "form": {
       "domainPlaceholder": "Select domain",

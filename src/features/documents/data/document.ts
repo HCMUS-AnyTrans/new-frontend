@@ -10,6 +10,11 @@ import {
   Cog,
   FlaskConical,
   FolderOpen,
+  Wrench,
+  ShoppingCart,
+  Plane,
+  Film,
+  FileText,
 } from 'lucide-react';
 // =============== LANGUAGES ===============
 
@@ -22,6 +27,10 @@ export const languages: Language[] = [
   { code: 'fr', name: 'Français', apiName: 'French' },
   { code: 'de', name: 'Deutsch', apiName: 'German' },
   { code: 'es', name: 'Español', apiName: 'Spanish' },
+  { code: 'ru', name: 'Русский', apiName: 'Russian' },
+  { code: 'ar', name: 'العربية', apiName: 'Arabic' },
+  { code: 'th', name: 'ภาษาไทย', apiName: 'Thai' },
+  { code: 'hi', name: 'हिन्दी', apiName: 'Hindi' },
 ];
 
 export const sourceLanguages = languages;
@@ -30,16 +39,29 @@ export const targetLanguages = languages;
 // =============== DOMAINS ===============
 
 export const domains: Domain[] = [
-  { id: 'auto', name: 'Auto Detect', icon: FolderOpen },
+  { id: 'auto', name: 'Tự động phát hiện', icon: FolderOpen },
   { id: 'general', name: 'Tổng quát', icon: Globe },
-  { id: 'technology', name: 'Công nghệ', icon: Laptop },
-  { id: 'medical', name: 'Y tế', icon: Stethoscope },
+
+  // The "Big Four" Specialized Industries
+  { id: 'it_software', name: 'Phần mềm & CNTT', icon: Laptop },
+  { id: 'medical', name: 'Y tế & Chăm sóc sức khỏe', icon: Stethoscope },
   { id: 'legal', name: 'Pháp lý', icon: Scale },
-  { id: 'finance', name: 'Tài chính', icon: Landmark },
-  { id: 'marketing', name: 'Marketing', icon: Megaphone },
-  { id: 'education', name: 'Giáo dục', icon: GraduationCap },
-  { id: 'engineering', name: 'Kỹ thuật', icon: Cog },
-  { id: 'science', name: 'Khoa học', icon: FlaskConical },
+  { id: 'finance', name: 'Tài chính & Ngân hàng', icon: Landmark },
+
+  // Heavy Industries & STEM
+  { id: 'engineering', name: 'Kỹ thuật & Công nghiệp', icon: Wrench },
+  { id: 'science_academic', name: 'Khoa học & Học thuật', icon: FlaskConical },
+
+  // Business & Consumer Goods
+  { id: 'commerce', name: 'Thương mại & Bán lẻ', icon: ShoppingCart },
+  { id: 'tourism', name: 'Du lịch & Khách sạn', icon: Plane },
+
+  // Creative & Communication (Function-based, but treated as distinct industries in translation)
+  { id: 'media_entertainment', name: 'Truyền thông & Giải trí', icon: Film },
+  { id: 'marketing_advertising', name: 'Marketing & Quảng cáo', icon: Megaphone },
+
+  // Public & Personal Docs
+  { id: 'administrative', name: 'Hành chính', icon: FileText },
 ];
 
 // =============== TONES ===============

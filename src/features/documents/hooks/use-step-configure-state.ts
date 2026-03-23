@@ -1,6 +1,10 @@
 'use client';
 
-import type { CreditEstimateResponse, LanguageCode, ParsedFontsByGroup } from '../types';
+import type {
+  CreditEstimateResponse,
+  LanguageCode,
+  ParsedFontsByGroup,
+} from '../types';
 
 interface UseStepConfigureStateOptions {
   srcLang: LanguageCode;
@@ -30,14 +34,21 @@ export function useStepConfigureState({
   const isEstimatePending = isEstimating || !estimate;
   const hasParsedFonts = Object.keys(fontsUsedByGroup).length > 0;
   const isInsufficientCredits =
-    hasEstimate && typeof currentBalance === 'number' && currentBalance < estimate.totalCredits;
+    hasEstimate &&
+    typeof currentBalance === 'number' &&
+    currentBalance < estimate.totalCredits;
   const missingCredits =
     isInsufficientCredits && typeof currentBalance === 'number'
       ? estimate.totalCredits - currentBalance
       : 0;
-  const isFontCheckPending = hasParsedFonts && fontParseSupported === true && isCheckingFonts;
+  const isFontCheckPending =
+    hasParsedFonts && fontParseSupported === true && isCheckingFonts;
   const isStartDisabled =
-    isSameLang || isLoading || isEstimatePending || isInsufficientCredits || isFontCheckPending;
+    isSameLang ||
+    isLoading ||
+    isEstimatePending ||
+    isInsufficientCredits ||
+    isFontCheckPending;
 
   return {
     isSameLang,
