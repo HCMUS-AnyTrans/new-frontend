@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 import { jobStatusConfig } from '@/features/dashboard/data';
 import { useDownloadFile } from '@/features/documents';
-import { canPreviewTranslationJob } from '@/features/documents/utils/docx-preview';
+import { canPreviewTranslationJob } from '@/features/documents/utils/preview-capabilities';
 import { formatFileSize } from '../data';
 import type { HistoryJobDetailProps } from '../types';
 

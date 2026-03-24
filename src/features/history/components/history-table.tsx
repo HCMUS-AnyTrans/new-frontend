@@ -40,7 +40,7 @@ import {
 } from "lucide-react";
 import { jobStatusConfig } from "@/features/dashboard/data";
 import { getFileDownloadUrl } from "@/features/documents/api/documents.api";
-import { canPreviewTranslationJob } from "@/features/documents/utils/docx-preview";
+import { canPreviewTranslationJob } from "@/features/documents/utils/preview-capabilities";
 import type { TranslationJobResponse } from "@/features/dashboard/api/dashboard.api";
 import type { HistoryTableProps } from "../types";
 

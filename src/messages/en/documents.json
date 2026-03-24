@@ -125,15 +125,15 @@
       "newTranslation": "Translate new document"
     },
     "preview": {
-      "eyebrow": "DOCX preview",
-      "title": "Side-by-side document comparison",
-      "description": "Review the original document and its translation in two independent panes.",
+      "eyebrow": "Document preview",
+      "title": "Side-by-side file comparison",
+      "description": "Review the original file and its translation in two independent panes.",
       "original": "Original",
       "translated": "Translated",
       "loadingJob": "Loading translation job details...",
       "loadingOriginal": "Rendering original document...",
       "loadingTranslated": "Rendering translated document...",
-      "renderError": "Unable to render the DOCX preview. Please try downloading the file to review it.",
+      "renderError": "Unable to render the preview. Please try downloading the file to review it.",
       "backToDocuments": "Back to documents",
       "missingJobTitle": "Missing translation job",
       "missingJobDescription": "No jobId was provided for the preview screen.",
@@ -142,7 +142,7 @@
       "notReadyTitle": "Preview not ready",
       "notReadyDescription": "The translation job is not finished yet or there is no output file to display.",
       "unsupportedTitle": "Unsupported format",
-      "unsupportedDescription": "Preview is currently available only when both the original and translated files are DOCX documents."
+      "unsupportedDescription": "Preview is currently available only for PDF + DOCX and DOCX + DOCX file pairs."
     },
     "translationResult": {
       "success": "Translation completed",

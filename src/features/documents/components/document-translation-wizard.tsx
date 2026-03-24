@@ -25,7 +25,7 @@ import { useGlossaries, useTerms } from "@/features/glossary"
 import { useWallet } from "@/features/dashboard/hooks"
 import { useTranslationStore } from "../store/translation.store"
 import type { FontCheckItem, FontEnabledMap, FontReplacement, FontSelectionMap, LanguageCode } from "../types"
-import { canPreviewTranslationJob } from "../utils/docx-preview"
+import { canPreviewTranslationJob } from "../utils/preview-capabilities"
 
 function buildDefaultFontSelections(items: FontCheckItem[]): FontSelectionMap {
   return items.reduce<FontSelectionMap>((acc, item) => {

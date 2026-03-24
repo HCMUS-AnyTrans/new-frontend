@@ -33,7 +33,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [isAuthenticated, accessToken, setAuth, clearAuth, setInitialized]);
 
   useEffect(() => {
-    initializeAuth();
+    const persistApi = useAuthStore.persist;
+
+    if (!persistApi) {
+      void initializeAuth();
+      return;
+    }
+
+    if (persistApi.hasHydrated()) {
+      void initializeAuth();
+      return;
+    }
+
+    const unsubscribe = persistApi.onFinishHydration(() => {
+      void initializeAuth();
+    });
+
+    return unsubscribe;
   }, [initializeAuth]);
 
   return <>{children}</>;

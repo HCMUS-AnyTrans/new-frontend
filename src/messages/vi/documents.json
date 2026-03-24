@@ -125,15 +125,15 @@
       "newTranslation": "Dịch tài liệu mới"
     },
     "preview": {
-      "eyebrow": "Xem trước DOCX",
-      "title": "So sánh tài liệu song song",
-      "description": "Đối chiếu bản gốc và bản đã dịch trong hai khung riêng biệt.",
+      "eyebrow": "Xem trước tài liệu",
+      "title": "So sánh tệp song song",
+      "description": "Đối chiếu tệp gốc và bản dịch trong hai khung riêng biệt.",
       "original": "Bản gốc",
       "translated": "Bản đã dịch",
       "loadingJob": "Đang tải thông tin tác vụ dịch...",
       "loadingOriginal": "Đang render bản gốc...",
       "loadingTranslated": "Đang render bản dịch...",
-      "renderError": "Không thể render bản xem trước DOCX. Vui lòng thử tải file xuống để kiểm tra.",
+      "renderError": "Không thể hiển thị bản xem trước. Vui lòng thử tải file xuống để kiểm tra.",
       "backToDocuments": "Quay lại tài liệu",
       "missingJobTitle": "Thiếu thông tin tác vụ",
       "missingJobDescription": "Không tìm thấy jobId để mở màn hình xem trước.",
@@ -142,7 +142,7 @@
       "notReadyTitle": "Bản xem trước chưa sẵn sàng",
       "notReadyDescription": "Tác vụ dịch chưa hoàn tất hoặc chưa có file đầu ra để hiển thị.",
       "unsupportedTitle": "Định dạng chưa được hỗ trợ",
-      "unsupportedDescription": "Tính năng xem trước hiện chỉ hỗ trợ khi cả bản gốc và bản dịch đều là tệp DOCX."
+      "unsupportedDescription": "Tính năng xem trước hiện chỉ hỗ trợ cho cặp tệp PDF + DOCX và DOCX + DOCX."
     },
     "translationResult": {
       "success": "Dịch tài liệu hoàn tất",
