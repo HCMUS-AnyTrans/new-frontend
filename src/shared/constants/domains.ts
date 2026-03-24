@@ -1,75 +1,89 @@
-/**
- * Shared domain constants for Glossary, History, and Document translation.
- * Single source of truth - aligned with backend domain values.
- */
-
 import type { LucideIcon } from 'lucide-react';
 import {
-  Globe,
-  Laptop,
-  Stethoscope,
-  Scale,
-  Landmark,
-  Megaphone,
-  GraduationCap,
-  Cog,
+  Film,
+  FileText,
   FlaskConical,
   FolderOpen,
+  Globe,
+  Landmark,
+  Laptop,
+  Megaphone,
+  Plane,
+  Scale,
+  ShoppingCart,
+  Stethoscope,
+  Wrench,
 } from 'lucide-react';
 
-// ============================================================================
-// DOMAIN IDs (for filtering)
-// ============================================================================
+type DomainDefinition = {
+  id: string;
+  name: string;
+  icon: LucideIcon;
+};
 
-/** Domain IDs used for filtering (glossary list, history). Excludes "auto". */
-export const DOMAIN_FILTER_IDS = [
-  'general',
-  'technology',
-  'medical',
-  'legal',
-  'finance',
-  'marketing',
-  'education',
-  'engineering',
-  'science',
-] as const;
+const DOMAIN_DEFINITIONS = [
+  { id: 'auto', name: 'Tự động phát hiện', icon: FolderOpen },
+  { id: 'general', name: 'Tổng quát', icon: Globe },
+  { id: 'it_software', name: 'Phần mềm & CNTT', icon: Laptop },
+  { id: 'medical', name: 'Y tế & Chăm sóc sức khỏe', icon: Stethoscope },
+  { id: 'legal', name: 'Pháp lý', icon: Scale },
+  { id: 'finance', name: 'Tài chính & Ngân hàng', icon: Landmark },
+  { id: 'engineering', name: 'Kỹ thuật & Công nghiệp', icon: Wrench },
+  { id: 'science_academic', name: 'Khoa học & Học thuật', icon: FlaskConical },
+  { id: 'commerce', name: 'Thương mại & Bán lẻ', icon: ShoppingCart },
+  { id: 'tourism', name: 'Du lịch & Khách sạn', icon: Plane },
+  { id: 'media_entertainment', name: 'Truyền thông & Giải trí', icon: Film },
+  {
+    id: 'marketing_advertising',
+    name: 'Marketing & Quảng cáo',
+    icon: Megaphone,
+  },
+  { id: 'administrative', name: 'Hành chính', icon: FileText },
+] as const satisfies readonly DomainDefinition[];
 
-export type DomainFilterId = (typeof DOMAIN_FILTER_IDS)[number];
-
-/** Filter options: "all" + domain IDs. Used by Glossary. */
-export const DOMAIN_FILTER_OPTIONS = ['all', ...DOMAIN_FILTER_IDS] as const;
-
-export type DomainFilterValue = (typeof DOMAIN_FILTER_OPTIONS)[number];
-
-/** Filter options for History: "all" + "auto" + domain IDs. */
-export const HISTORY_DOMAIN_FILTER_OPTIONS = [
-  'all',
-  'auto',
-  ...DOMAIN_FILTER_IDS,
-] as const;
-
-export type HistoryDomainFilterValue =
-  (typeof HISTORY_DOMAIN_FILTER_OPTIONS)[number];
-
-// ============================================================================
-// DOMAIN OPTIONS WITH ICONS (for forms: glossary create/edit, document wizard)
-// ============================================================================
+export type SharedDomainId = (typeof DOMAIN_DEFINITIONS)[number]['id'];
+export type DomainFilterId = Exclude<SharedDomainId, 'auto'>;
+export type DomainFilterValue = 'all' | DomainFilterId;
+export type HistoryDomainFilterValue = 'all' | SharedDomainId;
 
 export interface DomainOption {
-  id: string;
+  id: SharedDomainId;
   icon: LucideIcon;
 }
 
-/** Domain options with icons. Includes "auto" for document translation. */
-export const DOMAIN_OPTIONS_WITH_ICONS: DomainOption[] = [
-  { id: 'auto', icon: FolderOpen },
-  { id: 'general', icon: Globe },
-  { id: 'technology', icon: Laptop },
-  { id: 'medical', icon: Stethoscope },
-  { id: 'legal', icon: Scale },
-  { id: 'finance', icon: Landmark },
-  { id: 'marketing', icon: Megaphone },
-  { id: 'education', icon: GraduationCap },
-  { id: 'engineering', icon: Cog },
-  { id: 'science', icon: FlaskConical },
+export const domains: DomainDefinition[] = [...DOMAIN_DEFINITIONS];
+
+export const nonAutoDomains: DomainDefinition[] = DOMAIN_DEFINITIONS.filter(
+  (domain): domain is (typeof DOMAIN_DEFINITIONS)[number] & { id: DomainFilterId } =>
+    domain.id !== 'auto',
+);
+
+export const DOMAIN_FILTER_IDS: DomainFilterId[] = nonAutoDomains.map(
+  (domain) => domain.id,
+) as DomainFilterId[];
+
+export const DOMAIN_FILTER_OPTIONS: DomainFilterValue[] = [
+  'all',
+  ...DOMAIN_FILTER_IDS,
 ];
+
+export const HISTORY_DOMAIN_FILTER_OPTIONS: HistoryDomainFilterValue[] = [
+  'all',
+  ...DOMAIN_DEFINITIONS.map((domain) => domain.id),
+];
+
+export const DOMAIN_OPTIONS_WITH_ICONS: DomainOption[] = DOMAIN_DEFINITIONS.map(
+  ({ id, icon }) => ({ id, icon }),
+) as DomainOption[];
+
+export const NON_AUTO_DOMAIN_OPTIONS_WITH_ICONS: DomainOption[] =
+  nonAutoDomains.map(({ id, icon }) => ({ id, icon })) as DomainOption[];
+
+export const domainById: Record<SharedDomainId, DomainDefinition> =
+  DOMAIN_DEFINITIONS.reduce(
+    (acc, domain) => {
+      acc[domain.id] = domain;
+      return acc;
+    },
+    {} as Record<SharedDomainId, DomainDefinition>,
+  );

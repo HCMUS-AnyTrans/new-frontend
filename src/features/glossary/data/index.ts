@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import {
-  DOMAIN_OPTIONS_WITH_ICONS,
+  NON_AUTO_DOMAIN_OPTIONS_WITH_ICONS,
   type DomainOption as SharedDomainOption,
 } from '@/shared/constants/domains';
 
@@ -15,7 +15,7 @@ export type DomainOption = SharedDomainOption & { name?: string };
  * Available domain/subject area options for glossaries.
  * Uses shared constants - aligned with backend and document translation.
  */
-export const glossaryDomains: DomainOption[] = DOMAIN_OPTIONS_WITH_ICONS.map(
+export const glossaryDomains: DomainOption[] = NON_AUTO_DOMAIN_OPTIONS_WITH_ICONS.map(
   (d) => ({ id: d.id, icon: d.icon }),
 );
 

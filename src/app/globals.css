@@ -294,7 +294,7 @@
 
   .heading-serif-scope h1,
   .heading-serif-scope h2 {
-    font-family: 'Playfair Display', serif !important;
+    font-family: var(--font-playfair-display), serif !important;
   }
 }
 

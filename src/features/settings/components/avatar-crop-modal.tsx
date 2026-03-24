@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import Cropper, { type Area } from 'react-easy-crop';
 import { ZoomIn, ZoomOut } from 'lucide-react';
 import {
@@ -20,6 +20,79 @@ export interface CroppedAreaPixels {
   height: number;
 }
 
+function AvatarCropEditor({
+  imageUrl,
+  onSave,
+  onCancel,
+}: {
+  imageUrl: string;
+  onSave: (cropArea: CroppedAreaPixels) => void;
+  onCancel: () => void;
+}) {
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] =
+    useState<CroppedAreaPixels | null>(null);
+
+  const onCropComplete = useCallback((_: Area, areaPixels: Area) => {
+    setCroppedAreaPixels(areaPixels);
+  }, []);
+
+  const handleSave = () => {
+    if (croppedAreaPixels) {
+      onSave(croppedAreaPixels);
+    }
+  };
+
+  return (
+    <>
+      <div className="relative h-72 w-full overflow-hidden rounded-lg bg-muted">
+        <Cropper
+          image={imageUrl}
+          crop={crop}
+          zoom={zoom}
+          aspect={1}
+          cropShape="round"
+          showGrid={false}
+          onCropChange={setCrop}
+          onZoomChange={setZoom}
+          onCropComplete={onCropComplete}
+          classes={{
+            containerClassName: 'rounded-lg',
+          }}
+        />
+      </div>
+
+      <div className="flex items-center gap-3 px-1">
+        <ZoomOut className="size-4 shrink-0 text-muted-foreground" />
+        <Slider
+          min={1}
+          max={3}
+          step={0.05}
+          value={[zoom]}
+          onValueChange={([value]) => setZoom(value)}
+          className="flex-1"
+          aria-label="Zoom"
+        />
+        <ZoomIn className="size-4 shrink-0 text-muted-foreground" />
+      </div>
+
+      <p className="text-center text-xs text-muted-foreground">
+        Drag to reposition · Scroll or use the slider to zoom
+      </p>
+
+      <DialogFooter className="gap-4 sm:gap-2">
+        <Button variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button onClick={handleSave} disabled={!croppedAreaPixels}>
+          Save avatar
+        </Button>
+      </DialogFooter>
+    </>
+  );
+}
+
 interface AvatarCropModalProps {
   open: boolean;
   file: File | null;
@@ -33,36 +106,18 @@ export function AvatarCropModal({
   onSave,
   onCancel,
 }: AvatarCropModalProps) {
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] =
-    useState<CroppedAreaPixels | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-
-  // Create blob URL once per file, revoke when file changes or component unmounts
-  useEffect(() => {
-    if (!file) {
-      setImageUrl(null);
-      return;
-    }
-    const url = URL.createObjectURL(file);
-    setImageUrl(url);
-    // Reset crop state whenever a new file comes in
-    setCrop({ x: 0, y: 0 });
-    setZoom(1);
-    setCroppedAreaPixels(null);
-    return () => URL.revokeObjectURL(url);
+  const imageUrl = useMemo(() => {
+    if (!file) return null;
+    return URL.createObjectURL(file);
   }, [file]);
 
-  const onCropComplete = useCallback((_: Area, areaPixels: Area) => {
-    setCroppedAreaPixels(areaPixels);
-  }, []);
-
-  const handleSave = () => {
-    if (croppedAreaPixels) {
-      onSave(croppedAreaPixels);
-    }
-  };
+  useEffect(() => {
+    return () => {
+      if (imageUrl) {
+        URL.revokeObjectURL(imageUrl);
+      }
+    };
+  }, [imageUrl]);
 
   const handleOpenChange = (isOpen: boolean) => {
     if (!isOpen) onCancel();
@@ -75,53 +130,14 @@ export function AvatarCropModal({
           <DialogTitle>Crop your avatar</DialogTitle>
         </DialogHeader>
 
-        {/* Crop canvas area */}
-        <div className="relative h-72 w-full overflow-hidden rounded-lg bg-muted">
-          {imageUrl && (
-            <Cropper
-              image={imageUrl}
-              crop={crop}
-              zoom={zoom}
-              aspect={1}
-              cropShape="round"
-              showGrid={false}
-              onCropChange={setCrop}
-              onZoomChange={setZoom}
-              onCropComplete={onCropComplete}
-              classes={{
-                containerClassName: 'rounded-lg',
-              }}
-            />
-          )}
-        </div>
-
-        {/* Zoom control */}
-        <div className="flex items-center gap-3 px-1">
-          <ZoomOut className="size-4 shrink-0 text-muted-foreground" />
-          <Slider
-            min={1}
-            max={3}
-            step={0.05}
-            value={[zoom]}
-            onValueChange={([value]) => setZoom(value)}
-            className="flex-1"
-            aria-label="Zoom"
+        {imageUrl ? (
+          <AvatarCropEditor
+            key={imageUrl}
+            imageUrl={imageUrl}
+            onSave={onSave}
+            onCancel={onCancel}
           />
-          <ZoomIn className="size-4 shrink-0 text-muted-foreground" />
-        </div>
-
-        <p className="text-center text-xs text-muted-foreground">
-          Drag to reposition · Scroll or use the slider to zoom
-        </p>
-
-        <DialogFooter className="gap-4 sm:gap-2">
-          <Button variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button onClick={handleSave} disabled={!croppedAreaPixels}>
-            Save avatar
-          </Button>
-        </DialogFooter>
+        ) : null}
       </DialogContent>
     </Dialog>
   );

@@ -11,7 +11,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { Pie, PieChart, Cell } from "recharts";
-import { Info, HardDrive } from "lucide-react";
+import { Info } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useCreditsChart, useStorage } from "../hooks";
 import {

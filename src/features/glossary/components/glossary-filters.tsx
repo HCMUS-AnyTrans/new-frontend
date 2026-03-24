@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/select';
 import {
   DOMAIN_FILTER_OPTIONS,
-  DOMAIN_OPTIONS_WITH_ICONS,
+  domainById,
 } from '@/shared/constants/domains';
 import { glossaryLanguages } from '../data';
 
@@ -50,15 +50,12 @@ export function GlossaryFilters({
         <SelectTrigger className="w-full bg-background hover:bg-background sm:w-[160px]">
           <SelectValue placeholder={t('filterDomain')} />
         </SelectTrigger>
-        <SelectContent className="bg-popover">
-          {DOMAIN_FILTER_OPTIONS.map((domainId) => {
-            const domainOption = DOMAIN_OPTIONS_WITH_ICONS.find(
-              (d) => d.id === domainId
-            );
-            const Icon = domainOption?.icon;
-            return (
-              <SelectItem key={domainId} value={domainId}>
-                {Icon && <Icon className="size-4" />}
+          <SelectContent className="bg-popover">
+            {DOMAIN_FILTER_OPTIONS.map((domainId) => {
+              const Icon = domainId === 'all' ? undefined : domainById[domainId]?.icon;
+              return (
+                <SelectItem key={domainId} value={domainId}>
+                  {Icon && <Icon className="size-4" />}
                 {domainId === 'all' ? t('allDomains') : t(`domains.${domainId}`)}
               </SelectItem>
             );

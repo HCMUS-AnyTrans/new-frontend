@@ -1,21 +1,8 @@
-import type { Language, Domain, Tone, TranslationConfig } from '../types';
-import {
-  Globe,
-  Laptop,
-  Stethoscope,
-  Scale,
-  Landmark,
-  Megaphone,
-  GraduationCap,
-  Cog,
-  FlaskConical,
-  FolderOpen,
-  Wrench,
-  ShoppingCart,
-  Plane,
-  Film,
-  FileText,
-} from 'lucide-react';
+import { domains } from '@/shared/constants/domains';
+import type { Language, Tone, TranslationConfig } from '../types';
+
+export { domains };
+
 // =============== LANGUAGES ===============
 
 export const languages: Language[] = [
@@ -35,34 +22,6 @@ export const languages: Language[] = [
 
 export const sourceLanguages = languages;
 export const targetLanguages = languages;
-
-// =============== DOMAINS ===============
-
-export const domains: Domain[] = [
-  { id: 'auto', name: 'Tự động phát hiện', icon: FolderOpen },
-  { id: 'general', name: 'Tổng quát', icon: Globe },
-
-  // The "Big Four" Specialized Industries
-  { id: 'it_software', name: 'Phần mềm & CNTT', icon: Laptop },
-  { id: 'medical', name: 'Y tế & Chăm sóc sức khỏe', icon: Stethoscope },
-  { id: 'legal', name: 'Pháp lý', icon: Scale },
-  { id: 'finance', name: 'Tài chính & Ngân hàng', icon: Landmark },
-
-  // Heavy Industries & STEM
-  { id: 'engineering', name: 'Kỹ thuật & Công nghiệp', icon: Wrench },
-  { id: 'science_academic', name: 'Khoa học & Học thuật', icon: FlaskConical },
-
-  // Business & Consumer Goods
-  { id: 'commerce', name: 'Thương mại & Bán lẻ', icon: ShoppingCart },
-  { id: 'tourism', name: 'Du lịch & Khách sạn', icon: Plane },
-
-  // Creative & Communication (Function-based, but treated as distinct industries in translation)
-  { id: 'media_entertainment', name: 'Truyền thông & Giải trí', icon: Film },
-  { id: 'marketing_advertising', name: 'Marketing & Quảng cáo', icon: Megaphone },
-
-  // Public & Personal Docs
-  { id: 'administrative', name: 'Hành chính', icon: FileText },
-];
 
 // =============== TONES ===============
 

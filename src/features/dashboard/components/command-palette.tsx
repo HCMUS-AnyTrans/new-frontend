@@ -55,7 +55,6 @@ export const SearchDropdown = forwardRef<
   useImperativeHandle(ref, () => ({
     focus: () => {
       inputRef.current?.focus();
-      setIsOpen(true);
     },
   }));
 
@@ -63,7 +62,6 @@ export const SearchDropdown = forwardRef<
   useEffect(() => {
     if (autoFocus) {
       inputRef.current?.focus();
-      setIsOpen(true);
     }
   }, [autoFocus]);
 

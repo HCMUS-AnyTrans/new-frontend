@@ -46,7 +46,6 @@ const PhoneInput = React.forwardRef<HTMLDivElement, PhoneInputProps>(
     ref,
   ) => {
     const [isFocused, setIsFocused] = React.useState(false);
-    const hasValue = !!value && value.length > 0;
 
     // Label should be positioned after the country selector
     // Country selector is approximately 60px wide (flag + arrow + padding)

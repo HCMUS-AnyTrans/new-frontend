@@ -120,7 +120,7 @@ export function useAddTerm(options?: UseAddTermOptions) {
       onError?.(message);
     },
 
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       onSuccess?.(data);
     },
 

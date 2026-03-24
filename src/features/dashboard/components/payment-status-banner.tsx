@@ -48,7 +48,7 @@ export function PaymentStatusBanner() {
       queryClient.invalidateQueries({ queryKey: notificationKeys.all })
       toast.success(t("success"))
     }
-  }, [status, queryClient])
+  }, [status, queryClient, t])
 
   if (!status) return null
 

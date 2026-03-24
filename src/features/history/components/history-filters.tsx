@@ -10,7 +10,7 @@ import {
 import { Search } from 'lucide-react';
 import {
   HISTORY_DOMAIN_FILTER_OPTIONS,
-  DOMAIN_OPTIONS_WITH_ICONS,
+  domainById,
 } from '@/shared/constants/domains';
 import { STATUS_OPTIONS } from '../data';
 import type { HistoryFiltersProps } from '../types';
@@ -44,10 +44,7 @@ export function HistoryFilters({
         </SelectTrigger>
         <SelectContent className="bg-popover">
           {HISTORY_DOMAIN_FILTER_OPTIONS.map((domainId) => {
-            const domainOption = DOMAIN_OPTIONS_WITH_ICONS.find(
-              (d) => d.id === domainId
-            );
-            const Icon = domainOption?.icon;
+            const Icon = domainId === 'all' ? undefined : domainById[domainId]?.icon;
             return (
               <SelectItem key={domainId} value={domainId}>
                 {Icon && <Icon className="size-4" />}
