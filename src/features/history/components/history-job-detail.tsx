@@ -11,9 +11,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import {
-  FileText,
-  Presentation,
-  File,
   Clock,
   CheckCircle2,
   Coins,
@@ -24,17 +21,10 @@ import {
 } from 'lucide-react';
 import { jobStatusConfig } from '@/features/dashboard/data';
 import { useDownloadFile } from '@/features/documents';
+import { FileTypeIcon } from '@/components/shared/file-type-icon';
 import { canPreviewTranslationJob } from '@/features/documents/utils/preview-capabilities';
 import { formatFileSize } from '../data';
 import type { HistoryJobDetailProps } from '../types';
-
-function getFileIcon(name: string) {
-  const ext = name.split('.').pop()?.toLowerCase();
-  if (ext === 'pdf') return <FileText className="size-4 text-destructive" />;
-  if (ext === 'pptx' || ext === 'ppt')
-    return <Presentation className="size-4 text-warning" />;
-  return <File className="size-4 text-primary" />;
-}
 
 function formatDateTime(dateStr: string | undefined, locale: string): string {
   if (!dateStr) return '—';
@@ -154,7 +144,7 @@ export function HistoryJobDetail({
                 </p>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-2">
-                    {getFileIcon(job.input_file.name)}
+                    <FileTypeIcon fileName={job.input_file.name} className="size-4" />
                     <div className="min-w-0 flex-1">
                       <p className="wrap-break-word text-sm font-medium text-foreground">
                         {job.input_file.name}
@@ -200,7 +190,7 @@ export function HistoryJobDetail({
                 </p>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-2">
-                    {getFileIcon(job.output_file.name)}
+                    <FileTypeIcon fileName={job.output_file.name} className="size-4" />
                     <div className="min-w-0 flex-1">
                       <p className="wrap-break-word text-sm font-medium text-foreground">
                         {job.output_file.name}

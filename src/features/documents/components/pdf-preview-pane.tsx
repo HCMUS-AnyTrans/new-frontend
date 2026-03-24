@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { File } from 'lucide-react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import { FileTypeIcon } from '@/components/shared/file-type-icon';
 import { getFileDownloadUrl } from '../api/documents.api';
 import { PreviewPaneShell } from './preview-pane-shell';
 
@@ -96,7 +96,7 @@ export function PdfPreviewPane({
     <PreviewPaneShell
       title={title}
       fileName={fileName}
-      icon={<File className="size-5 text-destructive" />}
+      icon={<FileTypeIcon fileName={fileName} className="size-5" />}
       isLoading={isLoading}
       loadingLabel={loadingLabel}
       error={error}

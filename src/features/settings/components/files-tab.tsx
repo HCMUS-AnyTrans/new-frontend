@@ -4,9 +4,6 @@ import { useState, useCallback } from "react"
 import Link from "next/link"
 import { useTranslations, useLocale } from "next-intl"
 import {
-  FileText,
-  File,
-  Presentation,
   Download,
   Trash2,
   AlertTriangle,
@@ -19,6 +16,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { FileTypeIcon } from "@/components/shared/file-type-icon"
 import { Progress } from "@/components/ui/progress"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -50,17 +48,6 @@ import { useRecentJobs } from "@/features/dashboard/hooks"
 import { getFileDownloadUrl } from "@/features/documents/api/documents.api"
 import { jobStatusConfig } from "@/features/dashboard/data"
 import type { TranslationJobResponse, TranslationJobFile } from "@/features/dashboard/api/dashboard.api"
-
-// ============================================================================
-// Helpers
-// ============================================================================
-
-function getFileIcon(name: string, className = "size-5") {
-  const ext = name.split(".").pop()?.toLowerCase()
-  if (ext === "pdf") return <FileText className={`${className} text-destructive`} />
-  if (ext === "pptx" || ext === "ppt") return <Presentation className={`${className} text-warning`} />
-  return <File className={`${className} text-primary`} />
-}
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
@@ -359,7 +346,7 @@ export function FilesTab() {
                     {/* Left: icon + info */}
                     <div className="flex min-w-0 items-start gap-3">
                       <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">
-                        {getFileIcon(fileName)}
+                        <FileTypeIcon fileName={fileName} className="size-5" />
                       </div>
                       <div className="min-w-0 flex-1 space-y-1">
                         {/* File name + status */}

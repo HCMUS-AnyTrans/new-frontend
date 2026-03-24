@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { renderAsync } from 'docx-preview';
-import { FileText } from 'lucide-react';
 import { getFileDownloadUrl } from '../api/documents.api';
 import { PreviewPaneShell } from './preview-pane-shell';
+import { FileTypeIcon } from '@/components/shared/file-type-icon';
 
 interface DocxPreviewPaneProps {
   fileId: string;
@@ -79,7 +79,7 @@ export function DocxPreviewPane({
     <PreviewPaneShell
       title={title}
       fileName={fileName}
-      icon={<FileText className="size-5" />}
+      icon={<FileTypeIcon fileName={fileName} className="size-5" />}
       isLoading={isLoading}
       loadingLabel={loadingLabel}
       error={error}

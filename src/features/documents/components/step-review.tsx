@@ -7,9 +7,6 @@ import {
   CheckCircle2,
   Eye,
   XCircle,
-  FileText,
-  File,
-  Presentation,
   Upload,
   AlertCircle,
 } from "lucide-react"
@@ -18,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { FileTypeIcon } from "@/components/shared/file-type-icon"
 import type { TranslationFlowStatus, TranslationJobResponse, UploadedFile } from "../types"
 import type { LanguageCode } from "../types"
 
@@ -50,14 +48,6 @@ function formatFileSize(bytes: number): string {
   if (bytes < 1024) return bytes + " B"
   if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB"
   return (bytes / (1024 * 1024)).toFixed(1) + " MB"
-}
-
-function getFileIcon(fileName: string, size: "sm" | "md" = "md") {
-  const ext = fileName.split(".").pop()?.toLowerCase()
-  const sizeClass = size === "sm" ? "size-8" : "size-10"
-  if (ext === "pdf") return <FileText className={`${sizeClass} text-destructive`} />
-  if (ext === "pptx") return <Presentation className={`${sizeClass} text-warning`} />
-  return <File className={`${sizeClass} text-primary`} />
 }
 
 // =============== UPLOADING STATE ===============
@@ -180,7 +170,9 @@ function SuccessCard({
 
           {/* Output file card */}
           <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 p-3 sm:gap-4 sm:p-4">
-            <div className="shrink-0">{getFileIcon(outputFileName, "sm")}</div>
+            <div className="shrink-0">
+              <FileTypeIcon fileName={outputFileName} className="size-8" />
+            </div>
             <div className="min-w-0 flex-1">
               <h4 className="truncate text-sm font-semibold text-foreground sm:text-base">{outputFileName}</h4>
               {outputFileSize && (

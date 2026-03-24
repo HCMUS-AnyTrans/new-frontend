@@ -31,29 +31,16 @@ import {
   Coins,
   Download,
   Eye,
-  File,
   FileDown,
   FileInput,
-  FileText,
   Loader2,
-  Presentation,
 } from "lucide-react";
 import { jobStatusConfig } from "@/features/dashboard/data";
 import { getFileDownloadUrl } from "@/features/documents/api/documents.api";
+import { FileTypeIcon } from "@/components/shared/file-type-icon";
 import { canPreviewTranslationJob } from "@/features/documents/utils/preview-capabilities";
 import type { TranslationJobResponse } from "@/features/dashboard/api/dashboard.api";
 import type { HistoryTableProps } from "../types";
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-function getFileIcon(name: string) {
-  const ext = name.split(".").pop()?.toLowerCase();
-  if (ext === "pdf")
-    return <FileText className="size-4 shrink-0 text-destructive" />;
-  if (ext === "pptx" || ext === "ppt")
-    return <Presentation className="size-4 shrink-0 text-warning" />;
-  return <File className="size-4 shrink-0 text-primary" />;
-}
 
 async function triggerDownload(fileId: string, fileName: string) {
   const { download_url } = await getFileDownloadUrl(fileId);
@@ -302,7 +289,7 @@ export function HistoryTable({
               >
                 <TableCell className="max-w-[180px] px-4 py-3.5 sm:max-w-[220px] lg:px-6">
                   <div className="flex items-center gap-2">
-                    {getFileIcon(fileName)}
+                    <FileTypeIcon fileName={fileName} className="size-4" />
                     <span className="truncate text-sm font-medium text-foreground">
                       {fileName}
                     </span>
