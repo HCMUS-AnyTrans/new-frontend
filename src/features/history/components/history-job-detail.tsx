@@ -20,9 +20,11 @@ import {
   ArrowRight,
   AlertCircle,
   Download,
+  Eye,
 } from 'lucide-react';
 import { jobStatusConfig } from '@/features/dashboard/data';
 import { useDownloadFile } from '@/features/documents';
+import { canPreviewTranslationJob } from '@/features/documents/utils/docx-preview';
 import { formatFileSize } from '../data';
 import type { HistoryJobDetailProps } from '../types';
 
@@ -54,11 +56,27 @@ export function HistoryJobDetail({
 }: HistoryJobDetailProps) {
   const t = useTranslations('dashboard.history');
   const tStatus = useTranslations('dashboard.status');
+  const tReview = useTranslations('documents.review');
   const { download, isDownloading } = useDownloadFile();
 
   if (!job) return null;
 
   const statusCfg = jobStatusConfig[job.status];
+  const canPreview =
+    job.status === 'succeeded' &&
+    !job.input_file?.is_expired &&
+    !job.output_file?.is_expired &&
+    canPreviewTranslationJob({
+      inputFile: job.input_file,
+      outputFile: job.output_file,
+    });
+
+  const handlePreview = () => {
+    if (!canPreview) return;
+
+    const previewUrl = `/${locale}/documents/preview?jobId=${encodeURIComponent(job.job_id)}`;
+    window.open(previewUrl, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -200,19 +218,32 @@ export function HistoryJobDetail({
                       )}
                     </div>
                   </div>
-                  {!job.output_file.is_expired && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        download(job.output_file!.id, job.output_file!.name)
-                      }
-                      disabled={isDownloading}
-                      title={t('download.translated')}
-                      className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                      <Download className="size-4" />
-                    </button>
-                  )}
+                  <div className="flex shrink-0 items-center gap-2">
+                    {canPreview && (
+                      <button
+                        type="button"
+                        onClick={handlePreview}
+                        title={tReview('preview')}
+                        className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm hover:border-primary hover:text-primary"
+                      >
+                        <Eye className="size-4" />
+                      </button>
+                    )}
+
+                    {!job.output_file.is_expired && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          download(job.output_file!.id, job.output_file!.name)
+                        }
+                        disabled={isDownloading}
+                        title={t('download.translated')}
+                        className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <Download className="size-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
               <Separator />
