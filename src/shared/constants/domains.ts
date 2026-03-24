@@ -54,7 +54,9 @@ export interface DomainOption {
 export const domains: DomainDefinition[] = [...DOMAIN_DEFINITIONS];
 
 export const nonAutoDomains: DomainDefinition[] = DOMAIN_DEFINITIONS.filter(
-  (domain): domain is (typeof DOMAIN_DEFINITIONS)[number] & { id: DomainFilterId } =>
+  (
+    domain,
+  ): domain is (typeof DOMAIN_DEFINITIONS)[number] & { id: DomainFilterId } =>
     domain.id !== 'auto',
 );
 
