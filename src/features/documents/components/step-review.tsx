@@ -5,6 +5,7 @@ import {
   RefreshCcw,
   Loader2,
   CheckCircle2,
+  Eye,
   XCircle,
   FileText,
   File,
@@ -37,8 +38,10 @@ interface StepReviewProps {
   /** Target language code */
   tgtLang: LanguageCode
   onDownload: () => void
+  onPreview?: () => void
   onReset: () => void
   isDownloading?: boolean
+  canPreview?: boolean
 }
 
 // =============== HELPERS ===============
@@ -132,12 +135,25 @@ interface SuccessCardProps {
   srcLang: LanguageCode
   tgtLang: LanguageCode
   onDownload: () => void
+  onPreview?: () => void
   isDownloading?: boolean
+  canPreview?: boolean
   t: (key: string) => string
   tLang: (key: string) => string
 }
 
-function SuccessCard({ file, jobData, srcLang, tgtLang, onDownload, isDownloading, t, tLang }: SuccessCardProps) {
+function SuccessCard({
+  file,
+  jobData,
+  srcLang,
+  tgtLang,
+  onDownload,
+  onPreview,
+  isDownloading,
+  canPreview,
+  t,
+  tLang,
+}: SuccessCardProps) {
   const outputFile = jobData?.output_file
   const outputFileName = outputFile?.name || `translated-${file.name}`
   const outputFileSize = outputFile?.size_bytes
@@ -173,20 +189,28 @@ function SuccessCard({ file, jobData, srcLang, tgtLang, onDownload, isDownloadin
             </div>
           </div>
 
-          {/* Download button */}
-          <Button onClick={onDownload} disabled={isDownloading} className="w-full" size="lg">
-            {isDownloading ? (
-              <>
-                <Loader2 className="size-4 animate-spin" />
-                {t("downloading")}
-              </>
-            ) : (
-              <>
-                <Download className="size-4" />
-                {t("download")}
-              </>
-            )}
-          </Button>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {canPreview ? (
+              <Button onClick={onPreview} variant="outline" className="w-full" size="lg">
+                <Eye className="size-4" />
+                {t("preview")}
+              </Button>
+            ) : null}
+
+            <Button onClick={onDownload} disabled={isDownloading} className="w-full" size="lg">
+              {isDownloading ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  {t("downloading")}
+                </>
+              ) : (
+                <>
+                  <Download className="size-4" />
+                  {t("download")}
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -261,8 +285,10 @@ export function StepReview({
   srcLang,
   tgtLang,
   onDownload,
+  onPreview,
   onReset,
   isDownloading,
+  canPreview,
 }: StepReviewProps) {
   const t = useTranslations("documents.review")
   const tLang = useTranslations("documents.languages")
@@ -304,7 +330,9 @@ export function StepReview({
             srcLang={srcLang}
             tgtLang={tgtLang}
             onDownload={onDownload}
+            onPreview={onPreview}
             isDownloading={isDownloading}
+            canPreview={canPreview}
             t={t}
             tLang={tLang}
           />

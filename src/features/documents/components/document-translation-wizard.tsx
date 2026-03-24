@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { TranslationStepper } from "./translation-stepper"
 import { StepUpload } from "./step-upload"
 import { StepConfigure } from "./step-configure"
@@ -25,6 +25,7 @@ import { useGlossaries, useTerms } from "@/features/glossary"
 import { useWallet } from "@/features/dashboard/hooks"
 import { useTranslationStore } from "../store/translation.store"
 import type { FontCheckItem, FontEnabledMap, FontReplacement, FontSelectionMap, LanguageCode } from "../types"
+import { canPreviewTranslationJob } from "../utils/docx-preview"
 
 function buildDefaultFontSelections(items: FontCheckItem[]): FontSelectionMap {
   return items.reduce<FontSelectionMap>((acc, item) => {
@@ -99,6 +100,7 @@ function buildFontReplacements(
 
 export function DocumentTranslationWizard() {
   const t = useTranslations("documents.upload")
+  const locale = useLocale()
 
   // Step state
   const [step, setStep] = useState<TranslationStep>(1)
@@ -400,6 +402,23 @@ export function DocumentTranslationWizard() {
     download(outputFileId, outputFileName)
   }, [jobData, file, download])
 
+  const handlePreview = useCallback(() => {
+    const previewJobId = jobData?.job_id
+    if (!previewJobId) return
+
+    const previewUrl = `/${locale}/documents/preview?jobId=${encodeURIComponent(previewJobId)}`
+    window.open(previewUrl, "_blank", "noopener,noreferrer")
+  }, [jobData?.job_id, locale])
+
+  const canPreview = useMemo(
+    () =>
+      canPreviewTranslationJob({
+        inputFile: jobData?.input_file,
+        outputFile: jobData?.output_file,
+      }),
+    [jobData?.input_file, jobData?.output_file]
+  )
+
   const handleReset = useCallback(() => {
     // Reset all states
     resetFlow()
@@ -483,8 +502,10 @@ export function DocumentTranslationWizard() {
             srcLang={config.srcLang}
             tgtLang={config.tgtLang}
             onDownload={handleDownload}
+            onPreview={handlePreview}
             onReset={handleReset}
             isDownloading={isDownloading}
+            canPreview={canPreview}
           />
         )}
       </div>
