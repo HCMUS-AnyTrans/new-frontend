@@ -23,6 +23,7 @@ import { LANGUAGE_CODE_TO_API_NAME } from '../types';
 import { extractErrorMessage } from './utils';
 import { setActiveJobId } from '../store/translation.store';
 import { walletKeys } from '@/lib/query-client';
+import { domains } from '@/shared/constants/domains';
 
 interface UploadAndTranslateState {
   flowStatus: TranslationFlowStatus;
@@ -154,12 +155,16 @@ function buildJobDto(
   glossaryTerms: Array<{ srcTerm: string; tgtTerm: string }> = [],
   fontReplacements: FontReplacement[] = [],
 ): CreateTranslationJobDto {
+  const selectedDomainValue = domains.find(
+    (domain) => domain.id === config.domain,
+  )?.value;
+
   const dto: CreateTranslationJobDto = {
     file_id: fileId,
     src_lang: LANGUAGE_CODE_TO_API_NAME[config.srcLang],
     tgt_lang: LANGUAGE_CODE_TO_API_NAME[config.tgtLang],
     doc_tone: config.tone || undefined,
-    doc_domain: config.domain || 'auto',
+    doc_domain: selectedDomainValue || 'Auto',
   };
 
   const mergedTerms = new Map<string, { src: string; tgt: string }>();

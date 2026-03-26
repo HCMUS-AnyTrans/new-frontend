@@ -17,28 +17,28 @@ import {
 
 type DomainDefinition = {
   id: string;
-  name: string;
+  value: string;
   icon: LucideIcon;
 };
 
 const DOMAIN_DEFINITIONS = [
-  { id: 'auto', name: 'Tự động phát hiện', icon: FolderOpen },
-  { id: 'general', name: 'Tổng quát', icon: Globe },
-  { id: 'it_software', name: 'Phần mềm & CNTT', icon: Laptop },
-  { id: 'medical', name: 'Y tế & Chăm sóc sức khỏe', icon: Stethoscope },
-  { id: 'legal', name: 'Pháp lý', icon: Scale },
-  { id: 'finance', name: 'Tài chính & Ngân hàng', icon: Landmark },
-  { id: 'engineering', name: 'Kỹ thuật & Công nghiệp', icon: Wrench },
-  { id: 'science_academic', name: 'Khoa học & Học thuật', icon: FlaskConical },
-  { id: 'commerce', name: 'Thương mại & Bán lẻ', icon: ShoppingCart },
-  { id: 'tourism', name: 'Du lịch & Khách sạn', icon: Plane },
-  { id: 'media_entertainment', name: 'Truyền thông & Giải trí', icon: Film },
+  { id: 'auto', value: 'Auto', icon: FolderOpen },
+  { id: 'general', value: 'General', icon: Globe },
+  { id: 'it_software', value: 'IT & Software', icon: Laptop },
+  { id: 'medical', value: 'Medical', icon: Stethoscope },
+  { id: 'legal', value: 'Legal', icon: Scale },
+  { id: 'finance', value: 'Finance', icon: Landmark },
+  { id: 'engineering', value: 'Engineering', icon: Wrench },
+  { id: 'science_academic', value: 'Science & Academic', icon: FlaskConical },
+  { id: 'commerce', value: 'Commerce & Retail', icon: ShoppingCart },
+  { id: 'tourism', value: 'Tourism & Hospitality', icon: Plane },
+  { id: 'media_entertainment', value: 'Media & Entertainment', icon: Film },
   {
     id: 'marketing_advertising',
-    name: 'Marketing & Quảng cáo',
+    value: 'Marketing & Advertising',
     icon: Megaphone,
   },
-  { id: 'administrative', name: 'Hành chính', icon: FileText },
+  { id: 'administrative', value: 'Administrative', icon: FileText },
 ] as const satisfies readonly DomainDefinition[];
 
 export type SharedDomainId = (typeof DOMAIN_DEFINITIONS)[number]['id'];
