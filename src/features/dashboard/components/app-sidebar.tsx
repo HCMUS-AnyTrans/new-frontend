@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   LayoutDashboard,
@@ -39,11 +39,13 @@ const navItems: NavItem[] = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const t = useTranslations("dashboard.sidebar");
   const { toggleSidebar, open } = useSidebar();
 
   // Remove locale prefix from pathname for matching
   const pathnameWithoutLocale = pathname.replace(/^\/(vi|en)/, "");
+  const previewSource = searchParams.get("from");
 
   return (
     <Sidebar
@@ -54,9 +56,12 @@ export function AppSidebar() {
       <SidebarContent className={`pt-4 ${open ? "px-2" : "px-0"}`}>
         <SidebarMenu className="gap-1">
           {navItems.map((item) => {
-            const isActive =
-              pathnameWithoutLocale === item.href ||
-              pathnameWithoutLocale.startsWith(item.href + "/");
+            const isPreviewFromHistory =
+              pathnameWithoutLocale === "/documents/preview" && previewSource === "history";
+            const isActive = isPreviewFromHistory
+              ? item.href === "/history"
+              : pathnameWithoutLocale === item.href ||
+                pathnameWithoutLocale.startsWith(item.href + "/");
             const title = t(item.titleKey);
 
             return (

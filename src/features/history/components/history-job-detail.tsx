@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import {
   Sheet,
   SheetContent,
@@ -44,6 +45,7 @@ export function HistoryJobDetail({
   onOpenChange,
   locale,
 }: HistoryJobDetailProps) {
+  const router = useRouter();
   const t = useTranslations('dashboard.history');
   const tStatus = useTranslations('dashboard.status');
   const tReview = useTranslations('documents.review');
@@ -64,8 +66,8 @@ export function HistoryJobDetail({
   const handlePreview = () => {
     if (!canPreview) return;
 
-    const previewUrl = `/${locale}/documents/preview?jobId=${encodeURIComponent(job.job_id)}`;
-    window.open(previewUrl, '_blank', 'noopener,noreferrer');
+    const previewUrl = `/${locale}/documents/preview?jobId=${encodeURIComponent(job.job_id)}&from=history`;
+    router.push(previewUrl);
   };
 
   return (

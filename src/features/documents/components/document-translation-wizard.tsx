@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react"
 import { useLocale, useTranslations } from "next-intl"
+import { useRouter } from "next/navigation"
 import { TranslationStepper } from "./translation-stepper"
 import { StepUpload } from "./step-upload"
 import { StepConfigure } from "./step-configure"
@@ -100,6 +101,7 @@ function buildFontReplacements(
 
 export function DocumentTranslationWizard() {
   const t = useTranslations("documents.upload")
+  const router = useRouter()
   const locale = useLocale()
 
   // Step state
@@ -407,8 +409,8 @@ export function DocumentTranslationWizard() {
     if (!previewJobId) return
 
     const previewUrl = `/${locale}/documents/preview?jobId=${encodeURIComponent(previewJobId)}`
-    window.open(previewUrl, "_blank", "noopener,noreferrer")
-  }, [jobData?.job_id, locale])
+    router.push(previewUrl)
+  }, [jobData?.job_id, locale, router])
 
   const canPreview = useMemo(
     () =>

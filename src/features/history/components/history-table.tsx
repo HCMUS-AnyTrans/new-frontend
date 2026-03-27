@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -224,6 +225,7 @@ export function HistoryTable({
   compact = false,
   hideActions = false,
 }: HistoryTableProps) {
+  const router = useRouter();
   const tJobs = useTranslations("dashboard.recentJobs");
   const tStatus = useTranslations("dashboard.status");
   const tHistory = useTranslations("dashboard.history");
@@ -277,8 +279,8 @@ export function HistoryTable({
             const handlePreview = () => {
               if (!canPreview) return;
 
-              const previewUrl = `/${locale}/documents/preview?jobId=${encodeURIComponent(job.job_id)}`;
-              window.open(previewUrl, "_blank", "noopener,noreferrer");
+              const previewUrl = `/${locale}/documents/preview?jobId=${encodeURIComponent(job.job_id)}&from=history`;
+              router.push(previewUrl);
             };
 
             return (

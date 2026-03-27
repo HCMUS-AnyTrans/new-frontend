@@ -1,23 +1,25 @@
 'use client';
 
-import { Eye, FileWarning, Loader2 } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { ArrowLeft, FileWarning, Loader2 } from 'lucide-react';
+import { useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { PdfPreviewPane } from './pdf-preview-pane';
 import { useTranslationJob } from '../hooks';
 import { canPreviewTranslationJob } from '../utils/preview-capabilities';
-import { Link } from '@/i18n/navigation';
 
 function PreviewState({
   title,
   description,
-  ctaLabel,
+  backLabel,
+  onBack,
 }: {
   title: string;
   description: string;
-  ctaLabel: string;
+  backLabel: string;
+  onBack: () => void;
 }) {
   return (
     <div className="flex min-h-[calc(100vh-var(--dashboard-header-height)-4rem)] items-center justify-center">
@@ -26,8 +28,14 @@ function PreviewState({
         <AlertTitle>{title}</AlertTitle>
         <AlertDescription className="mt-2 space-y-4">
           <p>{description}</p>
-          <Button asChild variant="outline">
-            <Link href="/documents">{ctaLabel}</Link>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBack}
+            className="-ml-2 gap-1 text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="size-4" />
+            {backLabel}
           </Button>
         </AlertDescription>
       </Alert>
@@ -36,9 +44,21 @@ function PreviewState({
 }
 
 export function DocumentPreviewScreen() {
+  const router = useRouter();
+  const locale = useLocale();
   const t = useTranslations('documents.preview');
+  const tCommon = useTranslations('common');
   const searchParams = useSearchParams();
   const jobId = searchParams.get('jobId');
+
+  const handleBack = useCallback(() => {
+    if (window.history.length > 1) {
+      router.back();
+      return;
+    }
+
+    router.push(`/${locale}/documents`);
+  }, [locale, router]);
 
   const {
     data: job,
@@ -54,7 +74,8 @@ export function DocumentPreviewScreen() {
       <PreviewState
         title={t('missingJobTitle')}
         description={t('missingJobDescription')}
-        ctaLabel={t('backToDocuments')}
+        backLabel={tCommon('back')}
+        onBack={handleBack}
       />
     );
   }
@@ -73,7 +94,8 @@ export function DocumentPreviewScreen() {
       <PreviewState
         title={t('loadErrorTitle')}
         description={t('loadErrorDescription')}
-        ctaLabel={t('backToDocuments')}
+        backLabel={tCommon('back')}
+        onBack={handleBack}
       />
     );
   }
@@ -83,7 +105,8 @@ export function DocumentPreviewScreen() {
       <PreviewState
         title={t('notReadyTitle')}
         description={t('notReadyDescription')}
-        ctaLabel={t('backToDocuments')}
+        backLabel={tCommon('back')}
+        onBack={handleBack}
       />
     );
   }
@@ -96,7 +119,8 @@ export function DocumentPreviewScreen() {
       <PreviewState
         title={t('unsupportedTitle')}
         description={t('unsupportedDescription')}
-        ctaLabel={t('backToDocuments')}
+        backLabel={tCommon('back')}
+        onBack={handleBack}
       />
     );
   }
@@ -104,23 +128,25 @@ export function DocumentPreviewScreen() {
   return (
     <div className="-mx-4 flex min-h-[calc(100vh-var(--dashboard-header-height))] flex-col px-4 md:-mx-[var(--dashboard-content-margin)] md:px-6 xl:px-8">
       <div className="border-b border-border/60 bg-muted/20 py-4">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleBack}
+            className="-ml-2 mb-3 gap-1 text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="size-4" />
+            {tCommon('back')}
+          </Button>
+
           <div>
-            <div className="flex items-center gap-2 text-primary">
-              <Eye className="size-4" />
-              <span className="text-sm font-medium">{t('eyebrow')}</span>
-            </div>
-            <h1 className="mt-1 text-2xl font-semibold text-foreground">
+            <h1 className="text-2xl font-semibold text-foreground">
               {t('title')}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
               {t('description')}
             </p>
           </div>
-
-          <Button asChild variant="outline">
-            <Link href="/documents">{t('backToDocuments')}</Link>
-          </Button>
         </div>
       </div>
 
