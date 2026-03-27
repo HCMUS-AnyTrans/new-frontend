@@ -43,7 +43,7 @@ export function PdfPreviewPane({
       setNumPages(0);
 
       try {
-        const { download_url } = await getFileDownloadUrl(fileId);
+        const { download_url } = await getFileDownloadUrl(fileId, { pdf: true });
 
         if (!isActive) return;
 

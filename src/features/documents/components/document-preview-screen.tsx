@@ -5,10 +5,9 @@ import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { DocxPreviewPane } from './docx-preview-pane';
 import { PdfPreviewPane } from './pdf-preview-pane';
 import { useTranslationJob } from '../hooks';
-import { getPreviewConfig } from '../utils/preview-capabilities';
+import { canPreviewTranslationJob } from '../utils/preview-capabilities';
 import { Link } from '@/i18n/navigation';
 
 function PreviewState({
@@ -89,12 +88,10 @@ export function DocumentPreviewScreen() {
     );
   }
 
-  const previewConfig = getPreviewConfig({
+  if (!canPreviewTranslationJob({
     inputFile: job.input_file,
     outputFile: job.output_file,
-  });
-
-  if (!previewConfig) {
+  })) {
     return (
       <PreviewState
         title={t('unsupportedTitle')}
@@ -129,25 +126,15 @@ export function DocumentPreviewScreen() {
 
       <div className="flex min-h-0 flex-1 py-4 lg:py-6">
         <div className="grid min-h-0 w-full grid-cols-1 gap-4 xl:grid-cols-2 xl:gap-6">
-          {previewConfig.original === 'pdf' ? (
-            <PdfPreviewPane
-              fileId={job.input_file.id}
-              fileName={job.input_file.name}
-              title={t('original')}
-              loadingLabel={t('loadingOriginal')}
-              errorLabel={t('renderError')}
-            />
-          ) : (
-            <DocxPreviewPane
-              fileId={job.input_file.id}
-              fileName={job.input_file.name}
-              title={t('original')}
-              loadingLabel={t('loadingOriginal')}
-              errorLabel={t('renderError')}
-            />
-          )}
+          <PdfPreviewPane
+            fileId={job.input_file.id}
+            fileName={job.input_file.name}
+            title={t('original')}
+            loadingLabel={t('loadingOriginal')}
+            errorLabel={t('renderError')}
+          />
 
-          <DocxPreviewPane
+          <PdfPreviewPane
             fileId={job.output_file.id}
             fileName={job.output_file.name}
             title={t('translated')}

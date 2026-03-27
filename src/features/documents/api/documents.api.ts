@@ -9,6 +9,7 @@ import type {
   CreateTranslationJobDto,
   TranslationJobResponse,
   FileDownloadUrlResponse,
+  FileDownloadUrlOptions,
   FontCheckResponse,
 } from '../types';
 
@@ -143,9 +144,17 @@ export async function checkFonts(dto: {
  */
 export async function getFileDownloadUrl(
   fileId: string,
+  options: FileDownloadUrlOptions = {},
 ): Promise<FileDownloadUrlResponse> {
+  const pdf = options.pdf ?? false;
+
   const response = await apiClient.get<FileDownloadUrlResponse>(
     `/files/${fileId}/download`,
+    {
+      params: {
+        pdf,
+      },
+    },
   );
   return response.data;
 }

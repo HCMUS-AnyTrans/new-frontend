@@ -141,8 +141,8 @@
       "loadErrorDescription": "An error occurred while loading the document data for preview.",
       "notReadyTitle": "Preview not ready",
       "notReadyDescription": "The translation job is not finished yet or there is no output file to display.",
-      "unsupportedTitle": "Unsupported format",
-      "unsupportedDescription": "Preview is currently available only for PDF + DOCX and DOCX + DOCX file pairs."
+      "unsupportedTitle": "Preview unavailable",
+      "unsupportedDescription": "Preview is available only when the translation job has both original and translated files ready for PDF rendering."
     },
     "translationResult": {
       "success": "Translation completed",

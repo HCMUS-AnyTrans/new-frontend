@@ -369,6 +369,11 @@ export async function getFileDownloadApi(
 ): Promise<FileDownloadResponse> {
   const response = await apiClient.get<FileDownloadResponse>(
     `/files/${fileId}/download`,
+    {
+      params: {
+        pdf: false,
+      },
+    },
   );
   return response.data;
 }

@@ -233,6 +233,10 @@ export interface FileDownloadUrlResponse {
   download_url: string;
 }
 
+export interface FileDownloadUrlOptions {
+  pdf?: boolean;
+}
+
 // =============== UPLOAD FLOW STATE ===============
 
 /**
