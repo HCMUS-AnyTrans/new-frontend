@@ -3,59 +3,110 @@
 import { ArrowLeft } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
-import type { DocumentPreviewDisplayMode } from '../hooks/use-document-preview-state';
+import type {
+  DocumentPreviewDisplayMode,
+  PreviewZoomMode,
+} from '../hooks/use-document-preview-controller';
+import { PreviewModeGroup } from './preview-mode-group';
+import { PreviewZoomGroup } from './preview-zoom-group';
+import { PreviewPageNavigationGroup } from './preview-page-navigation-group';
 
 interface DocumentPreviewTopBarProps {
   displayMode: DocumentPreviewDisplayMode;
+  zoomMode: PreviewZoomMode;
+  zoomScale: number;
+  currentPage: number;
+  totalPages: number | null;
+  jumpToPageInput: string;
+  canJumpToPage: boolean;
   onBack: () => void;
   onDisplayModeChange: (mode: DocumentPreviewDisplayMode) => void;
+  onZoomModeChange: (mode: PreviewZoomMode) => void;
+  onZoomScaleChange: (scale: number) => void;
+  onZoomIn: () => void;
+  onZoomOut: () => void;
+  onZoomReset: () => void;
+  onPreviousPage: () => void;
+  onNextPage: () => void;
+  onJumpToPageInputChange: (value: string) => void;
+  onJumpToPageCommit: () => void;
 }
 
-export function DocumentPreviewTopBar({
-  displayMode,
-  onBack,
-  onDisplayModeChange,
-}: DocumentPreviewTopBarProps) {
+export function DocumentPreviewTopBar(props: DocumentPreviewTopBarProps) {
   const t = useTranslations('documents.preview');
   const tCommon = useTranslations('common');
+  const {
+    displayMode,
+    zoomMode,
+    zoomScale,
+    currentPage,
+    totalPages,
+    jumpToPageInput,
+    canJumpToPage,
+    onBack,
+    onDisplayModeChange,
+    onZoomModeChange,
+    onZoomScaleChange,
+    onZoomIn,
+    onZoomOut,
+    onZoomReset,
+    onPreviousPage,
+    onNextPage,
+    onJumpToPageInputChange,
+    onJumpToPageCommit,
+  } = props;
+
+  const zoomPercent = Math.round(zoomScale * 100);
+  const zoomIndicator =
+    zoomMode === 'custom'
+      ? `${zoomPercent}%`
+      : zoomMode === 'fit-page'
+        ? t('fitPage')
+        : t('fitWidth');
 
   return (
-    <div className="flex flex-wrap items-center gap-2 py-2 md:py-1">
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onBack}
-        className="-ml-2 shrink-0 gap-1 text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        {tCommon('back')}
-      </Button>
+    <div className="sticky top-0 z-20 -mx-4 border-b border-border/60 bg-background/95 px-4 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:-mx-6 md:px-6 xl:-mx-8 xl:px-8">
+      <div className="flex items-center justify-between gap-3">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onBack}
+          className="-ml-2 shrink-0 gap-1 text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" />
+          {tCommon('back')}
+        </Button>
 
-      <div
-        role="group"
-        aria-label={t('displayModeLabel')}
-        className="ml-auto inline-flex max-w-full flex-wrap items-center justify-end gap-1 rounded-lg border border-border/60 bg-muted/20 p-1 sm:flex-nowrap"
-      >
-        <Button
-          type="button"
-          size="xs"
-          variant={displayMode === 'paged' ? 'secondary' : 'ghost'}
-          className="h-7 min-w-0 flex-1 px-2.5 sm:flex-none sm:px-3"
-          onClick={() => onDisplayModeChange('paged')}
-          aria-pressed={displayMode === 'paged'}
-        >
-          {t('pagedMode')}
-        </Button>
-        <Button
-          type="button"
-          size="xs"
-          variant={displayMode === 'continuous' ? 'secondary' : 'ghost'}
-          className="h-7 min-w-0 flex-1 px-2.5 sm:flex-none sm:px-3"
-          onClick={() => onDisplayModeChange('continuous')}
-          aria-pressed={displayMode === 'continuous'}
-        >
-          {t('continuousMode')}
-        </Button>
+        <div className="min-w-0 flex-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="ml-auto flex w-max min-w-full items-center justify-end gap-2 whitespace-nowrap">
+            <PreviewModeGroup
+              displayMode={displayMode}
+              onDisplayModeChange={onDisplayModeChange}
+            />
+
+            <PreviewZoomGroup
+              zoomMode={zoomMode}
+              zoomScale={zoomScale}
+              zoomIndicator={zoomIndicator}
+              onZoomModeChange={onZoomModeChange}
+              onZoomScaleChange={onZoomScaleChange}
+              onZoomIn={onZoomIn}
+              onZoomOut={onZoomOut}
+              onZoomReset={onZoomReset}
+            />
+
+            <PreviewPageNavigationGroup
+              currentPage={currentPage}
+              totalPages={totalPages}
+              jumpToPageInput={jumpToPageInput}
+              canJumpToPage={canJumpToPage}
+              onPreviousPage={onPreviousPage}
+              onNextPage={onNextPage}
+              onJumpToPageInputChange={onJumpToPageInputChange}
+              onJumpToPageCommit={onJumpToPageCommit}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

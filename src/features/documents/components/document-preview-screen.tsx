@@ -8,7 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { DocumentPreviewTopBar } from './document-preview-top-bar';
 import { PdfPreviewPane } from './pdf-preview-pane';
-import { useDocumentPreviewState, useTranslationJob } from '../hooks';
+import {
+  useDocumentPreviewController,
+  useTranslationJob,
+  type DocumentPreviewPaneId,
+} from '../hooks';
 import { canPreviewTranslationJob } from '../utils/preview-capabilities';
 
 function PreviewState({
@@ -52,6 +56,8 @@ export function DocumentPreviewScreen() {
   const searchParams = useSearchParams();
   const jobId = searchParams.get('jobId');
   const [continuousScrollRatio, setContinuousScrollRatio] = useState(0);
+  const [continuousInteractionPane, setContinuousInteractionPane] =
+    useState<DocumentPreviewPaneId>('input');
 
   const handleBack = useCallback(() => {
     if (window.history.length > 1) {
@@ -73,24 +79,57 @@ export function DocumentPreviewScreen() {
 
   const inputFileId = job?.input_file?.id ?? null;
   const outputFileId = job?.output_file?.id ?? null;
-  const {
-    currentPage,
-    pageInputValue,
-    maxSyncedPage,
-    canNavigate,
-    displayMode,
-    setDisplayMode,
-    handlePageInputChange,
-    handlePageInputCommit,
-    handlePreviousPage,
-    handleNextPage,
-    handleInputNumPagesChange,
-    handleOutputNumPagesChange,
-  } = useDocumentPreviewState({
+  const previewState = useDocumentPreviewController({
     jobId,
     inputFileId,
     outputFileId,
   });
+  const {
+    currentPage,
+    currentVisiblePage,
+    pageInputValue,
+    jumpToPageInput,
+    continuousJumpCommand,
+    maxAvailablePage,
+    canNavigate,
+    displayMode,
+    zoomMode,
+    zoomScale,
+    setDisplayMode,
+    setZoomMode,
+    setZoomScale,
+    incrementZoom,
+    decrementZoom,
+    resetZoom,
+    setCurrentVisiblePage,
+    handlePageInputChange,
+    handlePageInputCommit,
+    handleJumpToPageInputChange,
+    handleJumpToPageCommit,
+    handlePreviousPage,
+    handleNextPage,
+    goToPreviousPage,
+    goToNextPage,
+    handleInputNumPagesChange,
+    handleOutputNumPagesChange,
+  } = previewState;
+
+  const sharedCurrentPage =
+    displayMode === 'continuous' ? currentVisiblePage : currentPage;
+  const sharedPageValue =
+    displayMode === 'continuous' ? jumpToPageInput : pageInputValue;
+  const handleSharedPageInputChange =
+    displayMode === 'continuous'
+      ? handleJumpToPageInputChange
+      : handlePageInputChange;
+  const handleSharedPageCommit =
+    displayMode === 'continuous'
+      ? handleJumpToPageCommit
+      : handlePageInputCommit;
+  const handleSharedPreviousPage =
+    displayMode === 'continuous' ? goToPreviousPage : handlePreviousPage;
+  const handleSharedNextPage =
+    displayMode === 'continuous' ? goToNextPage : handleNextPage;
 
   const handleContinuousScrollRatioChange = useCallback((nextRatio: number) => {
     setContinuousScrollRatio((currentRatio) => {
@@ -101,6 +140,15 @@ export function DocumentPreviewScreen() {
       return nextRatio;
     });
   }, []);
+
+  const handleContinuousInteractionStart = useCallback(
+    (pane: DocumentPreviewPaneId) => {
+      setContinuousInteractionPane((currentPane) =>
+        currentPane === pane ? currentPane : pane,
+      );
+    },
+    [],
+  );
 
   if (!jobId) {
     return (
@@ -161,53 +209,70 @@ export function DocumentPreviewScreen() {
   }
 
   return (
-    <div className="-mx-4 flex h-[calc(100vh-var(--dashboard-header-height))] flex-col overflow-hidden px-4 md:-mx-[var(--dashboard-content-margin)] md:px-6 xl:px-8">
+    <div className="gap-1 -mx-4 flex h-[calc(100vh-var(--dashboard-header-height))] flex-col overflow-hidden px-4 md:-mx-[var(--dashboard-content-margin)] md:px-6 xl:px-8">
       <DocumentPreviewTopBar
         displayMode={displayMode}
+        zoomMode={zoomMode}
+        zoomScale={zoomScale}
+        currentPage={sharedCurrentPage}
+        totalPages={maxAvailablePage}
+        jumpToPageInput={sharedPageValue}
+        canJumpToPage={canNavigate}
         onBack={handleBack}
         onDisplayModeChange={setDisplayMode}
+        onZoomModeChange={setZoomMode}
+        onZoomScaleChange={setZoomScale}
+        onZoomIn={incrementZoom}
+        onZoomOut={decrementZoom}
+        onZoomReset={resetZoom}
+        onJumpToPageInputChange={handleSharedPageInputChange}
+        onJumpToPageCommit={handleSharedPageCommit}
+        onPreviousPage={handleSharedPreviousPage}
+        onNextPage={handleSharedNextPage}
       />
 
-      <div className="flex min-h-0 flex-1 pb-1 lg:pb-2 ">
+      <div className="flex min-h-0 flex-1 pb-1 lg:pb-2">
         <div className="grid min-h-0 w-full grid-cols-1 gap-4 xl:grid-cols-2 xl:gap-6">
           <PdfPreviewPane
+            paneId="input"
             fileId={job.input_file.id}
             fileName={job.input_file.name}
             title={t('original')}
             loadingLabel={t('loadingOriginal')}
             errorLabel={t('renderError')}
             currentPage={currentPage}
-            pageInputValue={pageInputValue}
-            canNavigate={canNavigate}
-            maxSyncedPage={maxSyncedPage}
             displayMode={displayMode}
+            zoomMode={zoomMode}
+            zoomScale={zoomScale}
+            currentVisiblePage={currentVisiblePage}
+            continuousJumpCommand={continuousJumpCommand}
+            isVisiblePageAuthority={continuousInteractionPane === 'input'}
             continuousScrollRatio={continuousScrollRatio}
+            onContinuousInteractionStart={handleContinuousInteractionStart}
             onNumPagesChange={handleInputNumPagesChange}
             onContinuousScrollRatioChange={handleContinuousScrollRatioChange}
-            onPageInputChange={handlePageInputChange}
-            onPageInputCommit={handlePageInputCommit}
-            onPreviousPage={handlePreviousPage}
-            onNextPage={handleNextPage}
+            onCurrentVisiblePageChange={setCurrentVisiblePage}
           />
 
           <PdfPreviewPane
+            paneId="output"
             fileId={job.output_file.id}
             fileName={job.output_file.name}
             title={t('translated')}
             loadingLabel={t('loadingTranslated')}
             errorLabel={t('renderError')}
             currentPage={currentPage}
-            pageInputValue={pageInputValue}
-            canNavigate={canNavigate}
-            maxSyncedPage={maxSyncedPage}
             displayMode={displayMode}
+            zoomMode={zoomMode}
+            zoomScale={zoomScale}
+            currentVisiblePage={currentVisiblePage}
+            continuousJumpCommand={continuousJumpCommand}
+            isVisiblePageAuthority={continuousInteractionPane === 'output'}
             continuousScrollRatio={continuousScrollRatio}
+            onContinuousInteractionStart={handleContinuousInteractionStart}
             onNumPagesChange={handleOutputNumPagesChange}
             onContinuousScrollRatioChange={handleContinuousScrollRatioChange}
-            onPageInputChange={handlePageInputChange}
-            onPageInputCommit={handlePageInputCommit}
-            onPreviousPage={handlePreviousPage}
-            onNextPage={handleNextPage}
+            onCurrentVisiblePageChange={setCurrentVisiblePage}
           />
         </div>
       </div>
