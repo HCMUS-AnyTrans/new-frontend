@@ -140,7 +140,7 @@
       "pageStatus": "Page {current} / {total}",
       "pageInputLabel": "Go to page",
       "syncedThrough": "Synced through page {page}",
-      "displayModeLabel": "Preview display mode",
+      "displayModeLabel": "Display mode",
       "pagedMode": "Paged",
       "continuousMode": "Continuous",
       "backToDocuments": "Back to documents",

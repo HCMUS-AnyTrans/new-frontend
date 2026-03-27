@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useReducer, useState } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 
 function clampPage(page: number, maxPage: number | null): number {
   if (!maxPage) {
@@ -15,21 +15,26 @@ type PreviewNavigationState = {
   pageInputValue: string;
   inputNumPages: number | null;
   outputNumPages: number | null;
+  displayMode: DocumentPreviewDisplayMode;
 };
 
+export type DocumentPreviewDisplayMode = 'paged' | 'continuous';
+
 type PreviewNavigationAction =
-  | { type: 'reset' }
+  | { type: 'reset-navigation' }
   | { type: 'commit-page'; page: number; maxPage: number | null }
   | { type: 'set-page-input'; value: string }
   | { type: 'set-input-num-pages'; numPages: number | null }
   | { type: 'set-output-num-pages'; numPages: number | null }
-  | { type: 'clamp-page'; maxPage: number };
+  | { type: 'clamp-page'; maxPage: number }
+  | { type: 'set-display-mode'; displayMode: DocumentPreviewDisplayMode };
 
 const initialPreviewNavigationState: PreviewNavigationState = {
   currentPage: 1,
   pageInputValue: '1',
   inputNumPages: null,
   outputNumPages: null,
+  displayMode: 'paged',
 };
 
 function previewNavigationReducer(
@@ -37,8 +42,11 @@ function previewNavigationReducer(
   action: PreviewNavigationAction,
 ): PreviewNavigationState {
   switch (action.type) {
-    case 'reset':
-      return initialPreviewNavigationState;
+    case 'reset-navigation':
+      return {
+        ...initialPreviewNavigationState,
+        displayMode: state.displayMode,
+      };
     case 'commit-page': {
       const committedPage = clampPage(action.page, action.maxPage);
 
@@ -95,6 +103,15 @@ function previewNavigationReducer(
         pageInputValue: String(clampedPage),
       };
     }
+    case 'set-display-mode':
+      if (state.displayMode === action.displayMode) {
+        return state;
+      }
+
+      return {
+        ...state,
+        displayMode: action.displayMode,
+      };
     default:
       return state;
   }
@@ -110,8 +127,7 @@ export function useDocumentPreviewState(params: {
     previewNavigationReducer,
     initialPreviewNavigationState,
   );
-  const [displayMode, setDisplayMode] = useState<'paged' | 'continuous'>('paged');
-  const { currentPage, pageInputValue, inputNumPages, outputNumPages } = previewState;
+  const { currentPage, pageInputValue, inputNumPages, outputNumPages, displayMode } = previewState;
 
   const maxSyncedPage =
     inputNumPages && outputNumPages ? Math.min(inputNumPages, outputNumPages) : null;
@@ -162,8 +178,12 @@ export function useDocumentPreviewState(params: {
     dispatch({ type: 'set-output-num-pages', numPages });
   }, []);
 
+  const setDisplayMode = useCallback((nextDisplayMode: DocumentPreviewDisplayMode) => {
+    dispatch({ type: 'set-display-mode', displayMode: nextDisplayMode });
+  }, []);
+
   useEffect(() => {
-    dispatch({ type: 'reset' });
+    dispatch({ type: 'reset-navigation' });
   }, [inputFileId, jobId, outputFileId]);
 
   useEffect(() => {

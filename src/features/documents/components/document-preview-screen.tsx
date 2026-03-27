@@ -1,7 +1,7 @@
 'use client';
 
 import { ArrowLeft, FileWarning, Loader2 } from 'lucide-react';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
@@ -51,6 +51,7 @@ export function DocumentPreviewScreen() {
   const tCommon = useTranslations('common');
   const searchParams = useSearchParams();
   const jobId = searchParams.get('jobId');
+  const [continuousScrollRatio, setContinuousScrollRatio] = useState(0);
 
   const handleBack = useCallback(() => {
     if (window.history.length > 1) {
@@ -90,6 +91,16 @@ export function DocumentPreviewScreen() {
     inputFileId,
     outputFileId,
   });
+
+  const handleContinuousScrollRatioChange = useCallback((nextRatio: number) => {
+    setContinuousScrollRatio((currentRatio) => {
+      if (Math.abs(currentRatio - nextRatio) < 0.001) {
+        return currentRatio;
+      }
+
+      return nextRatio;
+    });
+  }, []);
 
   if (!jobId) {
     return (
@@ -133,10 +144,12 @@ export function DocumentPreviewScreen() {
     );
   }
 
-  if (!canPreviewTranslationJob({
-    inputFile: job.input_file,
-    outputFile: job.output_file,
-  })) {
+  if (
+    !canPreviewTranslationJob({
+      inputFile: job.input_file,
+      outputFile: job.output_file,
+    })
+  ) {
     return (
       <PreviewState
         title={t('unsupportedTitle')}
@@ -148,14 +161,14 @@ export function DocumentPreviewScreen() {
   }
 
   return (
-    <div className="-mx-4 flex min-h-[calc(100vh-var(--dashboard-header-height))] flex-col px-4 md:-mx-[var(--dashboard-content-margin)] md:px-6 xl:px-8">
+    <div className="-mx-4 flex h-[calc(100vh-var(--dashboard-header-height))] flex-col overflow-hidden px-4 md:-mx-[var(--dashboard-content-margin)] md:px-6 xl:px-8">
       <DocumentPreviewTopBar
         displayMode={displayMode}
         onBack={handleBack}
         onDisplayModeChange={setDisplayMode}
       />
 
-      <div className="flex min-h-0 flex-1 pb-3 pt-1 lg:pb-4 lg:pt-2">
+      <div className="flex min-h-0 flex-1 pb-1 lg:pb-2 ">
         <div className="grid min-h-0 w-full grid-cols-1 gap-4 xl:grid-cols-2 xl:gap-6">
           <PdfPreviewPane
             fileId={job.input_file.id}
@@ -168,7 +181,9 @@ export function DocumentPreviewScreen() {
             canNavigate={canNavigate}
             maxSyncedPage={maxSyncedPage}
             displayMode={displayMode}
+            continuousScrollRatio={continuousScrollRatio}
             onNumPagesChange={handleInputNumPagesChange}
+            onContinuousScrollRatioChange={handleContinuousScrollRatioChange}
             onPageInputChange={handlePageInputChange}
             onPageInputCommit={handlePageInputCommit}
             onPreviousPage={handlePreviousPage}
@@ -186,7 +201,9 @@ export function DocumentPreviewScreen() {
             canNavigate={canNavigate}
             maxSyncedPage={maxSyncedPage}
             displayMode={displayMode}
+            continuousScrollRatio={continuousScrollRatio}
             onNumPagesChange={handleOutputNumPagesChange}
+            onContinuousScrollRatioChange={handleContinuousScrollRatioChange}
             onPageInputChange={handlePageInputChange}
             onPageInputCommit={handlePageInputCommit}
             onPreviousPage={handlePreviousPage}

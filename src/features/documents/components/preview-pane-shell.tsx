@@ -20,22 +20,28 @@ export function PreviewPaneShell({
   errorLabel,
   children,
 }: PreviewPaneShellProps) {
+  const errorMessage = error || errorLabel;
+
   return (
-    <Card className="flex h-full min-h-0 flex-col overflow-hidden border-border/60 bg-background shadow-sm">
+    <Card className="flex h-full min-h-0 flex-col overflow-hidden border-border/60 bg-background py-0 shadow-sm">
       <CardContent className="min-h-0 flex-1 overflow-hidden p-0">
-        <div className="relative h-full min-h-[320px]">
+        <div className="relative flex h-full min-h-[280px] flex-col" aria-busy={isLoading}>
           <div className={isLoading || error ? 'invisible h-full' : 'h-full'}>{children}</div>
 
           {isLoading ? (
-            <div className="absolute inset-0 flex items-center justify-center gap-3 bg-muted/10 px-6 text-sm text-muted-foreground">
+            <div
+              className="absolute inset-0 flex items-center justify-center gap-3 bg-background/80 px-6 text-sm text-muted-foreground backdrop-blur-[1px]"
+              role="status"
+              aria-live="polite"
+            >
               <Loader2 className="size-4 animate-spin" />
               {loadingLabel}
             </div>
           ) : error ? (
-            <div className="absolute inset-0 p-4">
-              <Alert variant="destructive">
+            <div className="absolute inset-0 flex items-center p-4" role="alert" aria-live="assertive">
+              <Alert variant="destructive" className="shadow-none">
                 <AlertCircle className="size-4" />
-                <AlertDescription>{errorLabel}</AlertDescription>
+                <AlertDescription>{errorMessage}</AlertDescription>
               </Alert>
             </div>
           ) : null}
