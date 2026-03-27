@@ -3,3 +3,4 @@ export * from './use-font-check';
 export * from './use-translation-job-socket';
 export * from './use-translation-job';
 export * from './use-download-file';
+export * from './use-document-preview-state';

@@ -6,8 +6,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { DocumentPreviewTopBar } from './document-preview-top-bar';
 import { PdfPreviewPane } from './pdf-preview-pane';
-import { useTranslationJob } from '../hooks';
+import { useDocumentPreviewState, useTranslationJob } from '../hooks';
 import { canPreviewTranslationJob } from '../utils/preview-capabilities';
 
 function PreviewState({
@@ -69,6 +70,27 @@ export function DocumentPreviewScreen() {
     pollInterval: false,
   });
 
+  const inputFileId = job?.input_file?.id ?? null;
+  const outputFileId = job?.output_file?.id ?? null;
+  const {
+    currentPage,
+    pageInputValue,
+    maxSyncedPage,
+    canNavigate,
+    displayMode,
+    setDisplayMode,
+    handlePageInputChange,
+    handlePageInputCommit,
+    handlePreviousPage,
+    handleNextPage,
+    handleInputNumPagesChange,
+    handleOutputNumPagesChange,
+  } = useDocumentPreviewState({
+    jobId,
+    inputFileId,
+    outputFileId,
+  });
+
   if (!jobId) {
     return (
       <PreviewState
@@ -127,30 +149,13 @@ export function DocumentPreviewScreen() {
 
   return (
     <div className="-mx-4 flex min-h-[calc(100vh-var(--dashboard-header-height))] flex-col px-4 md:-mx-[var(--dashboard-content-margin)] md:px-6 xl:px-8">
-      <div className="border-b border-border/60 bg-muted/20 py-4">
-        <div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBack}
-            className="-ml-2 mb-3 gap-1 text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="size-4" />
-            {tCommon('back')}
-          </Button>
+      <DocumentPreviewTopBar
+        displayMode={displayMode}
+        onBack={handleBack}
+        onDisplayModeChange={setDisplayMode}
+      />
 
-          <div>
-            <h1 className="text-2xl font-semibold text-foreground">
-              {t('title')}
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {t('description')}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex min-h-0 flex-1 py-4 lg:py-6">
+      <div className="flex min-h-0 flex-1 pb-3 pt-1 lg:pb-4 lg:pt-2">
         <div className="grid min-h-0 w-full grid-cols-1 gap-4 xl:grid-cols-2 xl:gap-6">
           <PdfPreviewPane
             fileId={job.input_file.id}
@@ -158,6 +163,16 @@ export function DocumentPreviewScreen() {
             title={t('original')}
             loadingLabel={t('loadingOriginal')}
             errorLabel={t('renderError')}
+            currentPage={currentPage}
+            pageInputValue={pageInputValue}
+            canNavigate={canNavigate}
+            maxSyncedPage={maxSyncedPage}
+            displayMode={displayMode}
+            onNumPagesChange={handleInputNumPagesChange}
+            onPageInputChange={handlePageInputChange}
+            onPageInputCommit={handlePageInputCommit}
+            onPreviousPage={handlePreviousPage}
+            onNextPage={handleNextPage}
           />
 
           <PdfPreviewPane
@@ -166,6 +181,16 @@ export function DocumentPreviewScreen() {
             title={t('translated')}
             loadingLabel={t('loadingTranslated')}
             errorLabel={t('renderError')}
+            currentPage={currentPage}
+            pageInputValue={pageInputValue}
+            canNavigate={canNavigate}
+            maxSyncedPage={maxSyncedPage}
+            displayMode={displayMode}
+            onNumPagesChange={handleOutputNumPagesChange}
+            onPageInputChange={handlePageInputChange}
+            onPageInputCommit={handlePageInputCommit}
+            onPreviousPage={handlePreviousPage}
+            onNextPage={handleNextPage}
           />
         </div>
       </div>
