@@ -186,16 +186,6 @@ export function useDocumentPreviewPreferences() {
     }));
   }, []);
 
-  const setZoomScale = useCallback((zoomScale: number) => {
-    const nextZoomScale = normalizeZoomScale(zoomScale);
-
-    updatePreviewPreferences((currentPreferences) => ({
-      ...currentPreferences,
-      zoomMode: 'custom',
-      zoomScale: nextZoomScale,
-    }));
-  }, []);
-
   const incrementZoom = useCallback(() => {
     updatePreviewPreferences((currentPreferences) => ({
       ...currentPreferences,
@@ -212,21 +202,11 @@ export function useDocumentPreviewPreferences() {
     }));
   }, []);
 
-  const resetZoom = useCallback(() => {
-    updatePreviewPreferences((currentPreferences) => ({
-      ...currentPreferences,
-      zoomMode: 'custom',
-      zoomScale: 1,
-    }));
-  }, []);
-
   return {
     ...preferences,
     setDisplayMode,
     setZoomMode,
-    setZoomScale,
     incrementZoom,
     decrementZoom,
-    resetZoom,
   };
 }

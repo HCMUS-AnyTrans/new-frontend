@@ -7,38 +7,26 @@ import type { PreviewZoomMode } from '../hooks/use-document-preview-controller';
 
 interface PreviewZoomGroupProps {
   zoomMode: PreviewZoomMode;
-  zoomScale: number;
   zoomIndicator: string;
   onZoomModeChange: (mode: PreviewZoomMode) => void;
-  onZoomScaleChange: (scale: number) => void;
   onZoomIn: () => void;
   onZoomOut: () => void;
-  onZoomReset: () => void;
 }
 
 export function PreviewZoomGroup({
   zoomMode,
-  zoomScale,
   zoomIndicator,
   onZoomModeChange,
-  onZoomScaleChange,
   onZoomIn,
   onZoomOut,
-  onZoomReset,
 }: PreviewZoomGroupProps) {
   const t = useTranslations('documents.preview');
-
-  function handleResetZoom() {
-    onZoomModeChange('custom');
-    onZoomScaleChange(1);
-    onZoomReset();
-  }
 
   return (
     <div
       role="group"
       aria-label={t('zoomControlsLabel')}
-      className="inline-flex h-9 min-w-[360px] shrink-0 items-center gap-1 rounded-lg border border-border/60 bg-muted/20 p-1"
+      className="inline-flex h-9 min-w-[295px] shrink-0 items-center gap-1 rounded-lg border border-border/60 bg-muted/20 p-1"
     >
       <Button
         type="button"
@@ -59,17 +47,6 @@ export function PreviewZoomGroup({
         onClick={onZoomIn}
       >
         <Plus className="size-3" />
-      </Button>
-      <Button
-        type="button"
-        size="xs"
-        variant={zoomMode === 'custom' && zoomScale === 1 ? 'secondary' : 'ghost'}
-        className="h-7 min-w-[52px] px-2"
-        aria-label={t('resetZoomAriaLabel')}
-        title={t('resetZoomAriaLabel')}
-        onClick={handleResetZoom}
-      >
-        {t('resetZoom')}
       </Button>
       <Button
         type="button"

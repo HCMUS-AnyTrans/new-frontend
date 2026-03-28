@@ -22,10 +22,8 @@ interface DocumentPreviewTopBarProps {
   onBack: () => void;
   onDisplayModeChange: (mode: DocumentPreviewDisplayMode) => void;
   onZoomModeChange: (mode: PreviewZoomMode) => void;
-  onZoomScaleChange: (scale: number) => void;
   onZoomIn: () => void;
   onZoomOut: () => void;
-  onZoomReset: () => void;
   onPreviousPage: () => void;
   onNextPage: () => void;
   onJumpToPageInputChange: (value: string) => void;
@@ -46,10 +44,8 @@ export function DocumentPreviewTopBar(props: DocumentPreviewTopBarProps) {
     onBack,
     onDisplayModeChange,
     onZoomModeChange,
-    onZoomScaleChange,
     onZoomIn,
     onZoomOut,
-    onZoomReset,
     onPreviousPage,
     onNextPage,
     onJumpToPageInputChange,
@@ -86,13 +82,10 @@ export function DocumentPreviewTopBar(props: DocumentPreviewTopBarProps) {
 
             <PreviewZoomGroup
               zoomMode={zoomMode}
-              zoomScale={zoomScale}
               zoomIndicator={zoomIndicator}
               onZoomModeChange={onZoomModeChange}
-              onZoomScaleChange={onZoomScaleChange}
               onZoomIn={onZoomIn}
               onZoomOut={onZoomOut}
-              onZoomReset={onZoomReset}
             />
 
             <PreviewPageNavigationGroup

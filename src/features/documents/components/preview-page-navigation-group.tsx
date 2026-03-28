@@ -29,7 +29,7 @@ export function PreviewPageNavigationGroup({
   const t = useTranslations('documents.preview');
 
   return (
-    <div className="inline-flex h-9 min-w-[320px] shrink-0 items-center gap-1 rounded-lg border border-dashed border-border/60 bg-muted/10 p-1">
+    <div className="inline-flex h-9 min-w-[280px] shrink-0 items-center gap-1 rounded-lg border border-dashed border-border/60 bg-muted/10 p-1">
       <Button
         type="button"
         size="icon-xs"
@@ -46,11 +46,15 @@ export function PreviewPageNavigationGroup({
         variant="ghost"
         aria-label={t('nextPage')}
         onClick={onNextPage}
-        disabled={!canJumpToPage || (totalPages !== null && currentPage >= totalPages)}
+        disabled={
+          !canJumpToPage || (totalPages !== null && currentPage >= totalPages)
+        }
       >
         <ChevronRight className="size-3" />
       </Button>
-      <span className="px-1 text-xs font-medium text-muted-foreground">{t('page')}</span>
+      <span className="px-1 text-xs font-medium text-muted-foreground">
+        {t('page')}
+      </span>
       <Input
         value={jumpToPageInput}
         onChange={(event) => onJumpToPageInputChange(event.target.value)}

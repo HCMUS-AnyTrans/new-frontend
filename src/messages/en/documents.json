@@ -146,8 +146,6 @@
       "continuousMode": "Continuous",
       "zoomOut": "Zoom out",
       "zoomIn": "Zoom in",
-      "resetZoom": "100%",
-      "resetZoomAriaLabel": "Reset zoom to 100%",
       "fitPage": "Fit page",
       "fitWidth": "Fit width",
       "visiblePage": "Page {page}",

@@ -97,10 +97,8 @@ export function DocumentPreviewScreen() {
     zoomScale,
     setDisplayMode,
     setZoomMode,
-    setZoomScale,
     incrementZoom,
     decrementZoom,
-    resetZoom,
     setCurrentVisiblePage,
     handlePageInputChange,
     handlePageInputCommit,
@@ -221,10 +219,8 @@ export function DocumentPreviewScreen() {
         onBack={handleBack}
         onDisplayModeChange={setDisplayMode}
         onZoomModeChange={setZoomMode}
-        onZoomScaleChange={setZoomScale}
         onZoomIn={incrementZoom}
         onZoomOut={decrementZoom}
-        onZoomReset={resetZoom}
         onJumpToPageInputChange={handleSharedPageInputChange}
         onJumpToPageCommit={handleSharedPageCommit}
         onPreviousPage={handleSharedPreviousPage}

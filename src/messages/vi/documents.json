@@ -146,8 +146,6 @@
       "continuousMode": "Liên tục",
       "zoomOut": "Thu nhỏ",
       "zoomIn": "Phóng to",
-      "resetZoom": "100%",
-      "resetZoomAriaLabel": "Đặt lại thu phóng về 100%",
       "fitPage": "Vừa trang",
       "fitWidth": "Vừa chiều ngang",
       "visiblePage": "Trang {page}",
