@@ -44,6 +44,8 @@ export function useDocumentPreviewController(params: {
     setZoomMode,
     incrementZoom,
     decrementZoom,
+    incrementZoomFromScale,
+    decrementZoomFromScale,
   } = useDocumentPreviewPreferences();
 
   const maxAvailablePage = useMemo(() => {
@@ -208,6 +210,8 @@ export function useDocumentPreviewController(params: {
     setZoomMode,
     incrementZoom,
     decrementZoom,
+    incrementZoomFromScale,
+    decrementZoomFromScale,
     setCurrentVisiblePage,
     handlePageInputChange,
     handlePageInputCommit,

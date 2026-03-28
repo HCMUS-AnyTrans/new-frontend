@@ -4,6 +4,8 @@ export * from './use-translation-job-socket';
 export * from './use-translation-job';
 export * from './use-download-file';
 export * from './use-document-preview-controller';
+export * from './use-document-preview-gate-state';
+export * from './use-document-preview-screen-zoom';
 export * from './use-pdf-preview-document';
 export * from './use-pdf-preview-viewport';
 export * from './use-continuous-preview-sync';

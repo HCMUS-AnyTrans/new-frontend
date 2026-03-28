@@ -14,7 +14,7 @@ import { PreviewPageNavigationGroup } from './preview-page-navigation-group';
 interface DocumentPreviewTopBarProps {
   displayMode: DocumentPreviewDisplayMode;
   zoomMode: PreviewZoomMode;
-  zoomScale: number;
+  zoomPercent: number;
   currentPage: number;
   totalPages: number | null;
   jumpToPageInput: string;
@@ -31,12 +31,11 @@ interface DocumentPreviewTopBarProps {
 }
 
 export function DocumentPreviewTopBar(props: DocumentPreviewTopBarProps) {
-  const t = useTranslations('documents.preview');
   const tCommon = useTranslations('common');
   const {
     displayMode,
     zoomMode,
-    zoomScale,
+    zoomPercent,
     currentPage,
     totalPages,
     jumpToPageInput,
@@ -52,13 +51,7 @@ export function DocumentPreviewTopBar(props: DocumentPreviewTopBarProps) {
     onJumpToPageCommit,
   } = props;
 
-  const zoomPercent = Math.round(zoomScale * 100);
-  const zoomIndicator =
-    zoomMode === 'custom'
-      ? `${zoomPercent}%`
-      : zoomMode === 'fit-page'
-        ? t('fitPage')
-        : t('fitWidth');
+  const zoomIndicator = `${zoomPercent}%`;
 
   return (
     <div className="sticky top-0 z-20 -mx-4 border-b border-border/60 bg-background/95 px-4 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:-mx-6 md:px-6 xl:-mx-8 xl:px-8">

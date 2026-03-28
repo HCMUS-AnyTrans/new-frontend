@@ -1,52 +1,19 @@
 'use client';
 
-import { ArrowLeft, FileWarning, Loader2 } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { useCallback, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { DocumentPreviewState } from './document-preview-state';
 import { DocumentPreviewTopBar } from './document-preview-top-bar';
 import { PdfPreviewPane } from './pdf-preview-pane';
 import {
   useDocumentPreviewController,
+  useDocumentPreviewGateState,
+  useDocumentPreviewScreenZoom,
   useTranslationJob,
   type DocumentPreviewPaneId,
 } from '../hooks';
-import { canPreviewTranslationJob } from '../utils/preview-capabilities';
-
-function PreviewState({
-  title,
-  description,
-  backLabel,
-  onBack,
-}: {
-  title: string;
-  description: string;
-  backLabel: string;
-  onBack: () => void;
-}) {
-  return (
-    <div className="flex min-h-[calc(100vh-var(--dashboard-header-height)-4rem)] items-center justify-center">
-      <Alert className="max-w-xl border-border/70 bg-background/90 shadow-sm">
-        <FileWarning className="size-4" />
-        <AlertTitle>{title}</AlertTitle>
-        <AlertDescription className="mt-2 space-y-4">
-          <p>{description}</p>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onBack}
-            className="-ml-2 gap-1 text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="size-4" />
-            {backLabel}
-          </Button>
-        </AlertDescription>
-      </Alert>
-    </div>
-  );
-}
 
 export function DocumentPreviewScreen() {
   const router = useRouter();
@@ -99,6 +66,8 @@ export function DocumentPreviewScreen() {
     setZoomMode,
     incrementZoom,
     decrementZoom,
+    incrementZoomFromScale,
+    decrementZoomFromScale,
     setCurrentVisiblePage,
     handlePageInputChange,
     handlePageInputCommit,
@@ -112,22 +81,16 @@ export function DocumentPreviewScreen() {
     handleOutputNumPagesChange,
   } = previewState;
 
-  const sharedCurrentPage =
-    displayMode === 'continuous' ? currentVisiblePage : currentPage;
-  const sharedPageValue =
-    displayMode === 'continuous' ? jumpToPageInput : pageInputValue;
-  const handleSharedPageInputChange =
-    displayMode === 'continuous'
-      ? handleJumpToPageInputChange
-      : handlePageInputChange;
-  const handleSharedPageCommit =
-    displayMode === 'continuous'
-      ? handleJumpToPageCommit
-      : handlePageInputCommit;
-  const handleSharedPreviousPage =
-    displayMode === 'continuous' ? goToPreviousPage : handlePreviousPage;
-  const handleSharedNextPage =
-    displayMode === 'continuous' ? goToNextPage : handleNextPage;
+  const sharedNavigationProps = {
+    currentPage: displayMode === 'continuous' ? currentVisiblePage : currentPage,
+    jumpToPageInput: displayMode === 'continuous' ? jumpToPageInput : pageInputValue,
+    onJumpToPageInputChange:
+      displayMode === 'continuous' ? handleJumpToPageInputChange : handlePageInputChange,
+    onJumpToPageCommit:
+      displayMode === 'continuous' ? handleJumpToPageCommit : handlePageInputCommit,
+    onPreviousPage: displayMode === 'continuous' ? goToPreviousPage : handlePreviousPage,
+    onNextPage: displayMode === 'continuous' ? goToNextPage : handleNextPage,
+  };
 
   const handleContinuousScrollRatioChange = useCallback((nextRatio: number) => {
     setContinuousScrollRatio((currentRatio) => {
@@ -148,16 +111,63 @@ export function DocumentPreviewScreen() {
     [],
   );
 
-  if (!jobId) {
-    return (
-      <PreviewState
-        title={t('missingJobTitle')}
-        description={t('missingJobDescription')}
-        backLabel={tCommon('back')}
-        onBack={handleBack}
-      />
-    );
-  }
+  const {
+    resolvedZoomPercent,
+    handleZoomPercentageChange,
+    handleZoomIn,
+    handleZoomOut,
+  } = useDocumentPreviewScreenZoom({
+    displayMode,
+    zoomMode,
+    zoomScale,
+    continuousInteractionPane,
+    incrementZoom,
+    decrementZoom,
+    incrementZoomFromScale,
+    decrementZoomFromScale,
+  });
+
+  const previewGateState = useDocumentPreviewGateState({
+    jobId,
+    job,
+    isLoading,
+    isError,
+    t,
+  });
+
+  const previewPanes = useMemo(() => {
+    if (!job?.input_file || !job.output_file) {
+      return [];
+    }
+
+    return [
+      {
+        paneId: 'input' as const,
+        fileId: job.input_file.id,
+        fileName: job.input_file.name,
+        title: t('original'),
+        loadingLabel: t('loadingOriginal'),
+        isVisiblePageAuthority: continuousInteractionPane === 'input',
+        onNumPagesChange: handleInputNumPagesChange,
+      },
+      {
+        paneId: 'output' as const,
+        fileId: job.output_file.id,
+        fileName: job.output_file.name,
+        title: t('translated'),
+        loadingLabel: t('loadingTranslated'),
+        isVisiblePageAuthority: continuousInteractionPane === 'output',
+        onNumPagesChange: handleOutputNumPagesChange,
+      },
+    ];
+  }, [
+    continuousInteractionPane,
+    handleInputNumPagesChange,
+    handleOutputNumPagesChange,
+    job?.input_file,
+    job?.output_file,
+    t,
+  ]);
 
   if (isLoading) {
     return (
@@ -168,38 +178,11 @@ export function DocumentPreviewScreen() {
     );
   }
 
-  if (isError || !job) {
+  if (previewGateState) {
     return (
-      <PreviewState
-        title={t('loadErrorTitle')}
-        description={t('loadErrorDescription')}
-        backLabel={tCommon('back')}
-        onBack={handleBack}
-      />
-    );
-  }
-
-  if (job.status !== 'succeeded' || !job.input_file || !job.output_file) {
-    return (
-      <PreviewState
-        title={t('notReadyTitle')}
-        description={t('notReadyDescription')}
-        backLabel={tCommon('back')}
-        onBack={handleBack}
-      />
-    );
-  }
-
-  if (
-    !canPreviewTranslationJob({
-      inputFile: job.input_file,
-      outputFile: job.output_file,
-    })
-  ) {
-    return (
-      <PreviewState
-        title={t('unsupportedTitle')}
-        description={t('unsupportedDescription')}
+      <DocumentPreviewState
+        title={previewGateState.title}
+        description={previewGateState.description}
         backLabel={tCommon('back')}
         onBack={handleBack}
       />
@@ -211,65 +194,48 @@ export function DocumentPreviewScreen() {
       <DocumentPreviewTopBar
         displayMode={displayMode}
         zoomMode={zoomMode}
-        zoomScale={zoomScale}
-        currentPage={sharedCurrentPage}
+        zoomPercent={resolvedZoomPercent}
+        currentPage={sharedNavigationProps.currentPage}
         totalPages={maxAvailablePage}
-        jumpToPageInput={sharedPageValue}
+        jumpToPageInput={sharedNavigationProps.jumpToPageInput}
         canJumpToPage={canNavigate}
         onBack={handleBack}
         onDisplayModeChange={setDisplayMode}
         onZoomModeChange={setZoomMode}
-        onZoomIn={incrementZoom}
-        onZoomOut={decrementZoom}
-        onJumpToPageInputChange={handleSharedPageInputChange}
-        onJumpToPageCommit={handleSharedPageCommit}
-        onPreviousPage={handleSharedPreviousPage}
-        onNextPage={handleSharedNextPage}
+        onZoomIn={handleZoomIn}
+        onZoomOut={handleZoomOut}
+        onJumpToPageInputChange={sharedNavigationProps.onJumpToPageInputChange}
+        onJumpToPageCommit={sharedNavigationProps.onJumpToPageCommit}
+        onPreviousPage={sharedNavigationProps.onPreviousPage}
+        onNextPage={sharedNavigationProps.onNextPage}
       />
 
       <div className="flex min-h-0 flex-1 pb-1 lg:pb-2">
         <div className="grid min-h-0 w-full grid-cols-1 gap-4 xl:grid-cols-2 xl:gap-6">
-          <PdfPreviewPane
-            paneId="input"
-            fileId={job.input_file.id}
-            fileName={job.input_file.name}
-            title={t('original')}
-            loadingLabel={t('loadingOriginal')}
-            errorLabel={t('renderError')}
-            currentPage={currentPage}
-            displayMode={displayMode}
-            zoomMode={zoomMode}
-            zoomScale={zoomScale}
-            currentVisiblePage={currentVisiblePage}
-            continuousJumpCommand={continuousJumpCommand}
-            isVisiblePageAuthority={continuousInteractionPane === 'input'}
-            continuousScrollRatio={continuousScrollRatio}
-            onContinuousInteractionStart={handleContinuousInteractionStart}
-            onNumPagesChange={handleInputNumPagesChange}
-            onContinuousScrollRatioChange={handleContinuousScrollRatioChange}
-            onCurrentVisiblePageChange={setCurrentVisiblePage}
-          />
-
-          <PdfPreviewPane
-            paneId="output"
-            fileId={job.output_file.id}
-            fileName={job.output_file.name}
-            title={t('translated')}
-            loadingLabel={t('loadingTranslated')}
-            errorLabel={t('renderError')}
-            currentPage={currentPage}
-            displayMode={displayMode}
-            zoomMode={zoomMode}
-            zoomScale={zoomScale}
-            currentVisiblePage={currentVisiblePage}
-            continuousJumpCommand={continuousJumpCommand}
-            isVisiblePageAuthority={continuousInteractionPane === 'output'}
-            continuousScrollRatio={continuousScrollRatio}
-            onContinuousInteractionStart={handleContinuousInteractionStart}
-            onNumPagesChange={handleOutputNumPagesChange}
-            onContinuousScrollRatioChange={handleContinuousScrollRatioChange}
-            onCurrentVisiblePageChange={setCurrentVisiblePage}
-          />
+          {previewPanes.map((pane) => (
+            <PdfPreviewPane
+              key={pane.paneId}
+              paneId={pane.paneId}
+              fileId={pane.fileId}
+              fileName={pane.fileName}
+              title={pane.title}
+              loadingLabel={pane.loadingLabel}
+              errorLabel={t('renderError')}
+              currentPage={currentPage}
+              displayMode={displayMode}
+              zoomMode={zoomMode}
+              zoomScale={zoomScale}
+              currentVisiblePage={currentVisiblePage}
+              continuousJumpCommand={continuousJumpCommand}
+              isVisiblePageAuthority={pane.isVisiblePageAuthority}
+              continuousScrollRatio={continuousScrollRatio}
+              onContinuousInteractionStart={handleContinuousInteractionStart}
+              onNumPagesChange={pane.onNumPagesChange}
+              onContinuousScrollRatioChange={handleContinuousScrollRatioChange}
+              onCurrentVisiblePageChange={setCurrentVisiblePage}
+              onZoomPercentageChange={handleZoomPercentageChange}
+            />
+          ))}
         </div>
       </div>
     </div>

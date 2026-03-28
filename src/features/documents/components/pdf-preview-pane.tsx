@@ -39,6 +39,12 @@ interface PdfPreviewPaneProps {
   onNumPagesChange: (numPages: number | null) => void;
   onContinuousScrollRatioChange: (ratio: number) => void;
   onCurrentVisiblePageChange: (page: number) => void;
+  onZoomPercentageChange: (
+    pane: DocumentPreviewPaneId,
+    zoomMode: PreviewZoomMode,
+    zoomScale: number | null,
+    zoomPercent: number | null,
+  ) => void;
 }
 
 export function PdfPreviewPane({
@@ -60,6 +66,7 @@ export function PdfPreviewPane({
   onNumPagesChange,
   onContinuousScrollRatioChange,
   onCurrentVisiblePageChange,
+  onZoomPercentageChange,
 }: PdfPreviewPaneProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -127,6 +134,30 @@ export function PdfPreviewPane({
   useEffect(() => {
     resetContinuousPageWrapperRefs();
   }, [fileId, resetContinuousPageWrapperRefs]);
+
+  const visiblePageDimensions =
+    pageDimensionsByPage[displayMode === 'continuous' ? currentVisiblePage : effectivePageNumber] ?? {
+      width: 0,
+      height: 0,
+    };
+  const continuousFitWidthScale =
+    continuousPageWidth && visiblePageDimensions.width > 0
+      ? continuousPageWidth / visiblePageDimensions.width
+      : 0;
+  const displayZoomScale = isPagedMode
+    ? effectivePagedScale
+    : effectiveZoomMode === 'fit-width'
+      ? continuousFitWidthScale
+      : safeZoomScale;
+
+  useEffect(() => {
+    onZoomPercentageChange(
+      paneId,
+      zoomMode,
+      displayZoomScale > 0 ? displayZoomScale : null,
+      displayZoomScale > 0 ? Math.round(displayZoomScale * 100) : null,
+    );
+  }, [displayZoomScale, onZoomPercentageChange, paneId, zoomMode]);
 
   return (
     <PreviewPaneShell

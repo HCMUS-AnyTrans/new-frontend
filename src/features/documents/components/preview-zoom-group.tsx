@@ -48,6 +48,9 @@ export function PreviewZoomGroup({
       >
         <Plus className="size-3" />
       </Button>
+      <span className="inline-flex h-7 min-w-[64px] items-center justify-center rounded-md border border-border/50 bg-background px-2 text-xs font-medium text-muted-foreground">
+        {zoomIndicator}
+      </span>
       <Button
         type="button"
         size="xs"
@@ -68,9 +71,6 @@ export function PreviewZoomGroup({
       >
         {t('fitWidth')}
       </Button>
-      <span className="inline-flex h-7 min-w-[64px] items-center justify-center rounded-md border border-border/50 bg-background px-2 text-xs font-medium text-muted-foreground">
-        {zoomIndicator}
-      </span>
     </div>
   );
 }

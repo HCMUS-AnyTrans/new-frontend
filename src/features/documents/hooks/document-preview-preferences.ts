@@ -40,6 +40,23 @@ function normalizeZoomScale(scale: number): number {
   return roundZoomScale(clampZoomScale(scale));
 }
 
+function getZoomScaleStepTarget(scale: number, direction: 'in' | 'out'): number {
+  const normalizedScale = normalizeZoomScale(scale);
+  const scaledStep = normalizedScale / ZOOM_STEP;
+  const nearestStep = Math.round(scaledStep);
+  const isOnStep = Math.abs(scaledStep - nearestStep) < 0.000001;
+  const nextStepCount =
+    direction === 'in'
+      ? isOnStep
+        ? nearestStep + 1
+        : Math.ceil(scaledStep - Number.EPSILON)
+      : isOnStep
+        ? nearestStep - 1
+        : Math.floor(scaledStep + Number.EPSILON);
+
+  return normalizeZoomScale(nextStepCount * ZOOM_STEP);
+}
+
 function isDisplayMode(value: string | null): value is DocumentPreviewDisplayMode {
   return value === 'paged' || value === 'continuous';
 }
@@ -202,11 +219,29 @@ export function useDocumentPreviewPreferences() {
     }));
   }, []);
 
+  const incrementZoomFromScale = useCallback((scale: number) => {
+    updatePreviewPreferences((currentPreferences) => ({
+      ...currentPreferences,
+      zoomMode: 'custom',
+      zoomScale: getZoomScaleStepTarget(scale, 'in'),
+    }));
+  }, []);
+
+  const decrementZoomFromScale = useCallback((scale: number) => {
+    updatePreviewPreferences((currentPreferences) => ({
+      ...currentPreferences,
+      zoomMode: 'custom',
+      zoomScale: getZoomScaleStepTarget(scale, 'out'),
+    }));
+  }, []);
+
   return {
     ...preferences,
     setDisplayMode,
     setZoomMode,
     incrementZoom,
     decrementZoom,
+    incrementZoomFromScale,
+    decrementZoomFromScale,
   };
 }
