@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { File, Presentation } from 'lucide-react';
+import { File } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface FileTypeIconProps {
@@ -45,7 +45,18 @@ export function FileTypeIcon({ fileName, className }: FileTypeIconProps) {
   }
 
   if (extension === 'pptx' || extension === 'ppt') {
-    return <Presentation className={cn(className, 'shrink-0 text-warning')} />;
+    return (
+      <span className={cn('relative inline-block shrink-0', className)}>
+        <Image
+          src="/pptx-svg.svg"
+          alt="PPT file"
+          fill
+          unoptimized
+          className="object-contain"
+          sizes="64px"
+        />
+      </span>
+    );
   }
 
   return <File className={cn(className, 'shrink-0 text-primary')} />;
