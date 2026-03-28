@@ -62,6 +62,9 @@
       "noTerms": "Chưa có thuật ngữ nào. Nhấn nút bên dưới để thêm.",
       "systemGlossaryTitle": "Sử dụng glossary hệ thống",
       "systemGlossaryDescription": "Sử dụng để có bản dịch tốt hơn.",
+      "customDomainLabel": "Domain khác",
+      "customDomainPlaceholder": "Nhập domain của bạn",
+      "customDomainDescription": "Hãy nhập lĩnh vực cụ thể để hệ thống dịch sát ngữ cảnh hơn.",
       "estimate": {
         "title": "Ước tính credits",
         "loading": "Đang tính credits...",
@@ -197,7 +200,8 @@
       "tourism": "Du lịch & Khách sạn",
       "media_entertainment": "Truyền thông & Giải trí",
       "marketing_advertising": "Marketing & Quảng cáo",
-      "administrative": "Hành chính & Giấy tờ"
+      "administrative": "Hành chính & Giấy tờ",
+      "other": "Khác"
     },
     "tones": {
       "formal": "Trang trọng",

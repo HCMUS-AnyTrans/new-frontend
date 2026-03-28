@@ -158,13 +158,17 @@ function buildJobDto(
   const selectedDomainValue = domains.find(
     (domain) => domain.id === config.domain,
   )?.value;
+  const resolvedDomainValue =
+    config.domain === 'other'
+      ? config.customDomain.trim()
+      : selectedDomainValue || 'Auto';
 
   const dto: CreateTranslationJobDto = {
     file_id: fileId,
     src_lang: LANGUAGE_CODE_TO_API_NAME[config.srcLang],
     tgt_lang: LANGUAGE_CODE_TO_API_NAME[config.tgtLang],
     doc_tone: config.tone || undefined,
-    doc_domain: selectedDomainValue || 'Auto',
+    doc_domain: resolvedDomainValue,
   };
 
   const mergedTerms = new Map<string, { src: string; tgt: string }>();

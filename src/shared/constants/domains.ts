@@ -39,6 +39,7 @@ const DOMAIN_DEFINITIONS = [
     icon: Megaphone,
   },
   { id: 'administrative', value: 'Administrative', icon: FileText },
+  { id: 'other', value: 'Other', icon: Wrench },
 ] as const satisfies readonly DomainDefinition[];
 
 export type SharedDomainId = (typeof DOMAIN_DEFINITIONS)[number]['id'];

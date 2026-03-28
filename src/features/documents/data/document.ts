@@ -50,6 +50,7 @@ export const defaultConfig: TranslationConfig = {
   srcLang: 'en',
   tgtLang: 'vi',
   domain: 'auto',
+  customDomain: '',
   tone: 'professional',
   selectedGlossaryId: null,
   manualTerms: [],

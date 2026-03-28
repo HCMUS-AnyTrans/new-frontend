@@ -263,6 +263,7 @@ export interface TranslationConfig {
   srcLang: LanguageCode;
   tgtLang: LanguageCode;
   domain: string;
+  customDomain: string;
   tone: string;
   selectedGlossaryId: string | null;
   manualTerms: ManualTerm[];

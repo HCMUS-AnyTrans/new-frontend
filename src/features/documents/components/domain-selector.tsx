@@ -1,16 +1,24 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { domains } from "../data"
 
 interface DomainSelectorProps {
   value: string
+  customValue: string
   onChange: (domain: string) => void
+  onCustomValueChange: (value: string) => void
 }
 
-export function DomainSelector({ value, onChange }: DomainSelectorProps) {
+export function DomainSelector({
+  value,
+  customValue,
+  onChange,
+  onCustomValueChange,
+}: DomainSelectorProps) {
   const t = useTranslations("documents")
 
   return (
@@ -37,6 +45,21 @@ export function DomainSelector({ value, onChange }: DomainSelectorProps) {
           )
         })}
       </div>
+
+      {value === "other" ? (
+        <div className="mt-3 space-y-2">
+          <Label htmlFor="custom-domain-input" className="text-sm">
+            {t("configure.customDomainLabel")}
+          </Label>
+          <Input
+            id="custom-domain-input"
+            value={customValue}
+            onChange={(event) => onCustomValueChange(event.target.value)}
+            placeholder={t("configure.customDomainPlaceholder")}
+          />
+          <p className="text-xs text-muted-foreground">{t("configure.customDomainDescription")}</p>
+        </div>
+      ) : null}
     </div>
   )
 }

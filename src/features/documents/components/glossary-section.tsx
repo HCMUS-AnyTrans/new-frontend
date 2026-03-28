@@ -11,6 +11,7 @@ import type { Glossary } from "@/features/glossary"
 
 interface GlossarySectionProps {
   glossaries: Glossary[]
+  domain: string
   selectedGlossaryId: string | null
   selectedGlossaryTermCount: number
   isLoadingGlossaries: boolean
@@ -25,6 +26,7 @@ interface GlossarySectionProps {
 
 export function GlossarySection({
   glossaries,
+  domain,
   selectedGlossaryId,
   selectedGlossaryTermCount,
   isLoadingGlossaries,
@@ -55,13 +57,15 @@ export function GlossarySection({
           onSelectGlossary={onSelectGlossary}
         />
 
-        <div className="flex items-start justify-between gap-4 rounded-xl border bg-background/70 px-4 py-3">
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-foreground">{t("systemGlossaryTitle")}</p>
-            <p className="text-xs text-muted-foreground">{t("systemGlossaryDescription")}</p>
+        {domain !== "other" ? (
+          <div className="flex items-start justify-between gap-4 rounded-xl border bg-background/70 px-4 py-3">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-foreground">{t("systemGlossaryTitle")}</p>
+              <p className="text-xs text-muted-foreground">{t("systemGlossaryDescription")}</p>
+            </div>
+            <Switch checked={useSystemGlossary} onCheckedChange={onUseSystemGlossaryChange} />
           </div>
-          <Switch checked={useSystemGlossary} onCheckedChange={onUseSystemGlossaryChange} />
-        </div>
+        ) : null}
 
         <ManualGlossaryTerms
           manualTerms={manualTerms}

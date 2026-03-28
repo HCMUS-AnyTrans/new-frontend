@@ -39,7 +39,8 @@
       "tourism": "Tourism & Hospitality",
       "media_entertainment": "Media & Entertainment",
       "marketing_advertising": "Marketing & Advertising",
-      "administrative": "Administrative"
+      "administrative": "Administrative",
+      "other": "Other"
     },
     "languages": {
       "en": "English",

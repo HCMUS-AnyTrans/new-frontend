@@ -76,6 +76,8 @@ export function StepConfigure({
   const { isInsufficientCredits, missingCredits, isStartDisabled } = useStepConfigureState({
     srcLang: config.srcLang,
     tgtLang: config.tgtLang,
+    domain: config.domain,
+    customDomain: config.customDomain,
     estimate,
     isEstimating,
     currentBalance,
@@ -91,6 +93,7 @@ export function StepConfigure({
   const handleSourceLanguageChange = (lang: LanguageCode) => onConfigChange({ srcLang: lang })
   const handleTargetLanguageChange = (lang: LanguageCode) => onConfigChange({ tgtLang: lang })
   const handleDomainChange = (domain: string) => onConfigChange({ domain })
+  const handleCustomDomainChange = (customDomain: string) => onConfigChange({ customDomain })
   const handleToneChange = (tone: string) => onConfigChange({ tone })
   const handleGlossarySelect = (id: string | null) => onConfigChange({ selectedGlossaryId: id })
   const handleUseSystemGlossaryChange = (enabled: boolean) =>
@@ -110,7 +113,12 @@ export function StepConfigure({
 
           <AppCard>
             <AppCardContent className="space-y-6 pt-6">
-              <DomainSelector value={config.domain} onChange={handleDomainChange} />
+              <DomainSelector
+                value={config.domain}
+                customValue={config.customDomain}
+                onChange={handleDomainChange}
+                onCustomValueChange={handleCustomDomainChange}
+              />
               <ToneSelector value={config.tone} onChange={handleToneChange} />
             </AppCardContent>
           </AppCard>
@@ -135,6 +143,7 @@ export function StepConfigure({
 
           <GlossarySection
             glossaries={glossaries}
+            domain={config.domain}
             selectedGlossaryId={config.selectedGlossaryId}
             selectedGlossaryTermCount={selectedGlossaryTerms.length}
             isLoadingGlossaries={isLoadingGlossaries}
