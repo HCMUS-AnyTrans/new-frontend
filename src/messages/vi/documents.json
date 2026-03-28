@@ -60,6 +60,8 @@
       "termsAppliedLabel": "Thuật ngữ sẽ được áp dụng",
       "termsAppliedCount": "{count} thuật ngữ",
       "noTerms": "Chưa có thuật ngữ nào. Nhấn nút bên dưới để thêm.",
+      "systemGlossaryTitle": "Sử dụng glossary hệ thống",
+      "systemGlossaryDescription": "Sử dụng để có bản dịch tốt hơn.",
       "estimate": {
         "title": "Ước tính credits",
         "loading": "Đang tính credits...",

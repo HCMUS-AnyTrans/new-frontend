@@ -211,6 +211,7 @@ export interface CreateTranslationJobDto {
   user_glossary?: { src_lang: string; tgt_lang: string }[];
   keep_original_font_size?: boolean;
   font_replacements?: FontReplacement[];
+  use_system_glossary?: boolean;
   pdf_output_format?: 'docx' | 'pptx';
 }
 
@@ -265,6 +266,7 @@ export interface TranslationConfig {
   tone: string;
   selectedGlossaryId: string | null;
   manualTerms: ManualTerm[];
+  useSystemGlossary: boolean;
   keepOriginalFontSize: boolean;
   fontConfigEnabled: boolean;
   fontEnabledMap: FontEnabledMap;

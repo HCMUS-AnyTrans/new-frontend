@@ -198,6 +198,8 @@ function buildJobDto(
     dto.keep_original_font_size = true;
   }
 
+  dto.use_system_glossary = config.useSystemGlossary;
+
   return dto;
 }
 

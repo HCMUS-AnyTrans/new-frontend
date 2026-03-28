@@ -60,6 +60,8 @@
       "termsAppliedLabel": "Terms to be applied",
       "termsAppliedCount": "{count} terms",
       "noTerms": "No terms added yet. Click the button below to add.",
+      "systemGlossaryTitle": "Use system glossary",
+      "systemGlossaryDescription": "Enable this to improve translation quality.",
       "estimate": {
         "title": "Credit estimate",
         "loading": "Calculating credits...",

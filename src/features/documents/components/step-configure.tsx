@@ -93,6 +93,8 @@ export function StepConfigure({
   const handleDomainChange = (domain: string) => onConfigChange({ domain })
   const handleToneChange = (tone: string) => onConfigChange({ tone })
   const handleGlossarySelect = (id: string | null) => onConfigChange({ selectedGlossaryId: id })
+  const handleUseSystemGlossaryChange = (enabled: boolean) =>
+    onConfigChange({ useSystemGlossary: enabled })
 
   return (
     <div className="mx-auto max-w-6xl space-y-5 pb-24 xl:pb-0">
@@ -137,6 +139,8 @@ export function StepConfigure({
             selectedGlossaryTermCount={selectedGlossaryTerms.length}
             isLoadingGlossaries={isLoadingGlossaries}
             onSelectGlossary={handleGlossarySelect}
+            useSystemGlossary={config.useSystemGlossary}
+            onUseSystemGlossaryChange={handleUseSystemGlossaryChange}
             manualTerms={config.manualTerms}
             onAddManualTerm={addManualTerm}
             onUpdateManualTerm={updateManualTerm}
